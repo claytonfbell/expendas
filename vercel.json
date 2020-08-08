@@ -1,0 +1,6 @@
+{
+  "env": {
+    "mongodb": "@mongodb",
+    "sendgrid_api_key": "@sendgrid_api_key"
+  }
+}
