@@ -10,25 +10,21 @@ import DisplayError from "../src/DisplayError"
 import Link from "../src/Link"
 import { SignInRequest } from "../src/model/SignInRequest"
 import rest, { RestError } from "../src/rest"
+import { useSignIn } from "../src/SignInProvider"
 import StartLayout from "../src/StartLayout"
 
-export default function Home() {
+function SignIn() {
   const [state, setState] = React.useState<SignInRequest>({
     email: "",
     password: "",
   })
-  const [error, setError] = React.useState<RestError>()
-  const [isBusy, setIsBusy] = React.useState(false)
   const router = useRouter()
 
+  const [error, setError] = React.useState<RestError>()
+  const { signIn, busy } = useSignIn()
   function handleSubmit() {
-    setIsBusy(true)
-    setError(undefined)
-    rest
-      .post("/signIn", state)
-      .then(() => {
-        router.push("/planner")
-      })
+    signIn(state)
+      .then(() => router.push("/planner"))
       .catch((e) => setError(e))
   }
 
@@ -37,43 +33,48 @@ export default function Home() {
   }, [])
 
   return (
-    <StartLayout title="Sign In">
-      <Form
-        state={state}
-        setState={setState}
-        size="small"
-        onSubmit={handleSubmit}
-      >
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <DisplayError error={error} />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField name="email" />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField name="password" password />
-          </Grid>
-          <Grid item xs={12}>
-            <div style={{ textAlign: "right" }}>
-              <NextLink href="/forgotPassword">Forgot Password</NextLink>
-            </div>
-          </Grid>
-          <Grid item xs={12}>
-            <SubmitButton>Sign In</SubmitButton>
-          </Grid>
-          <Grid item xs={12}>
-            <Button
-              component={Link}
-              href="/register"
-              fullWidth
-              variant="outlined"
-            >
-              Register New Account
-            </Button>
-          </Grid>
+    <Form
+      busy={busy}
+      state={state}
+      setState={setState}
+      size="small"
+      onSubmit={handleSubmit}
+    >
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <DisplayError error={error} />
         </Grid>
-      </Form>
-    </StartLayout>
+        <Grid item xs={12}>
+          <TextField name="email" />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField name="password" password />
+        </Grid>
+        <Grid item xs={12}>
+          <div style={{ textAlign: "right" }}>
+            <NextLink href="/forgotPassword">Forgot Password</NextLink>
+          </div>
+        </Grid>
+        <Grid item xs={12}>
+          <SubmitButton>Sign In</SubmitButton>
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            component={Link}
+            href="/register"
+            fullWidth
+            variant="outlined"
+          >
+            Register New Account
+          </Button>
+        </Grid>
+      </Grid>
+    </Form>
   )
 }
+
+export default () => (
+  <StartLayout title="Sign In">
+    <SignIn />
+  </StartLayout>
+)

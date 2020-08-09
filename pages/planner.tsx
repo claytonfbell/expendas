@@ -1,23 +1,15 @@
-import { Container, CssBaseline } from "@material-ui/core"
-import Button from "material-ui-bootstrap/dist/Button"
-import rest from "../src/rest"
+import InsideLayout from "../src/InsideLayout"
+import { useSignIn } from "../src/SignInProvider"
 
-export default function Planner() {
-  function handleSignOut() {
-    rest.delete("/signIn")
-  }
+function Planner() {
+  const { signOut, requireAuthentication } = useSignIn()
+  requireAuthentication()
 
-  return (
-    <>
-      <CssBaseline />
-      <br />
-      <br />
-      <br />
-      <Container>
-        <Button onClick={handleSignOut} color="danger">
-          Logout
-        </Button>
-      </Container>
-    </>
-  )
+  return <>todo</>
 }
+
+export default () => (
+  <InsideLayout title="Planner">
+    <Planner />
+  </InsideLayout>
+)
