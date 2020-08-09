@@ -1,4 +1,5 @@
 import sgMail from "@sendgrid/mail"
+import bcrypt from "bcrypt"
 import marked from "marked"
 import mongoose from "mongoose"
 import {
@@ -9,9 +10,8 @@ import applyMiddleware, {
   NextApiRequestApplied,
   NextApiResponseApplied,
 } from "../../src/middleware/applyMiddleware"
-import { ForgotPasswordRequest } from "../../src/model/ForgotPasswordRequest"
+import { ResetPasswordRequest } from "../../src/model/ResetPasswordRequest"
 import User from "../../src/model/User"
-import randomString from "../../src/util/randomString"
 import validate from "../../src/util/validate"
 
 export default async (
@@ -19,22 +19,22 @@ export default async (
   res: NextApiResponseApplied
 ) => {
   await applyMiddleware(req, res)
-  await res.build(async () => {
+  res.build(async () => {
     switch (req.method) {
       case "POST":
-        const { email }: ForgotPasswordRequest = req.body
+        const { newPassword, code }: ResetPasswordRequest = req.body
 
-        validate({ email }).email()
+        validate({ newPassword }).strongPassword()
+        validate({ code }).min(1)
 
-        const exists = await User.findOne({ email: email.toLowerCase() })
+        const exists = await User.findOne({ passwordResetCode: code })
         if (exists === null) {
-          throw new BadRequestException(
-            `There is no account registerd with email **${email}**.`
-          )
+          throw new BadRequestException(`Reset code is not valid.`)
         }
 
-        // send reset email here
-        exists.passwordResetCode = randomString(16)
+        // set new password
+        exists.passwordHash = bcrypt.hashSync(newPassword, 10)
+        exists.passwordResetCode = ""
         await exists.save()
 
         const host =

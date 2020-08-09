@@ -1,5 +1,7 @@
 enum HttpStatus {
   BadRequest = 400,
+  Unauthorized = 401,
+  Forbidden = 403,
   MethodNotAllowed = 415,
 }
 
@@ -16,6 +18,18 @@ export class HttpException {
 export class BadRequestException extends HttpException {
   constructor(message: string) {
     super(HttpStatus.BadRequest, message)
+  }
+}
+
+export class UnauthorizedException extends HttpException {
+  constructor() {
+    super(HttpStatus.Unauthorized, "Unauthorized")
+  }
+}
+
+export class ForbiddenException extends HttpException {
+  constructor() {
+    super(HttpStatus.Forbidden, "Forbidden")
   }
 }
 

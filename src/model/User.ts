@@ -5,13 +5,15 @@ export interface IUser extends Document {
   firstName: string
   lastName: string
   passwordHash: string
+  passwordResetCode?: string
 }
 
 const UserSchema: Schema = new Schema({
-  email: { type: "string", required: true, unique: true },
+  email: { type: "string", required: true, unique: true, index: true },
   firstName: { type: "string", required: true },
   lastName: { type: "string", required: true },
   passwordHash: { type: "string", required: true },
+  passwordResetCode: { type: "string", index: true },
 })
 
 UserSchema.virtual("fullName").get(function () {
@@ -20,4 +22,6 @@ UserSchema.virtual("fullName").get(function () {
 
 module.exports =
   mongoose.models.Users || mongoose.model<IUser>("Users", UserSchema)
-export default module.exports
+export default module.exports as mongoose.Model<IUser, {}>
+
+// const tmp = mongoose.model<IUser>("Users", UserSchema)
