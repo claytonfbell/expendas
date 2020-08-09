@@ -1,4 +1,4 @@
-import { Grid } from "@material-ui/core"
+import { Grid, Link as MUILink } from "@material-ui/core"
 import Button from "material-ui-bootstrap/dist/Button"
 import Form from "material-ui-pack/dist/Form"
 import SubmitButton from "material-ui-pack/dist/SubmitButton"
@@ -51,7 +51,9 @@ function SignIn() {
         </Grid>
         <Grid item xs={12}>
           <div style={{ textAlign: "right" }}>
-            <Link href="/forgotPassword">Forgot Password</Link>
+            <MUILink component={Link} href="/forgotPassword">
+              Forgot Password
+            </MUILink>
           </div>
         </Grid>
         <Grid item xs={12}>
