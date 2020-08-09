@@ -9,6 +9,7 @@ import {
 import Container from "@material-ui/core/Container"
 import Button from "material-ui-bootstrap/dist/Button"
 import React from "react"
+import { PaymentProvider } from "./PaymentProvider"
 import { SignInProvider, useSignIn } from "./SignInProvider"
 
 interface Props {
@@ -49,7 +50,9 @@ function Content(props: Props) {
 
 const InsideLayout = (props: Props) => (
   <SignInProvider>
-    <Content {...props} />
+    <PaymentProvider>
+      <Content {...props} />
+    </PaymentProvider>
   </SignInProvider>
 )
 export default InsideLayout

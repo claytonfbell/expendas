@@ -8,6 +8,8 @@ import applyMiddleware, {
   NextApiRequestApplied,
   NextApiResponseApplied,
 } from "../../src/middleware/applyMiddleware"
+import ExpendasSessionData from "../../src/model/ExpendasSessionData"
+import Household from "../../src/model/Household"
 import { SignInRequest } from "../../src/model/SignInRequest"
 import User from "../../src/model/User"
 import validate from "../../src/util/validate"
@@ -20,14 +22,16 @@ export default async (
   res.build(async () => {
     switch (req.method) {
       case "GET":
-        const signedInUser = await User.findOne({ _id: req.session.userId })
+        const signedInUser = await User.findOne({
+          _id: req.session.data.userId,
+        })
         if (signedInUser === null) {
           throw new UnauthorizedException()
         }
-        return signedInUser
+        return req.session.data
         break
       case "DELETE":
-        delete req.session.userId
+        delete req.session.data
         await req.session.commit()
         return
         break
@@ -49,13 +53,31 @@ export default async (
           )
         }
 
-        // todo set session cookie here
-        req.session.userId = exists.id
+        // Select / Create Household
+        let household = await Household.findOne({
+          members: { $in: [exists._id] },
+        })
+
+        // create new household if none exists
+        if (household === null) {
+          household = await Household.create({
+            name: exists.firstName + " Home",
+            members: [exists._id],
+          })
+        }
+
+        // session here
+        const data: ExpendasSessionData = {
+          userId: exists.id,
+          householdId: household.id,
+        }
+        req.session.data = data
+
         await req.session.commit()
 
         req.mongoose.disconnect()
 
-        return exists
+        return req.session.data
         break
       default:
         throw new MethodNotAllowedException()

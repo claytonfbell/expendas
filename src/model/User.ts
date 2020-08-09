@@ -8,7 +8,7 @@ export interface IUser extends Document {
   passwordResetCode?: string
 }
 
-const UserSchema: Schema = new Schema({
+export const UserSchema: Schema = new Schema({
   email: { type: "string", required: true, unique: true, index: true },
   firstName: { type: "string", required: true },
   lastName: { type: "string", required: true },
@@ -23,5 +23,3 @@ UserSchema.virtual("fullName").get(function () {
 module.exports =
   mongoose.models.Users || mongoose.model<IUser>("Users", UserSchema)
 export default module.exports as mongoose.Model<IUser, {}>
-
-// const tmp = mongoose.model<IUser>("Users", UserSchema)
