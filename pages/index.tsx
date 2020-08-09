@@ -3,7 +3,6 @@ import Button from "material-ui-bootstrap/dist/Button"
 import Form from "material-ui-pack/dist/Form"
 import SubmitButton from "material-ui-pack/dist/SubmitButton"
 import TextField from "material-ui-pack/dist/TextField"
-import NextLink from "next/link"
 import { useRouter } from "next/router"
 import React from "react"
 import DisplayError from "../src/DisplayError"
@@ -52,7 +51,7 @@ function SignIn() {
         </Grid>
         <Grid item xs={12}>
           <div style={{ textAlign: "right" }}>
-            <NextLink href="/forgotPassword">Forgot Password</NextLink>
+            <Link href="/forgotPassword">Forgot Password</Link>
           </div>
         </Grid>
         <Grid item xs={12}>
