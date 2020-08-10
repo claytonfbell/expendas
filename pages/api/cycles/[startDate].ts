@@ -1,4 +1,4 @@
-import moment from "moment"
+import moment from "moment-timezone"
 import { CycleService } from "."
 import { MethodNotAllowedException } from "../../../src/exceptions/HttpException"
 import applyMiddleware, {
@@ -43,7 +43,6 @@ export default async (
             cursor
           )
           cyclePayments = [...cyclePayments, ...payments]
-
           cursor.add(1, "days")
         }
 

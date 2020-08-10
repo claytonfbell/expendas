@@ -1,12 +1,10 @@
-import moment from "moment"
+import moment from "moment-timezone"
 import { MethodNotAllowedException } from "../../../src/exceptions/HttpException"
 import applyMiddleware, {
   NextApiRequestApplied,
   NextApiResponseApplied,
 } from "../../../src/middleware/applyMiddleware"
 import PaymentMethod from "../../../src/model/Account"
-import ExpendasSessionData from "../../../src/model/ExpendasSessionData"
-import Household from "../../../src/model/Household"
 import Payment from "../../../src/model/Payment"
 
 export default async (
@@ -17,19 +15,11 @@ export default async (
   res.build(async () => {
     switch (req.method) {
       case "GET":
-        // household
-
-        console.log("here")
-        const sessionData: ExpendasSessionData = req.session.data
-        const household = await Household.findOne({
-          _id: sessionData.householdId,
-        })
-
         // seed payment methods
         let appleCard = await PaymentMethod.findOne({ name: "Apple Card" })
         if (appleCard === null) {
           appleCard = await PaymentMethod.create({
-            household: household.id,
+            household: req.household.id,
             name: "Apple Card",
             type: "Credit Card",
             creditCardType: "Mastercard",
@@ -43,7 +33,7 @@ export default async (
         })
         if (onpointChecking === null) {
           onpointChecking = await PaymentMethod.create({
-            household: household.id,
+            household: req.household.id,
             name: "Onpoint Checking Account",
             type: "Checking Account",
             creditCardType: null,
@@ -57,7 +47,7 @@ export default async (
         })
         if (cashWallet === null) {
           cashWallet = await PaymentMethod.create({
-            household: household.id,
+            household: req.household.id,
             name: "Cash Wallet",
             type: "Cash",
             creditCardType: null,
@@ -69,7 +59,7 @@ export default async (
         let petCube = await Payment.findOne({ paidTo: "Pet Cube" })
         if (petCube === null) {
           petCube = await Payment.create({
-            household: household._id,
+            household: req.household._id,
             account: appleCard._id,
             amount: -5.99,
             paidTo: "Pet Cube",
@@ -95,7 +85,7 @@ export default async (
         })
         if (claysPaycheck === null) {
           claysPaycheck = await Payment.create({
-            household: household._id,
+            household: req.household._id,
             account: onpointChecking._id,
             amount: 4500.04,
             paidTo: "Clay's Paycheck",
@@ -121,7 +111,7 @@ export default async (
         })
         if (waterBill === null) {
           waterBill = await Payment.create({
-            household: household._id,
+            household: req.household._id,
             account: onpointChecking._id,
             amount: -333,
             paidTo: "Portland Water Utility",
@@ -147,7 +137,7 @@ export default async (
         })
         if (doorBill === null) {
           doorBill = await Payment.create({
-            household: household._id,
+            household: req.household._id,
             account: onpointChecking._id,
             amount: -600,
             paidTo: "Door Works",
@@ -173,7 +163,7 @@ export default async (
         })
         if (housekeeper === null) {
           housekeeper = await Payment.create({
-            household: household._id,
+            household: req.household._id,
             account: onpointChecking._id,
             amount: -100,
             paidTo: "Orendi Housekeeper",
@@ -197,7 +187,7 @@ export default async (
         })
         if (housekeeperTip === null) {
           housekeeperTip = await Payment.create({
-            household: household._id,
+            household: req.household._id,
             account: cashWallet._id,
             amount: -20,
             paidTo: "Orendi Tip",
@@ -222,7 +212,7 @@ export default async (
         })
         if (foodCash === null) {
           foodCash = await Payment.create({
-            household: household._id,
+            household: req.household._id,
             account: cashWallet._id,
             amount: -140,
             paidTo: "Cash for food",
@@ -249,7 +239,7 @@ export default async (
         })
         if (mortgage === null) {
           mortgage = await Payment.create({
-            household: household._id,
+            household: req.household._id,
             account: onpointChecking._id,
             amount: -2296.16 + 500,
             paidTo: "Flagstar Mortgage Payment",
@@ -271,7 +261,7 @@ export default async (
 
         // FETCH ALL PAYMENTS
         const allPayments = await Payment.find({
-          household: household._id,
+          household: req.household._id,
         }).populate("account")
         return allPayments
         break
