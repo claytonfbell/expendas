@@ -1,14 +1,13 @@
 import moment from "moment"
-import mongoose from "mongoose"
 import { MethodNotAllowedException } from "../../../src/exceptions/HttpException"
 import applyMiddleware, {
   NextApiRequestApplied,
   NextApiResponseApplied,
 } from "../../../src/middleware/applyMiddleware"
+import PaymentMethod from "../../../src/model/Account"
 import ExpendasSessionData from "../../../src/model/ExpendasSessionData"
 import Household from "../../../src/model/Household"
 import Payment from "../../../src/model/Payment"
-import PaymentMethod from "../../../src/model/PaymentMethod"
 
 export default async (
   req: NextApiRequestApplied,
@@ -34,32 +33,21 @@ export default async (
             name: "Apple Card",
             type: "Credit Card",
             creditCardType: "Mastercard",
+            currentBalance: -1794.28,
           })
         }
 
         // seed checking account
-        let checkingAccount = await PaymentMethod.findOne({
-          name: "Checking Account",
+        let onpointChecking = await PaymentMethod.findOne({
+          name: "Onpoint Checking Account",
         })
-        if (checkingAccount === null) {
-          checkingAccount = await PaymentMethod.create({
+        if (onpointChecking === null) {
+          onpointChecking = await PaymentMethod.create({
             household: household.id,
-            name: "Checking Account",
-            type: "Check",
+            name: "Onpoint Checking Account",
+            type: "Checking Account",
             creditCardType: null,
-          })
-        }
-
-        // seed paycheck
-        let paycheckDeposit = await PaymentMethod.findOne({
-          name: "Paycheck Deposit",
-        })
-        if (paycheckDeposit === null) {
-          paycheckDeposit = await PaymentMethod.create({
-            household: household.id,
-            name: "Paycheck Deposit",
-            type: "Paycheck",
-            creditCardType: null,
+            currentBalance: 114.49,
           })
         }
 
@@ -68,8 +56,8 @@ export default async (
         if (petCube === null) {
           petCube = await Payment.create({
             household: household._id,
-            method: appleCard._id,
-            amount: 5.99,
+            account: appleCard._id,
+            amount: -5.99,
             paidTo: "Pet Cube",
             when: moment()
               .year(2020)
@@ -84,18 +72,17 @@ export default async (
             repeatsOnMonthsOfYear: null,
             repeatsOnDaysOfMonth: [2],
             repeatsWeekly: null,
-            repeatsDayOfWeek: null,
           })
         }
 
         // seed clay's pay days
         let claysPaycheck = await Payment.findOne({
-          method: paycheckDeposit._id,
+          paidTo: "Clay's Paycheck",
         })
         if (claysPaycheck === null) {
           claysPaycheck = await Payment.create({
             household: household._id,
-            method: paycheckDeposit._id,
+            account: onpointChecking._id,
             amount: 4500.04,
             paidTo: "Clay's Paycheck",
             when: moment()
@@ -111,7 +98,6 @@ export default async (
             repeatsOnMonthsOfYear: null,
             repeatsOnDaysOfMonth: [1, 15],
             repeatsWeekly: null,
-            repeatsDayOfWeek: null,
           })
         }
 
@@ -122,8 +108,8 @@ export default async (
         if (waterBill === null) {
           waterBill = await Payment.create({
             household: household._id,
-            method: checkingAccount._id,
-            amount: 333,
+            account: onpointChecking._id,
+            amount: -333,
             paidTo: "Portland Water Utility",
             when: moment()
               .year(2020)
@@ -135,18 +121,68 @@ export default async (
               .millisecond(0)
               .toDate(),
             repeatsUntil: null,
-            repeatsOnMonthsOfYear: [1, 4, 7, 10],
+            repeatsOnMonthsOfYear: [0, 3, 6, 9],
             repeatsOnDaysOfMonth: [17],
             repeatsWeekly: null,
-            repeatsDayOfWeek: null,
+          })
+        }
+
+        // seed door bill
+        let doorBill = await Payment.findOne({
+          paidTo: "Door Works",
+        })
+        if (doorBill === null) {
+          doorBill = await Payment.create({
+            household: household._id,
+            account: onpointChecking._id,
+            amount: -600,
+            paidTo: "Door Works",
+            when: moment()
+              .year(2020)
+              .month(7)
+              .date(6)
+              .hour(0)
+              .minute(0)
+              .second(0)
+              .millisecond(0)
+              .toDate(),
+            repeatsUntil: null,
+            repeatsOnMonthsOfYear: null,
+            repeatsOnDaysOfMonth: null,
+            repeatsWeekly: null,
+          })
+        }
+
+        // seed door bill
+        let housekeeper = await Payment.findOne({
+          paidTo: "Orendi Housekeeper",
+        })
+        if (housekeeper === null) {
+          housekeeper = await Payment.create({
+            household: household._id,
+            account: onpointChecking._id,
+            amount: -100,
+            paidTo: "Orendi Housekeeper",
+            when: moment()
+              .year(2020)
+              .month(7)
+              .date(14)
+              .hour(0)
+              .minute(0)
+              .second(0)
+              .millisecond(0)
+              .toDate(),
+            repeatsUntil: null,
+            repeatsOnMonthsOfYear: null,
+            repeatsOnDaysOfMonth: null,
+            repeatsWeekly: 2,
           })
         }
 
         // FETCH ALL PAYMENTS
-        const allPayments = await Payment.find().populate("method")
-
-        mongoose.disconnect()
-
+        const allPayments = await Payment.find({
+          household: household._id,
+        }).populate("account")
         return allPayments
         break
       default:

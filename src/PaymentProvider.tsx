@@ -1,10 +1,10 @@
 import React from "react"
+import { IAccount } from "./model/Account"
 import { IPayment } from "./model/Payment"
-import { IPaymentMethod } from "./model/PaymentMethod"
 import rest from "./rest"
 
 export interface IPaymentPopulated extends IPayment {
-  method: IPaymentMethod
+  account: IAccount
 }
 
 interface ContextType {

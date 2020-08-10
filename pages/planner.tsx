@@ -1,4 +1,5 @@
 import {
+  Box,
   Paper,
   Table,
   TableBody,
@@ -7,11 +8,22 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core"
+import Form from "material-ui-pack/dist/Form"
+import Select from "material-ui-pack/dist/Select"
 import moment from "moment"
 import React from "react"
+import Cycle from "../src/Cycle"
+import { useCycle } from "../src/CycleProvider"
 import InsideLayout from "../src/InsideLayout"
 import { IPaymentPopulated, usePayment } from "../src/PaymentProvider"
 import { useSignIn } from "../src/SignInProvider"
+
+export function formatMoney(input: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(input)
+}
 
 function Planner() {
   const { requireAuthentication } = useSignIn()
@@ -23,16 +35,9 @@ function Planner() {
     fetchPayments()
   }, [fetchPayments])
 
-  function formatMoney(input: number) {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(input)
-  }
-
   function getScheduleDescription(payment: IPaymentPopulated) {
-    let msg: string = moment(payment.when).toISOString()
-
+    let msg: string = moment(payment.when).format("l")
+    // repeating on dates
     if (payment.repeatsOnDaysOfMonth !== null) {
       msg =
         payment.repeatsOnDaysOfMonth
@@ -42,17 +47,26 @@ function Planner() {
         msg += "each month"
       } else {
         msg += payment.repeatsOnMonthsOfYear
-          .map((x) =>
-            moment()
-              .month(x - 1)
-              .format("MMMM")
-          )
+          .map((x) => moment().month(x).format("MMMM"))
           .join(", ")
       }
     }
-
+    // repeating weekly / biweekly
+    else if (payment.repeatsWeekly !== null) {
+      msg =
+        moment(payment.when).format("dddd") +
+        (payment.repeatsWeekly === 1 ? " each week" : " every other week")
+    }
     return msg
   }
+
+  const [state, setState] = React.useState({
+    cycleDate: null,
+  })
+  const { fetchCycleDates, cycleDates } = useCycle()
+  React.useEffect(() => {
+    fetchCycleDates()
+  }, [fetchCycleDates])
 
   return (
     <>
@@ -60,8 +74,8 @@ function Planner() {
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Paid To</TableCell>
-              <TableCell>Method</TableCell>
+              <TableCell>Transaction</TableCell>
+              <TableCell>Account</TableCell>
               <TableCell>Schedule</TableCell>
               <TableCell align="right">Amount</TableCell>
             </TableRow>
@@ -70,23 +84,41 @@ function Planner() {
             {payments.map((p) => (
               <TableRow key={p.id}>
                 <TableCell>{p.paidTo}</TableCell>
-                <TableCell>{p.method.name}</TableCell>
+                <TableCell>{p.account.name}</TableCell>
                 <TableCell>{getScheduleDescription(p)}</TableCell>
                 <TableCell
                   align="right"
                   style={{
-                    color: p.method.type === "Paycheck" ? "green" : undefined,
+                    fontWeight: p.amount > 0 ? "bold" : undefined,
+                    color: p.amount > 0 ? "green" : undefined,
                   }}
                 >
-                  {p.method.type === "Paycheck"
-                    ? formatMoney(p.amount)
-                    : formatMoney(-p.amount)}
+                  {formatMoney(p.amount)}
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <br />
+      <br />
+      <br />
+      <Box maxWidth={300}>
+        <Form size="small" state={state} setState={setState}>
+          <Select
+            allowNull
+            name="cycleDate"
+            options={cycleDates.map((x) => ({
+              value: x,
+              label: moment(x).format("lll"),
+            }))}
+          />
+        </Form>
+      </Box>
+
+      <br />
+      <br />
+      {state.cycleDate !== null && <Cycle date={state.cycleDate} />}
     </>
   )
 }

@@ -1,10 +1,9 @@
 import mongoose, { Document, Schema } from "mongoose"
+import { IAccount } from "./Account"
 import { IHousehold } from "./Household"
-import { IPaymentMethod } from "./PaymentMethod"
 
-type MonthOfYear = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
-type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6
-type DayOfMonth =
+export type MonthOfYear = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11
+export type DayOfMonth =
   | 1
   | 2
   | 3
@@ -33,25 +32,24 @@ type DayOfMonth =
   | 26
   | 27
   | 28
-type Weekly = 1
-type BiWeekly = 2
+export type Weekly = 1
+export type Biweekly = 2
 
 export interface IPayment extends Document {
   household: IHousehold["_id"]
-  method: IPaymentMethod["_id"]
+  account: IAccount["_id"]
   amount: number
   paidTo: string
   when: Date
   repeatsUntil: Date | null
   repeatsOnDaysOfMonth: DayOfMonth[] | null
   repeatsOnMonthsOfYear: MonthOfYear[] | null
-  repeatsWeekly: Weekly | BiWeekly | null
-  repeatsDayOfWeek: DayOfWeek | null
+  repeatsWeekly: Weekly | Biweekly | null
 }
 
 export const PaymentSchema: Schema = new Schema({
   household: { type: Schema.Types.ObjectId, ref: "Households", index: true },
-  method: { type: Schema.Types.ObjectId, ref: "PaymentMethods", index: true },
+  account: { type: Schema.Types.ObjectId, ref: "Accounts", index: true },
   amount: { type: "number", required: true, unique: false, index: false },
   paidTo: { type: Schema.Types.String, required: true },
   when: { type: Schema.Types.Date },
@@ -59,7 +57,6 @@ export const PaymentSchema: Schema = new Schema({
   repeatsOnDaysOfMonth: [{ type: Schema.Types.Number }],
   repeatsOnMonthsOfYear: [{ type: Schema.Types.Number }],
   repeatsWeekly: { type: Schema.Types.Number },
-  repeatsDayOfWeek: { type: Schema.Types.Number },
 })
 
 module.exports =
