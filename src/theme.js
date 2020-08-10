@@ -18,7 +18,7 @@ const theme = createMuiTheme({
     },
   },
   typography: {
-    fontFamily: "'Chilanka', cursive",
+    fontFamily: "'Chilanka', sans-serif",
     h1: {
       fontSize: 32,
     },

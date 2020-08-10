@@ -263,7 +263,9 @@ export default async (
         const allPayments = await Payment.find({
           household: req.household._id,
         }).populate("account")
-        return allPayments
+        return allPayments.sort(
+          (a, b) => Math.abs(b.amount) - Math.abs(a.amount)
+        )
         break
       default:
         throw new MethodNotAllowedException()
