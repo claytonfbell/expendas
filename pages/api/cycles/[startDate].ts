@@ -7,7 +7,11 @@ import applyMiddleware, {
 } from "../../../src/middleware/applyMiddleware"
 import ExpendasSessionData from "../../../src/model/ExpendasSessionData"
 import Household from "../../../src/model/Household"
-import Payment, { DayOfMonth, MonthOfYear } from "../../../src/model/Payment"
+import Payment, {
+  DayOfMonth,
+  IPayment,
+  MonthOfYear,
+} from "../../../src/model/Payment"
 
 export default async (
   req: NextApiRequestApplied,
@@ -43,25 +47,24 @@ export default async (
           household: household._id,
         }).populate("account")
 
-        const cyclePayments = allPayments.filter((x) => {
-          // expired
-          if (
-            x.repeatsUntil != null &&
-            moment(x.repeatsUntil).isBefore(rangeStart)
-          ) {
-            return false
-          }
-          // day in range
-          if (
-            !moment(x.when).isBefore(rangeStart) &&
-            moment(x.when).isBefore(rangeEnd)
-          ) {
-            return true
-          }
-          // repeating on dates
-          if (x.repeatsOnDaysOfMonth !== null) {
-            const cursor = moment(rangeStart)
-            while (cursor.isBefore(rangeEnd)) {
+        let cyclePayments: IPayment[] = []
+        const cursor = moment(rangeStart)
+        while (cursor.isBefore(rangeEnd)) {
+          const payments = allPayments.filter((x) => {
+            // expired
+            if (x.repeatsUntil !== null) {
+              if (moment(x.repeatsUntil).isBefore(cursor)) {
+                return false
+              }
+            }
+            // same day
+            if (
+              moment(x.when).format("YYYYMMDD") === cursor.format("YYYYMMDD")
+            ) {
+              return true
+            }
+            // repeating on dates
+            if (x.repeatsOnDaysOfMonth !== null) {
               const onDayOfMonth = x.repeatsOnDaysOfMonth.includes(
                 cursor.date() as DayOfMonth
               )
@@ -69,21 +72,13 @@ export default async (
                 const onMonthOfYear = x.repeatsOnMonthsOfYear.includes(
                   cursor.month() as MonthOfYear
                 )
-                if (onDayOfMonth && onMonthOfYear) {
-                  return true
-                }
+                return onDayOfMonth && onMonthOfYear
               } else {
-                if (onDayOfMonth) {
-                  return true
-                }
+                return onDayOfMonth
               }
-              cursor.add(1, "days")
             }
-          }
-          // weekly
-          if (x.repeatsWeekly !== null) {
-            const cursor = moment(rangeStart)
-            while (cursor.isBefore(rangeEnd)) {
+            // repeating weekly
+            if (x.repeatsWeekly !== null) {
               const c2 = moment(x.when)
               while (!c2.isAfter(cursor)) {
                 const sameDate =
@@ -93,11 +88,13 @@ export default async (
                 }
                 c2.add(x.repeatsWeekly, "weeks")
               }
-              cursor.add(1, "days")
             }
-          }
-          return false
-        })
+            return false
+          })
+          cyclePayments = [...cyclePayments, ...payments]
+
+          cursor.add(1, "days")
+        }
 
         return cyclePayments.sort(
           (a, b) => Math.abs(b.amount) - Math.abs(a.amount)

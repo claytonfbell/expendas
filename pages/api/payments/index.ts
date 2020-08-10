@@ -51,6 +51,20 @@ export default async (
           })
         }
 
+        // seed checking account
+        let cashWallet = await PaymentMethod.findOne({
+          name: "Cash Wallet",
+        })
+        if (cashWallet === null) {
+          cashWallet = await PaymentMethod.create({
+            household: household.id,
+            name: "Cash Wallet",
+            type: "Cash",
+            creditCardType: null,
+            currentBalance: 120,
+          })
+        }
+
         // seed payments
         let petCube = await Payment.findOne({ paidTo: "Pet Cube" })
         if (petCube === null) {
@@ -178,6 +192,30 @@ export default async (
             repeatsWeekly: 2,
           })
         }
+        let housekeeperTip = await Payment.findOne({
+          paidTo: "Orendi Tip",
+        })
+        if (housekeeperTip === null) {
+          housekeeperTip = await Payment.create({
+            household: household._id,
+            account: cashWallet._id,
+            amount: -20,
+            paidTo: "Orendi Tip",
+            when: moment()
+              .year(2020)
+              .month(7)
+              .date(14)
+              .hour(0)
+              .minute(0)
+              .second(0)
+              .millisecond(0)
+              .toDate(),
+            repeatsUntil: null,
+            repeatsOnMonthsOfYear: null,
+            repeatsOnDaysOfMonth: null,
+            repeatsWeekly: 2,
+          })
+        }
 
         let foodCash = await Payment.findOne({
           paidTo: "Cash for food",
@@ -185,7 +223,7 @@ export default async (
         if (foodCash === null) {
           foodCash = await Payment.create({
             household: household._id,
-            account: onpointChecking._id,
+            account: cashWallet._id,
             amount: -140,
             paidTo: "Cash for food",
             when: moment()
