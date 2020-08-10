@@ -3,6 +3,9 @@ import mongoose, { Mongoose } from "mongoose"
 import { NextApiRequest, NextApiResponse } from "next"
 import { applySession, expressSession, promisifyStore } from "next-session"
 import { HttpException } from "../exceptions/HttpException"
+import Account from "../model/Account"
+import Payment from "../model/Payment"
+import User from "../model/User"
 
 export type NextApiRequestApplied = NextApiRequest & {
   session: any
@@ -35,6 +38,11 @@ export default async function applyMiddleware(
     useUnifiedTopology: true,
   })
   req.mongoose = mongoose
+
+  // importing so they are all available
+  User
+  Account
+  Payment
 
   // apply build function
   res.build = async (func: () => void) => {
