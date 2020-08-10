@@ -17,6 +17,7 @@
     "@material-ui/pickers": "^3.2.10",
     "@sendgrid/mail": "^7.2.3",
     "@types/bcrypt": "^3.0.0",
+    "@types/moment-timezone": "^0.5.13",
     "@types/mongoose": "^5.7.36",
     "@types/query-string": "^6.3.0",
     "axios": "^0.19.2",

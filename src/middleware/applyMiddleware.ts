@@ -1,15 +1,20 @@
 import ConnectMongo from "connect-mongo"
+import moment from "moment-timezone"
 import mongoose, { Mongoose } from "mongoose"
 import { NextApiRequest, NextApiResponse } from "next"
 import { applySession, expressSession, promisifyStore } from "next-session"
 import { HttpException } from "../exceptions/HttpException"
 import Account from "../model/Account"
+import ExpendasSessionData from "../model/ExpendasSessionData"
+import Household, { IHousehold } from "../model/Household"
 import Payment from "../model/Payment"
-import User from "../model/User"
+import User, { IUser } from "../model/User"
 
 export type NextApiRequestApplied = NextApiRequest & {
   session: any
   mongoose: Mongoose
+  user?: IUser
+  household?: IHousehold
 }
 
 export type NextApiResponseApplied = NextApiResponse & {
@@ -43,6 +48,18 @@ export default async function applyMiddleware(
   User
   Account
   Payment
+
+  // attach user and household
+  const sessionData: ExpendasSessionData = req.session.data
+  if (sessionData !== undefined && sessionData !== null) {
+    req.user = await User.findOne({
+      _id: sessionData.userId,
+    })
+    req.household = await Household.findOne({
+      _id: sessionData.householdId,
+    })
+    moment.tz.setDefault(req.user.timeZone)
+  }
 
   // apply build function
   res.build = async (func: () => void) => {

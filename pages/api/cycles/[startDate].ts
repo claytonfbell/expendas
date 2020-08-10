@@ -5,8 +5,6 @@ import applyMiddleware, {
   NextApiRequestApplied,
   NextApiResponseApplied,
 } from "../../../src/middleware/applyMiddleware"
-import ExpendasSessionData from "../../../src/model/ExpendasSessionData"
-import Household from "../../../src/model/Household"
 import Payment, { IPayment } from "../../../src/model/Payment"
 
 export default async (
@@ -17,12 +15,6 @@ export default async (
   res.build(async () => {
     switch (req.method) {
       case "GET":
-        // move this to middleware
-        const sessionData: ExpendasSessionData = req.session.data
-        const household = await Household.findOne({
-          _id: sessionData.householdId,
-        })
-
         const {
           query: { startDate },
         } = req
@@ -31,7 +23,7 @@ export default async (
         const rangeStart = moment(startDate)
         let rangeEnd = moment(startDate).add(6, "months")
         const cycles = await new CycleService().getCyclesWithHousehold(
-          household,
+          req.household,
           rangeStart,
           rangeEnd
         )
@@ -40,7 +32,7 @@ export default async (
 
         // get all relevant payments
         const allPayments = await Payment.find({
-          household: household._id,
+          household: req.household._id,
         }).populate("account")
 
         let cyclePayments: IPayment[] = []

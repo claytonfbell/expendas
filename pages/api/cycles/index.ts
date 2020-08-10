@@ -1,12 +1,11 @@
-import moment, { Moment } from "moment"
+import moment, { Moment } from "moment-timezone"
 import { MethodNotAllowedException } from "../../../src/exceptions/HttpException"
 import applyMiddleware, {
   NextApiRequestApplied,
   NextApiResponseApplied,
 } from "../../../src/middleware/applyMiddleware"
 import { IAccount } from "../../../src/model/Account"
-import ExpendasSessionData from "../../../src/model/ExpendasSessionData"
-import Household, { IHousehold } from "../../../src/model/Household"
+import { IHousehold } from "../../../src/model/Household"
 import Payment, {
   DayOfMonth,
   IPayment,
@@ -21,12 +20,6 @@ export default async (
   res.build(async () => {
     switch (req.method) {
       case "GET":
-        // move this to middleware
-        const sessionData: ExpendasSessionData = req.session.data
-        const household = await Household.findOne({
-          _id: sessionData.householdId,
-        })
-
         const rangeStart: Moment = moment()
           .hour(0)
           .minute(0)
@@ -41,7 +34,7 @@ export default async (
           .add(6, "months")
 
         const cycles = await new CycleService().getCyclesWithHousehold(
-          household,
+          req.household,
           rangeStart,
           rangeEnd
         )
