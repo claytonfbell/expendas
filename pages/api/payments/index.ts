@@ -153,7 +153,7 @@ export default async (
           })
         }
 
-        // seed door bill
+        // house keeper
         let housekeeper = await Payment.findOne({
           paidTo: "Orendi Housekeeper",
         })
@@ -176,6 +176,58 @@ export default async (
             repeatsOnMonthsOfYear: null,
             repeatsOnDaysOfMonth: null,
             repeatsWeekly: 2,
+          })
+        }
+
+        let foodCash = await Payment.findOne({
+          paidTo: "Cash for food",
+        })
+        if (foodCash === null) {
+          foodCash = await Payment.create({
+            household: household._id,
+            account: onpointChecking._id,
+            amount: -140,
+            paidTo: "Cash for food",
+            when: moment()
+              .year(2020)
+              .month(7)
+              .date(7)
+              .hour(0)
+              .minute(0)
+              .second(0)
+              .millisecond(0)
+              .toDate(),
+            repeatsUntil: null,
+            repeatsOnMonthsOfYear: null,
+            repeatsOnDaysOfMonth: null,
+            repeatsWeekly: 1,
+          })
+        }
+
+        // mortgage payment
+        //
+        let mortgage = await Payment.findOne({
+          paidTo: "Flagstar Mortgage Payment",
+        })
+        if (mortgage === null) {
+          mortgage = await Payment.create({
+            household: household._id,
+            account: onpointChecking._id,
+            amount: -2296.16 + 500,
+            paidTo: "Flagstar Mortgage Payment",
+            when: moment()
+              .year(2020)
+              .month(7)
+              .date(1)
+              .hour(0)
+              .minute(0)
+              .second(0)
+              .millisecond(0)
+              .toDate(),
+            repeatsUntil: null,
+            repeatsOnMonthsOfYear: null,
+            repeatsOnDaysOfMonth: [1],
+            repeatsWeekly: null,
           })
         }
 
