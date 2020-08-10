@@ -13,6 +13,7 @@ interface ContextType {
   requireAuthentication: () => void
   signIn: (params: SignInRequest) => Promise<void>
   signOut: () => Promise<void>
+  timeZone: string
 }
 
 const Context = React.createContext<ContextType | undefined>(undefined)
@@ -28,6 +29,7 @@ export function SignInProvider(props: any) {
   const [busy, setBusy] = React.useState(false)
   const [status, setStatus] = React.useState<Status>("unknown")
   const [user, setUser] = React.useState<IUser>()
+  const [timeZone, setTimeZone] = React.useState<string>("America/Los_Angeles")
 
   const router = useRouter()
 
@@ -78,6 +80,12 @@ export function SignInProvider(props: any) {
       })
   }, [])
 
+  React.useEffect(() => {
+    if (user !== undefined) {
+      setTimeZone(user.timeZone)
+    }
+  }, [user])
+
   const value = React.useMemo(
     (): ContextType => ({
       busy,
@@ -86,8 +94,9 @@ export function SignInProvider(props: any) {
       requireAuthentication,
       signIn,
       signOut,
+      timeZone,
     }),
-    [busy, status, user, requireAuthentication, signIn, signOut]
+    [busy, status, user, requireAuthentication, signIn, signOut, timeZone]
   )
 
   return <Context.Provider value={value} {...props} />

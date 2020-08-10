@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core"
 import Form from "material-ui-pack/dist/Form"
 import Select from "material-ui-pack/dist/Select"
-import moment from "moment"
+import moment from "moment-timezone"
 import React from "react"
 import Cycle from "../src/Cycle"
 import { useCycle } from "../src/CycleProvider"
@@ -26,7 +26,7 @@ export function formatMoney(input: number) {
 }
 
 function Planner() {
-  const { requireAuthentication } = useSignIn()
+  const { requireAuthentication, timeZone } = useSignIn()
   requireAuthentication()
 
   const { payments, fetchPayments } = usePayment()
@@ -36,7 +36,7 @@ function Planner() {
   }, [fetchPayments])
 
   function getScheduleDescription(payment: IPaymentPopulated) {
-    let msg: string = moment(payment.when).format("l")
+    let msg: string = moment(payment.when).tz(timeZone).format("l")
     // repeating on dates
     if (payment.repeatsOnDaysOfMonth !== null) {
       msg =
@@ -47,14 +47,14 @@ function Planner() {
         msg += "each month"
       } else {
         msg += payment.repeatsOnMonthsOfYear
-          .map((x) => moment().month(x).format("MMMM"))
+          .map((x) => moment().tz(timeZone).month(x).format("MMMM"))
           .join(", ")
       }
     }
     // repeating weekly / biweekly
     else if (payment.repeatsWeekly !== null) {
       msg =
-        moment(payment.when).format("dddd") +
+        moment(payment.when).tz(timeZone).format("dddd") +
         (payment.repeatsWeekly === 1 ? " each week" : " every other week")
     }
     return msg
@@ -110,7 +110,7 @@ function Planner() {
             name="cycleDate"
             options={cycleDates.map((x) => ({
               value: x,
-              label: moment(x).format("lll"),
+              label: moment(x).tz(timeZone).format("dddd - LL"),
             }))}
           />
         </Form>

@@ -7,7 +7,11 @@ import applyMiddleware, {
 import { IAccount } from "../../../src/model/Account"
 import ExpendasSessionData from "../../../src/model/ExpendasSessionData"
 import Household, { IHousehold } from "../../../src/model/Household"
-import Payment, { DayOfMonth, MonthOfYear } from "../../../src/model/Payment"
+import Payment, {
+  DayOfMonth,
+  IPayment,
+  MonthOfYear,
+} from "../../../src/model/Payment"
 
 export default async (
   req: NextApiRequestApplied,
@@ -72,46 +76,7 @@ export class CycleService {
     const cursor = moment(rangeStart)
     while (cursor.isBefore(rangeEnd)) {
       // find paychecks that fall on this date
-      const checks = payChecks.filter((x) => {
-        // expired
-        if (x.repeatsUntil !== null) {
-          if (moment(x.repeatsUntil).isBefore(cursor)) {
-            return false
-          }
-        }
-        // same day
-        if (moment(x.when).format("YYYYMMDD") === cursor.format("YYYYMMDD")) {
-          return true
-        }
-        // repeating on dates
-        if (x.repeatsOnDaysOfMonth !== null) {
-          const onDayOfMonth = x.repeatsOnDaysOfMonth.includes(
-            cursor.date() as DayOfMonth
-          )
-          if (x.repeatsOnMonthsOfYear !== null) {
-            const onMonthOfYear = x.repeatsOnMonthsOfYear.includes(
-              cursor.month() as MonthOfYear
-            )
-            return onDayOfMonth && onMonthOfYear
-          } else {
-            return onDayOfMonth
-          }
-        }
-        // repeating weekly
-        if (x.repeatsWeekly !== null) {
-          const c2 = moment(x.when)
-          while (!c2.isAfter(cursor)) {
-            const sameDate =
-              moment(c2).format("YYYYMMDD") === cursor.format("YYYYMMDD")
-            if (sameDate) {
-              return true
-            }
-            c2.add(x.repeatsWeekly, "weeks")
-          }
-        }
-
-        return false
-      })
+      const checks = this.filterPaymentsOnDate(payChecks, cursor)
       if (checks.length > 0) {
         cycles.push(moment(cursor))
       }
@@ -120,5 +85,48 @@ export class CycleService {
 
     // RETURN ALL THE CYCLE DATES BETWEEN X AND Y
     return cycles.map((x) => x.toISOString())
+  }
+
+  filterPaymentsOnDate(payments: IPayment[], date: Moment) {
+    return payments.filter((x) => {
+      // expired
+      if (x.repeatsUntil !== null) {
+        if (moment(x.repeatsUntil).isBefore(date)) {
+          return false
+        }
+      }
+      // same day
+      if (moment(x.when).format("YYYYMMDD") === date.format("YYYYMMDD")) {
+        return true
+      }
+      // repeating on dates
+      if (x.repeatsOnDaysOfMonth !== null) {
+        const onDayOfMonth = x.repeatsOnDaysOfMonth.includes(
+          date.date() as DayOfMonth
+        )
+        if (x.repeatsOnMonthsOfYear !== null) {
+          const onMonthOfYear = x.repeatsOnMonthsOfYear.includes(
+            date.month() as MonthOfYear
+          )
+          return onDayOfMonth && onMonthOfYear
+        } else {
+          return onDayOfMonth
+        }
+      }
+      // repeating weekly
+      if (x.repeatsWeekly !== null) {
+        const cursor = moment(x.when)
+        while (!cursor.isAfter(date)) {
+          const sameDate =
+            moment(cursor).format("YYYYMMDD") === date.format("YYYYMMDD")
+          if (sameDate) {
+            return true
+          }
+          cursor.add(x.repeatsWeekly, "weeks")
+        }
+      }
+
+      return false
+    })
   }
 }

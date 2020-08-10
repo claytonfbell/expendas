@@ -53,6 +53,10 @@ export default async (
           )
         }
 
+        // temp
+        exists.timeZone = "America/Los_Angeles"
+        await exists.save()
+
         // Select / Create Household
         let household = await Household.findOne({
           members: { $in: [exists._id] },

@@ -6,6 +6,7 @@ export interface IUser extends Document {
   lastName: string
   passwordHash: string
   passwordResetCode?: string
+  timeZone: string
 }
 
 export const UserSchema: Schema = new Schema({
@@ -14,6 +15,7 @@ export const UserSchema: Schema = new Schema({
   lastName: { type: "string", required: true },
   passwordHash: { type: "string", required: true },
   passwordResetCode: { type: "string", index: true },
+  timeZone: { type: "string", required: true },
 })
 
 UserSchema.virtual("fullName").get(function () {

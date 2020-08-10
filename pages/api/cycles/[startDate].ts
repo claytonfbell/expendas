@@ -7,11 +7,7 @@ import applyMiddleware, {
 } from "../../../src/middleware/applyMiddleware"
 import ExpendasSessionData from "../../../src/model/ExpendasSessionData"
 import Household from "../../../src/model/Household"
-import Payment, {
-  DayOfMonth,
-  IPayment,
-  MonthOfYear,
-} from "../../../src/model/Payment"
+import Payment, { IPayment } from "../../../src/model/Payment"
 
 export default async (
   req: NextApiRequestApplied,
@@ -50,47 +46,10 @@ export default async (
         let cyclePayments: IPayment[] = []
         const cursor = moment(rangeStart)
         while (cursor.isBefore(rangeEnd)) {
-          const payments = allPayments.filter((x) => {
-            // expired
-            if (x.repeatsUntil !== null) {
-              if (moment(x.repeatsUntil).isBefore(cursor)) {
-                return false
-              }
-            }
-            // same day
-            if (
-              moment(x.when).format("YYYYMMDD") === cursor.format("YYYYMMDD")
-            ) {
-              return true
-            }
-            // repeating on dates
-            if (x.repeatsOnDaysOfMonth !== null) {
-              const onDayOfMonth = x.repeatsOnDaysOfMonth.includes(
-                cursor.date() as DayOfMonth
-              )
-              if (x.repeatsOnMonthsOfYear !== null) {
-                const onMonthOfYear = x.repeatsOnMonthsOfYear.includes(
-                  cursor.month() as MonthOfYear
-                )
-                return onDayOfMonth && onMonthOfYear
-              } else {
-                return onDayOfMonth
-              }
-            }
-            // repeating weekly
-            if (x.repeatsWeekly !== null) {
-              const c2 = moment(x.when)
-              while (!c2.isAfter(cursor)) {
-                const sameDate =
-                  moment(c2).format("YYYYMMDD") === cursor.format("YYYYMMDD")
-                if (sameDate) {
-                  return true
-                }
-                c2.add(x.repeatsWeekly, "weeks")
-              }
-            }
-            return false
-          })
+          const payments = new CycleService().filterPaymentsOnDate(
+            allPayments,
+            cursor
+          )
           cyclePayments = [...cyclePayments, ...payments]
 
           cursor.add(1, "days")
