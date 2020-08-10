@@ -45,6 +45,7 @@ export default async (
           lastName,
           email: email.toLowerCase(),
           passwordHash: bcrypt.hashSync(newPassword, 10),
+          timeZone: "America/Los_Angeles",
         })
 
         mongoose.disconnect()
