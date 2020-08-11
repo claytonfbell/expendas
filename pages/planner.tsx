@@ -1,7 +1,9 @@
 import {
   Box,
   createStyles,
-  Grid,
+  Dialog,
+  DialogActions,
+  DialogContent,
   Hidden,
   IconButton,
   Paper,
@@ -12,6 +14,7 @@ import {
   TableHead,
   TableRow,
   Theme,
+  Typography,
   withStyles,
 } from "@material-ui/core"
 import DeleteIcon from "@material-ui/icons/Delete"
@@ -55,7 +58,7 @@ function Planner() {
     fetchCycleDates()
   }, [fetchCycleDates])
 
-  const handleDelete = (id: string) => () => deletePayment(id)
+  const [willDelete, setWillDelete] = React.useState<string>()
 
   const [selectedPayment, setSelectedPayment] = React.useState<PaymentRequest>()
   const handleEdit = (payment: IPaymentPopulated) => () => {
@@ -124,18 +127,17 @@ function Planner() {
                   {formatMoney(p.amount)}
                 </TableCell>
                 <TableCell>
-                  <Grid container spacing={1}>
-                    <Grid item xs={6}>
-                      <IconButton size="small" onClick={handleEdit(p)}>
-                        <EditIcon />
-                      </IconButton>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <IconButton size="small" onClick={handleDelete(p._id)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </Grid>
-                  </Grid>
+                  <IconButton size="small" onClick={handleEdit(p)}>
+                    <EditIcon />
+                  </IconButton>
+                  <Hidden mdDown>
+                    <IconButton
+                      size="small"
+                      onClick={() => setWillDelete(p._id)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Hidden>
                 </TableCell>
               </StyledTableRow>
             ))}
@@ -189,6 +191,25 @@ function Planner() {
       <br />
       <br />
       <br />
+      <Dialog
+        open={willDelete !== undefined}
+        onClose={() => setWillDelete(undefined)}
+      >
+        <DialogContent>
+          <Typography>Are you sure you want to delete this item?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              deletePayment(willDelete)
+              setWillDelete(undefined)
+            }}
+          >
+            Delete
+          </Button>
+          <Button onClick={() => setWillDelete(undefined)}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
     </>
   )
 }

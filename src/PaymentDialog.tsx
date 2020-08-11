@@ -2,6 +2,7 @@ import {
   Checkbox,
   Collapse,
   Dialog,
+  DialogActions,
   DialogContent,
   FormControl,
   FormControlLabel,
@@ -46,7 +47,7 @@ export default function PaymentDialog(props: Props) {
   }, [props.payment])
 
   const [error, setError] = React.useState<RestError>()
-  const { busy, createPayment, updatePayment } = usePayment()
+  const { busy, createPayment, updatePayment, deletePayment } = usePayment()
   function handleSubmit() {
     setError(undefined)
     if (state.id === undefined) {
@@ -84,6 +85,8 @@ export default function PaymentDialog(props: Props) {
   const repeatsType: RepeatsType =
     state.repeatsWeekly !== null ? "weekly" : "dates"
   const repeatsUntil = state.repeatsUntil !== null
+
+  const [willDelete, setWillDelete] = React.useState<string>()
 
   return (
     <Dialog open={props.payment !== undefined} onClose={props.onClose}>
@@ -303,7 +306,7 @@ export default function PaymentDialog(props: Props) {
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <SubmitButton>
-                {state.id === undefined ? `Create Payment` : `Save Changes`}
+                {state.id === undefined ? `Create` : `Save`}
               </SubmitButton>
             </Grid>
             <Grid item xs={6}>
@@ -311,11 +314,44 @@ export default function PaymentDialog(props: Props) {
                 Cancel
               </Button>
             </Grid>
+            {state.id !== undefined && (
+              <Grid item xs={12}>
+                <Button
+                  fullWidth
+                  variant="text"
+                  color="danger"
+                  onClick={() => setWillDelete(state.id)}
+                >
+                  Delete
+                </Button>
+              </Grid>
+            )}
           </Grid>
 
           <br />
           <br />
         </Form>
+
+        <Dialog
+          open={willDelete !== undefined}
+          onClose={() => setWillDelete(undefined)}
+        >
+          <DialogContent>
+            <Typography>Are you sure you want to delete this item?</Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => {
+                setWillDelete(undefined)
+                deletePayment(willDelete)
+                props.onClose()
+              }}
+            >
+              Delete
+            </Button>
+            <Button onClick={() => setWillDelete(undefined)}>Cancel</Button>
+          </DialogActions>
+        </Dialog>
       </DialogContent>
     </Dialog>
   )
