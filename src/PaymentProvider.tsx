@@ -14,6 +14,7 @@ interface ContextType {
   fetchPayments: () => Promise<void>
   createPayment: (params: PaymentRequest) => Promise<void>
   deletePayment: (paymentId: string) => Promise<void>
+  updatePayment: (payment: PaymentRequest, paymentId: string) => Promise<void>
 }
 
 const Context = React.createContext<ContextType | undefined>(undefined)
@@ -71,6 +72,21 @@ export function PaymentProvider(props: any) {
     [fetchPayments]
   )
 
+  const updatePayment = React.useCallback(
+    (payment: PaymentRequest) => {
+      setBusy(true)
+      return rest
+        .put(`/payments/${payment.id}`, payment)
+        .then(() => {
+          fetchPayments()
+        })
+        .finally(() => {
+          setBusy(false)
+        })
+    },
+    [fetchPayments]
+  )
+
   const value = React.useMemo(
     (): ContextType => ({
       busy,
@@ -78,8 +94,9 @@ export function PaymentProvider(props: any) {
       fetchPayments,
       createPayment,
       deletePayment,
+      updatePayment,
     }),
-    [busy, payments, fetchPayments, createPayment, deletePayment]
+    [busy, payments, fetchPayments, createPayment, deletePayment, updatePayment]
   )
 
   return <Context.Provider value={value} {...props} />

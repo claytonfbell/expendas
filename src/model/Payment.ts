@@ -32,8 +32,6 @@ export type DayOfMonth =
   | 26
   | 27
   | 28
-export type Weekly = 1
-export type Biweekly = 2
 
 export interface IPayment extends Document {
   household: IHousehold["_id"]
@@ -44,7 +42,7 @@ export interface IPayment extends Document {
   repeatsUntil: Date | null
   repeatsOnDaysOfMonth: DayOfMonth[] | null
   repeatsOnMonthsOfYear: MonthOfYear[] | null
-  repeatsWeekly: Weekly | Biweekly | null
+  repeatsWeekly: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | null
 }
 
 export const PaymentSchema: Schema = new Schema({

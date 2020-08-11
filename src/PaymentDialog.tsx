@@ -5,7 +5,6 @@ import {
   DialogContent,
   FormControl,
   FormControlLabel,
-  FormLabel,
   Radio,
   RadioGroup,
   Typography,
@@ -27,23 +26,27 @@ import { usePayment } from "./PaymentProvider"
 import { RestError } from "./rest"
 
 interface Props {
-  open: boolean
+  payment: PaymentRequest
   onClose: () => void
 }
 
-type RepeatsType = "weekly" | "biweekly" | "dates"
+type RepeatsType = "weekly" | "dates"
 
 export default function PaymentDialog(props: Props) {
-  const [state, setState] = React.useState<PaymentRequest>({
-    account: "",
-    amount: 0,
-    when: moment().format("YYYY-MM-DD"),
-    paidTo: "",
-    repeatsUntil: null,
-    repeatsOnDaysOfMonth: null,
-    repeatsOnMonthsOfYear: null,
-    repeatsWeekly: null,
-  })
+  const [state, setState] = React.useState<PaymentRequest>(props.payment)
+  React.useEffect(() => {
+    setIsIncome(props.payment.amount > 0)
+    setRepeats(
+      props.payment.repeatsOnDaysOfMonth !== null ||
+        props.payment.repeatsWeekly !== null
+    )
+    setRepeatsType(props.payment.repeatsOnDaysOfMonth ? "dates" : "weekly")
+    setState({
+      ...props.payment,
+      amount: Number(Math.abs(props.payment.amount).toFixed(2)),
+    })
+  }, [props.payment])
+
   const [error, setError] = React.useState<RestError>()
   const { createPayment, busy } = usePayment()
   function handleSubmit() {
@@ -73,12 +76,12 @@ export default function PaymentDialog(props: Props) {
   const twelveMonths = Array.from(Array(12).keys())
 
   React.useEffect(() => {
-    if (repeatsType !== "dates") {
+    if (repeatsType === "weekly") {
       setState((prev) => ({
         ...prev,
         repeatsOnDaysOfMonth: null,
         repeatsOnMonthsOfYear: null,
-        repeatsWeekly: repeatsType === "biweekly" ? 2 : 1,
+        repeatsWeekly: prev.repeatsWeekly === null ? 1 : prev.repeatsWeekly,
       }))
     } else {
       setState((prev) => ({
@@ -95,11 +98,12 @@ export default function PaymentDialog(props: Props) {
   }, [repeatsUntil])
 
   return (
-    <Dialog open={props.open} onClose={props.onClose}>
+    <Dialog open={props.payment !== undefined} onClose={props.onClose}>
       <DialogContent>
         <Typography variant="h1">Create Payment</Typography>
         <DisplayError error={error} />
         <Form
+          debug
           busy={busy}
           margin="normal"
           state={state}
@@ -133,7 +137,6 @@ export default function PaymentDialog(props: Props) {
           />
           <Collapse in={repeats}>
             <FormControl component="fieldset">
-              <FormLabel component="legend">Gender</FormLabel>
               <RadioGroup
                 value={repeatsType}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -145,11 +148,18 @@ export default function PaymentDialog(props: Props) {
                   control={<Radio />}
                   label="Weekly"
                 />
-                <FormControlLabel
-                  value="biweekly"
-                  control={<Radio />}
-                  label="Every other week"
-                />
+                <Collapse in={repeatsType === "weekly"}>
+                  <Select
+                    name="repeatsWeekly"
+                    allowNull
+                    options={[1, 2, 3, 4, 5, 6, 7, 8].map((value) => ({
+                      value,
+                      label: `Every ${value > 1 ? `${value} weeks` : `week`}`,
+                    }))}
+                    isNumeric
+                  />
+                </Collapse>
+
                 <FormControlLabel
                   value="dates"
                   control={<Radio />}

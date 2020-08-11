@@ -1,6 +1,7 @@
-import { Biweekly, DayOfMonth, MonthOfYear, Weekly } from "./Payment"
+import { DayOfMonth, MonthOfYear } from "./Payment"
 
 export default interface PaymentRequest {
+  id?: string
   account: string
   amount: number
   paidTo: string
@@ -8,5 +9,5 @@ export default interface PaymentRequest {
   repeatsUntil: string | null
   repeatsOnDaysOfMonth: DayOfMonth[] | null
   repeatsOnMonthsOfYear: MonthOfYear[] | null
-  repeatsWeekly: Weekly | Biweekly | null
+  repeatsWeekly: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | null
 }

@@ -10,6 +10,7 @@ import {
   TableRow,
 } from "@material-ui/core"
 import DeleteIcon from "@material-ui/icons/Delete"
+import EditIcon from "@material-ui/icons/Edit"
 import Button from "material-ui-bootstrap/dist/Button"
 import Form from "material-ui-pack/dist/Form"
 import Select from "material-ui-pack/dist/Select"
@@ -18,6 +19,7 @@ import React from "react"
 import Cycle from "../src/Cycle"
 import { useCycle } from "../src/CycleProvider"
 import InsideLayout from "../src/InsideLayout"
+import PaymentRequest from "../src/model/PaymentRequest"
 import PaymentDialog from "../src/PaymentDialog"
 import { IPaymentPopulated, usePayment } from "../src/PaymentProvider"
 import { useSignIn } from "../src/SignInProvider"
@@ -72,9 +74,34 @@ function Planner() {
     fetchCycleDates()
   }, [fetchCycleDates])
 
-  const [showNewPayment, setShowNewPayment] = React.useState(false)
-
   const handleDelete = (id: string) => () => deletePayment(id)
+
+  const [selectedPayment, setSelectedPayment] = React.useState<PaymentRequest>()
+  const handleEdit = (payment: IPaymentPopulated) => () => {
+    const {
+      _id: id,
+      account,
+      amount,
+      paidTo,
+      when,
+      repeatsOnDaysOfMonth,
+      repeatsOnMonthsOfYear,
+      repeatsWeekly,
+      repeatsUntil,
+    } = payment
+    const pr: PaymentRequest = {
+      id,
+      account: account._id,
+      amount,
+      paidTo,
+      when: moment(when).format("YYYY-MM-DD"),
+      repeatsOnDaysOfMonth,
+      repeatsOnMonthsOfYear,
+      repeatsWeekly,
+      repeatsUntil: moment(repeatsUntil).format("YYYY-MM-DD"),
+    }
+    setSelectedPayment(pr)
+  }
 
   return (
     <>
@@ -105,6 +132,9 @@ function Planner() {
                   {formatMoney(p.amount)}
                 </TableCell>
                 <TableCell>
+                  <IconButton size="small" onClick={handleEdit(p)}>
+                    <EditIcon />
+                  </IconButton>
                   <IconButton size="small" onClick={handleDelete(p._id)}>
                     <DeleteIcon />
                   </IconButton>
@@ -115,11 +145,28 @@ function Planner() {
         </Table>
       </TableContainer>
       <br />
-      <Button onClick={() => setShowNewPayment(true)}>Add New Payment</Button>
-      <PaymentDialog
-        open={showNewPayment}
-        onClose={() => setShowNewPayment(false)}
-      />
+      <Button
+        onClick={() =>
+          setSelectedPayment({
+            account: "",
+            amount: 0,
+            when: moment().format("YYYY-MM-DD"),
+            paidTo: "",
+            repeatsUntil: null,
+            repeatsOnDaysOfMonth: null,
+            repeatsOnMonthsOfYear: null,
+            repeatsWeekly: null,
+          })
+        }
+      >
+        Add New Payment
+      </Button>
+      {selectedPayment && (
+        <PaymentDialog
+          payment={selectedPayment}
+          onClose={() => setSelectedPayment(undefined)}
+        />
+      )}
       <br />
       <br />
       <Box maxWidth={300}>
