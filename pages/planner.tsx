@@ -124,7 +124,7 @@ function Planner() {
                   {formatMoney(p.amount)}
                 </TableCell>
                 <TableCell>
-                  <Grid container>
+                  <Grid container spacing={1}>
                     <Grid item xs={6}>
                       <IconButton size="small" onClick={handleEdit(p)}>
                         <EditIcon />
