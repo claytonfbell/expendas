@@ -76,20 +76,16 @@ class ValidateThese {
 
   greaterThan(x: number) {
     this.notNull()
-    if (typeof this.value === "number") {
-      if (this.value <= x) {
-        this.fail(`Value for **${this.label}** must be greater than **${x}**.`)
-      }
+    if (this.value <= x) {
+      this.fail(`Value for **${this.label}** must be greater than **${x}**.`)
     }
     return this
   }
 
   lessThan(x: number) {
     this.notNull()
-    if (typeof this.value === "number") {
-      if (this.value >= x) {
-        this.fail(`Value for **${this.label}** must be less than **${x}**.`)
-      }
+    if (this.value >= x) {
+      this.fail(`Value for **${this.label}** must be less than **${x}**.`)
     }
     return this
   }
@@ -112,7 +108,7 @@ class ValidateThese {
     return this
   }
 
-  phone(allowBlank: boolean = false) {
+  phone(allowBlank = false) {
     this.notNull()
     if (allowBlank === true) {
       if (this.value === "") {

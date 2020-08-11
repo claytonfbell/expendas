@@ -1,6 +1,7 @@
 import React from "react"
 import { IAccount } from "./model/Account"
 import { IPayment } from "./model/Payment"
+import PaymentRequest from "./model/PaymentRequest"
 import rest from "./rest"
 
 export interface IPaymentPopulated extends IPayment {
@@ -11,6 +12,8 @@ interface ContextType {
   busy: boolean
   payments: IPaymentPopulated[]
   fetchPayments: () => Promise<void>
+  createPayment: (params: PaymentRequest) => Promise<void>
+  deletePayment: (paymentId: string) => Promise<void>
 }
 
 const Context = React.createContext<ContextType | undefined>(undefined)
@@ -38,13 +41,45 @@ export function PaymentProvider(props: any) {
       })
   }, [])
 
+  const createPayment = React.useCallback(
+    (params: PaymentRequest) => {
+      setBusy(true)
+      return rest
+        .post("/payments", params)
+        .then(() => {
+          fetchPayments()
+        })
+        .finally(() => {
+          setBusy(false)
+        })
+    },
+    [fetchPayments]
+  )
+
+  const deletePayment = React.useCallback(
+    (paymentId: string) => {
+      setBusy(true)
+      return rest
+        .delete(`/payments/${paymentId}`)
+        .then(() => {
+          fetchPayments()
+        })
+        .finally(() => {
+          setBusy(false)
+        })
+    },
+    [fetchPayments]
+  )
+
   const value = React.useMemo(
     (): ContextType => ({
       busy,
       payments,
       fetchPayments,
+      createPayment,
+      deletePayment,
     }),
-    [busy, payments, fetchPayments]
+    [busy, payments, fetchPayments, createPayment, deletePayment]
   )
 
   return <Context.Provider value={value} {...props} />

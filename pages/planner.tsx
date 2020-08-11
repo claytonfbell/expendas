@@ -1,5 +1,6 @@
 import {
   Box,
+  IconButton,
   Paper,
   Table,
   TableBody,
@@ -8,6 +9,8 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core"
+import DeleteIcon from "@material-ui/icons/Delete"
+import Button from "material-ui-bootstrap/dist/Button"
 import Form from "material-ui-pack/dist/Form"
 import Select from "material-ui-pack/dist/Select"
 import moment from "moment-timezone"
@@ -15,6 +18,7 @@ import React from "react"
 import Cycle from "../src/Cycle"
 import { useCycle } from "../src/CycleProvider"
 import InsideLayout from "../src/InsideLayout"
+import PaymentDialog from "../src/PaymentDialog"
 import { IPaymentPopulated, usePayment } from "../src/PaymentProvider"
 import { useSignIn } from "../src/SignInProvider"
 
@@ -29,7 +33,7 @@ function Planner() {
   const { requireAuthentication } = useSignIn()
   requireAuthentication()
 
-  const { payments, fetchPayments } = usePayment()
+  const { payments, fetchPayments, deletePayment } = usePayment()
 
   React.useEffect(() => {
     fetchPayments()
@@ -68,6 +72,10 @@ function Planner() {
     fetchCycleDates()
   }, [fetchCycleDates])
 
+  const [showNewPayment, setShowNewPayment] = React.useState(false)
+
+  const handleDelete = (id: string) => () => deletePayment(id)
+
   return (
     <>
       <TableContainer component={Paper}>
@@ -78,6 +86,7 @@ function Planner() {
               <TableCell>Account</TableCell>
               <TableCell>Schedule</TableCell>
               <TableCell align="right">Amount</TableCell>
+              <TableCell align="right"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -95,12 +104,22 @@ function Planner() {
                 >
                   {formatMoney(p.amount)}
                 </TableCell>
+                <TableCell>
+                  <IconButton size="small" onClick={handleDelete(p._id)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
       <br />
+      <Button onClick={() => setShowNewPayment(true)}>Add New Payment</Button>
+      <PaymentDialog
+        open={showNewPayment}
+        onClose={() => setShowNewPayment(false)}
+      />
       <br />
       <br />
       <Box maxWidth={300}>

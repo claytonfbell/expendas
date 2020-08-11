@@ -1,11 +1,19 @@
 import moment from "moment-timezone"
-import { MethodNotAllowedException } from "../../../src/exceptions/HttpException"
+import {
+  BadRequestException,
+  MethodNotAllowedException,
+} from "../../../src/exceptions/HttpException"
 import applyMiddleware, {
   NextApiRequestApplied,
   NextApiResponseApplied,
 } from "../../../src/middleware/applyMiddleware"
-import PaymentMethod from "../../../src/model/Account"
+import {
+  default as Account,
+  default as PaymentMethod,
+} from "../../../src/model/Account"
 import Payment from "../../../src/model/Payment"
+import PaymentRequest from "../../../src/model/PaymentRequest"
+import validate from "../../../src/util/validate"
 
 export default async (
   req: NextApiRequestApplied,
@@ -14,6 +22,42 @@ export default async (
   await applyMiddleware(req, res)
   res.build(async () => {
     switch (req.method) {
+      case "POST":
+        const {
+          amount,
+          paidTo,
+          account,
+          when,
+          repeatsUntil,
+          repeatsOnDaysOfMonth,
+          repeatsOnMonthsOfYear,
+          repeatsWeekly,
+        }: PaymentRequest = req.body
+
+        validate({ paidTo }).min(1)
+        validate({ account }).notEmpty()
+
+        const accountModel = await Account.findOne({
+          _id: account,
+          household: req.household._id,
+        })
+        if (accountModel === null) {
+          throw new BadRequestException("Account missing.")
+        }
+
+        Payment.create({
+          household: req.household._id,
+          amount,
+          paidTo,
+          account: accountModel._id,
+          when: moment(when).toDate(),
+          repeatsUntil:
+            repeatsUntil === null ? null : moment(repeatsUntil).toDate(),
+          repeatsOnDaysOfMonth,
+          repeatsOnMonthsOfYear,
+          repeatsWeekly,
+        })
+        break
       case "GET":
         // seed payment methods
         let appleCard = await PaymentMethod.findOne({ name: "Apple Card" })
