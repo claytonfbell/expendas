@@ -4591,9 +4591,9 @@ material-ui-bootstrap@^1.0.13:
     clsx "^1.1.1"
 
 material-ui-pack@^0.2.32:
-  version "0.2.32"
-  resolved "https://registry.yarnpkg.com/material-ui-pack/-/material-ui-pack-0.2.32.tgz#46a1f96d1533e8937d9e9dc2cff2933fe926a78b"
-  integrity sha512-ey0rPgiFhfOIdPZuAR7dA1P9leUgEdaKMHlYqGObtYMIQu1r5v+7pmDhGPypI8ezHHxLfrN3qb4swIIk1oCtpQ==
+  version "0.2.33"
+  resolved "https://registry.yarnpkg.com/material-ui-pack/-/material-ui-pack-0.2.33.tgz#1cba79b791b7e3a584d1b112d78dbaeee2f8871e"
+  integrity sha512-y55S5cEi35S7CClBZKgWzXyXcXNxlzFditHVd8LmtdhxbMMURlT5EwIgzlMixbvVFYi1L+Blct5nL3Y5fd1EMw==
   dependencies:
     "@date-io/moment" "^1.3.13"
     country-region-data "^1.5.1"

@@ -33,7 +33,7 @@ export default async (
           .millisecond(0)
           .add(6, "months")
 
-        const cycles = await new CycleService().getCyclesWithHousehold(
+        const cycles = await new CycleService().getCycleDatesWithHouseHold(
           req.household,
           rangeStart,
           rangeEnd
@@ -47,7 +47,7 @@ export default async (
 }
 
 export class CycleService {
-  async getCyclesWithHousehold(
+  async getCycleDatesWithHouseHold(
     household: IHousehold,
     rangeStart: Moment,
     rangeEnd: Moment

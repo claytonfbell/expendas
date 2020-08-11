@@ -6,6 +6,7 @@ interface ContextType {
   busy: boolean
   accounts: IAccount[]
   fetchAccounts: () => Promise<void>
+  updateAccount: (account: IAccount) => Promise<void>
 }
 
 const Context = React.createContext<ContextType | undefined>(undefined)
@@ -33,13 +34,28 @@ export function AccountProvider(props: any) {
       })
   }, [])
 
+  const updateAccount = React.useCallback((account: IAccount) => {
+    setBusy(true)
+    return (
+      rest
+        .put(`/accounts/${account._id}`, account)
+        // .then(() => {
+        //   fetchAccounts()
+        // })
+        .finally(() => {
+          setBusy(false)
+        })
+    )
+  }, [])
+
   const value = React.useMemo(
     (): ContextType => ({
       busy,
       accounts,
       fetchAccounts,
+      updateAccount,
     }),
-    [busy, accounts, fetchAccounts]
+    [busy, accounts, fetchAccounts, updateAccount]
   )
 
   return <Context.Provider value={value} {...props} />

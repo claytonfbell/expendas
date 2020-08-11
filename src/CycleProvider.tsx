@@ -1,13 +1,19 @@
 import React from "react"
-import { IPayment } from "./model/Payment"
+import { ICycleItem } from "./model/CycleItem"
+import { IPaymentPopulated } from "./PaymentProvider"
 import rest from "./rest"
 
 interface ContextType {
   busy: boolean
   cycleDates: string[]
-  cycle: IPayment[] | null
+  cycle: ICycleItemPopulated[] | null
   fetchCycleDates: () => Promise<void>
   fetchCycle: (date: string) => Promise<void>
+  updateCycleItem: (cycleItem: ICycleItem) => Promise<void>
+}
+
+export interface ICycleItemPopulated extends ICycleItem {
+  payment: IPaymentPopulated
 }
 
 const Context = React.createContext<ContextType | undefined>(undefined)
@@ -22,7 +28,7 @@ export function useCycle() {
 export function CycleProvider(props: any) {
   const [busy, setBusy] = React.useState(false)
   const [cycleDates, setCycleDates] = React.useState<string[]>([])
-  const [cycle, setCycle] = React.useState<IPayment[] | null>(null)
+  const [cycle, setCycle] = React.useState<ICycleItemPopulated[] | null>(null)
 
   const fetchCycleDates = React.useCallback(() => {
     setBusy(true)
@@ -48,6 +54,18 @@ export function CycleProvider(props: any) {
       })
   }, [])
 
+  const updateCycleItem = React.useCallback((cycleItem: ICycleItem) => {
+    setBusy(true)
+    return rest
+      .put(`/cycleItems/${cycleItem._id}`, cycleItem)
+      .then((x) => {
+        //   fetchCycle(moment(cycleItem.date).format())
+      })
+      .finally(() => {
+        setBusy(false)
+      })
+  }, [])
+
   const value = React.useMemo(
     (): ContextType => ({
       busy,
@@ -55,8 +73,9 @@ export function CycleProvider(props: any) {
       cycle,
       fetchCycleDates,
       fetchCycle,
+      updateCycleItem,
     }),
-    [busy, cycleDates, cycle, fetchCycleDates, fetchCycle]
+    [busy, cycleDates, cycle, fetchCycleDates, fetchCycle, updateCycleItem]
   )
 
   return <Context.Provider value={value} {...props} />
