@@ -1,5 +1,8 @@
 import {
   Box,
+  createStyles,
+  Grid,
+  Hidden,
   IconButton,
   Paper,
   Table,
@@ -8,6 +11,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Theme,
+  withStyles,
 } from "@material-ui/core"
 import DeleteIcon from "@material-ui/icons/Delete"
 import EditIcon from "@material-ui/icons/Edit"
@@ -19,6 +24,7 @@ import React from "react"
 import Cycle from "../src/Cycle"
 import { useCycle } from "../src/CycleProvider"
 import InsideLayout from "../src/InsideLayout"
+import { IPayment } from "../src/model/Payment"
 import PaymentRequest from "../src/model/PaymentRequest"
 import PaymentDialog from "../src/PaymentDialog"
 import { IPaymentPopulated, usePayment } from "../src/PaymentProvider"
@@ -40,31 +46,6 @@ function Planner() {
   React.useEffect(() => {
     fetchPayments()
   }, [fetchPayments])
-
-  function getScheduleDescription(payment: IPaymentPopulated) {
-    let msg: string = moment(payment.when).format("l")
-    // repeating on dates
-    if (payment.repeatsOnDaysOfMonth !== null) {
-      msg =
-        payment.repeatsOnDaysOfMonth
-          .map((x) => moment.localeData().ordinal(x))
-          .join(", ") + " of "
-      if (payment.repeatsOnMonthsOfYear === null) {
-        msg += "each month"
-      } else {
-        msg += payment.repeatsOnMonthsOfYear
-          .map((x) => moment().month(x).format("MMMM"))
-          .join(", ")
-      }
-    }
-    // repeating weekly / biweekly
-    else if (payment.repeatsWeekly !== null) {
-      msg =
-        moment(payment.when).format("dddd") +
-        (payment.repeatsWeekly === 1 ? " each week" : " every other week")
-    }
-    return msg
-  }
 
   const [state, setState] = React.useState({
     cycleDate: null,
@@ -98,7 +79,10 @@ function Planner() {
       repeatsOnDaysOfMonth,
       repeatsOnMonthsOfYear,
       repeatsWeekly,
-      repeatsUntil: moment(repeatsUntil).format("YYYY-MM-DD"),
+      repeatsUntil:
+        repeatsUntil !== null
+          ? moment(repeatsUntil).format("YYYY-MM-DD")
+          : null,
     }
     setSelectedPayment(pr)
   }
@@ -110,18 +94,26 @@ function Planner() {
           <TableHead>
             <TableRow>
               <TableCell>Transaction</TableCell>
-              <TableCell>Account</TableCell>
-              <TableCell>Schedule</TableCell>
+              <Hidden smDown>
+                <TableCell>Account</TableCell>
+              </Hidden>
+              <Hidden xsDown>
+                <TableCell>Schedule</TableCell>
+              </Hidden>
               <TableCell align="right">Amount</TableCell>
               <TableCell align="right"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {payments.map((p) => (
-              <TableRow key={p.id}>
+              <StyledTableRow key={p.id}>
                 <TableCell>{p.paidTo}</TableCell>
-                <TableCell>{p.account.name}</TableCell>
-                <TableCell>{getScheduleDescription(p)}</TableCell>
+                <Hidden smDown>
+                  <TableCell>{p.account.name}</TableCell>
+                </Hidden>
+                <Hidden xsDown>
+                  <TableCell>{getScheduleDescription(p)}</TableCell>
+                </Hidden>
                 <TableCell
                   align="right"
                   style={{
@@ -132,20 +124,28 @@ function Planner() {
                   {formatMoney(p.amount)}
                 </TableCell>
                 <TableCell>
-                  <IconButton size="small" onClick={handleEdit(p)}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton size="small" onClick={handleDelete(p._id)}>
-                    <DeleteIcon />
-                  </IconButton>
+                  <Grid container>
+                    <Grid item xs={6}>
+                      <IconButton size="small" onClick={handleEdit(p)}>
+                        <EditIcon />
+                      </IconButton>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <IconButton size="small" onClick={handleDelete(p._id)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
                 </TableCell>
-              </TableRow>
+              </StyledTableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
       <br />
       <Button
+        variant="contained"
+        color="primary"
         onClick={() =>
           setSelectedPayment({
             account: "",
@@ -159,7 +159,7 @@ function Planner() {
           })
         }
       >
-        Add New Payment
+        Add New Payment or Income
       </Button>
       {selectedPayment && (
         <PaymentDialog
@@ -185,6 +185,10 @@ function Planner() {
       <br />
       <br />
       {state.cycleDate !== null && <Cycle date={state.cycleDate} />}
+      <br />
+      <br />
+      <br />
+      <br />
     </>
   )
 }
@@ -194,3 +198,40 @@ export default () => (
     <Planner />
   </InsideLayout>
 )
+
+export const StyledTableRow = withStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      "&:nth-of-type(odd)": {
+        backgroundColor: theme.palette.action.hover,
+      },
+    },
+  })
+)(TableRow)
+
+export function getScheduleDescription(schedule: PaymentRequest | IPayment) {
+  let msg: string = moment(schedule.when).format("l")
+  // repeating on dates
+  if (schedule.repeatsOnDaysOfMonth !== null) {
+    msg =
+      schedule.repeatsOnDaysOfMonth
+        .map((x) => moment.localeData().ordinal(x))
+        .join(", ") + " of "
+    if (schedule.repeatsOnMonthsOfYear === null) {
+      msg += "each month"
+    } else {
+      msg += schedule.repeatsOnMonthsOfYear
+        .map((x) => moment().month(x).format("MMMM"))
+        .join(", ")
+    }
+  }
+  // repeating weekly / biweekly
+  else if (schedule.repeatsWeekly !== null) {
+    msg =
+      moment(schedule.when).format("dddd") +
+      (schedule.repeatsWeekly === 1
+        ? " each week"
+        : ` every ${schedule.repeatsWeekly} weeks`)
+  }
+  return msg
+}

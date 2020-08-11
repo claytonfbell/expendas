@@ -13,14 +13,12 @@ const theme = createMuiTheme({
     error: {
       main: red.A400,
     },
-    background: {
-      default: "#fff",
-    },
   },
   typography: {
     fontFamily: "'Chilanka', sans-serif",
     h1: {
       fontSize: 32,
+      marginBottom: 16,
     },
   },
   props: {

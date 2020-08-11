@@ -2,7 +2,6 @@ import {
   AppBar,
   CssBaseline,
   Grid,
-  Paper,
   Toolbar,
   Typography,
 } from "@material-ui/core"
@@ -25,14 +24,16 @@ function Content(props: Props) {
 
   return (
     <SignInProvider>
-      <AppBar color="default">
+      <AppBar color="primary">
         <Toolbar>
           <Grid container justify="space-between">
             <Grid item>
-              <Typography variant="body1">expendas</Typography>
+              <Typography variant="body1" style={{ fontSize: 24 }}>
+                expendas
+              </Typography>
             </Grid>
             <Grid item>
-              <Button color="danger" variant="outlined" onClick={signOut}>
+              <Button color="light" variant="contained" onClick={signOut}>
                 Logout
               </Button>
             </Grid>
@@ -41,10 +42,8 @@ function Content(props: Props) {
       </AppBar>
       <CssBaseline />
       <Container style={{ marginTop: 96 }}>
-        <Paper variant="outlined" style={{ padding: 25 }}>
-          <Typography variant="h1">{props.title}</Typography>
-          {props.children}
-        </Paper>
+        <Typography variant="h1">{props.title}</Typography>
+        {props.children}
       </Container>
     </SignInProvider>
   )

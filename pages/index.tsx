@@ -44,7 +44,7 @@ function SignIn() {
           <DisplayError error={error} />
         </Grid>
         <Grid item xs={12}>
-          <TextField name="email" />
+          <TextField name="email" type="email" />
         </Grid>
         <Grid item xs={12}>
           <TextField name="password" password />

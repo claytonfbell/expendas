@@ -14,7 +14,7 @@ interface ContextType {
   fetchPayments: () => Promise<void>
   createPayment: (params: PaymentRequest) => Promise<void>
   deletePayment: (paymentId: string) => Promise<void>
-  updatePayment: (payment: PaymentRequest, paymentId: string) => Promise<void>
+  updatePayment: (payment: PaymentRequest) => Promise<void>
 }
 
 const Context = React.createContext<ContextType | undefined>(undefined)

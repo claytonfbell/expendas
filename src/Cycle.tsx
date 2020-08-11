@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@material-ui/core"
 import React from "react"
-import { formatMoney } from "../pages/planner"
+import { formatMoney, StyledTableRow } from "../pages/planner"
 import { useCycle } from "./CycleProvider"
 
 interface Props {
@@ -39,7 +39,7 @@ export default function Cycle(props: Props) {
             </TableHead>
             <TableBody>
               {cycle.map((p) => (
-                <TableRow key={p.id}>
+                <StyledTableRow key={p.id}>
                   <TableCell>{p.paidTo}</TableCell>
                   <TableCell>{p.account.name}</TableCell>
                   <TableCell
@@ -51,9 +51,9 @@ export default function Cycle(props: Props) {
                   >
                     {formatMoney(p.amount)}
                   </TableCell>
-                </TableRow>
+                </StyledTableRow>
               ))}
-              <TableRow>
+              <StyledTableRow>
                 <TableCell></TableCell>
                 <TableCell></TableCell>
                 <TableCell
@@ -66,7 +66,7 @@ export default function Cycle(props: Props) {
                 >
                   {formatMoney(sum)}
                 </TableCell>
-              </TableRow>
+              </StyledTableRow>
             </TableBody>
           </Table>
         </TableContainer>
