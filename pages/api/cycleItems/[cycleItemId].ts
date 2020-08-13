@@ -21,6 +21,9 @@ export default async (
     const cycleItem = await CycleItem.findOne({
       household: req.household._id,
       _id: cycleItemId,
+    }).populate({
+      path: "payment",
+      populate: { path: "account" },
     })
     if (cycleItem === null) {
       throw new BadRequestException(`No cycleItem found with id ${cycleItemId}`)
@@ -36,7 +39,7 @@ export default async (
         cycleItem.isPaid = isPaid === true
         await cycleItem.save()
 
-        return
+        return cycleItem
         break
       default:
         throw new MethodNotAllowedException()

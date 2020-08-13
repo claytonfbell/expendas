@@ -56,14 +56,14 @@ export function CycleProvider(props: any) {
 
   const updateCycleItem = React.useCallback((cycleItem: ICycleItem) => {
     setBusy(true)
-    return rest
-      .put(`/cycleItems/${cycleItem._id}`, cycleItem)
-      .then((x) => {
-        //   fetchCycle(moment(cycleItem.date).format())
-      })
-      .finally(() => {
-        setBusy(false)
-      })
+    setCycle((prev) =>
+      [...prev.filter((x) => x._id !== cycleItem._id), cycleItem].sort(
+        (a, b) => Math.abs(b.amount) - Math.abs(a.amount)
+      )
+    )
+    return rest.put(`/cycleItems/${cycleItem._id}`, cycleItem).finally(() => {
+      setBusy(false)
+    })
   }, [])
 
   const value = React.useMemo(

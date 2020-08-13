@@ -5,7 +5,6 @@ import {
   FormControlLabel,
   Grid,
   IconButton,
-  makeStyles,
   TableCell,
 } from "@material-ui/core"
 import CloseIcon from "@material-ui/icons/Close"
@@ -17,20 +16,12 @@ import React from "react"
 import { formatMoney, StyledTableRow } from "../pages/planner"
 import { useCycle } from "./CycleProvider"
 import { ICycleItem } from "./db/CycleItem"
-const useStyles = makeStyles({
-  root: {
-    "& input": {
-      textAlign: "right",
-    },
-  },
-})
 
 interface Props {
   cycleItem: ICycleItem
 }
 
 export default function CycleItem(props: Props) {
-  const classes = useStyles()
   const [state, setState] = React.useState<ICycleItem>(props.cycleItem)
   React.useEffect(() => {
     setState(props.cycleItem)
@@ -45,7 +36,7 @@ export default function CycleItem(props: Props) {
   const [edit, setEdit] = React.useState(false)
 
   return (
-    <StyledTableRow className={classes.root}>
+    <StyledTableRow>
       <TableCell>{props.cycleItem.payment.paidTo}</TableCell>
       <TableCell>{props.cycleItem.payment.account.name}</TableCell>
       <TableCell
@@ -79,7 +70,13 @@ export default function CycleItem(props: Props) {
           <Collapse in={edit}>
             <Grid container alignItems="center">
               <Grid item xs={8}>
-                <CurrencyField name="amount" label="" allowNegative />
+                <CurrencyField
+                  name="amount"
+                  label=""
+                  allowNegative
+                  inPennies
+                  alignRight
+                />
               </Grid>
               <Grid item xs={2}>
                 <IconButton size="small" onClick={handleSubmit}>

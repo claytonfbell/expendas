@@ -1,10 +1,10 @@
 import {
-  Box,
   createStyles,
+  Grid,
+  Hidden,
   Paper,
   Table,
   TableBody,
-  TableCell,
   TableContainer,
   TableRow,
   Theme,
@@ -14,6 +14,8 @@ import Form from "material-ui-pack/dist/Form"
 import Select from "material-ui-pack/dist/Select"
 import moment from "moment-timezone"
 import React from "react"
+import { useAccount } from "../src/AccountProvider"
+import AnimatedCounter from "../src/AnimatedCounter"
 import CycleItem from "../src/CycleItem"
 import { useCycle } from "../src/CycleProvider"
 import InsideLayout from "../src/InsideLayout"
@@ -49,25 +51,79 @@ function Planner() {
     fetchCycle(state.cycleDate)
   }, [fetchCycle, state.cycleDate])
 
-  const sum = React.useMemo(
-    () => (cycle === null ? 0 : cycle.reduce((acc, x) => acc + x.amount, 0)),
-    [cycle]
-  )
+  const { accounts, fetchAccounts } = useAccount()
+  React.useEffect(() => {
+    fetchAccounts()
+  }, [fetchAccounts])
 
   return (
     <>
-      <Box maxWidth={300}>
-        <Form size="small" state={state} setState={setState}>
-          <Select
-            allowNull
-            name="cycleDate"
-            options={cycleDates.map((x) => ({
-              value: x,
-              label: moment(x).format("dddd - LL"),
-            }))}
-          />
-        </Form>
-      </Box>
+      <Grid container spacing={6}>
+        <Grid item xs={12} sm={6} md={4}>
+          <Form size="small" state={state} setState={setState}>
+            <Select
+              fullWidth
+              allowNull
+              name="cycleDate"
+              options={cycleDates.map((x) => ({
+                value: x,
+                label: moment(x).format("dddd - LL"),
+              }))}
+            />
+          </Form>
+        </Grid>
+        <Hidden smDown>
+          <Grid item md={4}></Grid>
+        </Hidden>
+        <Grid item xs={12} sm={6} md={4}>
+          {cycle && (
+            <>
+              <Grid container spacing={1} justify="space-between">
+                {accounts.map((account) => {
+                  const value =
+                    account.currentBalance +
+                    cycle
+                      .filter((x) => !x.isPaid)
+                      .filter((x) => x.payment.account._id === account._id)
+                      .reduce((x, y) => x + y.amount, 0)
+
+                  return (
+                    <React.Fragment key={account._id}>
+                      <Grid item xs={8}>
+                        <div
+                          style={{
+                            fontSize: 20,
+                          }}
+                        >
+                          {account.name}
+                        </div>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={4}
+                        style={{
+                          textAlign: "right",
+                        }}
+                      >
+                        <div
+                          style={{
+                            textAlign: "right",
+                            color: value > 0 ? "green" : "red",
+                            fontSize: 20,
+                          }}
+                        >
+                          <AnimatedCounter value={value} />
+                        </div>
+                      </Grid>
+                    </React.Fragment>
+                  )
+                })}
+              </Grid>
+            </>
+          )}
+        </Grid>
+      </Grid>
+
       <br />
       <br />
       {cycle && (
@@ -77,22 +133,6 @@ function Planner() {
               {cycle.map((x) => (
                 <CycleItem cycleItem={x} key={x._id} />
               ))}
-              <StyledTableRow>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell
-                  align="right"
-                  style={{
-                    paddingRight: 135,
-                    fontSize: 20,
-                    fontWeight: "bold",
-                    color: sum ? "green" : "red",
-                  }}
-                >
-                  {formatMoney(sum)}
-                </TableCell>
-                <TableCell></TableCell>
-              </StyledTableRow>
             </TableBody>
           </Table>
         </TableContainer>
