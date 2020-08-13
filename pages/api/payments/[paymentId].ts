@@ -1,4 +1,5 @@
-import moment from "moment-timezone"
+import Account from "../../../src/db/Account"
+import Payment from "../../../src/db/Payment"
 import {
   BadRequestException,
   MethodNotAllowedException,
@@ -7,8 +8,6 @@ import applyMiddleware, {
   NextApiRequestApplied,
   NextApiResponseApplied,
 } from "../../../src/middleware/applyMiddleware"
-import Account from "../../../src/model/Account"
-import Payment from "../../../src/model/Payment"
 import PaymentRequest from "../../../src/model/PaymentRequest"
 import validate from "../../../src/util/validate"
 
@@ -35,8 +34,8 @@ export default async (
           amount,
           paidTo,
           account,
-          when,
-          repeatsUntil,
+          date,
+          repeatsUntilDate,
           repeatsOnDaysOfMonth,
           repeatsOnMonthsOfYear,
           repeatsWeekly,
@@ -55,9 +54,8 @@ export default async (
         payment.amount = amount
         payment.paidTo = paidTo
         payment.account = accountModel._id
-        payment.when = moment(when).toDate()
-        payment.repeatsUntil =
-          repeatsUntil === null ? null : moment(repeatsUntil).toDate()
+        payment.date = date
+        payment.repeatsUntilDate = repeatsUntilDate
         payment.repeatsOnDaysOfMonth = repeatsOnDaysOfMonth
         payment.repeatsOnMonthsOfYear = repeatsOnMonthsOfYear
         payment.repeatsWeekly = repeatsWeekly

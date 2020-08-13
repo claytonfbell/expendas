@@ -1,5 +1,5 @@
 import React from "react"
-import { ICycleItem } from "./model/CycleItem"
+import { ICycleItem } from "./db/CycleItem"
 import { IPaymentPopulated } from "./PaymentProvider"
 import rest from "./rest"
 

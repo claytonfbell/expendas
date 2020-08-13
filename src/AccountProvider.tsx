@@ -1,5 +1,5 @@
 import React from "react"
-import { IAccount } from "./model/Account"
+import { IAccount } from "./db/Account"
 import rest from "./rest"
 
 interface ContextType {

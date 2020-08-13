@@ -1,16 +1,16 @@
 import moment, { Moment } from "moment-timezone"
+import { IAccount } from "../../../src/db/Account"
+import Payment, {
+  DayOfMonth,
+  IPayment,
+  MonthOfYear,
+} from "../../../src/db/Payment"
 import { MethodNotAllowedException } from "../../../src/exceptions/HttpException"
 import applyMiddleware, {
   NextApiRequestApplied,
   NextApiResponseApplied,
 } from "../../../src/middleware/applyMiddleware"
-import { IAccount } from "../../../src/model/Account"
 import { IHousehold } from "../../../src/model/Household"
-import Payment, {
-  DayOfMonth,
-  IPayment,
-  MonthOfYear,
-} from "../../../src/model/Payment"
 
 export default async (
   req: NextApiRequestApplied,
@@ -83,13 +83,13 @@ export class CycleService {
   filterPaymentsOnDate(payments: IPayment[], date: Moment) {
     return payments.filter((x) => {
       // expired
-      if (x.repeatsUntil !== null) {
-        if (moment(x.repeatsUntil).isBefore(date)) {
+      if (x.repeatsUntilDate !== null) {
+        if (moment(x.repeatsUntilDate).isBefore(date)) {
           return false
         }
       }
       // same day
-      if (moment(x.when).format("YYYYMMDD") === date.format("YYYYMMDD")) {
+      if (moment(x.date).format("YYYYMMDD") === date.format("YYYYMMDD")) {
         return true
       }
       // repeating on dates
@@ -108,7 +108,7 @@ export class CycleService {
       }
       // repeating weekly
       if (x.repeatsWeekly !== null) {
-        const cursor = moment(x.when)
+        const cursor = moment(x.date)
         while (!cursor.isAfter(date)) {
           const sameDate =
             moment(cursor).format("YYYYMMDD") === date.format("YYYYMMDD")

@@ -1,9 +1,9 @@
+import Account from "../../../src/db/Account"
 import { MethodNotAllowedException } from "../../../src/exceptions/HttpException"
 import applyMiddleware, {
   NextApiRequestApplied,
   NextApiResponseApplied,
 } from "../../../src/middleware/applyMiddleware"
-import Account from "../../../src/model/Account"
 
 export default async (
   req: NextApiRequestApplied,

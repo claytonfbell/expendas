@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose"
+import { IHousehold } from "../model/Household"
 import { IAccount } from "./Account"
-import { IHousehold } from "./Household"
 
 export type MonthOfYear = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11
 export type DayOfMonth =
@@ -38,8 +38,8 @@ export interface IPayment extends Document {
   account: IAccount["_id"]
   amount: number
   paidTo: string
-  when: Date
-  repeatsUntil: Date | null
+  date: string
+  repeatsUntilDate: string | null
   repeatsOnDaysOfMonth: DayOfMonth[] | null
   repeatsOnMonthsOfYear: MonthOfYear[] | null
   repeatsWeekly: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | null
@@ -50,8 +50,8 @@ export const PaymentSchema: Schema = new Schema({
   account: { type: Schema.Types.ObjectId, ref: "Accounts", index: true },
   amount: { type: "number", required: true, unique: false, index: false },
   paidTo: { type: Schema.Types.String, required: true },
-  when: { type: Schema.Types.Date },
-  repeatsUntil: { type: Schema.Types.Date },
+  date: { type: Schema.Types.String, required: true },
+  repeatsUntilDate: { type: Schema.Types.String },
   repeatsOnDaysOfMonth: [{ type: Schema.Types.Number }],
   repeatsOnMonthsOfYear: [{ type: Schema.Types.Number }],
   repeatsWeekly: { type: Schema.Types.Number },

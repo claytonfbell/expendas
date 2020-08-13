@@ -23,8 +23,8 @@ import moment from "moment-timezone"
 import React from "react"
 import { getScheduleDescription } from "../pages/payments"
 import { useAccount } from "./AccountProvider"
+import { DayOfMonth, MonthOfYear } from "./db/Payment"
 import DisplayError from "./DisplayError"
-import { DayOfMonth, MonthOfYear } from "./model/Payment"
 import PaymentRequest from "./model/PaymentRequest"
 import { usePayment } from "./PaymentProvider"
 import { RestError } from "./rest"
@@ -84,7 +84,7 @@ export default function PaymentDialog(props: Props) {
   const repeatsMonths = state.repeatsOnMonthsOfYear !== null
   const repeatsType: RepeatsType =
     state.repeatsWeekly !== null ? "weekly" : "dates"
-  const repeatsUntil = state.repeatsUntil !== null
+  const repeatsUntil = state.repeatsUntilDate !== null
 
   const [willDelete, setWillDelete] = React.useState<string>()
 
@@ -97,6 +97,7 @@ export default function PaymentDialog(props: Props) {
         </Typography>
         <DisplayError error={error} />
         <Form
+          debug
           busy={busy}
           margin="normal"
           state={state}
@@ -113,14 +114,14 @@ export default function PaymentDialog(props: Props) {
               label="Income Deposit"
             />
           </FormControl>
-          <CurrencyField name="amount" />
+          <CurrencyField name="amount" numeric blankZero inPennies />
           <TextField name="paidTo" />
           <Select
             allowNull
             name="account"
             options={accounts.map((x) => ({ value: x._id, label: x.name }))}
           />
-          <DatePicker name="when" />
+          <DatePicker name="date" />
           <FormControlLabel
             control={<Checkbox checked={repeats} />}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,7 +131,7 @@ export default function PaymentDialog(props: Props) {
                   repeatsOnDaysOfMonth: null,
                   repeatsWeekly: null,
                   repeatsOnMonthsOfYear: null,
-                  repeatsUntil: null,
+                  repeatsUntilDate: null,
                 }))
               } else {
                 setState((prev) => ({
@@ -138,7 +139,7 @@ export default function PaymentDialog(props: Props) {
                   repeatsOnDaysOfMonth: null,
                   repeatsWeekly: 1,
                   repeatsOnMonthsOfYear: null,
-                  repeatsUntil: null,
+                  repeatsUntilDate: null,
                 }))
               }
             }}
@@ -281,12 +282,12 @@ export default function PaymentDialog(props: Props) {
                   if (!e.target.checked) {
                     setState((prev) => ({
                       ...prev,
-                      repeatsUntil: null,
+                      repeatsUntilDate: null,
                     }))
                   } else {
                     setState((prev) => ({
                       ...prev,
-                      repeatsUntil: moment()
+                      repeatsUntilDate: moment()
                         .add(1, "years")
                         .format("YYYY-MM-DD"),
                     }))
@@ -296,7 +297,7 @@ export default function PaymentDialog(props: Props) {
               />
             </FormControl>
             <Collapse in={repeatsUntil}>
-              <DatePicker name="repeatsUntil" />
+              <DatePicker name="repeatsUntilDate" />
             </Collapse>
 
             <Alert color="info">{getScheduleDescription(state)}</Alert>

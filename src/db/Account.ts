@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose"
-import { IHousehold } from "./Household"
+import { IHousehold } from "../model/Household"
 
 export type AccountType = "Credit Card" | "Checking Account" | "Cash"
 

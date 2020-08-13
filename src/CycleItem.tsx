@@ -16,7 +16,7 @@ import Form from "material-ui-pack/dist/Form"
 import React from "react"
 import { formatMoney, StyledTableRow } from "../pages/planner"
 import { useCycle } from "./CycleProvider"
-import { ICycleItem } from "./model/CycleItem"
+import { ICycleItem } from "./db/CycleItem"
 const useStyles = makeStyles({
   root: {
     "& input": {

@@ -6,7 +6,6 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
   Theme,
   withStyles,
@@ -24,7 +23,7 @@ export function formatMoney(input: number) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-  }).format(input)
+  }).format(input / 100)
 }
 
 function Planner() {
@@ -74,13 +73,6 @@ function Planner() {
       {cycle && (
         <TableContainer component={Paper}>
           <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Transaction</TableCell>
-                <TableCell>Account</TableCell>
-                <TableCell align="right">Amount</TableCell>
-              </TableRow>
-            </TableHead>
             <TableBody>
               {cycle.map((x) => (
                 <CycleItem cycleItem={x} key={x._id} />
@@ -91,6 +83,7 @@ function Planner() {
                 <TableCell
                   align="right"
                   style={{
+                    paddingRight: 135,
                     fontSize: 20,
                     fontWeight: "bold",
                     color: sum ? "green" : "red",
@@ -98,11 +91,14 @@ function Planner() {
                 >
                   {formatMoney(sum)}
                 </TableCell>
+                <TableCell></TableCell>
               </StyledTableRow>
             </TableBody>
           </Table>
         </TableContainer>
       )}
+      <br />
+      <br />
     </>
   )
 }

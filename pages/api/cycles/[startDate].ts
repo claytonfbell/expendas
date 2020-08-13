@@ -1,13 +1,13 @@
 import moment from "moment-timezone"
 import { CycleService } from "."
+import CycleItem from "../../../src/db/CycleItem"
+import Payment, { IPayment } from "../../../src/db/Payment"
 import { MethodNotAllowedException } from "../../../src/exceptions/HttpException"
 import applyMiddleware, {
   NextApiRequestApplied,
   NextApiResponseApplied,
 } from "../../../src/middleware/applyMiddleware"
-import CycleItem from "../../../src/model/CycleItem"
 import { IHousehold } from "../../../src/model/Household"
-import Payment, { IPayment } from "../../../src/model/Payment"
 
 export default async (
   req: NextApiRequestApplied,
@@ -67,7 +67,7 @@ class BuildCycleService {
     // find cycle items
     let items = await CycleItem.find({
       household: household._id,
-      date: rangeStart.toDate(),
+      date: cycleDate,
     })
 
     // remove items that don't have payments
@@ -94,7 +94,7 @@ class BuildCycleService {
       const item = await CycleItem.create({
         household: household._id,
         payment: p._id,
-        date: rangeStart.toDate(),
+        date: cycleDate,
         amount: p.amount,
         isPaid: false,
       })
@@ -105,7 +105,7 @@ class BuildCycleService {
 
     items = await CycleItem.find({
       household: household._id,
-      date: rangeStart.toDate(),
+      date: cycleDate,
     }).populate({ path: "payment", populate: { path: "account" } })
     return items.sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount))
   }

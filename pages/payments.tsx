@@ -18,8 +18,8 @@ import EditIcon from "@material-ui/icons/Edit"
 import Button from "material-ui-bootstrap/dist/Button"
 import moment from "moment-timezone"
 import React from "react"
+import { IPayment } from "../src/db/Payment"
 import InsideLayout from "../src/InsideLayout"
-import { IPayment } from "../src/model/Payment"
 import PaymentRequest from "../src/model/PaymentRequest"
 import PaymentDialog from "../src/PaymentDialog"
 import { IPaymentPopulated, usePayment } from "../src/PaymentProvider"
@@ -45,25 +45,22 @@ function Payments() {
       account,
       amount,
       paidTo,
-      when,
+      date,
       repeatsOnDaysOfMonth,
       repeatsOnMonthsOfYear,
       repeatsWeekly,
-      repeatsUntil,
+      repeatsUntilDate = null,
     } = payment
     const pr: PaymentRequest = {
       id,
       account: account._id,
       amount,
       paidTo,
-      when: moment(when).format("YYYY-MM-DD"),
+      date,
       repeatsOnDaysOfMonth,
       repeatsOnMonthsOfYear,
       repeatsWeekly,
-      repeatsUntil:
-        repeatsUntil !== null
-          ? moment(repeatsUntil).format("YYYY-MM-DD")
-          : null,
+      repeatsUntilDate,
     }
     setSelectedPayment(pr)
   }
@@ -104,7 +101,7 @@ function Payments() {
                 >
                   {formatMoney(p.amount)}
                 </TableCell>
-                <TableCell>
+                <TableCell style={{ minWidth: 96 }}>
                   <IconButton size="small" onClick={handleEdit(p)}>
                     <EditIcon />
                   </IconButton>
@@ -130,9 +127,9 @@ function Payments() {
           setSelectedPayment({
             account: "",
             amount: 0,
-            when: moment().format("YYYY-MM-DD"),
+            date: moment().format("YYYY-MM-DD"),
             paidTo: "",
-            repeatsUntil: null,
+            repeatsUntilDate: null,
             repeatsOnDaysOfMonth: null,
             repeatsOnMonthsOfYear: null,
             repeatsWeekly: null,
@@ -180,7 +177,7 @@ export default () => (
 )
 
 export function getScheduleDescription(schedule: PaymentRequest | IPayment) {
-  let msg: string = moment(schedule.when).format("l")
+  let msg: string = moment(schedule.date).format("l")
   // repeating on dates
   if (schedule.repeatsOnDaysOfMonth !== null) {
     msg =
@@ -198,7 +195,7 @@ export function getScheduleDescription(schedule: PaymentRequest | IPayment) {
   // repeating weekly / biweekly
   else if (schedule.repeatsWeekly !== null) {
     msg =
-      moment(schedule.when).format("dddd") +
+      moment(schedule.date).format("dddd") +
       (schedule.repeatsWeekly === 1
         ? " each week"
         : ` every ${schedule.repeatsWeekly} weeks`)

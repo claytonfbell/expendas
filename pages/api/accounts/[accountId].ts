@@ -1,3 +1,4 @@
+import Account, { IAccount } from "../../../src/db/Account"
 import {
   BadRequestException,
   MethodNotAllowedException,
@@ -6,7 +7,6 @@ import applyMiddleware, {
   NextApiRequestApplied,
   NextApiResponseApplied,
 } from "../../../src/middleware/applyMiddleware"
-import Account, { IAccount } from "../../../src/model/Account"
 import validate from "../../../src/util/validate"
 
 export default async (

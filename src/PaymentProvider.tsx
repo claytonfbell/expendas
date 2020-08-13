@@ -1,6 +1,6 @@
 import React from "react"
-import { IAccount } from "./model/Account"
-import { IPayment } from "./model/Payment"
+import { IAccount } from "./db/Account"
+import { IPayment } from "./db/Payment"
 import PaymentRequest from "./model/PaymentRequest"
 import rest from "./rest"
 

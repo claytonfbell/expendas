@@ -1,3 +1,4 @@
+import CycleItem, { ICycleItem } from "../../../src/db/CycleItem"
 import {
   BadRequestException,
   MethodNotAllowedException,
@@ -6,7 +7,6 @@ import applyMiddleware, {
   NextApiRequestApplied,
   NextApiResponseApplied,
 } from "../../../src/middleware/applyMiddleware"
-import CycleItem, { ICycleItem } from "../../../src/model/CycleItem"
 import validate from "../../../src/util/validate"
 
 export default async (
