@@ -1,4 +1,5 @@
 import {
+  Grid,
   Paper,
   Table,
   TableBody,
@@ -6,10 +7,14 @@ import {
   TableContainer,
   TableHead,
 } from "@material-ui/core"
+import AddIcon from "@material-ui/icons/Add"
+import Button from "material-ui-bootstrap/dist/Button"
 import React from "react"
+import AccountDialog from "../src/AccountDialog"
 import { useAccount } from "../src/AccountProvider"
 import AccountRow from "../src/AccountRow"
 import InsideLayout from "../src/InsideLayout"
+import { AccountRequest } from "../src/model/AccountRequest"
 import { StyledTableRow } from "./planner"
 
 function Accounts() {
@@ -18,25 +23,47 @@ function Accounts() {
     fetchAccounts()
   }, [fetchAccounts])
 
+  const [account, setAccount] = React.useState<AccountRequest>()
+  function handleAdd() {
+    setAccount({
+      name: "",
+      type: "Checking Account",
+      creditCardType: null,
+      currentBalance: 0,
+    })
+  }
+
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <StyledTableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Type</TableCell>
-            <TableCell></TableCell>
-            <TableCell align="right">Balance</TableCell>
-            {/* <TableCell></TableCell> */}
-          </StyledTableRow>
-        </TableHead>
-        <TableBody>
-          {accounts.map((account) => (
-            <AccountRow key={account._id} account={account} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      <Grid container justify="flex-end" spacing={4}>
+        <Grid item>
+          <Button startIcon={<AddIcon />} onClick={handleAdd}>
+            Add Account
+          </Button>
+        </Grid>
+      </Grid>
+      <br />
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <StyledTableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Type</TableCell>
+              <TableCell></TableCell>
+              <TableCell align="right">Balance</TableCell>
+              {/* <TableCell></TableCell> */}
+            </StyledTableRow>
+          </TableHead>
+          <TableBody>
+            {accounts.map((account) => (
+              <AccountRow key={account._id} account={account} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <AccountDialog account={account} onClose={() => setAccount(undefined)} />
+    </>
   )
 }
 

@@ -2,12 +2,17 @@ import mongoose, { Document, Schema } from "mongoose"
 import { IHousehold } from "../model/Household"
 
 export type AccountType = "Credit Card" | "Checking Account" | "Cash"
+export type CreditCardType =
+  | "Mastercard"
+  | "Visa"
+  | "American Express"
+  | "Discover"
 
 export interface IAccount extends Document {
   household: IHousehold["_id"]
   type: AccountType
   name: string
-  creditCardType: "Mastercard" | "Visa" | "American Express" | "Discover" | null
+  creditCardType: CreditCardType | null
   currentBalance: number
 }
 

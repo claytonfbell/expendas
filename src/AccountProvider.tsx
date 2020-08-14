@@ -1,11 +1,13 @@
 import React from "react"
 import { IAccount } from "./db/Account"
+import { AccountRequest } from "./model/AccountRequest"
 import rest from "./rest"
 
 interface ContextType {
   busy: boolean
   accounts: IAccount[]
   fetchAccounts: () => Promise<void>
+  createAccount: (account: AccountRequest) => Promise<void>
   updateAccount: (account: IAccount) => Promise<void>
 }
 
@@ -34,6 +36,13 @@ export function AccountProvider(props: any) {
       })
   }, [])
 
+  const createAccount = React.useCallback((account: AccountRequest) => {
+    setBusy(true)
+    return rest.post("/accounts", account).finally(() => {
+      setBusy(false)
+    })
+  }, [])
+
   const updateAccount = React.useCallback((account: IAccount) => {
     setBusy(true)
     return (
@@ -53,9 +62,10 @@ export function AccountProvider(props: any) {
       busy,
       accounts,
       fetchAccounts,
+      createAccount,
       updateAccount,
     }),
-    [busy, accounts, fetchAccounts, updateAccount]
+    [busy, accounts, fetchAccounts, createAccount, updateAccount]
   )
 
   return <Context.Provider value={value} {...props} />

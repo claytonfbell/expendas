@@ -13,7 +13,7 @@ export default function StartLayout(props: Props) {
       <CssBaseline />
       <Grid container justify="space-between">
         <Hidden xsDown>
-          <Grid item sm={6} md={8} lg={9} alignContent="center">
+          <Grid item sm={6} md={8} lg={9}>
             <Box
               style={{
                 color: "#666",
