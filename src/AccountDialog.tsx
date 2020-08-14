@@ -1,5 +1,8 @@
-import { Dialog, DialogContent } from "@material-ui/core"
+import { Dialog, DialogContent, Grid, Typography } from "@material-ui/core"
+import Button from "material-ui-bootstrap/dist/Button"
+import CurrencyField from "material-ui-pack/dist/CurrencyField"
 import Form from "material-ui-pack/dist/Form"
+import Select from "material-ui-pack/dist/Select"
 import SubmitButton from "material-ui-pack/dist/SubmitButton"
 import TextField from "material-ui-pack/dist/TextField"
 import React from "react"
@@ -14,38 +17,94 @@ interface Props {
 }
 
 export default function AccountDialog(props: Props) {
-  const { createAccount, fetchAccounts } = useAccount()
+  const { createAccount, updateAccount, fetchAccounts, busy } = useAccount()
   const [account, setAccount] = React.useState<IAccount>()
   const [error, setError] = React.useState<RestError>()
   React.useEffect(() => {
     setAccount(props.account)
   }, [props.account])
 
-  function handleSubmit() {
-    createAccount(account)
-      .then(fetchAccounts)
-      .catch((e) => setError(e))
+  async function handleSubmit() {
+    setError(undefined)
+    try {
+      if (isNew) {
+        await createAccount(account)
+      } else {
+        await updateAccount(account)
+      }
+    } catch (e) {
+      setError(e)
+    }
   }
+
+  const isNew = React.useMemo(
+    () => account === undefined || account._id === undefined,
+    [account]
+  )
 
   return (
     <Dialog
       open={props.account !== undefined}
       fullWidth
-      maxWidth="md"
+      maxWidth="xs"
       onClose={props.onClose}
     >
-      {props.account && (
+      {account && (
         <DialogContent>
+          <Typography variant="h1">{isNew ? `Create ` : ""}Account</Typography>
           <Form
+            busy={busy}
             state={account}
             setState={setAccount}
             onSubmit={handleSubmit}
             size="small"
-            margin="normal"
           >
             <DisplayError error={error} />
-            <TextField name="name" />
-            <SubmitButton>Save</SubmitButton>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Select
+                  name="type"
+                  options={[
+                    "Cash",
+                    "Credit Card",
+                    "Checking Account",
+                    "Savings Account",
+                    "CD",
+                    "CD IRA",
+                    "Line of Credit",
+                  ].map((x) => ({ value: x, label: x }))}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Select
+                  allowNull
+                  disabled={account.type !== "Credit Card"}
+                  name="creditCardType"
+                  options={[
+                    "Mastercard",
+                    "Visa",
+                    "American Express",
+                    "Discover",
+                  ].map((x) => ({ value: x, label: x }))}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField name="name" />
+              </Grid>
+              <Grid item xs={5}>
+                <CurrencyField name="currentBalance" inPennies allowNegative />
+              </Grid>
+              <Grid item xs={7}></Grid>
+              <Grid item xs={6}>
+                <SubmitButton>{isNew ? "Create" : "Save"}</SubmitButton>
+              </Grid>
+              <Grid item xs={6}>
+                <Button fullWidth onClick={props.onClose}>
+                  Cancel
+                </Button>
+              </Grid>
+            </Grid>
+            <br />
           </Form>
         </DialogContent>
       )}

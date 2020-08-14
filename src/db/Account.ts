@@ -1,7 +1,14 @@
 import mongoose, { Document, Schema } from "mongoose"
 import { IHousehold } from "../model/Household"
 
-export type AccountType = "Credit Card" | "Checking Account" | "Cash"
+export type AccountType =
+  | "Cash"
+  | "Credit Card"
+  | "Checking Account"
+  | "Savings Account"
+  | "CD"
+  | "CD IRA"
+  | "Line of Credit"
 export type CreditCardType =
   | "Mastercard"
   | "Visa"

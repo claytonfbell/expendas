@@ -3,9 +3,7 @@ import {
   Paper,
   Table,
   TableBody,
-  TableCell,
   TableContainer,
-  TableHead,
 } from "@material-ui/core"
 import AddIcon from "@material-ui/icons/Add"
 import Button from "material-ui-bootstrap/dist/Button"
@@ -15,7 +13,6 @@ import { useAccount } from "../src/AccountProvider"
 import AccountRow from "../src/AccountRow"
 import { IAccount } from "../src/db/Account"
 import InsideLayout from "../src/InsideLayout"
-import { StyledTableRow } from "./planner"
 
 function Accounts() {
   const { fetchAccounts, accounts } = useAccount()
@@ -33,6 +30,10 @@ function Accounts() {
     })
   }
 
+  function handleEdit(account: IAccount) {
+    setAccount(account)
+  }
+
   return (
     <>
       <Grid container justify="flex-end" spacing={4}>
@@ -45,18 +46,13 @@ function Accounts() {
       <br />
       <TableContainer component={Paper}>
         <Table>
-          <TableHead>
-            <StyledTableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Type</TableCell>
-              <TableCell></TableCell>
-              <TableCell align="right">Balance</TableCell>
-              {/* <TableCell></TableCell> */}
-            </StyledTableRow>
-          </TableHead>
           <TableBody>
             {accounts.map((account) => (
-              <AccountRow key={account._id} account={account} />
+              <AccountRow
+                key={account._id}
+                account={account}
+                onEdit={handleEdit}
+              />
             ))}
           </TableBody>
         </Table>

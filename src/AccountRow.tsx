@@ -1,4 +1,5 @@
 import { Grid, IconButton, TableCell } from "@material-ui/core"
+import EditIcon from "@material-ui/icons/Edit"
 import SaveIcon from "@material-ui/icons/Save"
 import CurrencyField from "material-ui-pack/dist/CurrencyField"
 import Form from "material-ui-pack/dist/Form"
@@ -9,6 +10,7 @@ import { IAccount } from "./db/Account"
 
 interface Props {
   account: IAccount
+  onEdit: (account: IAccount) => void
 }
 
 export default function AccountRow(props: Props) {
@@ -23,6 +25,10 @@ export default function AccountRow(props: Props) {
   function handleSubmit() {
     setBusy(true)
     updateAccount(state).finally(() => setBusy(false))
+  }
+
+  function handleClick() {
+    props.onEdit(state)
   }
 
   return (
@@ -54,6 +60,11 @@ export default function AccountRow(props: Props) {
             </Grid>
           </Grid>
         </Form>
+      </TableCell>
+      <TableCell>
+        <IconButton onClick={handleClick}>
+          <EditIcon />
+        </IconButton>
       </TableCell>
     </StyledTableRow>
   )
