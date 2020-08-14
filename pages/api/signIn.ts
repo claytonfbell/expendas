@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt"
+import Household from "../../src/db/Household"
 import User from "../../src/db/User"
 import {
   BadRequestException,
@@ -10,7 +11,6 @@ import applyMiddleware, {
   NextApiResponseApplied,
 } from "../../src/middleware/applyMiddleware"
 import ExpendasSessionData from "../../src/model/ExpendasSessionData"
-import Household from "../../src/model/Household"
 import { SignInRequest } from "../../src/model/SignInRequest"
 import validate from "../../src/util/validate"
 

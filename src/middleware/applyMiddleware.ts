@@ -4,11 +4,11 @@ import mongoose, { Mongoose } from "mongoose"
 import { NextApiRequest, NextApiResponse } from "next"
 import { applySession, expressSession, promisifyStore } from "next-session"
 import Account from "../db/Account"
+import Household, { IHousehold } from "../db/Household"
 import Payment from "../db/Payment"
 import User, { IUser } from "../db/User"
 import { HttpException } from "../exceptions/HttpException"
 import ExpendasSessionData from "../model/ExpendasSessionData"
-import Household, { IHousehold } from "../model/Household"
 
 export type NextApiRequestApplied = NextApiRequest & {
   session: any

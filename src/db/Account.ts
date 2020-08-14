@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose"
-import { IHousehold } from "../model/Household"
+import { HouseholdDocument } from "./Household"
 
 export type AccountType =
   | "Cash"
@@ -18,7 +18,7 @@ export type CreditCardType =
 
 export interface IAccount {
   _id?: string
-  household?: IHousehold["_id"]
+  household?: HouseholdDocument["_id"]
   type: AccountType
   name: string
   creditCardType: CreditCardType | null

@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose"
-import { IHousehold } from "../model/Household"
-import { IAccount } from "./Account"
+import { AccountDocument, IAccount } from "./Account"
+import { HouseholdDocument } from "./Household"
 
 export type MonthOfYear = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11
 export type DayOfMonth =
@@ -35,8 +35,8 @@ export type DayOfMonth =
 
 export interface IPayment {
   _id?: string
-  household?: IHousehold["_id"]
-  account: IAccount["_id"]
+  household?: HouseholdDocument["_id"]
+  account: AccountDocument["_id"]
   amount: number
   paidTo: string
   date: string

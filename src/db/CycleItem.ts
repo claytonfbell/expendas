@@ -1,11 +1,11 @@
 import mongoose, { Document, Schema } from "mongoose"
-import { IHousehold } from "../model/Household"
-import { IPayment, IPaymentPopulated } from "./Payment"
+import { HouseholdDocument } from "./Household"
+import { IPaymentPopulated, PaymentDocument } from "./Payment"
 
 export interface ICycleItem {
   _id?: string
-  household: IHousehold["_id"]
-  payment: IPayment["_id"]
+  household: HouseholdDocument["_id"]
+  payment: PaymentDocument["_id"]
   date: string
   amount: number
   isPaid: boolean
@@ -15,7 +15,7 @@ export type ICycleItemPopulated = ICycleItem & {
   payment: IPaymentPopulated
 }
 
-export type CycleDocument = ICycleItem & Document
+export type CycleItemDocument = ICycleItem & Document
 
 export const CycleItemSchema: Schema = new Schema({
   household: { type: Schema.Types.ObjectId, ref: "Households" },
@@ -27,5 +27,5 @@ export const CycleItemSchema: Schema = new Schema({
 
 module.exports =
   mongoose.models.CycleItems ||
-  mongoose.model<CycleDocument>("CycleItems", CycleItemSchema)
-export default module.exports as mongoose.Model<CycleDocument, {}>
+  mongoose.model<CycleItemDocument>("CycleItems", CycleItemSchema)
+export default module.exports as mongoose.Model<CycleItemDocument, {}>

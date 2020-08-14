@@ -1,16 +1,16 @@
 import moment, { Moment } from "moment-timezone"
-import { IAccount } from "../../../src/db/Account"
+import { AccountDocument } from "../../../src/db/Account"
+import { IHousehold } from "../../../src/db/Household"
 import Payment, {
   DayOfMonth,
-  IPayment,
   MonthOfYear,
+  PaymentDocument,
 } from "../../../src/db/Payment"
 import { MethodNotAllowedException } from "../../../src/exceptions/HttpException"
 import applyMiddleware, {
   NextApiRequestApplied,
   NextApiResponseApplied,
 } from "../../../src/middleware/applyMiddleware"
-import { IHousehold } from "../../../src/model/Household"
 
 export default async (
   req: NextApiRequestApplied,
@@ -61,7 +61,7 @@ export class CycleService {
     const payChecks = allPayments
       .filter((x) => x.amount > 0)
       .filter((x) => {
-        const account: IAccount = x.account
+        const account: AccountDocument = x.account
         return account.type === "Checking Account"
       })
 
@@ -80,7 +80,7 @@ export class CycleService {
     return cycles.map((x) => x.format("LL"))
   }
 
-  filterPaymentsOnDate(payments: IPayment[], date: Moment) {
+  filterPaymentsOnDate(payments: PaymentDocument[], date: Moment) {
     return payments.filter((x) => {
       // expired
       if (x.repeatsUntilDate !== null) {

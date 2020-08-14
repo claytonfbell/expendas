@@ -1,13 +1,13 @@
 import moment from "moment-timezone"
 import { CycleService } from "."
 import CycleItem from "../../../src/db/CycleItem"
-import Payment, { IPayment } from "../../../src/db/Payment"
+import { IHousehold } from "../../../src/db/Household"
+import Payment, { PaymentDocument } from "../../../src/db/Payment"
 import { MethodNotAllowedException } from "../../../src/exceptions/HttpException"
 import applyMiddleware, {
   NextApiRequestApplied,
   NextApiResponseApplied,
 } from "../../../src/middleware/applyMiddleware"
-import { IHousehold } from "../../../src/model/Household"
 
 export default async (
   req: NextApiRequestApplied,
@@ -49,7 +49,7 @@ class BuildCycleService {
       household: household._id,
     }).populate("account")
 
-    let cyclePayments: IPayment[] = []
+    let cyclePayments: PaymentDocument[] = []
     const cursor = moment(rangeStart)
     while (cursor.isBefore(rangeEnd)) {
       const payments = new CycleService().filterPaymentsOnDate(
