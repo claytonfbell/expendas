@@ -4,18 +4,18 @@ import SubmitButton from "material-ui-pack/dist/SubmitButton"
 import TextField from "material-ui-pack/dist/TextField"
 import React from "react"
 import { useAccount } from "./AccountProvider"
+import { IAccount } from "./db/Account"
 import DisplayError from "./DisplayError"
-import { AccountRequest } from "./model/AccountRequest"
 import { RestError } from "./rest"
 
 interface Props {
-  account: AccountRequest
+  account: IAccount
   onClose: () => void
 }
 
 export default function AccountDialog(props: Props) {
   const { createAccount, fetchAccounts } = useAccount()
-  const [account, setAccount] = React.useState<AccountRequest>()
+  const [account, setAccount] = React.useState<IAccount>()
   const [error, setError] = React.useState<RestError>()
   React.useEffect(() => {
     setAccount(props.account)

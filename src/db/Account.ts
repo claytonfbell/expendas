@@ -8,13 +8,16 @@ export type CreditCardType =
   | "American Express"
   | "Discover"
 
-export interface IAccount extends Document {
-  household: IHousehold["_id"]
+export interface IAccount {
+  _id?: string
+  household?: IHousehold["_id"]
   type: AccountType
   name: string
   creditCardType: CreditCardType | null
   currentBalance: number
 }
+
+export type AccountDocument = IAccount & Document
 
 export const AccountSchema: Schema = new Schema({
   household: { type: Schema.Types.ObjectId, ref: "Households" },
@@ -26,5 +29,5 @@ export const AccountSchema: Schema = new Schema({
 
 module.exports =
   mongoose.models.Accounts ||
-  mongoose.model<IAccount>("Accounts", AccountSchema)
-export default module.exports as mongoose.Model<IAccount, {}>
+  mongoose.model<AccountDocument>("Accounts", AccountSchema)
+export default module.exports as mongoose.Model<AccountDocument, {}>

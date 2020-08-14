@@ -13,8 +13,8 @@ import React from "react"
 import AccountDialog from "../src/AccountDialog"
 import { useAccount } from "../src/AccountProvider"
 import AccountRow from "../src/AccountRow"
+import { IAccount } from "../src/db/Account"
 import InsideLayout from "../src/InsideLayout"
-import { AccountRequest } from "../src/model/AccountRequest"
 import { StyledTableRow } from "./planner"
 
 function Accounts() {
@@ -23,7 +23,7 @@ function Accounts() {
     fetchAccounts()
   }, [fetchAccounts])
 
-  const [account, setAccount] = React.useState<AccountRequest>()
+  const [account, setAccount] = React.useState<IAccount>()
   function handleAdd() {
     setAccount({
       name: "",

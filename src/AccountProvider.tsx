@@ -1,13 +1,12 @@
 import React from "react"
 import { IAccount } from "./db/Account"
-import { AccountRequest } from "./model/AccountRequest"
 import rest from "./rest"
 
 interface ContextType {
   busy: boolean
   accounts: IAccount[]
   fetchAccounts: () => Promise<void>
-  createAccount: (account: AccountRequest) => Promise<void>
+  createAccount: (account: IAccount) => Promise<void>
   updateAccount: (account: IAccount) => Promise<void>
 }
 
@@ -36,7 +35,7 @@ export function AccountProvider(props: any) {
       })
   }, [])
 
-  const createAccount = React.useCallback((account: AccountRequest) => {
+  const createAccount = React.useCallback((account: IAccount) => {
     setBusy(true)
     return rest.post("/accounts", account).finally(() => {
       setBusy(false)
