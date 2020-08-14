@@ -60,7 +60,7 @@ export default async (
         let appleCard = await PaymentMethod.findOne({ name: "Apple Card" })
         if (appleCard === null) {
           appleCard = await PaymentMethod.create({
-            household: req.household.id,
+            household: req.household._id,
             name: "Apple Card",
             type: "Credit Card",
             creditCardType: "Mastercard",
@@ -74,7 +74,7 @@ export default async (
         })
         if (onpointChecking === null) {
           onpointChecking = await PaymentMethod.create({
-            household: req.household.id,
+            household: req.household._id,
             name: "Onpoint Checking Account",
             type: "Checking Account",
             creditCardType: null,
@@ -88,7 +88,7 @@ export default async (
         })
         if (cashWallet === null) {
           cashWallet = await PaymentMethod.create({
-            household: req.household.id,
+            household: req.household._id,
             name: "Cash Wallet",
             type: "Cash",
             creditCardType: null,
@@ -102,7 +102,7 @@ export default async (
         })
         if (onpointVisa === null) {
           onpointVisa = await PaymentMethod.create({
-            household: req.household.id,
+            household: req.household._id,
             name: "Onpoint Visa",
             type: "Credit Card",
             creditCardType: "Visa",
