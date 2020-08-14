@@ -2,7 +2,7 @@ import {
   default as Account,
   default as PaymentMethod,
 } from "../../../src/db/Account"
-import Payment from "../../../src/db/Payment"
+import Payment, { IPayment } from "../../../src/db/Payment"
 import {
   BadRequestException,
   MethodNotAllowedException,
@@ -11,7 +11,6 @@ import applyMiddleware, {
   NextApiRequestApplied,
   NextApiResponseApplied,
 } from "../../../src/middleware/applyMiddleware"
-import PaymentRequest from "../../../src/model/PaymentRequest"
 import validate from "../../../src/util/validate"
 
 export default async (
@@ -31,7 +30,7 @@ export default async (
           repeatsOnDaysOfMonth,
           repeatsOnMonthsOfYear,
           repeatsWeekly,
-        }: PaymentRequest = req.body
+        }: IPayment = req.body
 
         validate({ paidTo }).min(1)
         validate({ account }).notEmpty()

@@ -23,21 +23,20 @@ import moment from "moment-timezone"
 import React from "react"
 import { getScheduleDescription } from "../pages/payments"
 import { useAccount } from "./AccountProvider"
-import { DayOfMonth, MonthOfYear } from "./db/Payment"
+import { DayOfMonth, IPayment, MonthOfYear } from "./db/Payment"
 import DisplayError from "./DisplayError"
-import PaymentRequest from "./model/PaymentRequest"
 import { usePayment } from "./PaymentProvider"
 import { RestError } from "./rest"
 
 interface Props {
-  payment: PaymentRequest
+  payment: IPayment
   onClose: () => void
 }
 
 type RepeatsType = "weekly" | "dates"
 
 export default function PaymentDialog(props: Props) {
-  const [state, setState] = React.useState<PaymentRequest>(props.payment)
+  const [state, setState] = React.useState<IPayment>(props.payment)
   React.useEffect(() => {
     setIsIncome(props.payment.amount > 0)
     setState({
@@ -50,7 +49,7 @@ export default function PaymentDialog(props: Props) {
   const { busy, createPayment, updatePayment, deletePayment } = usePayment()
   function handleSubmit() {
     setError(undefined)
-    if (state.id === undefined) {
+    if (state._id === undefined) {
       createPayment({
         ...state,
         amount: isIncome ? Number(state.amount) : -Number(state.amount),
@@ -92,7 +91,7 @@ export default function PaymentDialog(props: Props) {
     <Dialog open={props.payment !== undefined} onClose={props.onClose}>
       <DialogContent>
         <Typography variant="h1">
-          {state.id === undefined ? `Create ` : ``}
+          {state._id === undefined ? `Create ` : ``}
           {isIncome ? `Deposit` : `Payment`}
         </Typography>
         <DisplayError error={error} />
@@ -307,7 +306,7 @@ export default function PaymentDialog(props: Props) {
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <SubmitButton>
-                {state.id === undefined ? `Create` : `Save`}
+                {state._id === undefined ? `Create` : `Save`}
               </SubmitButton>
             </Grid>
             <Grid item xs={6}>
@@ -315,13 +314,13 @@ export default function PaymentDialog(props: Props) {
                 Cancel
               </Button>
             </Grid>
-            {state.id !== undefined && (
+            {state._id !== undefined && (
               <Grid item xs={12}>
                 <Button
                   fullWidth
                   variant="text"
                   color="danger"
-                  onClick={() => setWillDelete(state.id)}
+                  onClick={() => setWillDelete(state._id)}
                 >
                   Delete
                 </Button>

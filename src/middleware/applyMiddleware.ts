@@ -5,10 +5,10 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { applySession, expressSession, promisifyStore } from "next-session"
 import Account from "../db/Account"
 import Payment from "../db/Payment"
+import User, { IUser } from "../db/User"
 import { HttpException } from "../exceptions/HttpException"
 import ExpendasSessionData from "../model/ExpendasSessionData"
 import Household, { IHousehold } from "../model/Household"
-import User, { IUser } from "../model/User"
 
 export type NextApiRequestApplied = NextApiRequest & {
   session: any

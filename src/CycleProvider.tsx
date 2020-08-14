@@ -1,6 +1,5 @@
 import React from "react"
-import { ICycleItem } from "./db/CycleItem"
-import { IPaymentPopulated } from "./PaymentProvider"
+import { ICycleItem, ICycleItemPopulated } from "./db/CycleItem"
 import rest from "./rest"
 
 interface ContextType {
@@ -10,10 +9,6 @@ interface ContextType {
   fetchCycleDates: () => Promise<void>
   fetchCycle: (date: string) => Promise<void>
   updateCycleItem: (cycleItem: ICycleItem) => Promise<void>
-}
-
-export interface ICycleItemPopulated extends ICycleItem {
-  payment: IPaymentPopulated
 }
 
 const Context = React.createContext<ContextType | undefined>(undefined)
@@ -54,17 +49,20 @@ export function CycleProvider(props: any) {
       })
   }, [])
 
-  const updateCycleItem = React.useCallback((cycleItem: ICycleItem) => {
-    setBusy(true)
-    setCycle((prev) =>
-      [...prev.filter((x) => x._id !== cycleItem._id), cycleItem].sort(
-        (a, b) => Math.abs(b.amount) - Math.abs(a.amount)
+  const updateCycleItem = React.useCallback(
+    (cycleItem: ICycleItemPopulated) => {
+      setBusy(true)
+      setCycle((prev) =>
+        [...prev.filter((x) => x._id !== cycleItem._id), cycleItem].sort(
+          (a, b) => Math.abs(b.amount) - Math.abs(a.amount)
+        )
       )
-    )
-    return rest.put(`/cycleItems/${cycleItem._id}`, cycleItem).finally(() => {
-      setBusy(false)
-    })
-  }, [])
+      return rest.put(`/cycleItems/${cycleItem._id}`, cycleItem).finally(() => {
+        setBusy(false)
+      })
+    },
+    []
+  )
 
   const value = React.useMemo(
     (): ContextType => ({

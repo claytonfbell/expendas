@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt"
+import User from "../../src/db/User"
 import {
   BadRequestException,
   MethodNotAllowedException,
@@ -11,7 +12,6 @@ import applyMiddleware, {
 import ExpendasSessionData from "../../src/model/ExpendasSessionData"
 import Household from "../../src/model/Household"
 import { SignInRequest } from "../../src/model/SignInRequest"
-import User from "../../src/model/User"
 import validate from "../../src/util/validate"
 
 export default async (

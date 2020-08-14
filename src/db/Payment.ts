@@ -33,8 +33,9 @@ export type DayOfMonth =
   | 27
   | 28
 
-export interface IPayment extends Document {
-  household: IHousehold["_id"]
+export interface IPayment {
+  _id?: string
+  household?: IHousehold["_id"]
   account: IAccount["_id"]
   amount: number
   paidTo: string
@@ -44,6 +45,12 @@ export interface IPayment extends Document {
   repeatsOnMonthsOfYear: MonthOfYear[] | null
   repeatsWeekly: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | null
 }
+
+export type IPaymentPopulated = IPayment & {
+  account: IAccount
+}
+
+export type PaymentDocument = IPayment & Document
 
 export const PaymentSchema: Schema = new Schema({
   household: { type: Schema.Types.ObjectId, ref: "Households", index: true },
@@ -59,5 +66,5 @@ export const PaymentSchema: Schema = new Schema({
 
 module.exports =
   mongoose.models.Payments ||
-  mongoose.model<IPayment>("Payments", PaymentSchema)
-export default module.exports as mongoose.Model<IPayment, {}>
+  mongoose.model<PaymentDocument>("Payments", PaymentSchema)
+export default module.exports as mongoose.Model<PaymentDocument, {}>

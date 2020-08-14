@@ -18,11 +18,10 @@ import EditIcon from "@material-ui/icons/Edit"
 import Button from "material-ui-bootstrap/dist/Button"
 import moment from "moment-timezone"
 import React from "react"
-import { IPayment } from "../src/db/Payment"
+import { IPayment, IPaymentPopulated } from "../src/db/Payment"
 import InsideLayout from "../src/InsideLayout"
-import PaymentRequest from "../src/model/PaymentRequest"
 import PaymentDialog from "../src/PaymentDialog"
-import { IPaymentPopulated, usePayment } from "../src/PaymentProvider"
+import { usePayment } from "../src/PaymentProvider"
 import { useSignIn } from "../src/SignInProvider"
 import { formatMoney, StyledTableRow } from "./planner"
 
@@ -38,10 +37,10 @@ function Payments() {
 
   const [willDelete, setWillDelete] = React.useState<string>()
 
-  const [selectedPayment, setSelectedPayment] = React.useState<PaymentRequest>()
+  const [selectedPayment, setSelectedPayment] = React.useState<IPayment>()
   const handleEdit = (payment: IPaymentPopulated) => () => {
     const {
-      _id: id,
+      _id,
       account,
       amount,
       paidTo,
@@ -51,8 +50,8 @@ function Payments() {
       repeatsWeekly,
       repeatsUntilDate = null,
     } = payment
-    const pr: PaymentRequest = {
-      id,
+    const pr: IPayment = {
+      _id,
       account: account._id,
       amount,
       paidTo,
@@ -84,7 +83,7 @@ function Payments() {
           </TableHead>
           <TableBody>
             {payments.map((p) => (
-              <StyledTableRow key={p.id}>
+              <StyledTableRow key={p._id}>
                 <TableCell>{p.paidTo}</TableCell>
                 <Hidden smDown>
                   <TableCell>{p.account.name}</TableCell>
@@ -176,7 +175,7 @@ export default () => (
   </InsideLayout>
 )
 
-export function getScheduleDescription(schedule: PaymentRequest | IPayment) {
+export function getScheduleDescription(schedule: IPayment | IPaymentPopulated) {
   let msg: string = moment(schedule.date).format("l")
   // repeating on dates
   if (schedule.repeatsOnDaysOfMonth !== null) {

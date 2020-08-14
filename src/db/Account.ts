@@ -9,6 +9,7 @@ export type AccountType =
   | "CD"
   | "CD IRA"
   | "Line of Credit"
+
 export type CreditCardType =
   | "Mastercard"
   | "Visa"

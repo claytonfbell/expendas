@@ -1,20 +1,14 @@
 import React from "react"
-import { IAccount } from "./db/Account"
-import { IPayment } from "./db/Payment"
-import PaymentRequest from "./model/PaymentRequest"
+import { IPayment, IPaymentPopulated } from "./db/Payment"
 import rest from "./rest"
-
-export interface IPaymentPopulated extends IPayment {
-  account: IAccount
-}
 
 interface ContextType {
   busy: boolean
   payments: IPaymentPopulated[]
   fetchPayments: () => Promise<void>
-  createPayment: (params: PaymentRequest) => Promise<void>
+  createPayment: (params: IPayment) => Promise<void>
   deletePayment: (paymentId: string) => Promise<void>
-  updatePayment: (payment: PaymentRequest) => Promise<void>
+  updatePayment: (payment: IPayment) => Promise<void>
 }
 
 const Context = React.createContext<ContextType | undefined>(undefined)
@@ -43,7 +37,7 @@ export function PaymentProvider(props: any) {
   }, [])
 
   const createPayment = React.useCallback(
-    (params: PaymentRequest) => {
+    (params: IPayment) => {
       setBusy(true)
       return rest
         .post("/payments", params)
@@ -73,10 +67,10 @@ export function PaymentProvider(props: any) {
   )
 
   const updatePayment = React.useCallback(
-    (payment: PaymentRequest) => {
+    (payment: IPayment) => {
       setBusy(true)
       return rest
-        .put(`/payments/${payment.id}`, payment)
+        .put(`/payments/${payment._id}`, payment)
         .then(() => {
           fetchPayments()
         })

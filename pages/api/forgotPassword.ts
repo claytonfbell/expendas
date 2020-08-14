@@ -1,6 +1,7 @@
 import sgMail from "@sendgrid/mail"
 import marked from "marked"
 import mongoose from "mongoose"
+import User from "../../src/db/User"
 import {
   BadRequestException,
   MethodNotAllowedException,
@@ -10,7 +11,6 @@ import applyMiddleware, {
   NextApiResponseApplied,
 } from "../../src/middleware/applyMiddleware"
 import { ForgotPasswordRequest } from "../../src/model/ForgotPasswordRequest"
-import User from "../../src/model/User"
 import randomString from "../../src/util/randomString"
 import validate from "../../src/util/validate"
 

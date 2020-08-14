@@ -1,8 +1,8 @@
 import moment from "moment-timezone"
 import { useRouter } from "next/router"
 import React from "react"
+import { IUser } from "./db/User"
 import { SignInRequest } from "./model/SignInRequest"
-import { IUser } from "./model/User"
 import rest, { RestError } from "./rest"
 
 type Status = "signedIn" | "signedOut" | "unknown"

@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose"
 
-export interface IUser extends Document {
+export interface IUser {
+  _id?: string
   email: string
   firstName: string
   lastName: string
@@ -8,6 +9,8 @@ export interface IUser extends Document {
   passwordResetCode?: string
   timeZone: string
 }
+
+export type UserDocument = IUser & Document
 
 export const UserSchema: Schema = new Schema({
   email: { type: "string", required: true, unique: true, index: true },
@@ -23,5 +26,5 @@ UserSchema.virtual("fullName").get(function () {
 })
 
 module.exports =
-  mongoose.models.Users || mongoose.model<IUser>("Users", UserSchema)
-export default module.exports as mongoose.Model<IUser, {}>
+  mongoose.models.Users || mongoose.model<UserDocument>("Users", UserSchema)
+export default module.exports as mongoose.Model<UserDocument, {}>

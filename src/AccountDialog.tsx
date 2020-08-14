@@ -21,6 +21,7 @@ export default function AccountDialog(props: Props) {
   const [account, setAccount] = React.useState<IAccount>()
   const [error, setError] = React.useState<RestError>()
   React.useEffect(() => {
+    setError(undefined)
     setAccount(props.account)
   }, [props.account])
 
@@ -34,6 +35,9 @@ export default function AccountDialog(props: Props) {
       }
     } catch (e) {
       setError(e)
+    } finally {
+      fetchAccounts()
+      props.onClose()
     }
   }
 

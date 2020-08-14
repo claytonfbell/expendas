@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt"
 import mongoose from "mongoose"
+import User from "../../src/db/User"
 import {
   BadRequestException,
   MethodNotAllowedException,
@@ -9,7 +10,6 @@ import applyMiddleware, {
   NextApiResponseApplied,
 } from "../../src/middleware/applyMiddleware"
 import { RegisterRequest } from "../../src/model/RegisterRequest"
-import User from "../../src/model/User"
 import validate from "../../src/util/validate"
 
 export default async (

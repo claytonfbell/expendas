@@ -2,6 +2,7 @@ import sgMail from "@sendgrid/mail"
 import bcrypt from "bcrypt"
 import marked from "marked"
 import mongoose from "mongoose"
+import User from "../../src/db/User"
 import {
   BadRequestException,
   MethodNotAllowedException,
@@ -11,7 +12,6 @@ import applyMiddleware, {
   NextApiResponseApplied,
 } from "../../src/middleware/applyMiddleware"
 import { ResetPasswordRequest } from "../../src/model/ResetPasswordRequest"
-import User from "../../src/model/User"
 import validate from "../../src/util/validate"
 
 export default async (
