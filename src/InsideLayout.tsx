@@ -43,11 +43,12 @@ function Content(props: Props) {
             justify="space-between"
             alignContent="center"
             alignItems="center"
+            spacing={0}
           >
             <Grid item>
               <Grid
                 container
-                spacing={4}
+                spacing={3}
                 alignContent="center"
                 alignItems="center"
               >

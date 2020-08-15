@@ -14,9 +14,11 @@ import Form from "material-ui-pack/dist/Form"
 import Select from "material-ui-pack/dist/Select"
 import moment from "moment-timezone"
 import React, { ChangeEvent } from "react"
+import useDebounce from "react-use/lib/useDebounce"
 import { useAccount } from "../src/AccountProvider"
 import AnimatedCounter from "../src/AnimatedCounter"
 import { useCycle } from "../src/CycleProvider"
+import { IAccount } from "../src/db/Account"
 import { ICycleItemPopulated } from "../src/db/CycleItem"
 import InsideLayout from "../src/InsideLayout"
 import { useSignIn } from "../src/SignInProvider"
@@ -128,65 +130,13 @@ function Planner() {
             const items = cycle.filter(
               (x) => x.payment.account._id === account._id
             )
-            const value =
-              account.currentBalance +
-              items.filter((x) => !x.isPaid).reduce((x, y) => x + y.amount, 0)
-
-            if (items.length === 0 && account.currentBalance === 0) {
-              return null
-            }
-
             return (
-              <React.Fragment key={account._id}>
-                <Grid item xs={12} md={4}>
-                  <Paper variant="outlined" className={classes.accountBox}>
-                    <Grid
-                      container
-                      spacing={0}
-                      justify="space-between"
-                      className={classes.row}
-                    >
-                      <Grid item className={classes.leftCell}>
-                        <strong>{account.name}</strong>
-                      </Grid>
-                      <Grid item className={classes.rightCell}>
-                        <strong>{formatMoney(account.currentBalance)}</strong>
-                      </Grid>
-                    </Grid>
-                    {items.map((item) => (
-                      <CycleItemRow key={item._id} item={item} />
-                    ))}
-                    {items.length > 0 && (
-                      <Grid
-                        className={classes.row}
-                        container
-                        spacing={0}
-                        justify="space-between"
-                      >
-                        <Grid item className={classes.leftCell}>
-                          <em style={{ opacity: 0.6 }}>Pojected balance</em>
-                        </Grid>
-                        <Grid item className={classes.rightCell}>
-                          <strong
-                            style={
-                              value < 0
-                                ? { color: RED, fontWeight: "bold" }
-                                : value > 0
-                                ? {
-                                    color: theme.palette.primary.main,
-                                    fontWeight: "bold",
-                                  }
-                                : undefined
-                            }
-                          >
-                            <AnimatedCounter value={value} />
-                          </strong>
-                        </Grid>
-                      </Grid>
-                    )}
-                  </Paper>
-                </Grid>
-              </React.Fragment>
+              <AccountBox
+                key={account._id}
+                account={account}
+                items={items}
+                date={state.cycleDate}
+              />
             )
           })}
       </Grid>
@@ -204,6 +154,95 @@ function Planner() {
         </Grid>
       </Grid>
     </>
+  )
+}
+
+type AccountBoxProps = {
+  account: IAccount
+  items: ICycleItemPopulated[]
+  date: string
+}
+function AccountBox({ account, items, date }: AccountBoxProps) {
+  const classes = useStyles()
+  const theme = useTheme()
+  const { updateAccount } = useAccount()
+
+  const value =
+    account.currentBalance +
+    items.filter((x) => !x.isPaid).reduce((x, y) => x + y.amount, 0)
+
+  useDebounce(
+    () => {
+      console.log(`HIT ${value} ${account.name}`)
+      updateAccount({
+        ...account,
+        carryOver: [
+          ...(account.carryOver === undefined
+            ? []
+            : account.carryOver.filter((x) => x.date !== date)),
+          { date, balance: value },
+        ],
+      })
+    },
+    5000,
+    [value, account._id, date]
+  )
+
+  if (items.length === 0 && account.currentBalance === 0) {
+    return null
+  }
+
+  return (
+    <React.Fragment key={account._id}>
+      <Grid item xs={12} md={4}>
+        <Paper variant="outlined" className={classes.accountBox}>
+          <Grid
+            container
+            spacing={0}
+            justify="space-between"
+            className={classes.row}
+          >
+            <Grid item className={classes.leftCell}>
+              <strong>{account.name}</strong>
+            </Grid>
+            <Grid item className={classes.rightCell}>
+              <strong>{formatMoney(account.currentBalance)}</strong>
+            </Grid>
+          </Grid>
+          {items.map((item) => (
+            <CycleItemRow key={item._id} item={item} />
+          ))}
+          {items.length > 0 && (
+            <Grid
+              className={classes.row}
+              container
+              spacing={0}
+              justify="space-between"
+            >
+              <Grid item className={classes.leftCell}>
+                <em style={{ opacity: 0.6 }}>Pojected balance</em>
+              </Grid>
+              <Grid item className={classes.rightCell}>
+                <strong
+                  style={
+                    value < 0
+                      ? { color: RED, fontWeight: "bold" }
+                      : value > 0
+                      ? {
+                          color: theme.palette.primary.main,
+                          fontWeight: "bold",
+                        }
+                      : undefined
+                  }
+                >
+                  <AnimatedCounter value={value} />
+                </strong>
+              </Grid>
+            </Grid>
+          )}
+        </Paper>
+      </Grid>
+    </React.Fragment>
   )
 }
 

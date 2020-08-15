@@ -38,6 +38,7 @@ export default async (
           type,
           creditCardType,
           currentBalance,
+          carryOver: [],
         })
         break
       default:

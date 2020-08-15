@@ -16,6 +16,11 @@ export type CreditCardType =
   | "American Express"
   | "Discover"
 
+export type CarryOverBalance = {
+  balance: number
+  date: string
+}
+
 export interface IAccount {
   _id?: string
   household?: HouseholdDocument["_id"]
@@ -23,9 +28,15 @@ export interface IAccount {
   name: string
   creditCardType: CreditCardType | null
   currentBalance: number
+  carryOver: CarryOverBalance[]
 }
 
 export type AccountDocument = IAccount & Document
+
+export const CarryOverBalance: Schema = new Schema({
+  balance: { type: Schema.Types.Number, required: true },
+  date: { type: Schema.Types.String, required: true },
+})
 
 export const AccountSchema: Schema = new Schema({
   household: { type: Schema.Types.ObjectId, ref: "Households" },
@@ -33,6 +44,7 @@ export const AccountSchema: Schema = new Schema({
   name: { type: Schema.Types.String, required: true },
   creditCardType: { type: Schema.Types.String },
   currentBalance: { type: Schema.Types.Number, required: true },
+  carryOver: [CarryOverBalance],
 })
 
 module.exports =

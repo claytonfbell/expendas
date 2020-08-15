@@ -33,6 +33,7 @@ export default async (
           type,
           creditCardType,
           currentBalance,
+          carryOver,
         }: IAccount = req.body
 
         validate({ name }).notEmpty()
@@ -48,6 +49,7 @@ export default async (
         account.type = type
         account.creditCardType = creditCardType
         account.currentBalance = currentBalance
+        account.carryOver = carryOver
         console.log(account.currentBalance)
         await account.save()
 

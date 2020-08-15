@@ -1,7 +1,4 @@
-import {
-  default as Account,
-  default as PaymentMethod,
-} from "../../../src/db/Account"
+import { default as Account } from "../../../src/db/Account"
 import Payment, { IPayment } from "../../../src/db/Payment"
 import {
   BadRequestException,
@@ -57,58 +54,58 @@ export default async (
         break
       case "GET":
         // seed payment methods
-        let appleCard = await PaymentMethod.findOne({ name: "Apple Card" })
-        if (appleCard === null) {
-          appleCard = await PaymentMethod.create({
-            household: req.household._id,
-            name: "Apple Card",
-            type: "Credit Card",
-            creditCardType: "Mastercard",
-            currentBalance: -1794.28,
-          })
-        }
+        // let appleCard = await PaymentMethod.findOne({ name: "Apple Card" })
+        // if (appleCard === null) {
+        //   appleCard = await PaymentMethod.create({
+        //     household: req.household._id,
+        //     name: "Apple Card",
+        //     type: "Credit Card",
+        //     creditCardType: "Mastercard",
+        //     currentBalance: -1794.28,
+        //   })
+        // }
 
-        // seed checking account
-        let onpointChecking = await PaymentMethod.findOne({
-          name: "Onpoint Checking Account",
-        })
-        if (onpointChecking === null) {
-          onpointChecking = await PaymentMethod.create({
-            household: req.household._id,
-            name: "Onpoint Checking Account",
-            type: "Checking Account",
-            creditCardType: null,
-            currentBalance: 114.49,
-          })
-        }
+        // // seed checking account
+        // let onpointChecking = await PaymentMethod.findOne({
+        //   name: "Onpoint Checking Account",
+        // })
+        // if (onpointChecking === null) {
+        //   onpointChecking = await PaymentMethod.create({
+        //     household: req.household._id,
+        //     name: "Onpoint Checking Account",
+        //     type: "Checking Account",
+        //     creditCardType: null,
+        //     currentBalance: 114.49,
+        //   })
+        // }
 
-        // seed checking account
-        let cashWallet = await PaymentMethod.findOne({
-          name: "Cash Wallet",
-        })
-        if (cashWallet === null) {
-          cashWallet = await PaymentMethod.create({
-            household: req.household._id,
-            name: "Cash Wallet",
-            type: "Cash",
-            creditCardType: null,
-            currentBalance: 120,
-          })
-        }
+        // // seed checking account
+        // let cashWallet = await PaymentMethod.findOne({
+        //   name: "Cash Wallet",
+        // })
+        // if (cashWallet === null) {
+        //   cashWallet = await PaymentMethod.create({
+        //     household: req.household._id,
+        //     name: "Cash Wallet",
+        //     type: "Cash",
+        //     creditCardType: null,
+        //     currentBalance: 120,
+        //   })
+        // }
 
-        // seed checking account
-        let onpointVisa = await PaymentMethod.findOne({
-          name: "Onpoint Visa",
-        })
-        if (onpointVisa === null) {
-          onpointVisa = await PaymentMethod.create({
-            household: req.household._id,
-            name: "Onpoint Visa",
-            type: "Credit Card",
-            creditCardType: "Visa",
-            currentBalance: 0,
-          })
-        }
+        // // seed checking account
+        // let onpointVisa = await PaymentMethod.findOne({
+        //   name: "Onpoint Visa",
+        // })
+        // if (onpointVisa === null) {
+        //   onpointVisa = await PaymentMethod.create({
+        //     household: req.household._id,
+        //     name: "Onpoint Visa",
+        //     type: "Credit Card",
+        //     creditCardType: "Visa",
+        //     currentBalance: 0,
+        //   })
+        // }
 
         // // seed payments
         // let petCube = await Payment.findOne({ paidTo: "Pet Cube" })
