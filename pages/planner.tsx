@@ -96,12 +96,12 @@ function Planner() {
     <>
       <Grid
         container
-        spacing={6}
+        spacing={0}
         justify="space-between"
         alignContent="center"
         alignItems="center"
       >
-        <Grid item>
+        <Grid item xs={6} sm={4} md={3} lg={2}>
           <Form size="small" state={state} setState={setState}>
             <Select
               fullWidth
@@ -110,21 +110,13 @@ function Planner() {
               label="Pay Day"
               options={cycleDates.map((x) => ({
                 value: x,
-                label: moment(x).format("LL"),
+                label: moment(x).format("M/D/YYYY"),
               }))}
             />
           </Form>
         </Grid>
-        <Grid item>
-          <span
-            className={classes.netWorth}
-            style={{ color: projectedNetWorth < 0 ? RED : undefined }}
-          >
-            <AnimatedCounter value={projectedNetWorth} />
-          </span>
-        </Grid>
       </Grid>
-
+      <br />
       <Grid container spacing={3}>
         {accounts
           .sort(
@@ -172,9 +164,7 @@ function Planner() {
                         justify="space-between"
                       >
                         <Grid item className={classes.leftCell}>
-                          <em style={{ opacity: 0.6 }}>
-                            Pojected balance before next pay day
-                          </em>
+                          <em style={{ opacity: 0.6 }}>Pojected balance</em>
                         </Grid>
                         <Grid item className={classes.rightCell}>
                           <strong
@@ -199,6 +189,19 @@ function Planner() {
               </React.Fragment>
             )
           })}
+      </Grid>
+      <br />
+      <br />
+      <hr />
+      <Grid container justify="flex-end">
+        <Grid item>
+          <span
+            className={classes.netWorth}
+            style={{ color: projectedNetWorth < 0 ? RED : undefined }}
+          >
+            <AnimatedCounter value={projectedNetWorth} />
+          </span>
+        </Grid>
       </Grid>
     </>
   )
