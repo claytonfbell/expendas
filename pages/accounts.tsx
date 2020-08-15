@@ -27,6 +27,7 @@ function Accounts() {
       type: "Checking Account",
       creditCardType: null,
       currentBalance: 0,
+      carryOver: [],
     })
   }
 
