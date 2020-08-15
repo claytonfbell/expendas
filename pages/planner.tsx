@@ -250,7 +250,6 @@ function AccountBox({
           >
             <Grid item className={classes.leftCell}>
               <strong>{account.name}</strong>
-              {endDate}
             </Grid>
             <Grid item className={classes.rightCell}>
               <strong>{formatMoney(startingBalance)}</strong>
