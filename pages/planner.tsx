@@ -85,14 +85,33 @@ function Planner() {
   const { accounts, fetchAccounts } = useAccount()
   React.useEffect(() => {
     fetchAccounts()
-  }, [fetchAccounts])
+  }, [fetchAccounts, state.cycleDate])
 
-  const netWorth = accounts.reduce((sum, x) => sum + x.currentBalance, 0)
-  const projectedNetWorth = cycle
+  // find endDate
+  const endDate: string = cycleDates
+    .filter((x) => moment(x).isAfter(state.cycleDate))
+    .shift()
+
+  // check if current cycle
+  const today = moment()
+  const isCurrentCycle =
+    !today.isBefore(moment(state.cycleDate)) && !today.isAfter(moment(endDate))
+
+  // find previous carryover
+  const startingBalance = accounts.reduce((sum, account) => {
+    const carryOver = account.carryOver.filter(
+      (x) => x.date === state.cycleDate
+    )
+    let startingBalance: number = account.currentBalance
+    if (carryOver.length > 0 && !isCurrentCycle) {
+      startingBalance = carryOver.shift().balance
+    }
+    return sum + startingBalance
+  }, 0)
+
+  const endingBalance = cycle
     .filter((x) => !x.isPaid)
-    .reduce((sum, x) => sum + x.amount, netWorth)
-
-  const theme = useTheme()
+    .reduce((sum, x) => sum + x.amount, startingBalance)
 
   return (
     <>
@@ -136,6 +155,8 @@ function Planner() {
                 account={account}
                 items={items}
                 date={state.cycleDate}
+                endDate={endDate}
+                isCurrentCycle={isCurrentCycle}
               />
             )
           })}
@@ -143,13 +164,21 @@ function Planner() {
       <br />
       <br />
       <hr />
-      <Grid container justify="flex-end">
+      <Grid container justify="space-between">
         <Grid item>
           <span
             className={classes.netWorth}
-            style={{ color: projectedNetWorth < 0 ? RED : undefined }}
+            style={{ color: startingBalance < 0 ? RED : undefined }}
           >
-            <AnimatedCounter value={projectedNetWorth} />
+            <AnimatedCounter value={startingBalance} />
+          </span>
+        </Grid>
+        <Grid item>
+          <span
+            className={classes.netWorth}
+            style={{ color: endingBalance < 0 ? RED : undefined }}
+          >
+            <AnimatedCounter value={endingBalance} />
           </span>
         </Grid>
       </Grid>
@@ -161,31 +190,48 @@ type AccountBoxProps = {
   account: IAccount
   items: ICycleItemPopulated[]
   date: string
+  endDate: string
+  isCurrentCycle: boolean
 }
-function AccountBox({ account, items, date }: AccountBoxProps) {
+function AccountBox({
+  account,
+  items,
+  date,
+  endDate,
+  isCurrentCycle,
+}: AccountBoxProps) {
   const classes = useStyles()
   const theme = useTheme()
   const { updateAccount } = useAccount()
 
+  // find previous carryover
+  const carryOver = account.carryOver.filter((x) => x.date === date)
+  let startingBalance: number = account.currentBalance
+  if (carryOver.length > 0 && !isCurrentCycle) {
+    startingBalance = carryOver.shift().balance
+  }
+
   const value =
-    account.currentBalance +
+    startingBalance +
     items.filter((x) => !x.isPaid).reduce((x, y) => x + y.amount, 0)
 
   useDebounce(
     () => {
-      console.log(`HIT ${value} ${account.name}`)
-      updateAccount({
-        ...account,
-        carryOver: [
-          ...(account.carryOver === undefined
-            ? []
-            : account.carryOver.filter((x) => x.date !== date)),
-          { date, balance: value },
-        ],
-      })
+      if (endDate !== undefined) {
+        console.log(`HIT ${value} ${account.name}`)
+        updateAccount({
+          ...account,
+          carryOver: [
+            ...(account.carryOver === undefined
+              ? []
+              : account.carryOver.filter((x) => x.date !== endDate)),
+            { date: endDate, balance: value },
+          ],
+        })
+      }
     },
     5000,
-    [value, account._id, date]
+    [value, account._id, endDate]
   )
 
   if (items.length === 0 && account.currentBalance === 0) {
@@ -204,13 +250,18 @@ function AccountBox({ account, items, date }: AccountBoxProps) {
           >
             <Grid item className={classes.leftCell}>
               <strong>{account.name}</strong>
+              {endDate}
             </Grid>
             <Grid item className={classes.rightCell}>
-              <strong>{formatMoney(account.currentBalance)}</strong>
+              <strong>{formatMoney(startingBalance)}</strong>
             </Grid>
           </Grid>
           {items.map((item) => (
-            <CycleItemRow key={item._id} item={item} />
+            <CycleItemRow
+              key={item._id}
+              item={item}
+              isCurrentCycle={isCurrentCycle}
+            />
           ))}
           {items.length > 0 && (
             <Grid
@@ -220,7 +271,7 @@ function AccountBox({ account, items, date }: AccountBoxProps) {
               justify="space-between"
             >
               <Grid item className={classes.leftCell}>
-                <em style={{ opacity: 0.6 }}>Pojected balance</em>
+                <em style={{ opacity: 0.6 }}>Projected balance</em>
               </Grid>
               <Grid item className={classes.rightCell}>
                 <strong
@@ -246,7 +297,13 @@ function AccountBox({ account, items, date }: AccountBoxProps) {
   )
 }
 
-function CycleItemRow({ item }: { item: ICycleItemPopulated }) {
+function CycleItemRow({
+  item,
+  isCurrentCycle,
+}: {
+  item: ICycleItemPopulated
+  isCurrentCycle: boolean
+}) {
   const classes = useStyles()
   const { updateCycleItem } = useCycle()
 
@@ -271,17 +328,19 @@ function CycleItemRow({ item }: { item: ICycleItemPopulated }) {
         {item.payment.paidTo}
       </Grid>
       <Grid item className={classes.rightCell}>
-        <LargeTooltip
-          arrow
-          placement="left"
-          title="Check if this item has already been settled and no longer impacts your account balance."
-        >
-          <input
-            type="checkbox"
-            checked={item.isPaid}
-            onChange={handlePaidClick(item)}
-          />
-        </LargeTooltip>
+        {isCurrentCycle && (
+          <LargeTooltip
+            arrow
+            placement="left"
+            title="Check if this item has already been settled and no longer impacts your account balance."
+          >
+            <input
+              type="checkbox"
+              checked={item.isPaid}
+              onChange={handlePaidClick(item)}
+            />
+          </LargeTooltip>
+        )}
         <span
           style={
             item.amount > 0 && !item.isPaid
