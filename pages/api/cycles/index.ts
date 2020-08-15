@@ -77,7 +77,7 @@ export class CycleService {
     }
 
     // RETURN ALL THE CYCLE DATES BETWEEN X AND Y
-    return cycles.map((x) => x.format("LL"))
+    return cycles.map((x) => x.format("YYYY-MM-DD"))
   }
 
   filterPaymentsOnDate(payments: PaymentDocument[], date: Moment) {

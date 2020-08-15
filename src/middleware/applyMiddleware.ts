@@ -1,5 +1,4 @@
 import ConnectMongo from "connect-mongo"
-import moment from "moment-timezone"
 import mongoose, { Mongoose } from "mongoose"
 import { NextApiRequest, NextApiResponse } from "next"
 import { applySession, expressSession, promisifyStore } from "next-session"
@@ -58,7 +57,7 @@ export default async function applyMiddleware(
     req.household = await Household.findOne({
       _id: sessionData.householdId,
     })
-    moment.tz.setDefault(req.user.timeZone)
+    // moment.tz.setDefault(req.user.timeZone)
   }
 
   // apply build function
