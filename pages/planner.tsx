@@ -94,7 +94,13 @@ function Planner() {
 
   return (
     <>
-      <Grid container spacing={6} justify="space-between">
+      <Grid
+        container
+        spacing={6}
+        justify="space-between"
+        alignContent="center"
+        alignItems="center"
+      >
         <Grid item>
           <Form size="small" state={state} setState={setState}>
             <Select

@@ -1,13 +1,15 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import {
   AppBar,
   CssBaseline,
   Grid,
+  Hidden,
   makeStyles,
   Toolbar,
   Typography,
 } from "@material-ui/core"
 import Container from "@material-ui/core/Container"
-import Button from "material-ui-bootstrap/dist/Button"
 import Link from "next/link"
 import React from "react"
 import { AccountProvider } from "./AccountProvider"
@@ -36,7 +38,12 @@ function Content(props: Props) {
     <SignInProvider>
       <AppBar color="primary" className={classes.root}>
         <Toolbar>
-          <Grid container justify="space-between">
+          <Grid
+            container
+            justify="space-between"
+            alignContent="center"
+            alignItems="center"
+          >
             <Grid item>
               <Grid
                 container
@@ -44,11 +51,13 @@ function Content(props: Props) {
                 alignContent="center"
                 alignItems="center"
               >
-                <Grid item>
-                  <Typography variant="body1" style={{ fontSize: 24 }}>
-                    expendas
-                  </Typography>
-                </Grid>
+                <Hidden xsDown>
+                  <Grid item>
+                    <Typography variant="body1" style={{ fontSize: 24 }}>
+                      expendas
+                    </Typography>
+                  </Grid>
+                </Hidden>
                 <Grid item>
                   <Link href="/planner">Main</Link>
                 </Grid>
@@ -61,9 +70,9 @@ function Content(props: Props) {
               </Grid>
             </Grid>
             <Grid item>
-              <Button color="light" variant="contained" onClick={signOut}>
+              <a href="javascript:;" onClick={signOut}>
                 Logout
-              </Button>
+              </a>
             </Grid>
           </Grid>
         </Toolbar>
