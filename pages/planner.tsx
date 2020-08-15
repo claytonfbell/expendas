@@ -225,6 +225,7 @@ function CycleItemRow({ item }: { item: ICycleItemPopulated }) {
       <Grid item className={classes.rightCell}>
         <LargeTooltip
           arrow
+          placement="left"
           title="Check if this item has already been settled and no longer impacts your account balance."
         >
           <input
@@ -265,7 +266,7 @@ export const StyledTableRow = withStyles((theme: Theme) =>
 
 export const LargeTooltip = withStyles({
   tooltip: {
-    fontSize: 18,
+    fontSize: 14,
     padding: 10,
   },
 })(Tooltip)
