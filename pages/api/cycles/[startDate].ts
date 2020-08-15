@@ -69,6 +69,7 @@ class BuildCycleService {
       household: household._id,
       date: cycleDate,
     })
+    console.log("Found " + items.length)
 
     // remove items that don't have payments
     items
@@ -77,7 +78,11 @@ class BuildCycleService {
           cyclePayments.filter((y) => String(y._id) === String(x.payment._id))
             .length === 0
       )
-      .forEach(async (x) => await x.remove())
+      .forEach(async (x) => {
+        console.log("removing: ")
+        console.log(x)
+        await x.remove()
+      })
 
     // add items that don't exist
     const addThese = cyclePayments.filter(

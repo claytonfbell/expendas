@@ -94,6 +94,11 @@ export class CycleService {
       }
       // repeating on dates
       if (x.repeatsOnDaysOfMonth !== null) {
+        // not yet
+        if (moment(x.date).isAfter(date)) {
+          return false
+        }
+
         const onDayOfMonth = x.repeatsOnDaysOfMonth.includes(
           date.date() as DayOfMonth
         )
@@ -108,6 +113,11 @@ export class CycleService {
       }
       // repeating weekly
       if (x.repeatsWeekly !== null) {
+        // not yet
+        if (moment(x.date).isAfter(date)) {
+          return false
+        }
+
         const cursor = moment(x.date)
         while (!cursor.isAfter(date)) {
           const sameDate =
