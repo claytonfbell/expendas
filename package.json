@@ -22,6 +22,7 @@
     "@types/query-string": "^6.3.0",
     "axios": "^0.19.2",
     "bcrypt": "^5.0.0",
+    "clsx": "^1.1.1",
     "connect-mongo": "^3.2.0",
     "marked": "^1.1.1",
     "material-ui-bootstrap": "^1.0.13",

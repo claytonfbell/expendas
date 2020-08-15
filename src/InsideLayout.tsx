@@ -24,7 +24,7 @@ const useStyles = makeStyles({
 })
 
 interface Props {
-  title: string
+  title?: string
   children: React.ReactNode
 }
 
@@ -70,7 +70,7 @@ function Content(props: Props) {
       </AppBar>
       <CssBaseline />
       <Container style={{ marginTop: 96 }}>
-        <Typography variant="h1">{props.title}</Typography>
+        {props.title && <Typography variant="h1">{props.title}</Typography>}
         {props.children}
       </Container>
     </SignInProvider>

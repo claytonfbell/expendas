@@ -5,7 +5,7 @@ import rest from "./rest"
 interface ContextType {
   busy: boolean
   cycleDates: string[]
-  cycle: ICycleItemPopulated[] | null
+  cycle: ICycleItemPopulated[]
   fetchCycleDates: () => Promise<void>
   fetchCycle: (date: string) => Promise<void>
   updateCycleItem: (cycleItem: ICycleItem) => Promise<void>
@@ -23,7 +23,7 @@ export function useCycle() {
 export function CycleProvider(props: any) {
   const [busy, setBusy] = React.useState(false)
   const [cycleDates, setCycleDates] = React.useState<string[]>([])
-  const [cycle, setCycle] = React.useState<ICycleItemPopulated[] | null>(null)
+  const [cycle, setCycle] = React.useState<ICycleItemPopulated[]>([])
 
   const fetchCycleDates = React.useCallback(() => {
     setBusy(true)

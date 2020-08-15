@@ -10,8 +10,8 @@ export default function AnimatedCounter(props: Props) {
   const { countUp, update } = useCountUp({
     start: 0,
     end: 0,
-    delay: 1000,
-    duration: 1,
+    delay: 400,
+    duration: 0.2,
   })
 
   useEffect(() => {

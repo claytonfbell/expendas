@@ -1,25 +1,53 @@
 import {
   createStyles,
   Grid,
-  Hidden,
+  makeStyles,
   Paper,
-  Table,
-  TableBody,
-  TableContainer,
   TableRow,
   Theme,
+  Tooltip,
+  useTheme,
   withStyles,
 } from "@material-ui/core"
+import clsx from "clsx"
 import Form from "material-ui-pack/dist/Form"
 import Select from "material-ui-pack/dist/Select"
 import moment from "moment-timezone"
-import React from "react"
+import React, { ChangeEvent } from "react"
 import { useAccount } from "../src/AccountProvider"
 import AnimatedCounter from "../src/AnimatedCounter"
-import CycleItem from "../src/CycleItem"
 import { useCycle } from "../src/CycleProvider"
+import { ICycleItemPopulated } from "../src/db/CycleItem"
 import InsideLayout from "../src/InsideLayout"
 import { useSignIn } from "../src/SignInProvider"
+
+const useStyles = makeStyles((theme: Theme) => ({
+  accountBox: {
+    padding: 0,
+  },
+  isPaid: {
+    textDecoration: "line-through",
+    opacity: 0.5,
+  },
+  netWorth: {
+    fontSize: 28,
+  },
+  row: {
+    "&:nth-of-type(even)": {
+      backgroundColor: theme.palette.background.default,
+    },
+  },
+  leftCell: {
+    padding: "4px 4px 4px 12px",
+  },
+  rightCell: {
+    padding: "4px 12px 4px 4px",
+    whiteSpace: "nowrap",
+    hyphens: "none",
+  },
+}))
+
+const RED = "#c82333"
 
 export function formatMoney(input: number) {
   return new Intl.NumberFormat("en-US", {
@@ -29,6 +57,7 @@ export function formatMoney(input: number) {
 }
 
 function Planner() {
+  const classes = useStyles()
   const { requireAuthentication } = useSignIn()
   requireAuthentication()
 
@@ -56,95 +85,170 @@ function Planner() {
     fetchAccounts()
   }, [fetchAccounts])
 
+  const netWorth = accounts.reduce((sum, x) => sum + x.currentBalance, 0)
+  const projectedNetWorth = cycle
+    .filter((x) => !x.isPaid)
+    .reduce((sum, x) => sum + x.amount, netWorth)
+
+  const theme = useTheme()
+
   return (
     <>
-      <Grid container spacing={6}>
-        <Grid item xs={12} sm={6} md={4}>
+      <Grid container spacing={6} justify="space-between">
+        <Grid item>
           <Form size="small" state={state} setState={setState}>
             <Select
               fullWidth
               allowNull
               name="cycleDate"
+              label="Pay Day"
               options={cycleDates.map((x) => ({
                 value: x,
-                label: moment(x).format("dddd - LL"),
+                label: moment(x).format("LL"),
               }))}
             />
           </Form>
         </Grid>
-        <Hidden smDown>
-          <Grid item md={4}></Grid>
-        </Hidden>
-        <Grid item xs={12} sm={6} md={4}>
-          {cycle && (
-            <>
-              <Grid container spacing={1} justify="space-between">
-                {accounts.map((account) => {
-                  const value =
-                    account.currentBalance +
-                    cycle
-                      .filter((x) => !x.isPaid)
-                      .filter((x) => x.payment.account._id === account._id)
-                      .reduce((x, y) => x + y.amount, 0)
-
-                  return (
-                    <React.Fragment key={account._id}>
-                      <Grid item xs={8}>
-                        <div
-                          style={{
-                            fontSize: 20,
-                          }}
-                        >
-                          {account.name}
-                        </div>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={4}
-                        style={{
-                          textAlign: "right",
-                        }}
-                      >
-                        <div
-                          style={{
-                            textAlign: "right",
-                            color: value > 0 ? "green" : "red",
-                            fontSize: 20,
-                          }}
-                        >
-                          <AnimatedCounter value={value} />
-                        </div>
-                      </Grid>
-                    </React.Fragment>
-                  )
-                })}
-              </Grid>
-            </>
-          )}
+        <Grid item>
+          <span
+            className={classes.netWorth}
+            style={{ color: projectedNetWorth < 0 ? RED : undefined }}
+          >
+            <AnimatedCounter value={projectedNetWorth} />
+          </span>
         </Grid>
       </Grid>
 
-      <br />
-      <br />
-      {cycle && (
-        <TableContainer component={Paper}>
-          <Table size="small">
-            <TableBody>
-              {cycle.map((x) => (
-                <CycleItem cycleItem={x} key={x._id} />
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
-      <br />
-      <br />
+      <Grid container spacing={3}>
+        {accounts
+          .sort(
+            (a, b) =>
+              cycle.filter((x) => x.payment.account._id === b._id).length -
+              cycle.filter((x) => x.payment.account._id === a._id).length
+          )
+          .map((account) => {
+            const items = cycle.filter(
+              (x) => x.payment.account._id === account._id
+            )
+            const value =
+              account.currentBalance +
+              items.filter((x) => !x.isPaid).reduce((x, y) => x + y.amount, 0)
+
+            if (items.length === 0 && account.currentBalance === 0) {
+              return null
+            }
+
+            return (
+              <React.Fragment key={account._id}>
+                <Grid item xs={12} md={4}>
+                  <Paper variant="outlined" className={classes.accountBox}>
+                    <Grid
+                      container
+                      spacing={0}
+                      justify="space-between"
+                      className={classes.row}
+                    >
+                      <Grid item className={classes.leftCell}>
+                        <strong>{account.name}</strong>
+                      </Grid>
+                      <Grid item className={classes.rightCell}>
+                        <strong>{formatMoney(account.currentBalance)}</strong>
+                      </Grid>
+                    </Grid>
+                    {items.map((item) => (
+                      <CycleItemRow key={item._id} item={item} />
+                    ))}
+                    {items.length > 0 && (
+                      <Grid
+                        className={classes.row}
+                        container
+                        spacing={0}
+                        justify="space-between"
+                      >
+                        <Grid item className={classes.leftCell}>
+                          <em style={{ opacity: 0.6 }}>
+                            Pojected balance before next pay day
+                          </em>
+                        </Grid>
+                        <Grid item className={classes.rightCell}>
+                          <strong
+                            style={
+                              value < 0
+                                ? { color: RED, fontWeight: "bold" }
+                                : value > 0
+                                ? {
+                                    color: theme.palette.primary.main,
+                                    fontWeight: "bold",
+                                  }
+                                : undefined
+                            }
+                          >
+                            <AnimatedCounter value={value} />
+                          </strong>
+                        </Grid>
+                      </Grid>
+                    )}
+                  </Paper>
+                </Grid>
+              </React.Fragment>
+            )
+          })}
+      </Grid>
     </>
   )
 }
 
+function CycleItemRow({ item }: { item: ICycleItemPopulated }) {
+  const classes = useStyles()
+  const { updateCycleItem } = useCycle()
+
+  const handlePaidClick = (item: ICycleItemPopulated) => (
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
+    updateCycleItem({ ...item, isPaid: e.target.checked })
+  }
+
+  const theme = useTheme()
+
+  return (
+    <Grid
+      container
+      spacing={0}
+      justify="space-between"
+      key={item._id}
+      className={clsx(classes.row, item.isPaid ? classes.isPaid : undefined)}
+      wrap="nowrap"
+    >
+      <Grid item className={classes.leftCell}>
+        {item.payment.paidTo}
+      </Grid>
+      <Grid item className={classes.rightCell}>
+        <LargeTooltip
+          arrow
+          title="Check if this item has already been settled and no longer impacts your account balance."
+        >
+          <input
+            type="checkbox"
+            checked={item.isPaid}
+            onChange={handlePaidClick(item)}
+          />
+        </LargeTooltip>
+        <span
+          style={
+            item.amount > 0 && !item.isPaid
+              ? { color: theme.palette.primary.main, fontWeight: "bold" }
+              : undefined
+          }
+        >
+          {formatMoney(item.amount)}
+        </span>
+      </Grid>
+    </Grid>
+  )
+}
+
 export default () => (
-  <InsideLayout title="Pay Cycle">
+  <InsideLayout>
     <Planner />
   </InsideLayout>
 )
@@ -158,3 +262,10 @@ export const StyledTableRow = withStyles((theme: Theme) =>
     },
   })
 )(TableRow)
+
+export const LargeTooltip = withStyles({
+  tooltip: {
+    fontSize: 18,
+    padding: 10,
+  },
+})(Tooltip)

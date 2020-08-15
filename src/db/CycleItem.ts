@@ -11,7 +11,7 @@ export interface ICycleItem {
   isPaid: boolean
 }
 
-export type ICycleItemPopulated = ICycleItem & {
+export type ICycleItemPopulated = Omit<ICycleItem, "payment"> & {
   payment: IPaymentPopulated
 }
 

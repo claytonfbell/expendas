@@ -46,7 +46,7 @@ export interface IPayment {
   repeatsWeekly: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | null
 }
 
-export type IPaymentPopulated = IPayment & {
+export type IPaymentPopulated = Omit<IPayment, "account"> & {
   account: IAccount
 }
 
