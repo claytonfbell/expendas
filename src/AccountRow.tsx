@@ -1,8 +1,5 @@
-import { Grid, IconButton, TableCell } from "@material-ui/core"
+import { IconButton, TableCell } from "@material-ui/core"
 import EditIcon from "@material-ui/icons/Edit"
-import SaveIcon from "@material-ui/icons/Save"
-import CurrencyField from "material-ui-pack/dist/CurrencyField"
-import Form from "material-ui-pack/dist/Form"
 import React from "react"
 import { StyledTableRow } from "../pages/planner"
 import { useAccount } from "./AccountProvider"
@@ -36,31 +33,6 @@ export default function AccountRow(props: Props) {
       <TableCell>{props.account.name}</TableCell>
       <TableCell>{props.account.type}</TableCell>
       <TableCell>{props.account.creditCardType}</TableCell>
-      <TableCell align="right" style={{ maxWidth: 80 }}>
-        <Form
-          state={state}
-          setState={setState}
-          onSubmit={handleSubmit}
-          busy={busy}
-        >
-          <Grid container>
-            <Grid item xs={9}>
-              <CurrencyField
-                name={`currentBalance`}
-                label=""
-                allowNegative
-                inPennies
-                alignRight
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <IconButton onClick={handleSubmit} disabled={busy}>
-                <SaveIcon />
-              </IconButton>
-            </Grid>
-          </Grid>
-        </Form>
-      </TableCell>
       <TableCell>
         <IconButton onClick={handleClick}>
           <EditIcon />

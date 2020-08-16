@@ -156,11 +156,7 @@ function Planner() {
       <br />
       <Grid container spacing={3}>
         {accounts
-          .sort(
-            (a, b) =>
-              cycle.filter((x) => x.payment.account._id === b._id).length -
-              cycle.filter((x) => x.payment.account._id === a._id).length
-          )
+          .sort((a, b) => b.currentBalance - a.currentBalance)
           .map((account) => {
             const items = cycle.filter(
               (x) => x.payment.account._id === account._id
@@ -251,6 +247,7 @@ function AccountBox({
   )
 
   const [editAccount, setEditAccount] = React.useState<IAccount>()
+  const [editPayment, setEditPayment] = React.useState<IPayment>()
 
   const [editAmount, setEditAmount] = React.useState<number>()
 
@@ -303,6 +300,7 @@ function AccountBox({
               key={item._id}
               item={item}
               isCurrentCycle={isCurrentCycle}
+              onEditPayment={(x) => setEditPayment(x)}
             />
           ))}
           {items.length > 0 && (
@@ -313,7 +311,21 @@ function AccountBox({
               justify="space-between"
             >
               <Grid item className={classes.leftCell}>
-                <Link href="javascript:;" onClick={() => alert(1)}>
+                <Link
+                  href="javascript:;"
+                  onClick={() =>
+                    setEditPayment({
+                      paidTo: "",
+                      amount: 0,
+                      repeatsOnDaysOfMonth: null,
+                      repeatsOnMonthsOfYear: null,
+                      repeatsUntilDate: null,
+                      repeatsWeekly: null,
+                      account: account._id,
+                      date,
+                    })
+                  }
+                >
                   + Add Item
                 </Link>
               </Grid>
@@ -351,6 +363,12 @@ function AccountBox({
           onClose={() => setEditAccount(undefined)}
         />
       )}
+      {editPayment && (
+        <PaymentDialog
+          payment={editPayment}
+          onClose={() => setEditPayment(undefined)}
+        />
+      )}
     </React.Fragment>
   )
 }
@@ -358,9 +376,11 @@ function AccountBox({
 function CycleItemRow({
   item,
   isCurrentCycle,
+  onEditPayment,
 }: {
   item: ICycleItemPopulated
   isCurrentCycle: boolean
+  onEditPayment: (payment: IPayment) => void
 }) {
   const classes = useStyles()
   const { updateCycleItem } = useCycle()
@@ -373,7 +393,6 @@ function CycleItemRow({
 
   const theme = useTheme()
 
-  const [payment, setPayment] = React.useState<IPayment>()
   const [editAmount, setEditAmount] = React.useState<number>()
 
   function handleUpdateAmount(amount: number) {
@@ -395,7 +414,10 @@ function CycleItemRow({
           <Link
             href="javascript:;"
             onClick={() =>
-              setPayment({ ...item.payment, account: item.payment.account._id })
+              onEditPayment({
+                ...item.payment,
+                account: item.payment.account._id,
+              })
             }
             className={classes.itemLink}
           >
@@ -442,13 +464,6 @@ function CycleItemRow({
           )}
         </Grid>
       </Grid>
-
-      {payment && (
-        <PaymentDialog
-          payment={payment}
-          onClose={() => setPayment(undefined)}
-        />
-      )}
     </>
   )
 }
