@@ -1,6 +1,7 @@
 import {
   createStyles,
   Grid,
+  Link,
   makeStyles,
   Paper,
   TableRow,
@@ -46,6 +47,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: "4px 12px 4px 4px",
     whiteSpace: "nowrap",
     hyphens: "none",
+  },
+  itemLink: {
+    color: theme.palette.text.primary,
   },
 }))
 
@@ -270,9 +274,19 @@ function AccountBox({
               justify="space-between"
             >
               <Grid item className={classes.leftCell}>
-                <em style={{ opacity: 0.6 }}>Projected balance</em>
+                <Link href="javascript:;" onClick={() => alert(1)}>
+                  + Add Item
+                </Link>
               </Grid>
-              <Grid item className={classes.rightCell}>
+              <Grid
+                item
+                className={classes.rightCell}
+                style={{
+                  borderTop: "1px solid #999999",
+                  minWidth: 120,
+                  textAlign: "right",
+                }}
+              >
                 <strong
                   style={
                     value < 0
@@ -324,7 +338,13 @@ function CycleItemRow({
       wrap="nowrap"
     >
       <Grid item className={classes.leftCell}>
-        {item.payment.paidTo}
+        <Link
+          href="javascript:;"
+          onClick={() => alert(1)}
+          className={classes.itemLink}
+        >
+          {item.payment.paidTo}
+        </Link>
       </Grid>
       <Grid item className={classes.rightCell}>
         {isCurrentCycle && (
