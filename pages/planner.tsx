@@ -21,9 +21,15 @@ import React, { ChangeEvent } from "react"
 import useDebounce from "react-use/lib/useDebounce"
 import AccountDialog from "../src/AccountDialog"
 import { useAccount } from "../src/AccountProvider"
+import {
+  assetsAccountTypes,
+  dailyAccountTypes,
+  loanAccountTypes,
+  savingsAccountTypes,
+} from "../src/accountTypes"
 import AnimatedCounter from "../src/AnimatedCounter"
 import { useCycle } from "../src/CycleProvider"
-import { AccountType, IAccount } from "../src/db/Account"
+import { IAccount } from "../src/db/Account"
 import { ICycleItemPopulated } from "../src/db/CycleItem"
 import { IPayment } from "../src/db/Payment"
 import InsideLayout from "../src/InsideLayout"
@@ -83,7 +89,9 @@ function Planner() {
 
   const [state, setState] = React.useState({
     cycleDate: null,
-    displayAll: false,
+    displaySavings: false,
+    displayLoans: false,
+    displayAssets: false,
   })
   const { fetchCycleDates, cycleDates } = useCycle()
   React.useEffect(() => {
@@ -105,13 +113,26 @@ function Planner() {
   React.useEffect(() => {
     fetchAccounts()
   }, [fetchAccounts, state.cycleDate])
-  const filterTypes: AccountType[] = ["CD", "CD IRA", "Savings Account", "Loan"]
   const accounts = React.useMemo(
     () =>
-      unfilteredAccounts.filter(
-        (x) => state.displayAll || !filterTypes.includes(x.type)
-      ),
-    [filterTypes, state.displayAll, unfilteredAccounts]
+      unfilteredAccounts.filter((x) => {
+        if (state.displaySavings && savingsAccountTypes.includes(x.type)) {
+          return true
+        } else if (state.displayLoans && loanAccountTypes.includes(x.type)) {
+          return true
+        } else if (state.displayAssets && assetsAccountTypes.includes(x.type)) {
+          return true
+        } else if (dailyAccountTypes.includes(x.type)) {
+          return true
+        }
+        return false
+      }),
+    [
+      state.displayAssets,
+      state.displayLoans,
+      state.displaySavings,
+      unfilteredAccounts,
+    ]
   )
 
   // find endDate
@@ -157,7 +178,9 @@ function Planner() {
             />
           </Grid>
           <Grid item xs={12} sm={8}>
-            <Checkbox name="displayAll" label="Include Savings and Loans" />
+            <Checkbox name="displaySavings" label="Include Savings" />
+            <Checkbox name="displayLoans" label="Include Loans" />
+            <Checkbox name="displayAssets" label="Include Assets" />
           </Grid>
         </Grid>
       </Form>

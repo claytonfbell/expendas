@@ -2,7 +2,6 @@ import { IconButton, TableCell } from "@material-ui/core"
 import EditIcon from "@material-ui/icons/Edit"
 import React from "react"
 import { formatMoney, StyledTableRow } from "../pages/planner"
-import { useAccount } from "./AccountProvider"
 import { IAccount } from "./db/Account"
 
 interface Props {
@@ -12,17 +11,9 @@ interface Props {
 
 export default function AccountRow(props: Props) {
   const [state, setState] = React.useState<IAccount>(props.account)
-  const [busy, setBusy] = React.useState(false)
   React.useEffect(() => {
     setState(props.account)
   }, [props.account])
-
-  const { updateAccount } = useAccount()
-
-  function handleSubmit() {
-    setBusy(true)
-    updateAccount(state).finally(() => setBusy(false))
-  }
 
   function handleClick() {
     props.onEdit(state)

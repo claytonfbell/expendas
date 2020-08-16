@@ -7,6 +7,7 @@ import SubmitButton from "material-ui-pack/dist/SubmitButton"
 import TextField from "material-ui-pack/dist/TextField"
 import React from "react"
 import { useAccount } from "./AccountProvider"
+import { allAccountTypes } from "./accountTypes"
 import { IAccount } from "./db/Account"
 import DisplayError from "./DisplayError"
 import { RestError } from "./rest"
@@ -68,16 +69,7 @@ export default function AccountDialog(props: Props) {
               <Grid item xs={12}>
                 <Select
                   name="type"
-                  options={[
-                    "Cash",
-                    "Credit Card",
-                    "Checking Account",
-                    "Savings Account",
-                    "CD",
-                    "CD IRA",
-                    "Line of Credit",
-                    "Loan",
-                  ].map((x) => ({ value: x, label: x }))}
+                  options={allAccountTypes.map((x) => ({ value: x, label: x }))}
                 />
               </Grid>
               <Grid item xs={12}>
