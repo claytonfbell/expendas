@@ -96,7 +96,6 @@ export default function PaymentDialog(props: Props) {
         </Typography>
         <DisplayError error={error} />
         <Form
-          debug
           busy={busy}
           margin="normal"
           state={state}

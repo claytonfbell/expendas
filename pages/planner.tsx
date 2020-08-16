@@ -16,12 +16,15 @@ import Select from "material-ui-pack/dist/Select"
 import moment from "moment-timezone"
 import React, { ChangeEvent } from "react"
 import useDebounce from "react-use/lib/useDebounce"
+import AccountDialog from "../src/AccountDialog"
 import { useAccount } from "../src/AccountProvider"
 import AnimatedCounter from "../src/AnimatedCounter"
 import { useCycle } from "../src/CycleProvider"
 import { IAccount } from "../src/db/Account"
 import { ICycleItemPopulated } from "../src/db/CycleItem"
+import { IPayment } from "../src/db/Payment"
 import InsideLayout from "../src/InsideLayout"
+import PaymentDialog from "../src/PaymentDialog"
 import { useSignIn } from "../src/SignInProvider"
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -238,6 +241,8 @@ function AccountBox({
     [value, account._id, endDate]
   )
 
+  const [editAccount, setEditAccount] = React.useState<IAccount>()
+
   if (items.length === 0 && account.currentBalance === 0) {
     return null
   }
@@ -253,10 +258,22 @@ function AccountBox({
             className={classes.row}
           >
             <Grid item className={classes.leftCell}>
-              <strong>{account.name}</strong>
+              <Link
+                href="javascript:;"
+                onClick={() => setEditAccount(account)}
+                className={classes.itemLink}
+              >
+                <strong>{account.name}</strong>
+              </Link>
             </Grid>
             <Grid item className={classes.rightCell}>
-              <strong>{formatMoney(startingBalance)}</strong>
+              <Link
+                href="javascript:;"
+                onClick={() => alert(1)}
+                className={classes.itemLink}
+              >
+                <strong>{formatMoney(startingBalance)}</strong>
+              </Link>
             </Grid>
           </Grid>
           {items.map((item) => (
@@ -306,6 +323,12 @@ function AccountBox({
           )}
         </Paper>
       </Grid>
+      {editAccount && (
+        <AccountDialog
+          account={editAccount}
+          onClose={() => setEditAccount(undefined)}
+        />
+      )}
     </React.Fragment>
   )
 }
@@ -328,49 +351,68 @@ function CycleItemRow({
 
   const theme = useTheme()
 
+  const [payment, setPayment] = React.useState<IPayment>()
+
   return (
-    <Grid
-      container
-      spacing={0}
-      justify="space-between"
-      key={item._id}
-      className={clsx(classes.row, item.isPaid ? classes.isPaid : undefined)}
-      wrap="nowrap"
-    >
-      <Grid item className={classes.leftCell}>
-        <Link
-          href="javascript:;"
-          onClick={() => alert(1)}
-          className={classes.itemLink}
-        >
-          {item.payment.paidTo}
-        </Link>
-      </Grid>
-      <Grid item className={classes.rightCell}>
-        {isCurrentCycle && (
-          <LargeTooltip
-            arrow
-            placement="left"
-            title="Check if this item has already been settled and no longer impacts your account balance."
+    <>
+      <Grid
+        container
+        spacing={0}
+        justify="space-between"
+        key={item._id}
+        className={clsx(classes.row, item.isPaid ? classes.isPaid : undefined)}
+        wrap="nowrap"
+      >
+        <Grid item className={classes.leftCell}>
+          <Link
+            href="javascript:;"
+            onClick={() =>
+              setPayment({ ...item.payment, account: item.payment.account._id })
+            }
+            className={classes.itemLink}
           >
-            <input
-              type="checkbox"
-              checked={item.isPaid}
-              onChange={handlePaidClick(item)}
-            />
-          </LargeTooltip>
-        )}
-        <span
-          style={
-            item.amount > 0 && !item.isPaid
-              ? { color: theme.palette.primary.main, fontWeight: "bold" }
-              : undefined
-          }
-        >
-          {formatMoney(item.amount)}
-        </span>
+            {item.payment.paidTo}
+          </Link>
+        </Grid>
+        <Grid item className={classes.rightCell}>
+          {isCurrentCycle && (
+            <LargeTooltip
+              arrow
+              placement="left"
+              title="Check if this item has already been settled and no longer impacts your account balance."
+            >
+              <input
+                type="checkbox"
+                checked={item.isPaid}
+                onChange={handlePaidClick(item)}
+              />
+            </LargeTooltip>
+          )}
+          <Link
+            href="javascript:;"
+            onClick={() => alert(1)}
+            className={classes.itemLink}
+          >
+            <span
+              style={
+                item.amount > 0 && !item.isPaid
+                  ? { color: theme.palette.primary.main, fontWeight: "bold" }
+                  : undefined
+              }
+            >
+              {formatMoney(item.amount)}
+            </span>
+          </Link>
+        </Grid>
       </Grid>
-    </Grid>
+
+      {payment && (
+        <PaymentDialog
+          payment={payment}
+          onClose={() => setPayment(undefined)}
+        />
+      )}
+    </>
   )
 }
 
