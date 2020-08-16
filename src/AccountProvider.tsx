@@ -42,19 +42,27 @@ export function AccountProvider(props: any) {
     })
   }, [])
 
-  const updateAccount = React.useCallback((account: IAccount) => {
-    setBusy(true)
-    return (
-      rest
+  const updateAccount = React.useCallback(
+    (account: IAccount) => {
+      setBusy(true)
+
+      setAccounts((prev) =>
+        [...prev.filter((x) => x._id !== account._id), account].sort(
+          (a, b) => Math.abs(b.currentBalance) - Math.abs(a.currentBalance)
+        )
+      )
+
+      return rest
         .put(`/accounts/${account._id}`, account)
-        // .then(() => {
-        //   fetchAccounts()
-        // })
+        .then(() => {
+          fetchAccounts()
+        })
         .finally(() => {
           setBusy(false)
         })
-    )
-  }, [])
+    },
+    [fetchAccounts]
+  )
 
   const value = React.useMemo(
     (): ContextType => ({

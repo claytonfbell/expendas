@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-autofocus */
 import {
   createStyles,
   Grid,
@@ -53,6 +54,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   itemLink: {
     color: theme.palette.text.primary,
+  },
+  inputAmount: {
+    textAlign: "right",
+    fontFamily: theme.typography.fontFamily,
+    fontSize: theme.typography.fontSize,
+    width: 80,
+    paddingBottom: 0,
+    paddingTop: 0,
   },
 }))
 
@@ -243,6 +252,13 @@ function AccountBox({
 
   const [editAccount, setEditAccount] = React.useState<IAccount>()
 
+  const [editAmount, setEditAmount] = React.useState<number>()
+
+  function handleUpdateAmount(currentBalance: number) {
+    updateAccount({ ...account, currentBalance })
+    setEditAmount(undefined)
+  }
+
   if (items.length === 0 && account.currentBalance === 0) {
     return null
   }
@@ -267,13 +283,19 @@ function AccountBox({
               </Link>
             </Grid>
             <Grid item className={classes.rightCell}>
-              <Link
-                href="javascript:;"
-                onClick={() => alert(1)}
-                className={classes.itemLink}
-              >
+              {editAmount === undefined && isCurrentCycle ? (
+                <Link
+                  href="javascript:;"
+                  onClick={() => setEditAmount(account.currentBalance)}
+                  className={classes.itemLink}
+                >
+                  <strong>{formatMoney(startingBalance)}</strong>
+                </Link>
+              ) : editAmount === undefined && !isCurrentCycle ? (
                 <strong>{formatMoney(startingBalance)}</strong>
-              </Link>
+              ) : (
+                <AmountInput value={editAmount} onChange={handleUpdateAmount} />
+              )}
             </Grid>
           </Grid>
           {items.map((item) => (
@@ -352,6 +374,12 @@ function CycleItemRow({
   const theme = useTheme()
 
   const [payment, setPayment] = React.useState<IPayment>()
+  const [editAmount, setEditAmount] = React.useState<number>()
+
+  function handleUpdateAmount(amount: number) {
+    updateCycleItem({ ...item, amount })
+    setEditAmount(undefined)
+  }
 
   return (
     <>
@@ -375,34 +403,43 @@ function CycleItemRow({
           </Link>
         </Grid>
         <Grid item className={classes.rightCell}>
-          {isCurrentCycle && (
-            <LargeTooltip
-              arrow
-              placement="left"
-              title="Check if this item has already been settled and no longer impacts your account balance."
-            >
-              <input
-                type="checkbox"
-                checked={item.isPaid}
-                onChange={handlePaidClick(item)}
-              />
-            </LargeTooltip>
+          {editAmount === undefined ? (
+            <>
+              {isCurrentCycle && (
+                <LargeTooltip
+                  arrow
+                  placement="left"
+                  title="Check if this item has already been settled and no longer impacts your account balance."
+                >
+                  <input
+                    type="checkbox"
+                    checked={item.isPaid}
+                    onChange={handlePaidClick(item)}
+                  />
+                </LargeTooltip>
+              )}
+              <Link
+                href="javascript:;"
+                onClick={() => setEditAmount(item.amount)}
+                className={classes.itemLink}
+              >
+                <span
+                  style={
+                    item.amount > 0 && !item.isPaid
+                      ? {
+                          color: theme.palette.primary.main,
+                          fontWeight: "bold",
+                        }
+                      : undefined
+                  }
+                >
+                  {formatMoney(item.amount)}
+                </span>
+              </Link>
+            </>
+          ) : (
+            <AmountInput value={editAmount} onChange={handleUpdateAmount} />
           )}
-          <Link
-            href="javascript:;"
-            onClick={() => alert(1)}
-            className={classes.itemLink}
-          >
-            <span
-              style={
-                item.amount > 0 && !item.isPaid
-                  ? { color: theme.palette.primary.main, fontWeight: "bold" }
-                  : undefined
-              }
-            >
-              {formatMoney(item.amount)}
-            </span>
-          </Link>
         </Grid>
       </Grid>
 
@@ -413,6 +450,56 @@ function CycleItemRow({
         />
       )}
     </>
+  )
+}
+
+type AmountInputProps = {
+  value: number
+  onChange: (value: number) => void
+}
+
+function AmountInput(props: AmountInputProps) {
+  const classes = useStyles()
+
+  const [value, setValue] = React.useState<string>(centsToDollars(props.value))
+  React.useEffect(() => {
+    setValue(centsToDollars(props.value))
+  }, [props.value])
+
+  function centsToDollars(pennies: number) {
+    return (pennies / 100).toFixed(2)
+  }
+
+  function dollarsToCents(dollars: string) {
+    dollars = Number(dollars).toFixed(2)
+    return Number(dollars.replace(/[^\d-]/g, ""))
+  }
+
+  const [firstKeyPressed, setFirstKeyPressed] = React.useState(false)
+
+  function handleKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {
+    // backspace clears input
+    if (e.keyCode === 8 && !firstKeyPressed) {
+      setValue("")
+    }
+    setFirstKeyPressed(true)
+
+    // escape key cancels by sending back original value
+    if (e.keyCode === 27) {
+      props.onChange(props.value)
+    }
+  }
+
+  return (
+    <input
+      autoFocus
+      className={classes.inputAmount}
+      type="text"
+      value={value}
+      onChange={(e) => setValue(e.target.value.replace(/[^\d-.]/g, ""))}
+      onBlur={() => props.onChange(dollarsToCents(value))}
+      onKeyUp={handleKeyPress}
+    />
   )
 }
 
