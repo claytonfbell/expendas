@@ -79,7 +79,7 @@ function Content(props: Props) {
         </Toolbar>
       </AppBar>
       <CssBaseline />
-      <Container style={{ marginTop: 96 }}>
+      <Container style={{ marginTop: 96, marginBottom: 64 }}>
         {props.title && <Typography variant="h1">{props.title}</Typography>}
         {props.children}
       </Container>

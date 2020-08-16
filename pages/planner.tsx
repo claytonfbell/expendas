@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/no-autofocus */
 import {
+  Collapse,
   createStyles,
   Grid,
   Link,
@@ -12,6 +13,7 @@ import {
   withStyles,
 } from "@material-ui/core"
 import clsx from "clsx"
+import Checkbox from "material-ui-pack/dist/Checkbox"
 import Form from "material-ui-pack/dist/Form"
 import Select from "material-ui-pack/dist/Select"
 import moment from "moment-timezone"
@@ -21,7 +23,7 @@ import AccountDialog from "../src/AccountDialog"
 import { useAccount } from "../src/AccountProvider"
 import AnimatedCounter from "../src/AnimatedCounter"
 import { useCycle } from "../src/CycleProvider"
-import { IAccount } from "../src/db/Account"
+import { AccountType, IAccount } from "../src/db/Account"
 import { ICycleItemPopulated } from "../src/db/CycleItem"
 import { IPayment } from "../src/db/Payment"
 import InsideLayout from "../src/InsideLayout"
@@ -81,6 +83,7 @@ function Planner() {
 
   const [state, setState] = React.useState({
     cycleDate: null,
+    displayAll: false,
   })
   const { fetchCycleDates, cycleDates } = useCycle()
   React.useEffect(() => {
@@ -98,10 +101,18 @@ function Planner() {
     fetchCycle(state.cycleDate)
   }, [fetchCycle, state.cycleDate])
 
-  const { accounts, fetchAccounts } = useAccount()
+  const { accounts: unfilteredAccounts, fetchAccounts } = useAccount()
   React.useEffect(() => {
     fetchAccounts()
   }, [fetchAccounts, state.cycleDate])
+  const filterTypes: AccountType[] = ["CD", "CD IRA", "Savings Account", "Loan"]
+  const accounts = React.useMemo(
+    () =>
+      unfilteredAccounts.filter(
+        (x) => state.displayAll || !filterTypes.includes(x.type)
+      ),
+    [filterTypes, state.displayAll, unfilteredAccounts]
+  )
 
   // find endDate
   const endDate: string = cycleDates
@@ -131,15 +142,9 @@ function Planner() {
 
   return (
     <>
-      <Grid
-        container
-        spacing={0}
-        justify="space-between"
-        alignContent="center"
-        alignItems="center"
-      >
-        <Grid item xs={6} sm={4} md={3} lg={2}>
-          <Form size="small" state={state} setState={setState}>
+      <Form size="small" state={state} setState={setState}>
+        <Grid container spacing={2} alignContent="center" alignItems="center">
+          <Grid item xs={12} sm={4} md={3} lg={2}>
             <Select
               fullWidth
               allowNull
@@ -150,13 +155,18 @@ function Planner() {
                 label: moment(x).format("M/D/YYYY"),
               }))}
             />
-          </Form>
+          </Grid>
+          <Grid item xs={12} sm={8}>
+            <Checkbox name="displayAll" label="Include Savings and Loans" />
+          </Grid>
         </Grid>
-      </Grid>
+      </Form>
       <br />
       <Grid container spacing={3}>
         {accounts
-          .sort((a, b) => b.currentBalance - a.currentBalance)
+          .sort(
+            (a, b) => Math.abs(b.currentBalance) - Math.abs(a.currentBalance)
+          )
           .map((account) => {
             const items = cycle.filter(
               (x) => x.payment.account._id === account._id
@@ -261,9 +271,13 @@ function AccountBox({
   }
 
   return (
-    <React.Fragment key={account._id}>
-      <Grid item xs={12} md={4}>
-        <Paper variant="outlined" className={classes.accountBox}>
+    <React.Fragment>
+      <Grid item xs={12} md={6} lg={4}>
+        <Paper
+          key={account._id}
+          variant="outlined"
+          className={classes.accountBox}
+        >
           <Grid
             container
             spacing={0}
@@ -303,7 +317,7 @@ function AccountBox({
               onEditPayment={(x) => setEditPayment(x)}
             />
           ))}
-          {items.length > 0 && (
+          <Collapse in={items.length > 0}>
             <Grid
               className={classes.row}
               container
@@ -354,9 +368,10 @@ function AccountBox({
                 </strong>
               </Grid>
             </Grid>
-          )}
+          </Collapse>
         </Paper>
       </Grid>
+
       {editAccount && (
         <AccountDialog
           account={editAccount}

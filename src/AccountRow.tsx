@@ -1,7 +1,7 @@
 import { IconButton, TableCell } from "@material-ui/core"
 import EditIcon from "@material-ui/icons/Edit"
 import React from "react"
-import { StyledTableRow } from "../pages/planner"
+import { formatMoney, StyledTableRow } from "../pages/planner"
 import { useAccount } from "./AccountProvider"
 import { IAccount } from "./db/Account"
 
@@ -33,8 +33,11 @@ export default function AccountRow(props: Props) {
       <TableCell>{props.account.name}</TableCell>
       <TableCell>{props.account.type}</TableCell>
       <TableCell>{props.account.creditCardType}</TableCell>
+      <TableCell align="right">
+        {formatMoney(props.account.currentBalance)}
+      </TableCell>
       <TableCell>
-        <IconButton onClick={handleClick}>
+        <IconButton size="small" onClick={handleClick}>
           <EditIcon />
         </IconButton>
       </TableCell>

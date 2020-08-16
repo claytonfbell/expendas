@@ -76,6 +76,7 @@ export default function AccountDialog(props: Props) {
                     "CD",
                     "CD IRA",
                     "Line of Credit",
+                    "Loan",
                   ].map((x) => ({ value: x, label: x }))}
                 />
               </Grid>

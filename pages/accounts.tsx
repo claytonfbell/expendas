@@ -46,7 +46,7 @@ function Accounts() {
       </Grid>
       <br />
       <TableContainer component={Paper}>
-        <Table>
+        <Table size="small">
           <TableBody>
             {accounts.map((account) => (
               <AccountRow

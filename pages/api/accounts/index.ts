@@ -14,8 +14,10 @@ export default async (
   res.build(async () => {
     switch (req.method) {
       case "GET":
-        const allAccounts = Account.find({ household: req.household._id })
-        return allAccounts
+        const allAccounts = await Account.find({ household: req.household._id })
+        return allAccounts.sort(
+          (a, b) => Math.abs(b.currentBalance) - Math.abs(a.currentBalance)
+        )
         break
       case "POST":
         const {
