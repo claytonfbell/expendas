@@ -88,10 +88,14 @@ export default function AccountDialog(props: Props) {
               <Grid item xs={12}>
                 <TextField name="name" />
               </Grid>
-              <Grid item xs={5}>
-                <CurrencyField name="currentBalance" inPennies allowNegative />
+              <Grid item xs={8}>
+                <CurrencyField
+                  name="currentBalance"
+                  inPennies
+                  allowNegative
+                  fulleWidth
+                />
               </Grid>
-              <Grid item xs={7}></Grid>
               <Grid item xs={6}>
                 <SubmitButton>{isNew ? "Create" : "Save"}</SubmitButton>
               </Grid>

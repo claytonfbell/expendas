@@ -1,6 +1,7 @@
 import { Grid, Link as MUILink } from "@material-ui/core"
 import Button from "material-ui-bootstrap/dist/Button"
 import Form from "material-ui-pack/dist/Form"
+import useStoredState from "material-ui-pack/dist/hooks/useStoredState"
 import SubmitButton from "material-ui-pack/dist/SubmitButton"
 import TextField from "material-ui-pack/dist/TextField"
 import { useRouter } from "next/router"
@@ -13,7 +14,7 @@ import { useSignIn } from "../src/SignInProvider"
 import StartLayout from "../src/StartLayout"
 
 function SignIn() {
-  const [state, setState] = React.useState<SignInRequest>({
+  const [state, setState] = useStoredState<SignInRequest>("expendas-signin", {
     email: "",
     password: "",
   })
@@ -23,7 +24,10 @@ function SignIn() {
   const { signIn, busy } = useSignIn()
   function handleSubmit() {
     signIn(state)
-      .then(() => router.push("/planner"))
+      .then(() => {
+        setState((prev) => ({ ...prev, password: "" }))
+        router.push("/planner")
+      })
       .catch((e) => setError(e))
   }
 

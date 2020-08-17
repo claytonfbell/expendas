@@ -112,7 +112,7 @@ export default function PaymentDialog(props: Props) {
               label="Income Deposit"
             />
           </FormControl>
-          <CurrencyField name="amount" numeric blankZero inPennies />
+          <CurrencyField name="amount" numeric blankZero inPennies fulleWidth />
           <TextField name="paidTo" />
           <Select
             allowNull
@@ -183,7 +183,7 @@ export default function PaymentDialog(props: Props) {
                 <FormControlLabel
                   value="dates"
                   control={<Radio />}
-                  label="On Dates"
+                  label="Monthly"
                 />
               </RadioGroup>
             </FormControl>
