@@ -7,7 +7,7 @@ import SubmitButton from "material-ui-pack/dist/SubmitButton"
 import TextField from "material-ui-pack/dist/TextField"
 import React from "react"
 import { useAccount } from "./AccountProvider"
-import { allAccountTypes } from "./accountTypes"
+import { allAccountTypes, creditCardTypes } from "./accountTypes"
 import { IAccount } from "./db/Account"
 import DisplayError from "./DisplayError"
 import { RestError } from "./rest"
@@ -77,12 +77,7 @@ export default function AccountDialog(props: Props) {
                   allowNull
                   disabled={account.type !== "Credit Card"}
                   name="creditCardType"
-                  options={[
-                    "Mastercard",
-                    "Visa",
-                    "American Express",
-                    "Discover",
-                  ].map((x) => ({ value: x, label: x }))}
+                  options={creditCardTypes.map((x) => ({ value: x, label: x }))}
                 />
               </Grid>
               <Grid item xs={12}>

@@ -1,11 +1,27 @@
 /* eslint-disable jsx-a11y/no-autofocus */
 import {
+  faApple,
+  faCcAmex,
+  faCcDiscover,
+  faCcMastercard,
+  faCcVisa,
+} from "@fortawesome/free-brands-svg-icons"
+import {
+  faCar,
+  faHome,
+  faMoneyBill,
+  faMoneyCheckAlt,
+  faPiggyBank,
+  faUniversity,
+} from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import {
   Collapse,
   createStyles,
+  fade,
   Grid,
   Link,
   makeStyles,
-  Paper,
   TableRow,
   Theme,
   Tooltip,
@@ -37,9 +53,6 @@ import PaymentDialog from "../src/PaymentDialog"
 import { useSignIn } from "../src/SignInProvider"
 
 const useStyles = makeStyles((theme: Theme) => ({
-  accountBox: {
-    padding: 0,
-  },
   isPaid: {
     textDecoration: "line-through",
     opacity: 0.5,
@@ -47,11 +60,31 @@ const useStyles = makeStyles((theme: Theme) => ({
   netWorth: {
     fontSize: 28,
   },
+  accountBox: {
+    padding: 0,
+  },
+  accountHeader: {
+    fontWeight: "bold",
+    paddingTop: 6,
+    paddingBottom: 6,
+    borderTopLeftRadius: 10,
+    backgroundColor: fade(theme.palette.primary.main, 0.15),
+  },
   row: {
+    borderLeft: "1px solid " + theme.palette.divider,
+    borderRight: "1px solid " + theme.palette.divider,
     "&:nth-of-type(even)": {
       backgroundColor: theme.palette.background.default,
     },
+    "&:nth-of-type(odd)": {
+      backgroundColor: theme.palette.background.paper,
+    },
   },
+  bottom: {
+    borderBottomRightRadius: 10,
+    borderBottom: "1px solid " + theme.palette.divider,
+  },
+
   leftCell: {
     padding: "4px 4px 4px 12px",
   },
@@ -70,17 +103,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: 80,
     paddingBottom: 0,
     paddingTop: 0,
+    backgroundColor: "transparent",
   },
 }))
-
-const RED = "#c82333"
-
-export function formatMoney(input: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(input / 100)
-}
 
 function Planner() {
   const classes = useStyles()
@@ -211,19 +236,13 @@ function Planner() {
       <hr />
       <Grid container justify="space-between">
         <Grid item>
-          <span
-            className={classes.netWorth}
-            style={{ color: startingBalance < 0 ? RED : undefined }}
-          >
-            <AnimatedCounter value={startingBalance} />
+          <span className={classes.netWorth}>
+            <Currency value={startingBalance} animate red />
           </span>
         </Grid>
         <Grid item>
-          <span
-            className={classes.netWorth}
-            style={{ color: endingBalance < 0 ? RED : undefined }}
-          >
-            <AnimatedCounter value={endingBalance} />
+          <span className={classes.netWorth}>
+            <Currency value={endingBalance} animate red />
           </span>
         </Grid>
       </Grid>
@@ -246,7 +265,6 @@ function AccountBox({
   isCurrentCycle,
 }: AccountBoxProps) {
   const classes = useStyles()
-  const theme = useTheme()
   const { updateAccount } = useAccount()
 
   // find previous carryover
@@ -296,16 +314,15 @@ function AccountBox({
   return (
     <React.Fragment>
       <Grid item xs={12} md={6} lg={4}>
-        <Paper
-          key={account._id}
-          variant="outlined"
-          className={classes.accountBox}
-        >
+        <div style={{ fontSize: 32, textAlign: "center" }}>
+          <AccountIcon account={account} />
+        </div>
+        <div className={classes.accountBox}>
           <Grid
             container
             spacing={0}
             justify="space-between"
-            className={classes.row}
+            className={classes.accountHeader}
           >
             <Grid item className={classes.leftCell}>
               <Link
@@ -313,7 +330,7 @@ function AccountBox({
                 onClick={() => setEditAccount(account)}
                 className={classes.itemLink}
               >
-                <strong>{account.name}</strong>
+                {account.name}
               </Link>
             </Grid>
             <Grid item className={classes.rightCell}>
@@ -323,76 +340,63 @@ function AccountBox({
                   onClick={() => setEditAmount(account.currentBalance)}
                   className={classes.itemLink}
                 >
-                  <strong>{formatMoney(startingBalance)}</strong>
+                  <Currency value={startingBalance} />
                 </Link>
               ) : editAmount === undefined && !isCurrentCycle ? (
-                <strong>{formatMoney(startingBalance)}</strong>
+                <Currency value={startingBalance} />
               ) : (
                 <AmountInput value={editAmount} onChange={handleUpdateAmount} />
               )}
             </Grid>
           </Grid>
-          {items.map((item) => (
-            <CycleItemRow
-              key={item._id}
-              item={item}
-              isCurrentCycle={isCurrentCycle}
-              onEditPayment={(x) => setEditPayment(x)}
-            />
-          ))}
           <Collapse in={items.length > 0}>
-            <Grid
-              className={classes.row}
-              container
-              spacing={0}
-              justify="space-between"
-            >
-              <Grid item className={classes.leftCell}>
-                <Link
-                  href="javascript:;"
-                  onClick={() =>
-                    setEditPayment({
-                      paidTo: "",
-                      amount: 0,
-                      repeatsOnDaysOfMonth: null,
-                      repeatsOnMonthsOfYear: null,
-                      repeatsUntilDate: null,
-                      repeatsWeekly: null,
-                      account: account._id,
-                      date,
-                    })
-                  }
-                >
-                  + Add Item
-                </Link>
-              </Grid>
-              <Grid
-                item
-                className={classes.rightCell}
-                style={{
-                  borderTop: "1px solid #999999",
-                  minWidth: 120,
-                  textAlign: "right",
-                }}
-              >
-                <strong
-                  style={
-                    value < 0
-                      ? { color: RED, fontWeight: "bold" }
-                      : value > 0
-                      ? {
-                          color: theme.palette.primary.main,
-                          fontWeight: "bold",
-                        }
-                      : undefined
-                  }
-                >
-                  <AnimatedCounter value={value} />
-                </strong>
-              </Grid>
-            </Grid>
+            {items.map((item) => (
+              <CycleItemRow
+                key={item._id}
+                item={item}
+                isCurrentCycle={isCurrentCycle}
+                onEditPayment={(x) => setEditPayment(x)}
+              />
+            ))}
           </Collapse>
-        </Paper>
+          <Grid
+            className={clsx(classes.row, classes.bottom)}
+            container
+            spacing={0}
+            justify="space-between"
+          >
+            <Grid item className={classes.leftCell}>
+              <Link
+                href="javascript:;"
+                onClick={() =>
+                  setEditPayment({
+                    paidTo: "",
+                    amount: 0,
+                    repeatsOnDaysOfMonth: null,
+                    repeatsOnMonthsOfYear: null,
+                    repeatsUntilDate: null,
+                    repeatsWeekly: null,
+                    account: account._id,
+                    date,
+                  })
+                }
+              >
+                + Add Item
+              </Link>
+            </Grid>
+            <Grid
+              item
+              className={classes.rightCell}
+              style={{
+                borderTop: "1px solid #999999",
+                minWidth: 120,
+                textAlign: "right",
+              }}
+            >
+              <Currency value={value} bold animate red />
+            </Grid>
+          </Grid>
+        </div>
       </Grid>
 
       {editAccount && (
@@ -428,8 +432,6 @@ function CycleItemRow({
   ) => {
     updateCycleItem({ ...item, isPaid: e.target.checked })
   }
-
-  const theme = useTheme()
 
   const [editAmount, setEditAmount] = React.useState<number>()
 
@@ -483,18 +485,7 @@ function CycleItemRow({
                 onClick={() => setEditAmount(item.amount)}
                 className={classes.itemLink}
               >
-                <span
-                  style={
-                    item.amount > 0 && !item.isPaid
-                      ? {
-                          color: theme.palette.primary.main,
-                          fontWeight: "bold",
-                        }
-                      : undefined
-                  }
-                >
-                  {formatMoney(item.amount)}
-                </span>
+                <Currency value={item.amount} green />
               </Link>
             </>
           ) : (
@@ -535,12 +526,18 @@ function AmountInput(props: AmountInputProps) {
     if (e.keyCode === 8 && !firstKeyPressed) {
       setValue("")
     }
-    setFirstKeyPressed(true)
 
     // escape key cancels by sending back original value
     if (e.keyCode === 27) {
       props.onChange(props.value)
     }
+
+    // enter key saves changes
+    if (e.keyCode === 13) {
+      props.onChange(dollarsToCents(value))
+    }
+
+    setFirstKeyPressed(true)
   }
 
   return (
@@ -572,9 +569,88 @@ export const StyledTableRow = withStyles((theme: Theme) =>
   })
 )(TableRow)
 
+export function formatMoney(input: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(input / 100)
+}
+
 export const LargeTooltip = withStyles({
   tooltip: {
     fontSize: 14,
     padding: 10,
   },
 })(Tooltip)
+
+interface CurrencyProps {
+  value: number
+  animate?: boolean
+  bold?: boolean
+  red?: boolean
+  green?: boolean
+}
+export function Currency(props: CurrencyProps) {
+  const RED = "#c82333"
+  const theme = useTheme()
+
+  return (
+    <span
+      style={{
+        color:
+          props.value < 0 && props.red
+            ? RED
+            : props.value > 0 && props.green
+            ? theme.palette.primary.main
+            : undefined,
+        fontWeight: props.bold ? "bold" : undefined,
+      }}
+    >
+      {props.animate ? (
+        <AnimatedCounter value={props.value} />
+      ) : (
+        formatMoney(props.value)
+      )}
+    </span>
+  )
+}
+
+interface AccountIconProps {
+  account: IAccount
+}
+export function AccountIcon(props: AccountIconProps) {
+  const theme = useTheme()
+  return (
+    <FontAwesomeIcon
+      style={{ opacity: 0.8 }}
+      icon={
+        props.account.type === "Checking Account"
+          ? faMoneyCheckAlt
+          : props.account.type === "Cash"
+          ? faMoneyBill
+          : props.account.type === "Line of Credit" ||
+            props.account.type === "Loan"
+          ? faUniversity
+          : props.account.type === "CD" ||
+            props.account.type === "CD IRA" ||
+            props.account.type === "Savings Account"
+          ? faPiggyBank
+          : props.account.type === "Car Loan"
+          ? faCar
+          : props.account.type === "Home Market Value" ||
+            props.account.type === "Home Mortgage"
+          ? faHome
+          : props.account.creditCardType === "Visa"
+          ? faCcVisa
+          : props.account.creditCardType === "Apple Card"
+          ? faApple
+          : props.account.creditCardType === "American Express"
+          ? faCcAmex
+          : props.account.creditCardType === "Discover"
+          ? faCcDiscover
+          : faCcMastercard
+      }
+      color={theme.palette.primary.main}
+    />
+  )
+}

@@ -23,7 +23,7 @@ import InsideLayout from "../src/InsideLayout"
 import PaymentDialog from "../src/PaymentDialog"
 import { usePayment } from "../src/PaymentProvider"
 import { useSignIn } from "../src/SignInProvider"
-import { formatMoney, StyledTableRow } from "./planner"
+import { AccountIcon, Currency, StyledTableRow } from "./planner"
 
 function Payments() {
   const { requireAuthentication } = useSignIn()
@@ -71,6 +71,7 @@ function Payments() {
           <TableHead>
             <TableRow>
               <TableCell>Transaction</TableCell>
+              <TableCell align="right"></TableCell>
               <Hidden smDown>
                 <TableCell>Account</TableCell>
               </Hidden>
@@ -85,20 +86,19 @@ function Payments() {
             {payments.map((p) => (
               <StyledTableRow key={p._id}>
                 <TableCell>{p.paidTo}</TableCell>
+                <TableCell>
+                  <span style={{ fontSize: 22 }}>
+                    <AccountIcon account={p.account} />
+                  </span>
+                </TableCell>
                 <Hidden smDown>
                   <TableCell>{p.account.name}</TableCell>
                 </Hidden>
                 <Hidden xsDown>
                   <TableCell>{getScheduleDescription(p)}</TableCell>
                 </Hidden>
-                <TableCell
-                  align="right"
-                  style={{
-                    fontWeight: p.amount > 0 ? "bold" : undefined,
-                    color: p.amount > 0 ? "green" : undefined,
-                  }}
-                >
-                  {formatMoney(p.amount)}
+                <TableCell align="right">
+                  <Currency value={p.amount} green />
                 </TableCell>
                 <TableCell style={{ minWidth: 96 }}>
                   <IconButton size="small" onClick={handleEdit(p)}>

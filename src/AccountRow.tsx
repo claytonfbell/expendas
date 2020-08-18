@@ -1,7 +1,7 @@
-import { IconButton, TableCell } from "@material-ui/core"
+import { Hidden, IconButton, TableCell } from "@material-ui/core"
 import EditIcon from "@material-ui/icons/Edit"
 import React from "react"
-import { formatMoney, StyledTableRow } from "../pages/planner"
+import { AccountIcon, formatMoney, StyledTableRow } from "../pages/planner"
 import { IAccount } from "./db/Account"
 
 interface Props {
@@ -21,9 +21,14 @@ export default function AccountRow(props: Props) {
 
   return (
     <StyledTableRow key={props.account._id}>
+      <TableCell>
+        <AccountIcon account={props.account} />
+      </TableCell>
       <TableCell>{props.account.name}</TableCell>
-      <TableCell>{props.account.type}</TableCell>
-      <TableCell>{props.account.creditCardType}</TableCell>
+      <Hidden xsDown>
+        <TableCell>{props.account.type}</TableCell>
+        <TableCell>{props.account.creditCardType}</TableCell>
+      </Hidden>
       <TableCell align="right">
         {formatMoney(props.account.currentBalance)}
       </TableCell>

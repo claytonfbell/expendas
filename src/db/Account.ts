@@ -10,10 +10,12 @@ export type AccountType =
   | "CD IRA"
   | "Line of Credit"
   | "Car Loan"
+  | "Loan"
   | "Home Mortgage"
   | "Home Market Value"
 
 export type CreditCardType =
+  | "Apple Card"
   | "Mastercard"
   | "Visa"
   | "American Express"
