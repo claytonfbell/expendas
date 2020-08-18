@@ -746,9 +746,7 @@ export function AccountTypeIcon(props: AccountTypeIconProps) {
           ? faUniversity
           : props.type === "CD" || props.type === "Savings Account"
           ? faPiggyBank
-          : props.type === "Car Loan"
-          ? faCar
-          : props.type === "Home Market Value" || props.type === "Home Mortgage"
+          : props.type === "Home Market Value"
           ? faHome
           : props.type === "Credit Card"
           ? faCreditCard
