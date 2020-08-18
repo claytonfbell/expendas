@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons"
 import {
   faCar,
+  faCreditCard,
   faHome,
   faMoneyBill,
   faMoneyCheckAlt,
@@ -38,6 +39,7 @@ import useDebounce from "react-use/lib/useDebounce"
 import AccountDialog from "../src/AccountDialog"
 import { useAccount } from "../src/AccountProvider"
 import {
+  allAccountTypes,
   assetsAccountTypes,
   dailyAccountTypes,
   loanAccountTypes,
@@ -45,7 +47,7 @@ import {
 } from "../src/accountTypes"
 import AnimatedCounter from "../src/AnimatedCounter"
 import { useCycle } from "../src/CycleProvider"
-import { IAccount } from "../src/db/Account"
+import { AccountType, IAccount } from "../src/db/Account"
 import { ICycleItemPopulated } from "../src/db/CycleItem"
 import { IPayment } from "../src/db/Payment"
 import InsideLayout from "../src/InsideLayout"
@@ -117,6 +119,7 @@ function Planner() {
     displaySavings: false,
     displayLoans: false,
     displayAssets: false,
+    displayAccountsGrouped: true,
   })
   const { fetchCycleDates, cycleDates } = useCycle()
   React.useEffect(() => {
@@ -186,6 +189,29 @@ function Planner() {
     .filter((x) => !x.isPaid)
     .reduce((sum, x) => sum + x.amount, startingBalance)
 
+  type Tmp = { key: string; accounts: IAccount[]; items: ICycleItemPopulated[] }
+  const data: Tmp[] = []
+  if (state.displayAccountsGrouped) {
+    allAccountTypes.forEach((type) => {
+      const acc = accounts.filter((y) => y.type === type)
+      if (acc.length > 0) {
+        data.push({
+          key: type,
+          accounts: acc,
+          items: cycle.filter((x) => x.payment.account.type === type),
+        })
+      }
+    })
+  } else {
+    accounts.forEach((acc) => {
+      data.push({
+        key: acc._id,
+        accounts: [acc],
+        items: cycle.filter((x) => x.payment.account._id === acc._id),
+      })
+    })
+  }
+
   return (
     <>
       <Form size="small" state={state} setState={setState}>
@@ -202,34 +228,32 @@ function Planner() {
               }))}
             />
           </Grid>
-          <Grid item xs={12} sm={8}>
+          <Grid item xs={6} sm={4} md={2}>
             <Checkbox name="displaySavings" label="Include Savings" />
+          </Grid>
+          <Grid item xs={6} sm={4} md={2}>
             <Checkbox name="displayLoans" label="Include Loans" />
+          </Grid>
+          <Grid item xs={6} sm={4} md={2}>
             <Checkbox name="displayAssets" label="Include Assets" />
+          </Grid>
+          <Grid item xs={6} sm={4} md={2}>
+            <Checkbox name="displayAccountsGrouped" label="Group Accounts" />
           </Grid>
         </Grid>
       </Form>
       <br />
       <Grid container spacing={3}>
-        {accounts
-          .sort(
-            (a, b) => Math.abs(b.currentBalance) - Math.abs(a.currentBalance)
-          )
-          .map((account) => {
-            const items = cycle.filter(
-              (x) => x.payment.account._id === account._id
-            )
-            return (
-              <AccountBox
-                key={account._id}
-                account={account}
-                items={items}
-                date={state.cycleDate}
-                endDate={endDate}
-                isCurrentCycle={isCurrentCycle}
-              />
-            )
-          })}
+        {data.map((x) => (
+          <AccountBox
+            key={x.key}
+            accounts={x.accounts}
+            items={x.items}
+            date={state.cycleDate}
+            endDate={endDate}
+            isCurrentCycle={isCurrentCycle}
+          />
+        ))}
       </Grid>
       <br />
       <br />
@@ -250,24 +274,22 @@ function Planner() {
   )
 }
 
-type AccountBoxProps = {
+interface CarryOverProps {
   account: IAccount
-  items: ICycleItemPopulated[]
   date: string
   endDate: string
+  items: ICycleItemPopulated[]
   isCurrentCycle: boolean
 }
-function AccountBox({
+function CarryOver({
   account,
-  items,
   date,
   endDate,
+  items,
   isCurrentCycle,
-}: AccountBoxProps) {
-  const classes = useStyles()
+}: CarryOverProps) {
   const { updateAccount } = useAccount()
 
-  // find previous carryover
   const carryOver = account.carryOver.filter((x) => x.date === date)
   let startingBalance: number = account.currentBalance
   if (carryOver.length > 0 && !isCurrentCycle) {
@@ -297,25 +319,72 @@ function AccountBox({
     [value, account._id, endDate]
   )
 
+  return <></>
+}
+
+type AccountBoxProps = {
+  accounts: IAccount[]
+  items: ICycleItemPopulated[]
+  date: string
+  endDate: string
+  isCurrentCycle: boolean
+}
+function AccountBox({
+  accounts,
+  items,
+  date,
+  endDate,
+  isCurrentCycle,
+}: AccountBoxProps) {
+  const classes = useStyles()
+  const { updateAccount } = useAccount()
+
+  // find previous carryover
+  const carryOver = accounts.reduce((sum, x) => {
+    const found = x.carryOver.find((x) => x.date === date)
+    return sum + (found !== undefined ? found.balance : x.currentBalance)
+  }, 0)
+  let startingBalance: number = accounts.reduce(
+    (sum, acc) => sum + acc.currentBalance,
+    0
+  )
+  if (!isCurrentCycle) {
+    startingBalance = carryOver
+  }
+
+  const endingBalance =
+    startingBalance +
+    items.filter((x) => !x.isPaid).reduce((x, y) => x + y.amount, 0)
+
   const [editAccount, setEditAccount] = React.useState<IAccount>()
   const [editPayment, setEditPayment] = React.useState<IPayment>()
 
   const [editAmount, setEditAmount] = React.useState<number>()
 
   function handleUpdateAmount(currentBalance: number) {
-    updateAccount({ ...account, currentBalance })
+    updateAccount({ ...accounts[0], currentBalance })
     setEditAmount(undefined)
-  }
-
-  if (items.length === 0 && account.currentBalance === 0) {
-    return null
   }
 
   return (
     <React.Fragment>
+      {accounts.map((account) => (
+        <CarryOver
+          key={account._id}
+          account={account}
+          items={items.filter((x) => x.payment.account._id === account._id)}
+          date={date}
+          endDate={endDate}
+          isCurrentCycle={isCurrentCycle}
+        />
+      ))}
       <Grid item xs={12} md={6} lg={4}>
         <div style={{ fontSize: 32, textAlign: "center" }}>
-          <AccountIcon account={account} />
+          {accounts.length === 1 ? (
+            <AccountIcon account={accounts[0]} />
+          ) : (
+            <AccountTypeIcon type={accounts[0].type} />
+          )}
         </div>
         <div className={classes.accountBox}>
           <Grid
@@ -325,27 +394,33 @@ function AccountBox({
             className={classes.accountHeader}
           >
             <Grid item className={classes.leftCell}>
-              <Link
-                href="javascript:;"
-                onClick={() => setEditAccount(account)}
-                className={classes.itemLink}
-              >
-                {account.name}
-              </Link>
-            </Grid>
-            <Grid item className={classes.rightCell}>
-              {editAmount === undefined && isCurrentCycle ? (
+              {accounts.length === 1 ? (
                 <Link
                   href="javascript:;"
-                  onClick={() => setEditAmount(account.currentBalance)}
+                  onClick={() => setEditAccount(accounts[0])}
+                  className={classes.itemLink}
+                >
+                  {accounts[0].name}
+                </Link>
+              ) : (
+                accounts[0].type
+              )}
+            </Grid>
+            <Grid item className={classes.rightCell}>
+              {editAmount === undefined &&
+              isCurrentCycle &&
+              accounts.length === 1 ? (
+                <Link
+                  href="javascript:;"
+                  onClick={() => setEditAmount(accounts[0].currentBalance)}
                   className={classes.itemLink}
                 >
                   <Currency value={startingBalance} />
                 </Link>
-              ) : editAmount === undefined && !isCurrentCycle ? (
-                <Currency value={startingBalance} />
-              ) : (
+              ) : editAmount !== undefined && isCurrentCycle ? (
                 <AmountInput value={editAmount} onChange={handleUpdateAmount} />
+              ) : (
+                <Currency value={startingBalance} />
               )}
             </Grid>
           </Grid>
@@ -376,7 +451,7 @@ function AccountBox({
                     repeatsOnMonthsOfYear: null,
                     repeatsUntilDate: null,
                     repeatsWeekly: null,
-                    account: account._id,
+                    account: accounts[0]._id,
                     date,
                   })
                 }
@@ -388,12 +463,12 @@ function AccountBox({
               item
               className={classes.rightCell}
               style={{
-                borderTop: "1px solid #999999",
+                borderTop: items.length > 0 ? "1px solid #999999" : undefined,
                 minWidth: 120,
                 textAlign: "right",
               }}
             >
-              <Currency value={value} bold animate red />
+              <Currency value={endingBalance} bold animate red />
             </Grid>
           </Grid>
         </div>
@@ -632,7 +707,6 @@ export function AccountIcon(props: AccountIconProps) {
             props.account.type === "Loan"
           ? faUniversity
           : props.account.type === "CD" ||
-            props.account.type === "CD IRA" ||
             props.account.type === "Savings Account"
           ? faPiggyBank
           : props.account.type === "Car Loan"
@@ -649,6 +723,36 @@ export function AccountIcon(props: AccountIconProps) {
           : props.account.creditCardType === "Discover"
           ? faCcDiscover
           : faCcMastercard
+      }
+      color={theme.palette.primary.main}
+    />
+  )
+}
+
+interface AccountTypeIconProps {
+  type: AccountType
+}
+export function AccountTypeIcon(props: AccountTypeIconProps) {
+  const theme = useTheme()
+  return (
+    <FontAwesomeIcon
+      style={{ opacity: 0.8 }}
+      icon={
+        props.type === "Checking Account"
+          ? faMoneyCheckAlt
+          : props.type === "Cash"
+          ? faMoneyBill
+          : props.type === "Line of Credit" || props.type === "Loan"
+          ? faUniversity
+          : props.type === "CD" || props.type === "Savings Account"
+          ? faPiggyBank
+          : props.type === "Car Loan"
+          ? faCar
+          : props.type === "Home Market Value" || props.type === "Home Mortgage"
+          ? faHome
+          : props.type === "Credit Card"
+          ? faCreditCard
+          : faUniversity
       }
       color={theme.palette.primary.main}
     />

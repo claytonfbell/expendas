@@ -7,11 +7,8 @@ export type AccountType =
   | "Checking Account"
   | "Savings Account"
   | "CD"
-  | "CD IRA"
   | "Line of Credit"
-  | "Car Loan"
   | "Loan"
-  | "Home Mortgage"
   | "Home Market Value"
 
 export type CreditCardType =

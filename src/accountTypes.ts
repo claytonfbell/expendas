@@ -1,16 +1,8 @@
 import { AccountType, CreditCardType } from "./db/Account"
 
-export const loanAccountTypes: AccountType[] = [
-  "Car Loan",
-  "Home Mortgage",
-  "Loan",
-]
+export const loanAccountTypes: AccountType[] = ["Loan"]
 
-export const savingsAccountTypes: AccountType[] = [
-  "CD",
-  "CD IRA",
-  "Savings Account",
-]
+export const savingsAccountTypes: AccountType[] = ["CD", "Savings Account"]
 
 export const assetsAccountTypes: AccountType[] = ["Home Market Value"]
 
