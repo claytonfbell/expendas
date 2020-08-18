@@ -7,7 +7,6 @@ import {
   faCcVisa,
 } from "@fortawesome/free-brands-svg-icons"
 import {
-  faCar,
   faCreditCard,
   faHome,
   faMoneyBill,
@@ -709,10 +708,7 @@ export function AccountIcon(props: AccountIconProps) {
           : props.account.type === "CD" ||
             props.account.type === "Savings Account"
           ? faPiggyBank
-          : props.account.type === "Car Loan"
-          ? faCar
-          : props.account.type === "Home Market Value" ||
-            props.account.type === "Home Mortgage"
+          : props.account.type === "Home Market Value"
           ? faHome
           : props.account.creditCardType === "Visa"
           ? faCcVisa
