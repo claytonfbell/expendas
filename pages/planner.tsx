@@ -237,7 +237,7 @@ function Planner() {
             <Checkbox name="displayAssets" label="Include Assets" />
           </Grid>
           <Grid item xs={6} sm={4} md={2}>
-            <Checkbox name="displayAccountsGrouped" label="Group Accounts" />
+            <Checkbox name="displayAccountsGrouped" label="Grouped" />
           </Grid>
         </Grid>
       </Form>
