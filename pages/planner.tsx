@@ -118,7 +118,7 @@ function Planner() {
     displaySavings: false,
     displayLoans: false,
     displayAssets: false,
-    displayAccountsGrouped: true,
+    displayAccountsGrouped: false,
   })
   const { fetchCycleDates, cycleDates } = useCycle()
   React.useEffect(() => {
@@ -127,7 +127,7 @@ function Planner() {
 
   React.useEffect(() => {
     if (cycleDates.length > 0 && state.cycleDate === null) {
-      setState((x) => ({ ...x, cycleDate: cycleDates[1] }))
+      setState((x) => ({ ...x, cycleDate: cycleDates[0] }))
     }
   }, [cycleDates, state.cycleDate])
 

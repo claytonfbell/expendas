@@ -37,9 +37,7 @@ class BuildCycleService {
     const rangeStart = moment(cycleDate)
     let rangeEnd = moment(cycleDate).add(6, "months")
     const cycles = await new CycleService().getCycleDatesWithHouseHold(
-      household,
-      rangeStart,
-      rangeEnd
+      household
     )
     // next cycle
     rangeEnd = moment(cycles[1])

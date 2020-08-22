@@ -20,23 +20,8 @@ export default async (
   res.build(async () => {
     switch (req.method) {
       case "GET":
-        const rangeStart: Moment = moment()
-          .hour(0)
-          .minute(0)
-          .second(0)
-          .millisecond(0)
-          .subtract(1, "months")
-        const rangeEnd: Moment = moment()
-          .hour(0)
-          .minute(0)
-          .second(0)
-          .millisecond(0)
-          .add(6, "months")
-
         const cycles = await new CycleService().getCycleDatesWithHouseHold(
-          req.household,
-          rangeStart,
-          rangeEnd
+          req.household
         )
         return cycles
         break
@@ -47,11 +32,19 @@ export default async (
 }
 
 export class CycleService {
-  async getCycleDatesWithHouseHold(
-    household: IHousehold,
-    rangeStart: Moment,
-    rangeEnd: Moment
-  ) {
+  async getCycleDatesWithHouseHold(household: IHousehold) {
+    const rangeStart: Moment = moment()
+      .hour(0)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+    const rangeEnd: Moment = moment()
+      .hour(0)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .add(6, "months")
+
     // FETCH ALL PAYMENTS
     const allPayments = await Payment.find({
       household: household._id,
@@ -66,7 +59,19 @@ export class CycleService {
       })
 
     const cycles: Moment[] = []
-    const cursor = moment(rangeStart)
+
+    let cursor = moment(rangeStart)
+
+    while (cycles.length === 0) {
+      // find paychecks that fall on this date
+      const checks = this.filterPaymentsOnDate(payChecks, cursor)
+      if (checks.length > 0) {
+        cycles.push(moment(cursor))
+      }
+      cursor.subtract(1, "days")
+    }
+
+    cursor = moment(rangeStart)
     while (cursor.isBefore(rangeEnd)) {
       // find paychecks that fall on this date
       const checks = this.filterPaymentsOnDate(payChecks, cursor)
