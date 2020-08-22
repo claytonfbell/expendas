@@ -21,7 +21,8 @@ import SubmitButton from "material-ui-pack/dist/SubmitButton"
 import TextField from "material-ui-pack/dist/TextField"
 import moment from "moment-timezone"
 import React from "react"
-import { getScheduleDescription } from "../pages/payments"
+import ReactMarkdown from "react-markdown"
+import { getRepeatingPaymentFeedback } from "../pages/payments"
 import { useAccount } from "./AccountProvider"
 import { DayOfMonth, IPayment, MonthOfYear } from "./db/Payment"
 import DisplayError from "./DisplayError"
@@ -76,7 +77,7 @@ export default function PaymentDialog(props: Props) {
   }, [fetchAccounts])
 
   const [isIncome, setIsIncome] = React.useState(false)
-  const twentyEightDays = Array.from(Array(28).keys())
+  const thirtyOneDays = Array.from(Array(31).keys())
   const twelveMonths = Array.from(Array(12).keys())
   const repeats =
     state.repeatsOnDaysOfMonth != null || state.repeatsWeekly !== null
@@ -86,6 +87,40 @@ export default function PaymentDialog(props: Props) {
   const repeatsUntil = state.repeatsUntilDate !== null
 
   const [willDelete, setWillDelete] = React.useState<string>()
+
+  const feedback = getRepeatingPaymentFeedback(state)
+
+  // auto-select date of month if they change start date
+  React.useEffect(() => {
+    if (state.repeatsOnDaysOfMonth !== null) {
+      const newArray = [...state.repeatsOnDaysOfMonth]
+      const x = moment(state.date).date() as DayOfMonth
+      if (!newArray.includes(x)) {
+        newArray.push(x)
+        newArray.sort((a, b) => a - b)
+        setState((prev) => ({
+          ...prev,
+          repeatsOnDaysOfMonth: newArray,
+        }))
+      }
+    }
+  }, [state.date, state.repeatsOnDaysOfMonth])
+
+  // auto-select monthif they change start date
+  React.useEffect(() => {
+    if (state.repeatsOnMonthsOfYear !== null) {
+      const newArray = [...state.repeatsOnMonthsOfYear]
+      const x = moment(state.date).month() as MonthOfYear
+      if (!newArray.includes(x)) {
+        newArray.push(x)
+        newArray.sort((a, b) => a - b)
+        setState((prev) => ({
+          ...prev,
+          repeatsOnMonthsOfYear: newArray,
+        }))
+      }
+    }
+  }, [state.date, state.repeatsOnMonthsOfYear])
 
   return (
     <Dialog open={props.payment !== undefined} onClose={props.onClose}>
@@ -153,7 +188,9 @@ export default function PaymentDialog(props: Props) {
                     setState((prev) => ({
                       ...prev,
                       repeatsWeekly: null,
-                      repeatsOnDaysOfMonth: [1],
+                      repeatsOnDaysOfMonth: [
+                        moment(state.date).date() as DayOfMonth,
+                      ],
                     }))
                   } else {
                     setState((prev) => ({
@@ -189,7 +226,7 @@ export default function PaymentDialog(props: Props) {
             </FormControl>
 
             <Collapse in={repeatsType === "dates"}>
-              {twentyEightDays.map((x) => (
+              {thirtyOneDays.map((x) => (
                 <Button
                   key={x}
                   onClick={() => {
@@ -209,6 +246,7 @@ export default function PaymentDialog(props: Props) {
                     }))
                   }}
                   color={"primary"}
+                  disabled={moment(state.date).date() === x + 1}
                   variant={
                     state.repeatsOnDaysOfMonth !== null &&
                     state.repeatsOnDaysOfMonth.includes((x + 1) as DayOfMonth)
@@ -232,7 +270,9 @@ export default function PaymentDialog(props: Props) {
                     } else {
                       setState((prev) => ({
                         ...prev,
-                        repeatsOnMonthsOfYear: [0],
+                        repeatsOnMonthsOfYear: [
+                          moment(state.date).month() as MonthOfYear,
+                        ],
                       }))
                     }
                   }}
@@ -259,6 +299,7 @@ export default function PaymentDialog(props: Props) {
                         }))
                       }}
                       color={"primary"}
+                      disabled={moment(state.date).month() === x}
                       variant={
                         state.repeatsOnMonthsOfYear !== null &&
                         state.repeatsOnMonthsOfYear.includes(x as MonthOfYear)
@@ -298,7 +339,16 @@ export default function PaymentDialog(props: Props) {
               <DatePicker name="repeatsUntilDate" />
             </Collapse>
 
-            <Alert color="info">{getScheduleDescription(state)}</Alert>
+            <Alert color="info">{feedback.description}</Alert>
+
+            {feedback.errors.length > 0 ? (
+              <>
+                <br />
+                <Alert color="danger">
+                  <ReactMarkdown source={`${feedback.errors.join("  \n")}`} />
+                </Alert>
+              </>
+            ) : null}
           </Collapse>
 
           <br />

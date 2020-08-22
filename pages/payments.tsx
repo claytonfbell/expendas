@@ -15,9 +15,11 @@ import {
 } from "@material-ui/core"
 import DeleteIcon from "@material-ui/icons/Delete"
 import EditIcon from "@material-ui/icons/Edit"
+import Alert from "material-ui-bootstrap/dist/Alert"
 import Button from "material-ui-bootstrap/dist/Button"
 import moment from "moment-timezone"
 import React from "react"
+import ReactMarkdown from "react-markdown"
 import { IPayment, IPaymentPopulated } from "../src/db/Payment"
 import InsideLayout from "../src/InsideLayout"
 import PaymentDialog from "../src/PaymentDialog"
@@ -83,38 +85,55 @@ function Payments() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {payments.map((p) => (
-              <StyledTableRow key={p._id}>
-                <TableCell>{p.paidTo}</TableCell>
-                <TableCell>
-                  <span style={{ fontSize: 22 }}>
-                    <AccountIcon account={p.account} />
-                  </span>
-                </TableCell>
-                <Hidden smDown>
-                  <TableCell>{p.account.name}</TableCell>
-                </Hidden>
-                <Hidden xsDown>
-                  <TableCell>{getScheduleDescription(p)}</TableCell>
-                </Hidden>
-                <TableCell align="right">
-                  <Currency value={p.amount} green />
-                </TableCell>
-                <TableCell style={{ minWidth: 96 }}>
-                  <IconButton size="small" onClick={handleEdit(p)}>
-                    <EditIcon />
-                  </IconButton>
-                  <Hidden mdDown>
-                    <IconButton
-                      size="small"
-                      onClick={() => setWillDelete(p._id)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
+            {payments.map((p) => {
+              const feedback = getRepeatingPaymentFeedback(p)
+
+              return (
+                <StyledTableRow key={p._id}>
+                  <TableCell>{p.paidTo}</TableCell>
+                  <TableCell>
+                    <span style={{ fontSize: 22 }}>
+                      <AccountIcon account={p.account} />
+                    </span>
+                  </TableCell>
+                  <Hidden smDown>
+                    <TableCell>{p.account.name}</TableCell>
                   </Hidden>
-                </TableCell>
-              </StyledTableRow>
-            ))}
+                  <Hidden xsDown>
+                    <TableCell>
+                      {feedback.description}
+
+                      {feedback.errors.length > 0 ? (
+                        <>
+                          <br />
+                          <Alert color="danger">
+                            <ReactMarkdown
+                              source={`${feedback.errors.join("  \n")}`}
+                            />
+                          </Alert>
+                        </>
+                      ) : null}
+                    </TableCell>
+                  </Hidden>
+                  <TableCell align="right">
+                    <Currency value={p.amount} green />
+                  </TableCell>
+                  <TableCell style={{ minWidth: 96 }}>
+                    <IconButton size="small" onClick={handleEdit(p)}>
+                      <EditIcon />
+                    </IconButton>
+                    <Hidden mdDown>
+                      <IconButton
+                        size="small"
+                        onClick={() => setWillDelete(p._id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Hidden>
+                  </TableCell>
+                </StyledTableRow>
+              )
+            })}
           </TableBody>
         </Table>
       </TableContainer>
@@ -175,7 +194,14 @@ export default () => (
   </InsideLayout>
 )
 
-export function getScheduleDescription(schedule: IPayment | IPaymentPopulated) {
+type ScheduleFeedback = {
+  description: string
+  errors: string[]
+}
+
+export function getRepeatingPaymentFeedback(
+  schedule: IPayment | IPaymentPopulated
+): ScheduleFeedback {
   let msg: string = moment(schedule.date).format("l")
   // repeating on dates
   if (schedule.repeatsOnDaysOfMonth !== null) {
@@ -183,7 +209,10 @@ export function getScheduleDescription(schedule: IPayment | IPaymentPopulated) {
       schedule.repeatsOnDaysOfMonth
         .map((x) => moment.localeData().ordinal(x))
         .join(", ") + " of "
-    if (schedule.repeatsOnMonthsOfYear === null) {
+    if (
+      schedule.repeatsOnMonthsOfYear === null ||
+      schedule.repeatsOnMonthsOfYear.length === 12
+    ) {
       msg += "each month"
     } else {
       msg += schedule.repeatsOnMonthsOfYear
@@ -199,5 +228,31 @@ export function getScheduleDescription(schedule: IPayment | IPaymentPopulated) {
         ? " each week"
         : ` every ${schedule.repeatsWeekly} weeks`)
   }
-  return msg
+
+  // repeats until
+  if (
+    (schedule.repeatsOnDaysOfMonth !== null ||
+      schedule.repeatsWeekly !== null) &&
+    schedule.repeatsUntilDate !== null
+  ) {
+    msg += ` until ${moment(schedule.repeatsUntilDate).format("M/D/YYYY")}`
+  }
+
+  // errors
+  let errors = []
+  if (schedule.repeatsOnDaysOfMonth !== null) {
+    const invalidDates = [29, 30, 31]
+    errors = schedule.repeatsOnDaysOfMonth
+      .map((x) =>
+        invalidDates.includes(x)
+          ? `Invalid repeating date **${moment.localeData().ordinal(x)}**`
+          : undefined
+      )
+      .filter((x) => x !== undefined)
+  }
+
+  return {
+    description: msg,
+    errors,
+  }
 }
