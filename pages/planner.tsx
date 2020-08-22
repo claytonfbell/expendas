@@ -187,9 +187,11 @@ function Planner() {
     }
     return sum + startingBalance
   }, 0)
-
   const endingBalance = cycle
     .filter((x) => !x.isPaid)
+    .filter(
+      (x) => accounts.filter((y) => y._id === x.payment.account._id).length > 0
+    )
     .reduce((sum, x) => sum + x.amount, startingBalance)
 
   type Tmp = { key: string; accounts: IAccount[]; items: ICycleItemPopulated[] }
@@ -300,7 +302,6 @@ function CarryOver({
   useDebounce(
     () => {
       if (endDate !== undefined) {
-        console.log(`HIT ${value} ${account.name}`)
         updateAccount({
           ...account,
           carryOver: [
