@@ -132,9 +132,13 @@ function Planner() {
   }, [cycleDates, state.cycleDate])
 
   const { cycle, fetchCycle } = useCycle()
-  React.useEffect(() => {
-    fetchCycle(state.cycleDate)
-  }, [fetchCycle, state.cycleDate])
+  useDebounce(
+    () => {
+      fetchCycle(state.cycleDate)
+    },
+    700,
+    [fetchCycle, state.cycleDate]
+  )
 
   const { accounts: unfilteredAccounts, fetchAccounts } = useAccount()
   React.useEffect(() => {
@@ -221,18 +225,6 @@ function Planner() {
 
       <Form size="small" state={state} setState={setState}>
         <Grid container spacing={2} alignContent="center" alignItems="center">
-          {/* <Grid item xs={12} sm={4} md={3} lg={2}>
-            <Select
-              fullWidth
-              allowNull
-              name="cycleDate"
-              label="Pay Day"
-              options={cycleDates.map((x) => ({
-                value: x,
-                label: moment(x).format("M/D/YYYY"),
-              }))}
-            />
-          </Grid> */}
           <Grid item xs={6} sm={4} md={2}>
             <Checkbox name="displaySavings" label="Include Savings" />
           </Grid>
