@@ -35,12 +35,12 @@ class BuildCycleService {
   async build(household: IHousehold, cycleDate: string) {
     // find cycle end date
     const rangeStart = moment(cycleDate)
-    let rangeEnd = moment(cycleDate).add(6, "months")
     const cycles = await new CycleService().getCycleDatesWithHouseHold(
-      household
+      household,
+      7
     )
     // next cycle
-    rangeEnd = moment(cycles[1])
+    const rangeEnd = moment(cycles[cycles.indexOf(cycleDate) + 1])
 
     // get all relevant payments
     const allPayments = await Payment.find({

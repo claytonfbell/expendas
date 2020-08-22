@@ -21,7 +21,8 @@ export default async (
     switch (req.method) {
       case "GET":
         const cycles = await new CycleService().getCycleDatesWithHouseHold(
-          req.household
+          req.household,
+          6
         )
         return cycles
         break
@@ -32,7 +33,7 @@ export default async (
 }
 
 export class CycleService {
-  async getCycleDatesWithHouseHold(household: IHousehold) {
+  async getCycleDatesWithHouseHold(household: IHousehold, months: number) {
     const rangeStart: Moment = moment()
       .hour(0)
       .minute(0)
@@ -43,7 +44,7 @@ export class CycleService {
       .minute(0)
       .second(0)
       .millisecond(0)
-      .add(6, "months")
+      .add(months, "months")
 
     // FETCH ALL PAYMENTS
     const allPayments = await Payment.find({

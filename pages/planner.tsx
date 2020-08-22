@@ -31,7 +31,6 @@ import {
 import clsx from "clsx"
 import Checkbox from "material-ui-pack/dist/Checkbox"
 import Form from "material-ui-pack/dist/Form"
-import Select from "material-ui-pack/dist/Select"
 import moment from "moment-timezone"
 import React, { ChangeEvent } from "react"
 import useDebounce from "react-use/lib/useDebounce"
@@ -45,6 +44,7 @@ import {
   savingsAccountTypes,
 } from "../src/accountTypes"
 import AnimatedCounter from "../src/AnimatedCounter"
+import CycleNavigation from "../src/CycleNavigation"
 import { useCycle } from "../src/CycleProvider"
 import { AccountType, IAccount } from "../src/db/Account"
 import { ICycleItemPopulated } from "../src/db/CycleItem"
@@ -213,9 +213,15 @@ function Planner() {
 
   return (
     <>
+      <CycleNavigation
+        date={state.cycleDate}
+        cycleDates={cycleDates}
+        onChange={(x) => setState((prev) => ({ ...prev, cycleDate: x }))}
+      />
+
       <Form size="small" state={state} setState={setState}>
         <Grid container spacing={2} alignContent="center" alignItems="center">
-          <Grid item xs={12} sm={4} md={3} lg={2}>
+          {/* <Grid item xs={12} sm={4} md={3} lg={2}>
             <Select
               fullWidth
               allowNull
@@ -226,7 +232,7 @@ function Planner() {
                 label: moment(x).format("M/D/YYYY"),
               }))}
             />
-          </Grid>
+          </Grid> */}
           <Grid item xs={6} sm={4} md={2}>
             <Checkbox name="displaySavings" label="Include Savings" />
           </Grid>
