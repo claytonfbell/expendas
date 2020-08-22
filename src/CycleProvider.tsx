@@ -8,7 +8,9 @@ interface ContextType {
   cycle: ICycleItemPopulated[]
   fetchCycleDates: () => Promise<void>
   fetchCycle: (date: string) => Promise<void>
+  refreshCycle: () => Promise<void>
   updateCycleItem: (cycleItem: ICycleItem) => Promise<void>
+  reset: () => void
 }
 
 const Context = React.createContext<ContextType | undefined>(undefined)
@@ -24,6 +26,7 @@ export function CycleProvider(props: any) {
   const [busy, setBusy] = React.useState(false)
   const [cycleDates, setCycleDates] = React.useState<string[]>([])
   const [cycle, setCycle] = React.useState<ICycleItemPopulated[]>([])
+  const [lastCycleDate, setLastCycleDate] = React.useState<string>()
 
   const fetchCycleDates = React.useCallback(() => {
     setBusy(true)
@@ -38,7 +41,9 @@ export function CycleProvider(props: any) {
   }, [])
 
   const fetchCycle = React.useCallback((date: string) => {
+    setLastCycleDate(date)
     setBusy(true)
+    setCycle([])
     return rest
       .get(`/cycles/${date}`)
       .then((x) => {
@@ -47,6 +52,16 @@ export function CycleProvider(props: any) {
       .finally(() => {
         setBusy(false)
       })
+  }, [])
+
+  const refreshCycle = React.useCallback(() => {
+    if (lastCycleDate !== undefined) {
+      return fetchCycle(lastCycleDate)
+    }
+  }, [fetchCycle, lastCycleDate])
+
+  const reset = React.useCallback(() => {
+    setCycle([])
   }, [])
 
   const updateCycleItem = React.useCallback(
@@ -72,8 +87,19 @@ export function CycleProvider(props: any) {
       fetchCycleDates,
       fetchCycle,
       updateCycleItem,
+      refreshCycle,
+      reset,
     }),
-    [busy, cycleDates, cycle, fetchCycleDates, fetchCycle, updateCycleItem]
+    [
+      busy,
+      cycleDates,
+      cycle,
+      fetchCycleDates,
+      fetchCycle,
+      updateCycleItem,
+      refreshCycle,
+      reset,
+    ]
   )
 
   return <Context.Provider value={value} {...props} />

@@ -131,7 +131,7 @@ function Planner() {
     }
   }, [cycleDates, state.cycleDate])
 
-  const { cycle, fetchCycle } = useCycle()
+  const { cycle, fetchCycle, reset } = useCycle()
   useDebounce(
     () => {
       fetchCycle(state.cycleDate)
@@ -142,8 +142,9 @@ function Planner() {
 
   const { accounts: unfilteredAccounts, fetchAccounts } = useAccount()
   React.useEffect(() => {
+    reset()
     fetchAccounts()
-  }, [fetchAccounts, state.cycleDate])
+  }, [fetchAccounts, reset, state.cycleDate])
   const accounts = React.useMemo(
     () =>
       unfilteredAccounts.filter((x) => {

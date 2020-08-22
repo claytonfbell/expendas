@@ -24,6 +24,7 @@ import React from "react"
 import ReactMarkdown from "react-markdown"
 import { getRepeatingPaymentFeedback } from "../pages/payments"
 import { useAccount } from "./AccountProvider"
+import { useCycle } from "./CycleProvider"
 import { DayOfMonth, IPayment, MonthOfYear } from "./db/Payment"
 import DisplayError from "./DisplayError"
 import { usePayment } from "./PaymentProvider"
@@ -36,8 +37,14 @@ interface Props {
 
 type RepeatsType = "weekly" | "dates"
 
+interface PaymentForm extends IPayment {
+  account2?: string
+}
+
 export default function PaymentDialog(props: Props) {
-  const [state, setState] = React.useState<IPayment>(props.payment)
+  const { refreshCycle } = useCycle()
+
+  const [state, setState] = React.useState<PaymentForm>(props.payment)
   React.useEffect(() => {
     setIsIncome(props.payment.amount > 0)
     setState({
@@ -48,34 +55,83 @@ export default function PaymentDialog(props: Props) {
 
   const [error, setError] = React.useState<RestError>()
   const { busy, createPayment, updatePayment, deletePayment } = usePayment()
-  function handleSubmit() {
-    setError(undefined)
-    if (state._id === undefined) {
-      createPayment({
-        ...state,
-        amount: isIncome ? Number(state.amount) : -Number(state.amount),
-      })
-        .then(() => {
+  async function handleSubmit() {
+    try {
+      setError(undefined)
+      if (state._id === undefined) {
+        if (isTransfer) {
+          if (state.account === undefined || state.account === null) {
+            const err: RestError = {
+              status: 0,
+              message: "Select account to transfer from.",
+            }
+            throw err
+          }
+          if (state.account2 === undefined || state.account2 === null) {
+            const err: RestError = {
+              status: 0,
+              message: "Select account to transfer to.",
+            }
+            throw err
+          }
+          if (state.account === state.account2) {
+            const err: RestError = {
+              status: 0,
+              message: "Select a different account to transfer to.",
+            }
+            throw err
+          }
+          if (Number(state.amount) <= 0) {
+            const err: RestError = {
+              status: 0,
+              message: "Enter the amount to transfer.",
+            }
+            throw err
+          }
+          // submit two payments if transfer
+          await createPayment({
+            ...state,
+            amount: -Number(state.amount),
+            paidTo: `Transfer to ${
+              accounts.find((x) => x._id === state.account2).name
+            }`,
+          })
+          await createPayment({
+            ...state,
+            account: state.account2,
+            paidTo: `Transfer from ${
+              accounts.find((x) => x._id === state.account).name
+            }`,
+          })
+          refreshCycle()
           props.onClose()
-        })
-        .catch((e) => setError(e))
-    } else {
-      updatePayment({
-        ...state,
-        amount: isIncome ? Number(state.amount) : -Number(state.amount),
-      })
-        .then(() => {
+        } else {
+          await createPayment({
+            ...state,
+            amount: isIncome ? Number(state.amount) : -Number(state.amount),
+          })
+          refreshCycle()
           props.onClose()
+        }
+      } else {
+        await updatePayment({
+          ...state,
+          amount: isIncome ? Number(state.amount) : -Number(state.amount),
         })
-        .catch((e) => setError(e))
+        refreshCycle()
+        props.onClose()
+      }
+    } catch (e) {
+      setError(e)
     }
   }
 
-  const { fetchAccounts, accounts } = useAccount()
+  const { fetchAccounts, accounts: unsortedAccounts } = useAccount()
   React.useEffect(() => {
     fetchAccounts()
   }, [fetchAccounts])
 
+  const accounts = unsortedAccounts.sort((a, b) => a.name.localeCompare(b.name))
   const [isIncome, setIsIncome] = React.useState(false)
   const thirtyOneDays = Array.from(Array(31).keys())
   const twelveMonths = Array.from(Array(12).keys())
@@ -122,12 +178,14 @@ export default function PaymentDialog(props: Props) {
     }
   }, [state.date, state.repeatsOnMonthsOfYear])
 
+  const [isTransfer, setIsTransfer] = React.useState(false)
+
   return (
     <Dialog open={props.payment !== undefined} onClose={props.onClose}>
       <DialogContent>
         <Typography variant="h1">
           {state._id === undefined ? `Create ` : ``}
-          {isIncome ? `Deposit` : `Payment`}
+          {isTransfer ? "Account Transfer" : isIncome ? `Deposit` : `Payment`}
         </Typography>
         <DisplayError error={error} />
         <Form
@@ -138,22 +196,47 @@ export default function PaymentDialog(props: Props) {
           size="small"
           onSubmit={handleSubmit}
         >
-          <FormControl>
-            <FormControlLabel
-              control={<Checkbox checked={isIncome} />}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setIsIncome(e.target.checked)
-              }
-              label="Income Deposit"
-            />
-          </FormControl>
+          <Collapse in={state._id === undefined}>
+            <FormControl>
+              <FormControlLabel
+                control={<Checkbox checked={isTransfer} />}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setIsTransfer(e.target.checked)
+                }
+                label="Account Transfer"
+              />
+            </FormControl>
+          </Collapse>
+
+          <Collapse in={!isTransfer}>
+            <FormControl>
+              <FormControlLabel
+                control={<Checkbox checked={isIncome} />}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setIsIncome(e.target.checked)
+                }
+                label="Income Deposit"
+              />
+            </FormControl>
+          </Collapse>
           <CurrencyField name="amount" numeric blankZero inPennies fulleWidth />
-          <TextField name="paidTo" />
+          <Collapse in={!isTransfer}>
+            <TextField name="paidTo" label="Description" />
+          </Collapse>
           <Select
             allowNull
             name="account"
+            label={isTransfer || !isIncome ? "From Account" : "Account"}
             options={accounts.map((x) => ({ value: x._id, label: x.name }))}
           />
+          <Collapse in={isTransfer}>
+            <Select
+              allowNull
+              name="account2"
+              label="Transfer To"
+              options={accounts.map((x) => ({ value: x._id, label: x.name }))}
+            />
+          </Collapse>
           <DatePicker name="date" />
           <FormControlLabel
             control={<Checkbox checked={repeats} />}
@@ -392,7 +475,7 @@ export default function PaymentDialog(props: Props) {
             <Button
               onClick={() => {
                 setWillDelete(undefined)
-                deletePayment(willDelete)
+                deletePayment(willDelete).then(refreshCycle)
                 props.onClose()
               }}
             >
