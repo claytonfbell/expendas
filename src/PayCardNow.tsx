@@ -18,7 +18,7 @@ export default function PayCardNow(props: Props) {
   const { cycle } = useCycle()
 
   // find checking account ending balance
-  const availableToPay = props.endingBalance - 10000
+  const availableToPay = props.endingBalance - 20000
 
   // find largest credit card debt
   const cca = accounts
@@ -71,7 +71,7 @@ export default function PayCardNow(props: Props) {
       payAmount > 0 ? (
         <div>
           <br />
-          <Link href="javascript:;" onClick={handleClick}>
+          <Link href="javasciript:;" onClick={handleClick}>
             ** Pay {formatMoney(payAmount)} to {toAccount.name} **
           </Link>
         </div>
