@@ -31,14 +31,15 @@ import { usePayment } from "./PaymentProvider"
 import { RestError } from "./rest"
 
 interface Props {
-  payment: IPayment
+  payment: PaymentForm
   onClose: () => void
 }
 
 type RepeatsType = "weekly" | "dates"
 
-interface PaymentForm extends IPayment {
+export interface PaymentForm extends IPayment {
   account2?: string
+  isTransfer?: boolean
 }
 
 export default function PaymentDialog(props: Props) {
@@ -59,7 +60,7 @@ export default function PaymentDialog(props: Props) {
     try {
       setError(undefined)
       if (state._id === undefined) {
-        if (isTransfer) {
+        if (state.isTransfer) {
           if (state.account === undefined || state.account === null) {
             const err: RestError = {
               status: 0,
@@ -178,14 +179,16 @@ export default function PaymentDialog(props: Props) {
     }
   }, [state.date, state.repeatsOnMonthsOfYear])
 
-  const [isTransfer, setIsTransfer] = React.useState(false)
-
   return (
     <Dialog open={props.payment !== undefined} onClose={props.onClose}>
       <DialogContent>
         <Typography variant="h1">
           {state._id === undefined ? `Create ` : ``}
-          {isTransfer ? "Account Transfer" : isIncome ? `Deposit` : `Payment`}
+          {state.isTransfer
+            ? "Account Transfer"
+            : isIncome
+            ? `Deposit`
+            : `Payment`}
         </Typography>
         <DisplayError error={error} />
         <Form
@@ -199,16 +202,19 @@ export default function PaymentDialog(props: Props) {
           <Collapse in={state._id === undefined}>
             <FormControl>
               <FormControlLabel
-                control={<Checkbox checked={isTransfer} />}
+                control={<Checkbox checked={state.isTransfer} />}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setIsTransfer(e.target.checked)
+                  setState((prev) => ({
+                    ...prev,
+                    isTransfer: e.target.checked,
+                  }))
                 }
                 label="Account Transfer"
               />
             </FormControl>
           </Collapse>
 
-          <Collapse in={!isTransfer}>
+          <Collapse in={!state.isTransfer}>
             <FormControl>
               <FormControlLabel
                 control={<Checkbox checked={isIncome} />}
@@ -220,16 +226,16 @@ export default function PaymentDialog(props: Props) {
             </FormControl>
           </Collapse>
           <CurrencyField name="amount" numeric blankZero inPennies fulleWidth />
-          <Collapse in={!isTransfer}>
+          <Collapse in={!state.isTransfer}>
             <TextField name="paidTo" label="Description" />
           </Collapse>
           <Select
             allowNull
             name="account"
-            label={isTransfer || !isIncome ? "From Account" : "Account"}
+            label={state.isTransfer || !isIncome ? "From Account" : "Account"}
             options={accounts.map((x) => ({ value: x._id, label: x.name }))}
           />
-          <Collapse in={isTransfer}>
+          <Collapse in={state.isTransfer}>
             <Select
               allowNull
               name="account2"

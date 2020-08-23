@@ -50,6 +50,7 @@ import { AccountType, IAccount } from "../src/db/Account"
 import { ICycleItemPopulated } from "../src/db/CycleItem"
 import { IPayment } from "../src/db/Payment"
 import InsideLayout from "../src/InsideLayout"
+import PayCardNow from "../src/PayCardNow"
 import PaymentDialog from "../src/PaymentDialog"
 import { useSignIn } from "../src/SignInProvider"
 
@@ -242,6 +243,7 @@ function Planner() {
           </Grid>
         </Grid>
       </Form>
+
       <br />
       <Grid container spacing={3}>
         {data.map((x) => (
@@ -457,6 +459,16 @@ function AccountBox({
               >
                 + Add Item
               </Link>
+
+              {isCurrentCycle &&
+              accounts[0].type === "Checking Account" &&
+              accounts.length === 1 ? (
+                <PayCardNow
+                  account={accounts[0]}
+                  endingBalance={endingBalance}
+                  onClick={(p) => setEditPayment(p)}
+                />
+              ) : null}
             </Grid>
             <Grid
               item
