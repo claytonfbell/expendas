@@ -553,7 +553,7 @@ function CycleItemRow({
         <Grid item className={classes.rightCell}>
           {editAmount === undefined ? (
             <>
-              {isCurrentCycle && (
+              {
                 <LargeTooltip
                   arrow
                   placement="left"
@@ -565,7 +565,7 @@ function CycleItemRow({
                     onChange={handlePaidClick(item)}
                   />
                 </LargeTooltip>
-              )}
+              }
               <Link
                 href="javascript:;"
                 onClick={() => setEditAmount(item.amount)}
