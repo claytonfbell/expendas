@@ -21,19 +21,26 @@ export default function PayCardNow(props: Props) {
   const availableToPay = props.endingBalance - 20000
 
   // find largest credit card debt
-  const cca = accounts
-    .filter((x) => x.type === "Credit Card")
-    .sort(
-      (a, b) =>
-        cycle
-          .filter((x) => x.payment.account._id === a._id)
-          .filter((x) => !x.isPaid)
-          .reduce((sum, x) => sum + Math.max(0, x.amount), a.currentBalance) -
-        cycle
-          .filter((x) => x.payment.account._id === b._id)
-          .filter((x) => !x.isPaid)
-          .reduce((sum, x) => sum + Math.max(0, x.amount), b.currentBalance)
-    )
+  const cca = React.useMemo(
+    () =>
+      accounts
+        .filter((x) => x.type === "Credit Card")
+        .sort(
+          (a, b) =>
+            cycle
+              .filter((x) => x.payment.account._id === a._id)
+              .filter((x) => !x.isPaid)
+              .reduce(
+                (sum, x) => sum + Math.max(0, x.amount),
+                a.currentBalance
+              ) -
+            cycle
+              .filter((x) => x.payment.account._id === b._id)
+              .filter((x) => !x.isPaid)
+              .reduce((sum, x) => sum + Math.max(0, x.amount), b.currentBalance)
+        ),
+    [accounts, cycle]
+  )
   let toAccount: IAccount = null
   let payableDebt = 0
   let payAmount = 0
