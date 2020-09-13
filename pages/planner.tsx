@@ -35,7 +35,6 @@ import moment from "moment-timezone"
 import React, { ChangeEvent } from "react"
 import useDebounce from "react-use/lib/useDebounce"
 import AccountDialog from "../src/AccountDialog"
-import { useAccount } from "../src/AccountProvider"
 import {
   allAccountTypes,
   assetsAccountTypes,
@@ -44,6 +43,7 @@ import {
   savingsAccountTypes,
 } from "../src/accountTypes"
 import AnimatedCounter from "../src/AnimatedCounter"
+import { useFetchAccounts, useUpdateAccount } from "../src/api/accounts"
 import CycleNavigation from "../src/CycleNavigation"
 import { useCycle } from "../src/CycleProvider"
 import { AccountType, IAccount } from "../src/db/Account"
@@ -141,11 +141,11 @@ function Planner() {
     [fetchCycle, state.cycleDate]
   )
 
-  const { accounts: unfilteredAccounts, fetchAccounts } = useAccount()
+  const { data: unfilteredAccounts } = useFetchAccounts()
+
   React.useEffect(() => {
     reset()
-    fetchAccounts()
-  }, [fetchAccounts, reset, state.cycleDate])
+  }, [reset, state.cycleDate])
   const accounts = React.useMemo(
     () =>
       unfilteredAccounts.filter((x) => {
@@ -290,7 +290,7 @@ function CarryOver({
   items,
   isCurrentCycle,
 }: CarryOverProps) {
-  const { updateAccount } = useAccount()
+  const [updateAccount] = useUpdateAccount()
 
   const carryOver = account.carryOver.filter((x) => x.date === date)
   let startingBalance: number = account.currentBalance
@@ -338,7 +338,7 @@ function AccountBox({
   isCurrentCycle,
 }: AccountBoxProps) {
   const classes = useStyles()
-  const { updateAccount } = useAccount()
+  const [updateAccount] = useUpdateAccount()
 
   // find previous carryover
   const carryOver = accounts.reduce((sum, x) => {

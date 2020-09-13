@@ -6,8 +6,8 @@ import Select from "material-ui-pack/dist/Select"
 import SubmitButton from "material-ui-pack/dist/SubmitButton"
 import TextField from "material-ui-pack/dist/TextField"
 import React from "react"
-import { useAccount } from "./AccountProvider"
 import { allAccountTypes, creditCardTypes } from "./accountTypes"
+import { useCreateAccount, useUpdateAccount } from "./api/accounts"
 import { IAccount } from "./db/Account"
 import DisplayError from "./DisplayError"
 import { RestError } from "./rest"
@@ -18,7 +18,10 @@ interface Props {
 }
 
 export default function AccountDialog(props: Props) {
-  const { createAccount, updateAccount, fetchAccounts, busy } = useAccount()
+  const [createAccount, { isLoading: isCreatingAccount }] = useCreateAccount()
+  const [updateAccount, { isLoading: isUpdatingAccount }] = useUpdateAccount()
+  const isBusy = isCreatingAccount || isUpdatingAccount
+
   const [account, setAccount] = React.useState<IAccount>()
   const [error, setError] = React.useState<RestError>()
   React.useEffect(() => {
@@ -37,7 +40,6 @@ export default function AccountDialog(props: Props) {
     } catch (e) {
       setError(e)
     } finally {
-      fetchAccounts()
       props.onClose()
     }
   }
@@ -58,7 +60,7 @@ export default function AccountDialog(props: Props) {
         <DialogContent>
           <Typography variant="h1">{isNew ? `Create ` : ""}Account</Typography>
           <Form
-            busy={busy}
+            busy={isBusy}
             state={account}
             setState={setAccount}
             onSubmit={handleSubmit}

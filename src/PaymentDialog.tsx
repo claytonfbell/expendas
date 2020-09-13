@@ -23,7 +23,7 @@ import moment from "moment-timezone"
 import React from "react"
 import ReactMarkdown from "react-markdown"
 import { getRepeatingPaymentFeedback } from "../pages/payments"
-import { useAccount } from "./AccountProvider"
+import { useFetchAccounts } from "./api/accounts"
 import { useCycle } from "./CycleProvider"
 import { DayOfMonth, IPayment, MonthOfYear } from "./db/Payment"
 import DisplayError from "./DisplayError"
@@ -127,10 +127,7 @@ export default function PaymentDialog(props: Props) {
     }
   }
 
-  const { fetchAccounts, accounts: unsortedAccounts } = useAccount()
-  React.useEffect(() => {
-    fetchAccounts()
-  }, [fetchAccounts])
+  const { data: unsortedAccounts } = useFetchAccounts()
 
   const accounts = unsortedAccounts.sort((a, b) => a.name.localeCompare(b.name))
   const [isIncome, setIsIncome] = React.useState(false)

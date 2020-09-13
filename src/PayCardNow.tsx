@@ -2,7 +2,7 @@ import { Link } from "@material-ui/core"
 import moment from "moment"
 import React from "react"
 import { formatMoney } from "../pages/planner"
-import { useAccount } from "./AccountProvider"
+import { useFetchAccounts } from "./api/accounts"
 import { useCycle } from "./CycleProvider"
 import { IAccount } from "./db/Account"
 import { PaymentForm } from "./PaymentDialog"
@@ -14,7 +14,7 @@ interface Props {
 }
 
 export default function PayCardNow(props: Props) {
-  const { accounts } = useAccount()
+  const { data: accounts } = useFetchAccounts()
   const { cycle } = useCycle()
 
   // find checking account ending balance

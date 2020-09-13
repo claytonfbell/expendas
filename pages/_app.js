@@ -3,6 +3,7 @@ import { ThemeProvider } from "@material-ui/core/styles"
 import Head from "next/head"
 import PropTypes from "prop-types"
 import React from "react"
+import { ReactQueryDevtools } from "react-query-devtools"
 import theme from "../src/theme"
 
 export default function MyApp(props) {
@@ -27,6 +28,7 @@ export default function MyApp(props) {
         />
         <link href="/favicon-32x32.png" rel="icon"></link>
       </Head>
+      <ReactQueryDevtools />
       <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />

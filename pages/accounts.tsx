@@ -9,16 +9,13 @@ import AddIcon from "@material-ui/icons/Add"
 import Button from "material-ui-bootstrap/dist/Button"
 import React from "react"
 import AccountDialog from "../src/AccountDialog"
-import { useAccount } from "../src/AccountProvider"
 import AccountRow from "../src/AccountRow"
+import { useFetchAccounts } from "../src/api/accounts"
 import { IAccount } from "../src/db/Account"
 import InsideLayout from "../src/InsideLayout"
 
 function Accounts() {
-  const { fetchAccounts, accounts } = useAccount()
-  React.useEffect(() => {
-    fetchAccounts()
-  }, [fetchAccounts])
+  const { data: accounts } = useFetchAccounts()
 
   const [account, setAccount] = React.useState<IAccount>()
   function handleAdd() {

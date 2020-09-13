@@ -12,7 +12,6 @@ import {
 import Container from "@material-ui/core/Container"
 import Link from "next/link"
 import React from "react"
-import { AccountProvider } from "./AccountProvider"
 import { CycleProvider } from "./CycleProvider"
 import { PaymentProvider } from "./PaymentProvider"
 import { SignInProvider, useSignIn } from "./SignInProvider"
@@ -90,11 +89,9 @@ function Content(props: Props) {
 const InsideLayout = (props: Props) => (
   <SignInProvider>
     <PaymentProvider>
-      <AccountProvider>
-        <CycleProvider>
-          <Content {...props} />
-        </CycleProvider>
-      </AccountProvider>
+      <CycleProvider>
+        <Content {...props} />
+      </CycleProvider>
     </PaymentProvider>
   </SignInProvider>
 )
