@@ -34,16 +34,18 @@ export function useUpdatePayment() {
       queryCache.cancelQueries(KEY)
       // Snapshot the previous value
       const prevData: IPayment[] = queryCache.getQueryData(KEY)
-      // Optimistically update to the new value
-      queryCache.setQueryData(
-        KEY,
-        prevData.map((x) => (x._id === newData._id ? newData : x))
-      )
-      // Return a rollback function
-      return () => queryCache.setQueryData(KEY, prevData)
+      if (prevData !== undefined) {
+        // Optimistically update to the new value
+        queryCache.setQueryData(
+          KEY,
+          prevData.map((x) => (x._id === newData._id ? newData : x))
+        )
+        // Return a rollback function
+        return () => queryCache.setQueryData(KEY, prevData)
+      }
     },
     // If the mutation fails, use the rollback function we returned above
-    onError: (err, newData, rollback: () => void) => rollback(),
+    // onError: (err, newData, rollback: () => void) => rollback(),
     // Always refetch after error or success:
     onSettled: () => {
       queryCache.invalidateQueries(KEY)

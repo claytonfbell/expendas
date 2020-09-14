@@ -12,7 +12,6 @@ import {
 import Container from "@material-ui/core/Container"
 import Link from "next/link"
 import React from "react"
-import { CycleProvider } from "./CycleProvider"
 import { SignInProvider, useSignIn } from "./SignInProvider"
 
 const useStyles = makeStyles({
@@ -87,9 +86,7 @@ function Content(props: Props) {
 
 const InsideLayout = (props: Props) => (
   <SignInProvider>
-    <CycleProvider>
-      <Content {...props} />
-    </CycleProvider>
+    <Content {...props} />
   </SignInProvider>
 )
 export default InsideLayout

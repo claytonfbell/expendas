@@ -44,8 +44,12 @@ import {
 } from "../src/accountTypes"
 import AnimatedCounter from "../src/AnimatedCounter"
 import { useFetchAccounts, useUpdateAccount } from "../src/api/accounts"
+import {
+  useFetchCycleDates,
+  useFetchCycleItems,
+  useUpdateCycleItem,
+} from "../src/api/cycleItems"
 import CycleNavigation from "../src/CycleNavigation"
-import { useCycle } from "../src/CycleProvider"
 import { AccountType, IAccount } from "../src/db/Account"
 import { ICycleItemPopulated } from "../src/db/CycleItem"
 import { IPayment } from "../src/db/Payment"
@@ -121,10 +125,8 @@ function Planner() {
     displayAssets: false,
     displayAccountsGrouped: false,
   })
-  const { fetchCycleDates, cycleDates } = useCycle()
-  React.useEffect(() => {
-    fetchCycleDates()
-  }, [fetchCycleDates])
+
+  const { data: cycleDates } = useFetchCycleDates()
 
   React.useEffect(() => {
     if (cycleDates.length > 0 && state.cycleDate === null) {
@@ -132,20 +134,8 @@ function Planner() {
     }
   }, [cycleDates, state.cycleDate])
 
-  const { cycle, fetchCycle, reset } = useCycle()
-  useDebounce(
-    () => {
-      fetchCycle(state.cycleDate)
-    },
-    700,
-    [fetchCycle, state.cycleDate]
-  )
-
+  const { data: cycle } = useFetchCycleItems(state.cycleDate)
   const { data: unfilteredAccounts } = useFetchAccounts()
-
-  React.useEffect(() => {
-    reset()
-  }, [reset, state.cycleDate])
   const accounts = React.useMemo(
     () =>
       unfilteredAccounts.filter((x) => {
@@ -467,6 +457,7 @@ function AccountBox({
                   account={accounts[0]}
                   endingBalance={endingBalance}
                   onClick={(p) => setEditPayment(p)}
+                  date={date}
                 />
               ) : null}
             </Grid>
@@ -511,7 +502,8 @@ function CycleItemRow({
   onEditPayment: (payment: IPayment) => void
 }) {
   const classes = useStyles()
-  const { updateCycleItem } = useCycle()
+  //   const { updateCycleItem } = useCycle()
+  const [updateCycleItem] = useUpdateCycleItem()
 
   const handlePaidClick = (item: ICycleItemPopulated) => (
     e: ChangeEvent<HTMLInputElement>

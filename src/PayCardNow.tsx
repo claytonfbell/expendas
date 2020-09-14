@@ -3,7 +3,7 @@ import moment from "moment"
 import React from "react"
 import { formatMoney } from "../pages/planner"
 import { useFetchAccounts } from "./api/accounts"
-import { useCycle } from "./CycleProvider"
+import { useFetchCycleItems } from "./api/cycleItems"
 import { IAccount } from "./db/Account"
 import { PaymentForm } from "./PaymentDialog"
 
@@ -11,11 +11,12 @@ interface Props {
   endingBalance: number
   account: IAccount
   onClick: (payment: PaymentForm) => void
+  date: string
 }
 
 export default function PayCardNow(props: Props) {
   const { data: accounts } = useFetchAccounts()
-  const { cycle } = useCycle()
+  const { data: cycle } = useFetchCycleItems(props.date)
 
   // find checking account ending balance
   const availableToPay = props.endingBalance - 20000

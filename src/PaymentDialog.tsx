@@ -24,12 +24,12 @@ import React from "react"
 import ReactMarkdown from "react-markdown"
 import { getRepeatingPaymentFeedback } from "../pages/payments"
 import { useFetchAccounts } from "./api/accounts"
+import { refreshCycleItems } from "./api/cycleItems"
 import {
   useCreatePayment,
   useDeletePayment,
   useUpdatePayment,
 } from "./api/payments"
-import { useCycle } from "./CycleProvider"
 import { DayOfMonth, IPayment, MonthOfYear } from "./db/Payment"
 import DisplayError from "./DisplayError"
 import { RestError } from "./rest"
@@ -47,8 +47,6 @@ export interface PaymentForm extends IPayment {
 }
 
 export default function PaymentDialog(props: Props) {
-  const { refreshCycle } = useCycle()
-
   const [state, setState] = React.useState<PaymentForm>(props.payment)
   React.useEffect(() => {
     setIsIncome(props.payment.amount > 0)
@@ -112,14 +110,14 @@ export default function PaymentDialog(props: Props) {
               accounts.find((x) => x._id === state.account).name
             }`,
           })
-          refreshCycle()
+          refreshCycleItems()
           props.onClose()
         } else {
           await createPayment({
             ...state,
             amount: isIncome ? Number(state.amount) : -Number(state.amount),
           })
-          refreshCycle()
+          refreshCycleItems()
           props.onClose()
         }
       } else {
@@ -127,7 +125,7 @@ export default function PaymentDialog(props: Props) {
           ...state,
           amount: isIncome ? Number(state.amount) : -Number(state.amount),
         })
-        refreshCycle()
+        refreshCycleItems()
         props.onClose()
       }
     } catch (e) {
@@ -486,7 +484,7 @@ export default function PaymentDialog(props: Props) {
             <Button
               onClick={() => {
                 setWillDelete(undefined)
-                deletePayment(willDelete).then(refreshCycle)
+                deletePayment(willDelete).then(refreshCycleItems)
                 props.onClose()
               }}
             >
