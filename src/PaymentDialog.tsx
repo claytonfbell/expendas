@@ -24,10 +24,14 @@ import React from "react"
 import ReactMarkdown from "react-markdown"
 import { getRepeatingPaymentFeedback } from "../pages/payments"
 import { useFetchAccounts } from "./api/accounts"
+import {
+  useCreatePayment,
+  useDeletePayment,
+  useUpdatePayment,
+} from "./api/payments"
 import { useCycle } from "./CycleProvider"
 import { DayOfMonth, IPayment, MonthOfYear } from "./db/Payment"
 import DisplayError from "./DisplayError"
-import { usePayment } from "./PaymentProvider"
 import { RestError } from "./rest"
 
 interface Props {
@@ -55,7 +59,11 @@ export default function PaymentDialog(props: Props) {
   }, [props.payment])
 
   const [error, setError] = React.useState<RestError>()
-  const { busy, createPayment, updatePayment, deletePayment } = usePayment()
+  const [createPayment, { isLoading: isCreatingPayment }] = useCreatePayment()
+  const [updatePayment, { isLoading: isUpdatingPayment }] = useUpdatePayment()
+  const [deletePayment, { isLoading: isDeletingPayment }] = useDeletePayment()
+  const isBusy = isCreatingPayment || isUpdatingPayment || isDeletingPayment
+
   async function handleSubmit() {
     try {
       setError(undefined)
@@ -189,7 +197,7 @@ export default function PaymentDialog(props: Props) {
         </Typography>
         <DisplayError error={error} />
         <Form
-          busy={busy}
+          busy={isBusy}
           margin="normal"
           state={state}
           setState={setState}

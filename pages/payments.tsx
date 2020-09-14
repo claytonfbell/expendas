@@ -20,10 +20,10 @@ import Button from "material-ui-bootstrap/dist/Button"
 import moment from "moment-timezone"
 import React from "react"
 import ReactMarkdown from "react-markdown"
+import { useDeletePayment, useFetchPayments } from "../src/api/payments"
 import { IPayment, IPaymentPopulated } from "../src/db/Payment"
 import InsideLayout from "../src/InsideLayout"
 import PaymentDialog from "../src/PaymentDialog"
-import { usePayment } from "../src/PaymentProvider"
 import { useSignIn } from "../src/SignInProvider"
 import { AccountIcon, Currency, StyledTableRow } from "./planner"
 
@@ -31,11 +31,8 @@ function Payments() {
   const { requireAuthentication } = useSignIn()
   requireAuthentication()
 
-  const { payments, fetchPayments, deletePayment } = usePayment()
-
-  React.useEffect(() => {
-    fetchPayments()
-  }, [fetchPayments])
+  const [deletePayment] = useDeletePayment()
+  const { data: payments } = useFetchPayments()
 
   const [willDelete, setWillDelete] = React.useState<string>()
 

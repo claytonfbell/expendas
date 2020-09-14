@@ -22,9 +22,7 @@ export function useFetchAccounts() {
 
 export function useCreateAccount() {
   return useMutation<IAccount, RestError, IAccount>(api.createAccount, {
-    onSuccess: () => {
-      queryCache.invalidateQueries(KEY)
-    },
+    onSuccess: () => queryCache.invalidateQueries(KEY),
   })
 }
 
