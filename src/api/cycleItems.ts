@@ -1,6 +1,7 @@
-import { queryCache, useMutation, useQuery } from "react-query"
+import { queryCache, useMutation } from "react-query"
 import { ICycleItemPopulated } from "../db/CycleItem"
 import rest, { RestError } from "../rest"
+import { usePersistedQuery } from "./usePersistedData"
 
 const KEY = "cycleItems"
 
@@ -15,14 +16,18 @@ const api = {
 }
 
 export function useFetchCycleDates() {
-  return useQuery<string[], RestError>("cycleDates", api.fetchCycleDates, {
-    initialData: [],
-    initialStale: true,
-  })
+  return usePersistedQuery<string[], RestError>(
+    "cycleDates",
+    api.fetchCycleDates,
+    {
+      initialData: [],
+      initialStale: true,
+    }
+  )
 }
 
 export function useFetchCycleItems(date: string) {
-  return useQuery<ICycleItemPopulated[], RestError>(
+  return usePersistedQuery<ICycleItemPopulated[], RestError>(
     [KEY, date],
     api.fetchCycleItems,
     {

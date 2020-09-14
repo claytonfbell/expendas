@@ -1,6 +1,7 @@
-import { queryCache, useMutation, useQuery } from "react-query"
+import { queryCache, useMutation } from "react-query"
 import { IAccount } from "../db/Account"
 import rest, { RestError } from "../rest"
+import { usePersistedQuery } from "./usePersistedData"
 
 const KEY = "accounts"
 
@@ -14,7 +15,7 @@ const api = {
 }
 
 export function useFetchAccounts() {
-  return useQuery<IAccount[], RestError>(KEY, api.fetchAccounts, {
+  return usePersistedQuery<IAccount[], RestError>(KEY, api.fetchAccounts, {
     initialData: [],
     initialStale: true,
   })

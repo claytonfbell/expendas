@@ -1,6 +1,7 @@
-import { queryCache, useMutation, useQuery } from "react-query"
+import { queryCache, useMutation } from "react-query"
 import { IPayment } from "../db/Payment"
 import rest, { RestError } from "../rest"
+import { usePersistedQuery } from "./usePersistedData"
 
 const KEY = "payments"
 
@@ -15,7 +16,7 @@ const api = {
 }
 
 export function useFetchPayments() {
-  return useQuery<IPayment[]>(KEY, api.fetchPayments, {
+  return usePersistedQuery<IPayment[]>(KEY, api.fetchPayments, {
     initialData: [],
     initialStale: true,
   })
