@@ -31,6 +31,7 @@ export function useFetchCycleItems(date: string) {
     [KEY, date],
     api.fetchCycleItems,
     {
+      enabled: date !== null,
       initialData: [],
       initialStale: true,
     }

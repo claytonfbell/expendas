@@ -73,6 +73,7 @@ export class CycleService {
     }
 
     cursor = moment(rangeStart)
+    cursor.add(1, "days")
     while (cursor.isBefore(rangeEnd)) {
       // find paychecks that fall on this date
       const checks = this.filterPaymentsOnDate(payChecks, cursor)
