@@ -68,6 +68,7 @@ export function useUpdateCycleItem() {
       onSettled: () => {
         queryCache.invalidateQueries(KEY)
       },
+      throwOnError: true,
     }
   )
 }

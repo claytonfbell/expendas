@@ -25,6 +25,7 @@ export function useFetchPayments() {
 export function useCreatePayment() {
   return useMutation<IPayment, RestError, IPayment>(api.createPayment, {
     onSuccess: () => queryCache.invalidateQueries(KEY),
+    throwOnError: true,
   })
 }
 
@@ -51,6 +52,7 @@ export function useUpdatePayment() {
     onSettled: () => {
       queryCache.invalidateQueries(KEY)
     },
+    throwOnError: true,
   })
 }
 
@@ -75,5 +77,6 @@ export function useDeletePayment() {
     onSettled: () => {
       queryCache.invalidateQueries(KEY)
     },
+    throwOnError: true,
   })
 }

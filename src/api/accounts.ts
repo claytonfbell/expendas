@@ -24,6 +24,7 @@ export function useFetchAccounts() {
 export function useCreateAccount() {
   return useMutation<IAccount, RestError, IAccount>(api.createAccount, {
     onSuccess: () => queryCache.invalidateQueries(KEY),
+    throwOnError: true,
   })
 }
 
@@ -48,5 +49,6 @@ export function useUpdateAccount() {
     onSettled: () => {
       queryCache.invalidateQueries(KEY)
     },
+    throwOnError: true,
   })
 }
