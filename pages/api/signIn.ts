@@ -23,7 +23,7 @@ export default async (
     switch (req.method) {
       case "GET":
         const signedInUser = await User.findOne({
-          _id: req.session.data.userId,
+          _id: req.session.data?.userId,
         })
         if (signedInUser === null) {
           throw new UnauthorizedException()
