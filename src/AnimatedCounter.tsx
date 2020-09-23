@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 import { useCountUp } from "react-countup"
 import { formatMoney } from "../pages/planner"
 
