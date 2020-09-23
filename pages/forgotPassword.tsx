@@ -4,8 +4,7 @@ import Button from "material-ui-bootstrap/dist/Button"
 import Form from "material-ui-pack/dist/Form"
 import SubmitButton from "material-ui-pack/dist/SubmitButton"
 import TextField from "material-ui-pack/dist/TextField"
-import { useRouter } from "next/dist/client/router"
-import React from "react"
+import { useState } from "react"
 import DisplayError from "../src/DisplayError"
 import Link from "../src/Link"
 import { ForgotPasswordRequest } from "../src/model/ForgotPasswordRequest"
@@ -13,13 +12,12 @@ import rest, { RestError } from "../src/rest"
 import StartLayout from "../src/StartLayout"
 
 export default function ForgotPassword() {
-  const [state, setState] = React.useState<ForgotPasswordRequest>({
+  const [state, setState] = useState<ForgotPasswordRequest>({
     email: "",
   })
-  const [error, setError] = React.useState<RestError>()
-  const [isBusy, setIsBusy] = React.useState(false)
-  const router = useRouter()
-  const [sent, setSent] = React.useState(false)
+  const [error, setError] = useState<RestError>()
+  const [isBusy, setIsBusy] = useState(false)
+  const [sent, setSent] = useState(false)
 
   function handleSubmit() {
     setIsBusy(true)

@@ -2,7 +2,6 @@ import { Grid, IconButton } from "@material-ui/core"
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
 import ChevronRightIcon from "@material-ui/icons/ChevronRight"
 import moment from "moment"
-import React from "react"
 
 type Props = {
   date: string

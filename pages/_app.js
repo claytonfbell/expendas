@@ -2,14 +2,14 @@ import CssBaseline from "@material-ui/core/CssBaseline"
 import { ThemeProvider } from "@material-ui/core/styles"
 import Head from "next/head"
 import PropTypes from "prop-types"
-import React from "react"
+import { useEffect } from "react"
 import { ReactQueryDevtools } from "react-query-devtools"
 import theme from "../src/theme"
 
 export default function MyApp(props) {
   const { Component, pageProps } = props
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Remove the server-side injected CSS.
     // eslint-disable-next-line no-undef
     const jssStyles = document.querySelector("#jss-server-side")
@@ -19,7 +19,7 @@ export default function MyApp(props) {
   }, [])
 
   return (
-    <React.Fragment>
+    <>
       <Head>
         <title>Expendas</title>
         <meta
@@ -34,7 +34,7 @@ export default function MyApp(props) {
         <CssBaseline />
         <Component {...pageProps} />
       </ThemeProvider>
-    </React.Fragment>
+    </>
   )
 }
 

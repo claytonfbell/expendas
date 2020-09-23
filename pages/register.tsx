@@ -3,7 +3,7 @@ import Button from "material-ui-bootstrap/dist/Button"
 import Form from "material-ui-pack/dist/Form"
 import SubmitButton from "material-ui-pack/dist/SubmitButton"
 import TextField from "material-ui-pack/dist/TextField"
-import React from "react"
+import { useState } from "react"
 import DisplayError from "../src/DisplayError"
 import Link from "../src/Link"
 import { RegisterRequest } from "../src/model/RegisterRequest"
@@ -11,14 +11,14 @@ import rest, { RestError } from "../src/rest"
 import StartLayout from "../src/StartLayout"
 
 export default function Home() {
-  const [state, setState] = React.useState<RegisterRequest>({
+  const [state, setState] = useState<RegisterRequest>({
     email: "",
     firstName: "",
     lastName: "",
     newPassword: "",
   })
-  const [error, setError] = React.useState<RestError>()
-  const [isBusy, setIsBusy] = React.useState(false)
+  const [error, setError] = useState<RestError>()
+  const [isBusy, setIsBusy] = useState(false)
 
   function handleSubmit() {
     setIsBusy(true)

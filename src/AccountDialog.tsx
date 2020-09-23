@@ -5,7 +5,7 @@ import Form from "material-ui-pack/dist/Form"
 import Select from "material-ui-pack/dist/Select"
 import SubmitButton from "material-ui-pack/dist/SubmitButton"
 import TextField from "material-ui-pack/dist/TextField"
-import React from "react"
+import { useEffect, useMemo, useState } from "react"
 import { allAccountTypes, creditCardTypes } from "./accountTypes"
 import { useCreateAccount, useUpdateAccount } from "./api/accounts"
 import { IAccount } from "./db/Account"
@@ -22,9 +22,9 @@ export default function AccountDialog(props: Props) {
   const [updateAccount, { isLoading: isUpdatingAccount }] = useUpdateAccount()
   const isBusy = isCreatingAccount || isUpdatingAccount
 
-  const [account, setAccount] = React.useState<IAccount>()
-  const [error, setError] = React.useState<RestError>()
-  React.useEffect(() => {
+  const [account, setAccount] = useState<IAccount>()
+  const [error, setError] = useState<RestError>()
+  useEffect(() => {
     setError(undefined)
     setAccount(props.account)
   }, [props.account])
@@ -44,7 +44,7 @@ export default function AccountDialog(props: Props) {
     }
   }
 
-  const isNew = React.useMemo(
+  const isNew = useMemo(
     () => account === undefined || account._id === undefined,
     [account]
   )

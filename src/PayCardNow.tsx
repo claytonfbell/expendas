@@ -1,7 +1,6 @@
 /* eslint-disable prefer-const */
 import { Link } from "@material-ui/core"
 import moment from "moment"
-import React from "react"
 import { formatMoney } from "../pages/planner"
 import { useFetchAccounts } from "./api/accounts"
 import { useFetchCycleItems } from "./api/cycleItems"

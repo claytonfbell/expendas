@@ -1,7 +1,7 @@
 import { Fade } from "@material-ui/core"
 import makeStyles from "@material-ui/core/styles/makeStyles"
 import Alert from "material-ui-bootstrap/dist/Alert"
-import React from "react"
+import { useEffect, useRef, useState } from "react"
 import ReactMarkdown from "react-markdown"
 import { RestError } from "./rest"
 
@@ -28,19 +28,19 @@ interface Props {
 }
 export default function DisplayError(props: Props) {
   const classes = useStyles()
-  const [show, setShow] = React.useState(false)
+  const [show, setShow] = useState(false)
 
-  const myRef = React.useRef(null)
+  const myRef = useRef(null)
   const executeScroll = () => scrollToRef(myRef)
 
-  React.useEffect(() => {
+  useEffect(() => {
     const timer = setTimeout(() => {
       setShow(props.error !== undefined)
     }, 1)
     return () => clearTimeout(timer)
   }, [props.error])
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (show) {
       executeScroll()
     }

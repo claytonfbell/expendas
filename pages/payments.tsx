@@ -18,7 +18,7 @@ import EditIcon from "@material-ui/icons/Edit"
 import Alert from "material-ui-bootstrap/dist/Alert"
 import Button from "material-ui-bootstrap/dist/Button"
 import moment from "moment-timezone"
-import React from "react"
+import { useState } from "react"
 import ReactMarkdown from "react-markdown"
 import { useDeletePayment, useFetchPayments } from "../src/api/payments"
 import { IPayment, IPaymentPopulated } from "../src/db/Payment"
@@ -34,9 +34,9 @@ function Payments() {
   const [deletePayment] = useDeletePayment()
   const { data: payments } = useFetchPayments()
 
-  const [willDelete, setWillDelete] = React.useState<string>()
+  const [willDelete, setWillDelete] = useState<string>()
 
-  const [selectedPayment, setSelectedPayment] = React.useState<IPayment>()
+  const [selectedPayment, setSelectedPayment] = useState<IPayment>()
   const handleEdit = (payment: IPaymentPopulated) => () => {
     const {
       _id,

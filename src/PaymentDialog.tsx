@@ -20,7 +20,7 @@ import Select from "material-ui-pack/dist/Select"
 import SubmitButton from "material-ui-pack/dist/SubmitButton"
 import TextField from "material-ui-pack/dist/TextField"
 import moment from "moment-timezone"
-import React from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
 import { getRepeatingPaymentFeedback } from "../pages/payments"
 import { useFetchAccounts } from "./api/accounts"
@@ -47,8 +47,8 @@ export interface PaymentForm extends IPayment {
 }
 
 export default function PaymentDialog(props: Props) {
-  const [state, setState] = React.useState<PaymentForm>(props.payment)
-  React.useEffect(() => {
+  const [state, setState] = useState<PaymentForm>(props.payment)
+  useEffect(() => {
     setIsIncome(props.payment.amount > 0)
     setState({
       ...props.payment,
@@ -56,7 +56,7 @@ export default function PaymentDialog(props: Props) {
     })
   }, [props.payment])
 
-  const [error, setError] = React.useState<RestError>()
+  const [error, setError] = useState<RestError>()
   const [createPayment, { isLoading: isCreatingPayment }] = useCreatePayment()
   const [updatePayment, { isLoading: isUpdatingPayment }] = useUpdatePayment()
   const [deletePayment, { isLoading: isDeletingPayment }] = useDeletePayment()
@@ -136,7 +136,7 @@ export default function PaymentDialog(props: Props) {
   const { data: unsortedAccounts } = useFetchAccounts()
 
   const accounts = unsortedAccounts.sort((a, b) => a.name.localeCompare(b.name))
-  const [isIncome, setIsIncome] = React.useState(false)
+  const [isIncome, setIsIncome] = useState(false)
   const thirtyOneDays = Array.from(Array(31).keys())
   const twelveMonths = Array.from(Array(12).keys())
   const repeats =
@@ -146,12 +146,12 @@ export default function PaymentDialog(props: Props) {
     state.repeatsWeekly !== null ? "weekly" : "dates"
   const repeatsUntil = state.repeatsUntilDate !== null
 
-  const [willDelete, setWillDelete] = React.useState<string>()
+  const [willDelete, setWillDelete] = useState<string>()
 
   const feedback = getRepeatingPaymentFeedback(state)
 
   // auto-select date of month if they change start date
-  React.useEffect(() => {
+  useEffect(() => {
     if (state.repeatsOnDaysOfMonth !== null) {
       const newArray = [...state.repeatsOnDaysOfMonth]
       const x = moment(state.date).date() as DayOfMonth
@@ -167,7 +167,7 @@ export default function PaymentDialog(props: Props) {
   }, [state.date, state.repeatsOnDaysOfMonth])
 
   // auto-select monthif they change start date
-  React.useEffect(() => {
+  useEffect(() => {
     if (state.repeatsOnMonthsOfYear !== null) {
       const newArray = [...state.repeatsOnMonthsOfYear]
       const x = moment(state.date).month() as MonthOfYear
@@ -206,7 +206,7 @@ export default function PaymentDialog(props: Props) {
             <FormControl>
               <FormControlLabel
                 control={<Checkbox checked={state.isTransfer} />}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setState((prev) => ({
                     ...prev,
                     isTransfer: e.target.checked,
@@ -221,7 +221,7 @@ export default function PaymentDialog(props: Props) {
             <FormControl>
               <FormControlLabel
                 control={<Checkbox checked={isIncome} />}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setIsIncome(e.target.checked)
                 }
                 label="Income Deposit"
@@ -249,7 +249,7 @@ export default function PaymentDialog(props: Props) {
           <DatePicker name="date" />
           <FormControlLabel
             control={<Checkbox checked={repeats} />}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
               if (!e.target.checked) {
                 setState((prev) => ({
                   ...prev,
@@ -274,7 +274,7 @@ export default function PaymentDialog(props: Props) {
             <FormControl component="fieldset">
               <RadioGroup
                 value={repeatsType}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   const newType = event.target.value as RepeatsType
                   if (newType === "dates") {
                     setState((prev) => ({
@@ -353,7 +353,7 @@ export default function PaymentDialog(props: Props) {
               <FormControl>
                 <FormControlLabel
                   control={<Checkbox checked={repeatsMonths} />}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     if (!e.target.checked) {
                       setState((prev) => ({
                         ...prev,
@@ -409,7 +409,7 @@ export default function PaymentDialog(props: Props) {
             <FormControl>
               <FormControlLabel
                 control={<Checkbox checked={repeatsUntil} />}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   if (!e.target.checked) {
                     setState((prev) => ({
                       ...prev,

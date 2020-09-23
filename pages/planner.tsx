@@ -32,7 +32,7 @@ import clsx from "clsx"
 import Checkbox from "material-ui-pack/dist/Checkbox"
 import Form from "material-ui-pack/dist/Form"
 import moment from "moment-timezone"
-import React, { ChangeEvent } from "react"
+import { ChangeEvent, KeyboardEvent, useEffect, useMemo, useState } from "react"
 import useDebounce from "react-use/lib/useDebounce"
 import AccountDialog from "../src/AccountDialog"
 import {
@@ -118,7 +118,7 @@ function Planner() {
   const { requireAuthentication } = useSignIn()
   requireAuthentication()
 
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     cycleDate: null,
     displaySavings: false,
     displayLoans: false,
@@ -128,7 +128,7 @@ function Planner() {
 
   const { data: cycleDates } = useFetchCycleDates()
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (cycleDates.length > 0 && state.cycleDate === null) {
       setState((x) => ({ ...x, cycleDate: cycleDates[0] }))
     }
@@ -136,7 +136,7 @@ function Planner() {
 
   const { data: cycle } = useFetchCycleItems(state.cycleDate)
   const { data: unfilteredAccounts } = useFetchAccounts()
-  const accounts = React.useMemo(
+  const accounts = useMemo(
     () =>
       unfilteredAccounts.filter((x) => {
         if (state.displaySavings && savingsAccountTypes.includes(x.type)) {
@@ -347,10 +347,10 @@ function AccountBox({
     startingBalance +
     items.filter((x) => !x.isPaid).reduce((x, y) => x + y.amount, 0)
 
-  const [editAccount, setEditAccount] = React.useState<IAccount>()
-  const [editPayment, setEditPayment] = React.useState<IPayment>()
+  const [editAccount, setEditAccount] = useState<IAccount>()
+  const [editPayment, setEditPayment] = useState<IPayment>()
 
-  const [editAmount, setEditAmount] = React.useState<number>()
+  const [editAmount, setEditAmount] = useState<number>()
 
   function handleUpdateAmount(currentBalance: number) {
     updateAccount({ ...accounts[0], currentBalance })
@@ -358,7 +358,7 @@ function AccountBox({
   }
 
   return (
-    <React.Fragment>
+    <>
       {accounts.map((account) => (
         <CarryOver
           key={account._id}
@@ -488,7 +488,7 @@ function AccountBox({
           onClose={() => setEditPayment(undefined)}
         />
       )}
-    </React.Fragment>
+    </>
   )
 }
 
@@ -511,7 +511,7 @@ function CycleItemRow({
     updateCycleItem({ ...item, isPaid: e.target.checked })
   }
 
-  const [editAmount, setEditAmount] = React.useState<number>()
+  const [editAmount, setEditAmount] = useState<number>()
 
   function handleUpdateAmount(amount: number) {
     updateCycleItem({ ...item, amount })
@@ -583,8 +583,8 @@ type AmountInputProps = {
 function AmountInput(props: AmountInputProps) {
   const classes = useStyles()
 
-  const [value, setValue] = React.useState<string>(centsToDollars(props.value))
-  React.useEffect(() => {
+  const [value, setValue] = useState<string>(centsToDollars(props.value))
+  useEffect(() => {
     setValue(centsToDollars(props.value))
   }, [props.value])
 
@@ -597,21 +597,21 @@ function AmountInput(props: AmountInputProps) {
     return Number(dollars.replace(/[^\d-]/g, ""))
   }
 
-  const [firstKeyPressed, setFirstKeyPressed] = React.useState(false)
+  const [firstKeyPressed, setFirstKeyPressed] = useState(false)
 
-  function handleKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {
+  function handleKeyPress(e: KeyboardEvent<HTMLInputElement>) {
     // backspace clears input
-    if (e.keyCode === 8 && !firstKeyPressed) {
+    if (e.key === "Backspace" && !firstKeyPressed) {
       setValue("")
     }
 
     // escape key cancels by sending back original value
-    if (e.keyCode === 27) {
+    if (e.key === "Escape") {
       props.onChange(props.value)
     }
 
     // enter key saves changes
-    if (e.keyCode === 13) {
+    if (e.key === "Enter") {
       props.onChange(dollarsToCents(value))
     }
 

@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core"
 import Container from "@material-ui/core/Container"
 import Link from "next/link"
-import React from "react"
+import { ReactNode } from "react"
 import { SignInProvider, useSignIn } from "./SignInProvider"
 
 const useStyles = makeStyles({
@@ -24,7 +24,7 @@ const useStyles = makeStyles({
 
 interface Props {
   title?: string
-  children: React.ReactNode
+  children: ReactNode
 }
 
 function Content(props: Props) {

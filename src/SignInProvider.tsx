@@ -1,6 +1,13 @@
 import moment from "moment-timezone"
 import { useRouter } from "next/router"
-import React from "react"
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react"
 import { IUser } from "./db/User"
 import { SignInRequest } from "./model/SignInRequest"
 import rest, { RestError } from "./rest"
@@ -16,9 +23,9 @@ interface ContextType {
   signOut: () => Promise<void>
 }
 
-const Context = React.createContext<ContextType | undefined>(undefined)
+const Context = createContext<ContextType | undefined>(undefined)
 export function useSignIn() {
-  const context = React.useContext(Context)
+  const context = useContext(Context)
   if (!context) {
     throw new Error(`useSignIn must be used within a SignInProvider`)
   }
@@ -26,13 +33,13 @@ export function useSignIn() {
 }
 
 export function SignInProvider(props: any) {
-  const [busy, setBusy] = React.useState(false)
-  const [status, setStatus] = React.useState<Status>("unknown")
-  const [user, setUser] = React.useState<IUser>()
+  const [busy, setBusy] = useState(false)
+  const [status, setStatus] = useState<Status>("unknown")
+  const [user, setUser] = useState<IUser>()
 
   const router = useRouter()
 
-  const fetchSignIn = React.useCallback(() => {
+  const fetchSignIn = useCallback(() => {
     return rest
       .get("/signIn")
       .then((x) => {
@@ -49,24 +56,24 @@ export function SignInProvider(props: any) {
       })
   }, [])
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchSignIn()
   }, [fetchSignIn])
 
-  const requireAuthentication = React.useCallback(() => {
+  const requireAuthentication = useCallback(() => {
     if (status === "signedOut") {
       router.push("/")
     }
   }, [router, status])
 
-  const signOut = React.useCallback(() => {
+  const signOut = useCallback(() => {
     return rest.delete("/signIn").then(() => {
       setUser(undefined)
       setStatus("signedOut")
     })
   }, [])
 
-  const signIn = React.useCallback((params: SignInRequest) => {
+  const signIn = useCallback((params: SignInRequest) => {
     setBusy(true)
     return rest
       .post("/signIn", params)
@@ -79,13 +86,13 @@ export function SignInProvider(props: any) {
       })
   }, [])
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user !== undefined) {
       moment.tz.setDefault(user.timeZone)
     }
   }, [user])
 
-  const value = React.useMemo(
+  const value = useMemo(
     (): ContextType => ({
       busy,
       status,

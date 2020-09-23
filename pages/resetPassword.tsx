@@ -5,7 +5,7 @@ import SubmitButton from "material-ui-pack/dist/SubmitButton"
 import TextField from "material-ui-pack/dist/TextField"
 import { useRouter } from "next/router"
 import queryString from "query-string"
-import React from "react"
+import { useState } from "react"
 import DisplayError from "../src/DisplayError"
 import Link from "../src/Link"
 import { ResetPasswordRequest } from "../src/model/ResetPasswordRequest"
@@ -13,12 +13,12 @@ import rest, { RestError } from "../src/rest"
 import StartLayout from "../src/StartLayout"
 
 export default function Home() {
-  const [state, setState] = React.useState<ResetPasswordRequest>({
+  const [state, setState] = useState<ResetPasswordRequest>({
     newPassword: "",
     code: "",
   })
-  const [error, setError] = React.useState<RestError>()
-  const [isBusy, setIsBusy] = React.useState(false)
+  const [error, setError] = useState<RestError>()
+  const [isBusy, setIsBusy] = useState(false)
   const router = useRouter()
 
   function handleSubmit() {

@@ -5,7 +5,7 @@ import useStoredState from "material-ui-pack/dist/hooks/useStoredState"
 import SubmitButton from "material-ui-pack/dist/SubmitButton"
 import TextField from "material-ui-pack/dist/TextField"
 import { useRouter } from "next/router"
-import React from "react"
+import { useEffect, useState } from "react"
 import DisplayError from "../src/DisplayError"
 import Link from "../src/Link"
 import { SignInRequest } from "../src/model/SignInRequest"
@@ -20,7 +20,7 @@ function SignIn() {
   })
   const router = useRouter()
 
-  const [error, setError] = React.useState<RestError>()
+  const [error, setError] = useState<RestError>()
   const { signIn, busy } = useSignIn()
   function handleSubmit() {
     signIn(state)
@@ -31,7 +31,7 @@ function SignIn() {
       .catch((e) => setError(e))
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     rest.get("/signIn")
   }, [])
 

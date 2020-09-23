@@ -1,6 +1,6 @@
 import { Hidden, IconButton, TableCell } from "@material-ui/core"
 import EditIcon from "@material-ui/icons/Edit"
-import React from "react"
+import { useEffect, useState } from "react"
 import { AccountIcon, formatMoney, StyledTableRow } from "../pages/planner"
 import { IAccount } from "./db/Account"
 
@@ -10,8 +10,8 @@ interface Props {
 }
 
 export default function AccountRow(props: Props) {
-  const [state, setState] = React.useState<IAccount>(props.account)
-  React.useEffect(() => {
+  const [state, setState] = useState<IAccount>(props.account)
+  useEffect(() => {
     setState(props.account)
   }, [props.account])
 

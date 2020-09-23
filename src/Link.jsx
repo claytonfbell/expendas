@@ -4,9 +4,9 @@ import clsx from "clsx"
 import NextLink from "next/link"
 import { useRouter } from "next/router"
 import PropTypes from "prop-types"
-import React from "react"
+import { forwardRef } from "react"
 
-const NextComposed = React.forwardRef(function NextComposed(props, ref) {
+const NextComposed = forwardRef(function NextComposed(props, ref) {
   const { as, href, ...other } = props
 
   return (
@@ -73,6 +73,4 @@ Link.propTypes = {
   prefetch: PropTypes.bool,
 }
 
-export default React.forwardRef((props, ref) => (
-  <Link {...props} innerRef={ref} />
-))
+export default forwardRef((props, ref) => <Link {...props} innerRef={ref} />)

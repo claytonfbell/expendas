@@ -1,10 +1,10 @@
 import { Box, CssBaseline, Grid, Hidden, Typography } from "@material-ui/core"
 import LocalFloristIcon from "@material-ui/icons/LocalFlorist"
-import React from "react"
+import { ReactNode } from "react"
 import { SignInProvider } from "./SignInProvider"
 interface Props {
   title: string
-  children: React.ReactNode
+  children: ReactNode
 }
 
 export default function StartLayout(props: Props) {
