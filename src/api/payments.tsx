@@ -64,10 +64,12 @@ export function useDeletePayment() {
       // Snapshot the previous value
       const prevData: IPayment[] = queryCache.getQueryData(KEY)
       // Optimistically update to the new value
-      queryCache.setQueryData(
-        KEY,
-        prevData.filter((x) => x._id !== id)
-      )
+      if (prevData !== undefined) {
+        queryCache.setQueryData(
+          KEY,
+          prevData.filter((x) => x._id !== id)
+        )
+      }
       // Return a rollback function
       return () => queryCache.setQueryData(KEY, prevData)
     },
