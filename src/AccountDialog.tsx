@@ -1,13 +1,23 @@
-import { Dialog, DialogContent, Grid, Typography } from "@material-ui/core"
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Grid,
+  Typography,
+} from "@material-ui/core"
 import Button from "material-ui-bootstrap/dist/Button"
 import CurrencyField from "material-ui-pack/dist/CurrencyField"
 import Form from "material-ui-pack/dist/Form"
 import Select from "material-ui-pack/dist/Select"
 import SubmitButton from "material-ui-pack/dist/SubmitButton"
 import TextField from "material-ui-pack/dist/TextField"
-import { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { allAccountTypes, creditCardTypes } from "./accountTypes"
-import { useCreateAccount, useUpdateAccount } from "./api/accounts"
+import {
+  useCreateAccount,
+  useDeleteAccount,
+  useUpdateAccount,
+} from "./api/accounts"
 import { IAccount } from "./db/Account"
 import DisplayError from "./DisplayError"
 import { RestError } from "./rest"
@@ -20,7 +30,9 @@ interface Props {
 export default function AccountDialog(props: Props) {
   const [createAccount, { isLoading: isCreatingAccount }] = useCreateAccount()
   const [updateAccount, { isLoading: isUpdatingAccount }] = useUpdateAccount()
-  const isBusy = isCreatingAccount || isUpdatingAccount
+  const [deleteAccount, { isLoading: isDeleting }] = useDeleteAccount()
+
+  const isBusy = isCreatingAccount || isUpdatingAccount || isDeleting
 
   const [account, setAccount] = useState<IAccount>()
   const [error, setError] = useState<RestError>()
@@ -48,6 +60,14 @@ export default function AccountDialog(props: Props) {
     () => account === undefined || account._id === undefined,
     [account]
   )
+
+  const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false)
+
+  function handleDelete() {
+    deleteAccount(props.account).then(() => {
+      props.onClose()
+    })
+  }
 
   return (
     <Dialog
@@ -85,7 +105,7 @@ export default function AccountDialog(props: Props) {
               <Grid item xs={12}>
                 <TextField name="name" />
               </Grid>
-              <Grid item xs={8}>
+              <Grid item xs={9}>
                 <CurrencyField
                   name="currentBalance"
                   inPennies
@@ -93,17 +113,39 @@ export default function AccountDialog(props: Props) {
                   fulleWidth
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={4}>
                 <SubmitButton>{isNew ? "Create" : "Save"}</SubmitButton>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={4}>
                 <Button fullWidth onClick={props.onClose}>
                   Cancel
+                </Button>
+              </Grid>
+              <Grid item xs={4}>
+                <Button
+                  fullWidth
+                  color="danger"
+                  onClick={() => setShowDeleteConfirm(true)}
+                >
+                  Delete
                 </Button>
               </Grid>
             </Grid>
             <br />
           </Form>
+
+          <Dialog
+            open={showDeleteConfirm}
+            onClose={() => setShowDeleteConfirm(false)}
+          >
+            <DialogContent>
+              Are you sure you want to remove account?
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDelete}>Yes</Button>
+              <Button onClick={() => setShowDeleteConfirm(false)}>No</Button>
+            </DialogActions>
+          </Dialog>
         </DialogContent>
       )}
     </Dialog>

@@ -12,6 +12,8 @@ const api = {
   },
   updateAccount: (account: IAccount): Promise<IAccount> =>
     rest.put(`/accounts/${account._id}`, account),
+  deleteAccount: (account: IAccount): Promise<void> =>
+    rest.delete(`/accounts/${account._id}`),
 }
 
 export function useFetchAccounts() {
@@ -45,6 +47,16 @@ export function useUpdateAccount() {
     },
     // If the mutation fails, use the rollback function we returned above
     onError: (err, newData, rollback: () => void) => rollback(),
+    // Always refetch after error or success:
+    onSettled: () => {
+      queryCache.invalidateQueries(KEY)
+    },
+    throwOnError: true,
+  })
+}
+
+export function useDeleteAccount() {
+  return useMutation<void, RestError, IAccount>(api.deleteAccount, {
     // Always refetch after error or success:
     onSettled: () => {
       queryCache.invalidateQueries(KEY)

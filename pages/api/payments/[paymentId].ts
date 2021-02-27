@@ -1,4 +1,5 @@
 import Account from "../../../src/db/Account"
+import CycleItem from "../../../src/db/CycleItem"
 import Payment, { IPayment } from "../../../src/db/Payment"
 import {
   BadRequestException,
@@ -61,11 +62,14 @@ export default async (
 
         await payment.save()
 
+        // remove existing cycle items - they will be regenerated
+        await CycleItem.deleteMany({ payment: payment._id })
+
         return
         break
       case "DELETE":
         validate({ paymentId }).notEmpty()
-
+        await CycleItem.deleteMany({ payment: payment._id })
         await payment.remove()
 
         return

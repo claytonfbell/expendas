@@ -40,7 +40,7 @@ import {
   assetsAccountTypes,
   dailyAccountTypes,
   loanAccountTypes,
-  savingsAccountTypes,
+  savingsInvestmentsAccountTypes,
 } from "../src/accountTypes"
 import AnimatedCounter from "../src/AnimatedCounter"
 import { useFetchAccounts, useUpdateAccount } from "../src/api/accounts"
@@ -111,6 +111,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingTop: 0,
     backgroundColor: "transparent",
   },
+  mainGrid: {
+    [theme.breakpoints.up("sm")]: {
+      maxHeight: `250vh`,
+    },
+  },
 }))
 
 function Planner() {
@@ -139,7 +144,10 @@ function Planner() {
   const accounts = useMemo(
     () =>
       unfilteredAccounts.filter((x) => {
-        if (state.displaySavings && savingsAccountTypes.includes(x.type)) {
+        if (
+          state.displaySavings &&
+          savingsInvestmentsAccountTypes.includes(x.type)
+        ) {
           return true
         } else if (state.displayLoans && loanAccountTypes.includes(x.type)) {
           return true
@@ -219,8 +227,11 @@ function Planner() {
 
       <Form size="small" state={state} setState={setState}>
         <Grid container spacing={2} alignContent="center" alignItems="center">
-          <Grid item xs={6} sm={4} md={2}>
-            <Checkbox name="displaySavings" label="Include Savings" />
+          <Grid item xs={6} sm={4} md={3}>
+            <Checkbox
+              name="displaySavings"
+              label="Include Savings / Investments"
+            />
           </Grid>
           <Grid item xs={6} sm={4} md={2}>
             <Checkbox name="displayLoans" label="Include Loans" />
@@ -235,7 +246,12 @@ function Planner() {
       </Form>
 
       <br />
-      <Grid container spacing={3}>
+      <Grid
+        container
+        spacing={3}
+        direction="column"
+        className={classes.mainGrid}
+      >
         {data.map((x) => (
           <AccountBox
             key={x.key}

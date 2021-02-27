@@ -15,9 +15,9 @@ export default async (
     switch (req.method) {
       case "GET":
         const allAccounts = await Account.find({ household: req.household._id })
-        return allAccounts.sort(
-          (a, b) => Math.abs(b.currentBalance) - Math.abs(a.currentBalance)
-        )
+        return allAccounts
+          .sort((a, b) => a.type.localeCompare(b.type))
+          .sort((a, b) => a.name.localeCompare(b.name))
         break
       case "POST":
         const {

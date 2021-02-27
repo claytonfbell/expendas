@@ -5,17 +5,18 @@ import { createMuiTheme } from "@material-ui/core/styles"
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#648821",
+      main: "#0088b3",
+      contrastText: "#ffffff",
     },
     secondary: {
-      main: "#19857b",
+      main: "#e0a800",
     },
     error: {
       main: red.A400,
     },
   },
   typography: {
-    fontFamily: "'Chilanka', sans-serif",
+    fontFamily: "'Montserrat', sans-serif;",
     h1: {
       fontSize: 32,
       marginBottom: 16,
@@ -23,13 +24,13 @@ const theme = createMuiTheme({
   },
   props: {
     MuiButton: {
-      style: {
-        transition: "all .5s ease",
-        outline: "none",
-        boxShadow: "20px 38px 34px -26px hsla(0,0%,0%,.2)",
-        borderRadius: "255px 15px 225px 15px/15px 225px 15px 255px",
-        border: "1px solid #666666",
-      },
+      //   style: {
+      //     transition: "all .5s ease",
+      //     outline: "none",
+      //     boxShadow: "20px 38px 34px -26px hsla(0,0%,0%,.2)",
+      //     borderRadius: "255px 15px 225px 15px/15px 225px 15px 255px",
+      //     border: "1px solid #666666",
+      //   },
     },
     MuiTextField: {
       InputLabelProps: {

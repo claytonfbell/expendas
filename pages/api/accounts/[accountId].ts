@@ -1,4 +1,6 @@
 import Account, { IAccount } from "../../../src/db/Account"
+import CycleItem from "../../../src/db/CycleItem"
+import Payment from "../../../src/db/Payment"
 import {
   BadRequestException,
   MethodNotAllowedException,
@@ -56,6 +58,14 @@ export default async (
         return
         break
       case "DELETE":
+        const payments = await Payment.find({
+          account: account._id,
+        })
+        payments.forEach(async (payment) => {
+          await CycleItem.deleteMany({ payment: payment._id })
+          await Payment.deleteOne({ _id: payment._id })
+        })
+
         await account.remove()
 
         return
