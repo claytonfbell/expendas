@@ -26,7 +26,7 @@ export function useFetchCycleDates() {
   )
 }
 
-export function useFetchCycleItems(date: string) {
+export function useFetchCycleItems(date: string | null) {
   return usePersistedQuery<ICycleItemPopulated[], RestError>(
     [KEY, date],
     api.fetchCycleItems,

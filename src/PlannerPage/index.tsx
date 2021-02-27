@@ -133,7 +133,6 @@ export function PlannerPage() {
     <>
       <CycleNavigation
         date={state.cycleDate}
-        cycleDates={cycleDates}
         onChange={(x) => setState((prev) => ({ ...prev, cycleDate: x }))}
       />
 
