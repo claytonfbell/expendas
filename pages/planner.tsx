@@ -18,6 +18,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   Collapse,
   createStyles,
+  darken,
   fade,
   Grid,
   Link,
@@ -80,7 +81,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     borderLeft: "1px solid " + theme.palette.divider,
     borderRight: "1px solid " + theme.palette.divider,
     "&:nth-of-type(even)": {
-      backgroundColor: theme.palette.background.default,
+      backgroundColor: darken(theme.palette.background.default, 0.03),
     },
     "&:nth-of-type(odd)": {
       backgroundColor: theme.palette.background.paper,

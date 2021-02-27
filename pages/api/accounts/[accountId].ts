@@ -53,7 +53,7 @@ export default async (
         account.creditCardType = creditCardType
         account.currentBalance = currentBalance
         account.carryOver = carryOver
-        account.sortBy = sortBy
+        account.sortBy = sortBy || 0
         console.log(account.currentBalance)
         await account.save()
 
