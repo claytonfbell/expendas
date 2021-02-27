@@ -1,8 +1,10 @@
 import { Hidden, IconButton, TableCell } from "@material-ui/core"
 import EditIcon from "@material-ui/icons/Edit"
-import { useEffect, useState } from "react"
-import { AccountIcon, formatMoney, StyledTableRow } from "../pages/planner"
-import { IAccount } from "./db/Account"
+import React, { useEffect, useState } from "react"
+import { IAccount } from "../db/Account"
+import { AccountIcon } from "../PlannerPage/AccountIcon"
+import { StyledTableRow } from "../PlannerPage/StyledTableRow"
+import { formatMoney } from "../shared/formatMoney"
 
 interface Props {
   account: IAccount

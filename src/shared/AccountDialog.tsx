@@ -12,15 +12,15 @@ import Select from "material-ui-pack/dist/Select"
 import SubmitButton from "material-ui-pack/dist/SubmitButton"
 import TextField from "material-ui-pack/dist/TextField"
 import React, { useEffect, useMemo, useState } from "react"
-import { allAccountTypes, creditCardTypes } from "./accountTypes"
+import { allAccountTypes, creditCardTypes } from "../accountTypes"
 import {
   useCreateAccount,
   useDeleteAccount,
   useUpdateAccount,
-} from "./api/accounts"
-import { IAccount } from "./db/Account"
-import DisplayError from "./DisplayError"
-import { RestError } from "./rest"
+} from "../api/accounts"
+import { IAccount } from "../db/Account"
+import DisplayError from "../DisplayError"
+import { RestError } from "../rest"
 
 interface Props {
   account: IAccount
