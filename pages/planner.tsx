@@ -1,5 +1,11 @@
-import Planner from "../src/Planner"
+import React from "react"
+import InsideLayout from "../src/InsideLayout"
+import { PlannerPage } from "../src/PlannerPage"
 
 export default function planner() {
-  return <Planner />
+  return (
+    <InsideLayout>
+      <PlannerPage />
+    </InsideLayout>
+  )
 }

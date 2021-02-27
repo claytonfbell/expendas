@@ -22,17 +22,17 @@ import TextField from "material-ui-pack/dist/TextField"
 import moment from "moment-timezone"
 import { ChangeEvent, useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
-import { getRepeatingPaymentFeedback } from "../pages/payments"
-import { useFetchAccounts } from "./api/accounts"
-import { refreshCycleItems } from "./api/cycleItems"
+import { useFetchAccounts } from "../api/accounts"
+import { refreshCycleItems } from "../api/cycleItems"
 import {
   useCreatePayment,
   useDeletePayment,
   useUpdatePayment,
-} from "./api/payments"
-import { DayOfMonth, IPayment, MonthOfYear } from "./db/Payment"
-import DisplayError from "./DisplayError"
-import { RestError } from "./rest"
+} from "../api/payments"
+import { DayOfMonth, IPayment, MonthOfYear } from "../db/Payment"
+import DisplayError from "../DisplayError"
+import { RestError } from "../rest"
+import { getRepeatingPaymentFeedback } from "./getRepeatingPaymentFeedback"
 
 interface Props {
   payment: PaymentForm

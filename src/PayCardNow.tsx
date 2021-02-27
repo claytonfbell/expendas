@@ -4,8 +4,8 @@ import moment from "moment"
 import { useFetchAccounts } from "./api/accounts"
 import { useFetchCycleItems } from "./api/cycleItems"
 import { IAccount } from "./db/Account"
-import { PaymentForm } from "./PaymentDialog"
-import { formatMoney } from "./Planner"
+import { formatMoney } from "./shared/formatMoney"
+import { PaymentForm } from "./shared/PaymentDialog"
 
 interface Props {
   endingBalance: number

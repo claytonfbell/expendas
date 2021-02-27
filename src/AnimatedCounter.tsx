@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useCountUp } from "react-countup"
-import { formatMoney } from "./Planner"
+import { formatMoney } from "./shared/formatMoney"
 
 interface Props {
   value: number
