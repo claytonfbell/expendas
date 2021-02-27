@@ -33,6 +33,7 @@ export interface IAccount {
   creditCardType: CreditCardType | null
   currentBalance: number
   carryOver: CarryOverBalance[]
+  sortBy: number
 }
 
 export type AccountDocument = IAccount & Document
@@ -49,6 +50,7 @@ export const AccountSchema: Schema = new Schema({
   creditCardType: { type: Schema.Types.String },
   currentBalance: { type: Schema.Types.Number, required: true },
   carryOver: [CarryOverBalance],
+  sortBy: { type: Schema.Types.Number, required: true },
 })
 
 module.exports =

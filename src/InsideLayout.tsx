@@ -5,19 +5,20 @@ import {
   CssBaseline,
   Grid,
   Hidden,
+  Link,
   makeStyles,
   Toolbar,
   Typography,
 } from "@material-ui/core"
 import Container from "@material-ui/core/Container"
-import Link from "next/link"
+import NextLink from "next/link"
 import { ReactNode } from "react"
 import { SignInProvider, useSignIn } from "./SignInProvider"
 
 const useStyles = makeStyles({
   root: {
     "& a": {
-      color: "white",
+      color: "#ffffff",
     },
   },
 })
@@ -57,13 +58,19 @@ function Content(props: Props) {
                   </Grid>
                 </Hidden>
                 <Grid item>
-                  <Link href="/planner">Main</Link>
+                  <Link component={NextLink} href="/planner">
+                    Main
+                  </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="/payments">Payments</Link>
+                  <Link component={NextLink} href="/payments">
+                    Payments
+                  </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="/accounts">Accounts</Link>
+                  <Link component={NextLink} href="/accounts">
+                    Accounts
+                  </Link>
                 </Grid>
               </Grid>
             </Grid>

@@ -15,9 +15,7 @@ export default async (
     switch (req.method) {
       case "GET":
         const allAccounts = await Account.find({ household: req.household._id })
-        return allAccounts
-          .sort((a, b) => a.type.localeCompare(b.type))
-          .sort((a, b) => a.name.localeCompare(b.name))
+        return allAccounts.sort((a, b) => a.sortBy - b.sortBy)
         break
       case "POST":
         const {
@@ -25,6 +23,7 @@ export default async (
           type,
           creditCardType,
           currentBalance,
+          sortBy,
         }: IAccount = req.body
 
         validate({ name }).notEmpty()
@@ -41,6 +40,7 @@ export default async (
           creditCardType,
           currentBalance,
           carryOver: [],
+          sortBy,
         })
         break
       default:

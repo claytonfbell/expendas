@@ -25,6 +25,7 @@ function Accounts() {
       creditCardType: null,
       currentBalance: 0,
       carryOver: [],
+      sortBy: 99,
     })
   }
 
