@@ -24,8 +24,8 @@ import { useDeletePayment, useFetchPayments } from "../src/api/payments"
 import { IPayment, IPaymentPopulated } from "../src/db/Payment"
 import InsideLayout from "../src/InsideLayout"
 import PaymentDialog from "../src/PaymentDialog"
+import { AccountIcon, Currency, StyledTableRow } from "../src/Planner"
 import { useSignIn } from "../src/SignInProvider"
-import { AccountIcon, Currency, StyledTableRow } from "./planner"
 
 function Payments() {
   const { requireAuthentication } = useSignIn()

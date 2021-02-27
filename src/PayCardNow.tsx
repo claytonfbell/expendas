@@ -1,11 +1,11 @@
 /* eslint-disable prefer-const */
 import { Link } from "@material-ui/core"
 import moment from "moment"
-import { formatMoney } from "../pages/planner"
 import { useFetchAccounts } from "./api/accounts"
 import { useFetchCycleItems } from "./api/cycleItems"
 import { IAccount } from "./db/Account"
 import { PaymentForm } from "./PaymentDialog"
+import { formatMoney } from "./Planner"
 
 interface Props {
   endingBalance: number
