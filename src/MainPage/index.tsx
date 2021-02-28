@@ -2,8 +2,11 @@ import {
   Box,
   Collapse,
   Divider,
+  Fade,
+  FormControlLabel,
   Grid,
   lighten,
+  Link,
   List,
   ListItem,
   ListItemIcon,
@@ -11,20 +14,33 @@ import {
   ListItemText,
   makeStyles,
   Paper,
+  Switch,
 } from "@material-ui/core"
 import ExpandLessIcon from "@material-ui/icons/ExpandLess"
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import clsx from "clsx"
 import moment from "moment"
-import React from "react"
-import { AccountGroup, accountGroups } from "../accountTypes"
-import { useFetchAccounts } from "../api/accounts"
-import { useFetchCycleDates, useFetchCycleItems } from "../api/cycleItems"
+import React, { ChangeEvent } from "react"
+import {
+  AccountGroup,
+  accountGroups,
+  assetsAccountTypes,
+  loanAccountTypes,
+  savingsInvestmentsAccountTypes,
+} from "../accountTypes"
+import { useFetchAccounts, useUpdateAccount } from "../api/accounts"
+import {
+  useFetchCycleDates,
+  useFetchCycleItems,
+  useUpdateCycleItem,
+} from "../api/cycleItems"
 import CycleNavigation from "../CycleNavigation"
 import { IAccount } from "../db/Account"
-import { ICycleItem } from "../db/CycleItem"
+import { ICycleItem, ICycleItemPopulated } from "../db/CycleItem"
 import { AccountIcon } from "../PlannerPage/AccountIcon"
+import { AmountInput } from "../PlannerPage/AmountInput"
 import { Currency } from "../PlannerPage/Currency"
+import { LargeTooltip } from "../PlannerPage/LargeTooltip"
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -53,7 +69,21 @@ export function MainPage() {
 
   const { data: cycleItems } = useFetchCycleItems(date)
   const { data: cycleDates } = useFetchCycleDates()
-  const { data: accounts } = useFetchAccounts()
+  const { data: unfilteredAccounts } = useFetchAccounts()
+
+  const [includeSavings, setIncludeSavings] = React.useState(false)
+  const [includePropertyLoans, setIncludePropertyLoans] = React.useState(false)
+
+  const accounts = unfilteredAccounts
+    .filter(
+      (x) => includeSavings || !savingsInvestmentsAccountTypes.includes(x.type)
+    )
+    .filter(
+      (x) =>
+        includePropertyLoans ||
+        (!assetsAccountTypes.includes(x.type) &&
+          !loanAccountTypes.includes(x.type))
+    )
 
   React.useEffect(() => {
     if (cycleDates.length > 0 && date === null) {
@@ -90,6 +120,30 @@ export function MainPage() {
   return date === null ? null : (
     <>
       <CycleNavigation date={date} onChange={(x) => setDate(x)} />
+
+      <FormControlLabel
+        control={
+          <Switch
+            checked={includeSavings}
+            onChange={(e, checked) => setIncludeSavings(checked)}
+          />
+        }
+        label="Include Savings &amp; Investments"
+      />
+
+      <FormControlLabel
+        control={
+          <Switch
+            checked={includePropertyLoans}
+            onChange={(e, checked) => setIncludePropertyLoans(checked)}
+          />
+        }
+        label="Include Property &amp; Loans"
+      />
+
+      <br />
+      <br />
+
       <Grid
         alignContent="flex-start"
         className={classes.grid}
@@ -218,6 +272,10 @@ const useAccountBoxStyles = makeStyles((theme) => ({
     "&:nth-of-type(odd)": {
       backgroundColor: lighten(theme.palette.primary.main, 0.93),
     },
+    "&.paid": {
+      textDecoration: "line-through",
+      color: lighten(theme.palette.text.primary, 0.7),
+    },
   },
 
   left: {
@@ -265,6 +323,8 @@ function AccountBox(props: AccountBoxProps) {
     startingBalance +
     cycleItems.filter((x) => !x.isPaid).reduce((x, y) => x + y.amount, 0)
 
+  const [updateAccount] = useUpdateAccount()
+
   return (
     <>
       <Box className={classes.title}>
@@ -274,21 +334,16 @@ function AccountBox(props: AccountBoxProps) {
             &nbsp;&nbsp;{account.name}
           </Grid>
           <Grid item>
-            <Currency value={startingBalance} />
+            <AmountInputTool
+              enabled={isCurrentCycle}
+              value={startingBalance}
+              onChange={(x) => updateAccount({ ...account, currentBalance: x })}
+            />
           </Grid>
         </Grid>
       </Box>
       {cycleItems.map((item) => (
-        <Box key={item._id} className={classes.item}>
-          <Grid container>
-            <Grid item xs={9} className={classes.left}>
-              {item.payment.paidTo}
-            </Grid>
-            <Grid item xs={3} className={classes.right}>
-              <Currency value={item.amount} />
-            </Grid>
-          </Grid>
-        </Box>
+        <CycleItemRow key={item._id} item={item} />
       ))}
       {cycleItems.length === 0 ? null : (
         <Box className={classes.item}>
@@ -299,6 +354,104 @@ function AccountBox(props: AccountBoxProps) {
             </Grid>
           </Grid>
         </Box>
+      )}
+    </>
+  )
+}
+
+type CycleItemRowProps = {
+  item: ICycleItemPopulated
+}
+
+function CycleItemRow(props: CycleItemRowProps) {
+  const classes = useAccountBoxStyles()
+  const { item } = props
+
+  const [updateCycleItem] = useUpdateCycleItem()
+
+  const handlePaidClick = (item: ICycleItemPopulated) => (
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
+    updateCycleItem({ ...item, isPaid: e.target.checked })
+  }
+
+  const [isHover, setIsHover] = React.useState(false)
+
+  return (
+    <Box
+      onMouseOver={() => setIsHover(true)}
+      onMouseOut={() => setIsHover(false)}
+      key={item._id}
+      className={clsx(classes.item, item.isPaid ? "paid" : undefined)}
+    >
+      <Grid container>
+        <Grid item xs={8} className={classes.left}>
+          {item.payment.paidTo}
+        </Grid>
+        <Grid item xs={1} className={classes.left}>
+          <Fade in={isHover}>
+            <LargeTooltip
+              arrow
+              placement="left"
+              title="Check if this item has already been settled and no longer impacts your account balance."
+            >
+              <input
+                type="checkbox"
+                checked={item.isPaid}
+                onChange={handlePaidClick(item)}
+              />
+            </LargeTooltip>
+          </Fade>
+        </Grid>
+        <Grid item xs={3} className={classes.right}>
+          <AmountInputTool
+            enabled
+            value={item.amount}
+            onChange={(x) => updateCycleItem({ ...item, amount: x })}
+          />
+        </Grid>
+      </Grid>
+    </Box>
+  )
+}
+
+const useAmountInputToolStyles = makeStyles({
+  link: {
+    cursor: "pointer",
+  },
+})
+
+type AmountInputToolProps = {
+  value: number
+  onChange: (newValue: number) => void
+  enabled: boolean
+}
+function AmountInputTool(props: AmountInputToolProps) {
+  const classes = useAmountInputToolStyles()
+  const { enabled, value, onChange } = props
+  const [open, setOpen] = React.useState(false)
+
+  function handleChange(newValue: number) {
+    setOpen(false)
+    onChange(newValue)
+  }
+
+  return (
+    <>
+      {enabled ? (
+        open ? (
+          <AmountInput value={value} onChange={handleChange} />
+        ) : (
+          <Link
+            color="inherit"
+            className={classes.link}
+            onClick={() => setOpen(true)}
+          >
+            <Currency value={value} />
+          </Link>
+        )
+      ) : (
+        <Currency value={value} />
       )}
     </>
   )
