@@ -55,8 +55,10 @@ const useStyles = makeStyles((theme) => ({
     width: `100vw`,
     paddingLeft: theme.spacing(4),
     paddingRight: theme.spacing(4),
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
     color: theme.palette.primary.contrastText,
-    fontSize: 32,
+    fontSize: 24,
     "& .right": {
       textAlign: "right",
     },
@@ -74,6 +76,7 @@ export function MainPage() {
   const [includeSavings, setIncludeSavings] = React.useState(false)
   const [includePropertyLoans, setIncludePropertyLoans] = React.useState(false)
 
+  // filter-down
   const accounts = unfilteredAccounts
     .filter(
       (x) => includeSavings || !savingsInvestmentsAccountTypes.includes(x.type)
@@ -194,11 +197,15 @@ type AccountGroupProps = {
 
 function AccountGroupBox(props: AccountGroupProps) {
   const classes = useAccountGroupBoxStyles()
-  const { accountGroup, cycleItems, isCurrentCycle, date } = props
+  const { accountGroup, isCurrentCycle, date } = props
   const [isExpanded, setIsExpanded] = React.useState(false)
 
+  // filter-down
   const accounts = (props.accounts || []).filter((x) =>
     accountGroup.types.includes(x.type)
+  )
+  const cycleItems = (props.cycleItems || []).filter((x) =>
+    accounts.map((y) => y._id).includes(x.payment.account._id)
   )
 
   // find previous carryover

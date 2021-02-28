@@ -1,6 +1,6 @@
 import React from "react"
-import InsideLayout from "../src/InsideLayout"
 import { PlannerPage } from "../src/PlannerPage"
+import InsideLayout from "../src/shared/InsideLayout"
 
 export default function planner() {
   return (

@@ -2,6 +2,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import {
   AppBar,
+  Box,
   CssBaseline,
   Grid,
   Hidden,
@@ -12,16 +13,22 @@ import {
 } from "@material-ui/core"
 import Container from "@material-ui/core/Container"
 import NextLink from "next/link"
-import { ReactNode } from "react"
-import { SignInProvider, useSignIn } from "./SignInProvider"
+import React, { ReactNode } from "react"
+import { SignInProvider, useSignIn } from "../SignInProvider"
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     "& a": {
       color: "#ffffff",
     },
   },
-})
+  navLinks: {
+    "& a": {
+      marginRight: theme.spacing(2),
+      display: "inline-block",
+    },
+  },
+}))
 
 interface Props {
   title?: string
@@ -58,19 +65,17 @@ function Content(props: Props) {
                   </Grid>
                 </Hidden>
                 <Grid item>
-                  <Link component={NextLink} href="/planner">
-                    Main
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link component={NextLink} href="/payments">
-                    Payments
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link component={NextLink} href="/accounts">
-                    Accounts
-                  </Link>
+                  <Box className={classes.navLinks}>
+                    <Link component={NextLink} href="/planner">
+                      Main
+                    </Link>
+                    <Link component={NextLink} href="/payments">
+                      Payments
+                    </Link>
+                    <Link component={NextLink} href="/accounts">
+                      Accounts
+                    </Link>
+                  </Box>
                 </Grid>
               </Grid>
             </Grid>

@@ -1,6 +1,6 @@
 import React from "react"
-import InsideLayout from "../src/InsideLayout"
 import { MainPage } from "../src/MainPage"
+import InsideLayout from "../src/shared/InsideLayout"
 
 export default function Main() {
   return (
