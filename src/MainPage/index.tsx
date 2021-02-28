@@ -55,12 +55,13 @@ export function MainPage() {
   const classes = useStyles()
   const [date, setDate] = React.useState<string | null>(null)
 
-  const { data: cycleItems } = useFetchCycleItems(date)
+  const { data: unfilteredCycleItems } = useFetchCycleItems(date)
   const { data: cycleDates } = useFetchCycleDates()
   const { data: unfilteredAccounts } = useFetchAccounts()
 
   const [includeSavings, setIncludeSavings] = React.useState(false)
   const [includePropertyLoans, setIncludePropertyLoans] = React.useState(false)
+  const [includeSettled, setIncludeSettled] = React.useState(false)
 
   // filter-down
   const accounts = unfilteredAccounts
@@ -74,6 +75,10 @@ export function MainPage() {
           !loanAccountTypes.includes(x.type))
     )
     .sort((a, b) => Math.abs(b.currentBalance) - Math.abs(a.currentBalance))
+
+  const cycleItems = unfilteredCycleItems.filter(
+    (x) => includeSettled || !x.isPaid
+  )
 
   React.useEffect(() => {
     if (cycleDates.length > 0 && date === null) {
@@ -139,6 +144,16 @@ export function MainPage() {
           />
         }
         label="Include Property &amp; Loans"
+      />
+
+      <FormControlLabel
+        control={
+          <Switch
+            checked={includeSettled}
+            onChange={(e, checked) => setIncludeSettled(checked)}
+          />
+        }
+        label="Show Settled Payments"
       />
 
       <br />
