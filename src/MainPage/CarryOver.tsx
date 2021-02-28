@@ -1,3 +1,4 @@
+import React from "react"
 import useDebounce from "react-use/lib/useDebounce"
 import { useUpdateAccount } from "../api/accounts"
 import { IAccount } from "../db/Account"
@@ -29,9 +30,12 @@ export function CarryOver({
     startingBalance +
     items.filter((x) => !x.isPaid).reduce((x, y) => x + y.amount, 0)
 
+  const [lastValue, setLastValue] = React.useState(value)
+
   useDebounce(
     () => {
-      if (endDate !== undefined) {
+      if (endDate !== undefined && lastValue !== value) {
+        setLastValue(value)
         updateAccount({
           ...account,
           carryOver: [
@@ -44,7 +48,7 @@ export function CarryOver({
       }
     },
     10000,
-    [value, account._id, endDate]
+    [value, account._id, endDate, lastValue]
   )
 
   return <></>

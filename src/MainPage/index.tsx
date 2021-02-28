@@ -4,6 +4,8 @@ import {
   Grid,
   makeStyles,
   Switch,
+  useMediaQuery,
+  useTheme,
 } from "@material-ui/core"
 import moment from "moment"
 import React from "react"
@@ -26,7 +28,9 @@ import { Currency } from "./Currency"
 
 const useStyles = makeStyles((theme) => ({
   grid: {
-    maxHeight: `90vh`,
+    [theme.breakpoints.up("lg")]: {
+      maxHeight: `100vh`,
+    },
     marginBottom: 200,
   },
   footer: {
@@ -106,6 +110,9 @@ export function MainPage() {
   const [editAccount, setEditAccount] = React.useState<IAccount>()
   const [editPayment, setEditPayment] = React.useState<IPayment>()
 
+  const theme = useTheme()
+  const isMdDown = useMediaQuery(theme.breakpoints.down("md"))
+
   return date === null ? null : (
     <>
       <CycleNavigation
@@ -142,19 +149,19 @@ export function MainPage() {
         className={classes.grid}
         container
         spacing={2}
+        direction={isMdDown ? "row" : "column"}
       >
         {accountGroups.map((accountGroup) => (
-          <Grid item key={accountGroup.label} xs={12} md={6} lg={4}>
-            <AccountGroupBox
-              accountGroup={accountGroup}
-              cycleItems={cycleItems}
-              accounts={accounts}
-              isCurrentCycle={isCurrentCycle}
-              date={date}
-              onEditAccount={(a) => setEditAccount({ ...a })}
-              onEditPayment={(p) => setEditPayment({ ...p })}
-            />
-          </Grid>
+          <AccountGroupBox
+            key={accountGroup.label}
+            accountGroup={accountGroup}
+            cycleItems={cycleItems}
+            accounts={accounts}
+            isCurrentCycle={isCurrentCycle}
+            date={date}
+            onEditAccount={(a) => setEditAccount({ ...a })}
+            onEditPayment={(p) => setEditPayment({ ...p })}
+          />
         ))}
       </Grid>
       <Box className={classes.footer}>
