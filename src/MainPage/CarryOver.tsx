@@ -43,7 +43,7 @@ export function CarryOver({
         })
       }
     },
-    5000,
+    10000,
     [value, account._id, endDate]
   )
 

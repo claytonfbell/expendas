@@ -447,21 +447,21 @@ export default function PaymentDialog(props: Props) {
 
           <br />
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid item xs={4}>
               <SubmitButton>
                 {state._id === undefined ? `Create` : `Save`}
               </SubmitButton>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={4}>
               <Button fullWidth variant="outlined" onClick={props.onClose}>
                 Cancel
               </Button>
             </Grid>
             {state._id !== undefined && (
-              <Grid item xs={12}>
+              <Grid item xs={4}>
                 <Button
                   fullWidth
-                  variant="text"
+                  variant="outlined"
                   color="danger"
                   onClick={() => setWillDelete(state._id)}
                 >

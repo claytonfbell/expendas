@@ -117,12 +117,13 @@ export default function AccountDialog(props: Props) {
                 <SubmitButton>{isNew ? "Create" : "Save"}</SubmitButton>
               </Grid>
               <Grid item xs={4}>
-                <Button fullWidth onClick={props.onClose}>
+                <Button variant="outlined" fullWidth onClick={props.onClose}>
                   Cancel
                 </Button>
               </Grid>
               <Grid item xs={4}>
                 <Button
+                  variant="outlined"
                   fullWidth
                   color="danger"
                   onClick={() => setShowDeleteConfirm(true)}
