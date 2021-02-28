@@ -29,7 +29,7 @@ import { Currency } from "./Currency"
 const useStyles = makeStyles((theme) => ({
   grid: {
     [theme.breakpoints.up("lg")]: {
-      maxHeight: `100vh`,
+      maxHeight: `calc(100vh - 100px)`,
     },
     marginBottom: 200,
   },

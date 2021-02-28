@@ -1,44 +1,67 @@
-import { Box, CssBaseline, Grid, Hidden, Typography } from "@material-ui/core"
-import LocalFloristIcon from "@material-ui/icons/LocalFlorist"
-import { ReactNode } from "react"
+import {
+  Box,
+  CssBaseline,
+  Fade,
+  Grid,
+  Hidden,
+  makeStyles,
+  Typography,
+  useTheme,
+} from "@material-ui/core"
+import React, { ReactNode } from "react"
 import { SignInProvider } from "./SignInProvider"
+
+const coverArtPhoto = "/DSC_0396.jpg"
+
+const useStyles = makeStyles((theme) => ({
+  coverArtPhotoContainer: {
+    height: "100vh",
+    backgroundSize: "cover",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "top center",
+    position: "relative",
+    boxShadow: "1px 2px 4px rgba(0, 0, 0, .075)",
+  },
+}))
+
 interface Props {
   title: string
   children: ReactNode
 }
 
 export default function StartLayout(props: Props) {
+  const classes = useStyles()
+  const theme = useTheme()
   return (
     <SignInProvider>
       <CssBaseline />
-      <Grid container justify="space-between">
+      <Grid
+        container
+        justify="space-between"
+        style={{ backgroundColor: "#111" }}
+      >
         <Hidden xsDown>
-          <Grid item sm={6} md={8} lg={9}>
-            <Box
+          <Fade timeout={1000} in>
+            <Grid
+              item
+              sm={6}
+              md={8}
+              lg={9}
+              className={classes.coverArtPhotoContainer}
               style={{
-                color: "#666",
-                borderRight: "1px solid #ccc",
-                height: "100vh",
-                backgroundColor: "#eee",
-                boxShadow: "20px 38px 34px -26px hsla(0,0%,0%,.2)",
-                borderRadius: "255px 15px 225px 15px/15px 225px 15px 255px",
-                textAlign: "center",
-                paddingTop: 72,
+                backgroundImage: `url(${coverArtPhoto})`,
               }}
-            >
-              <Typography variant="h1">expendas.com</Typography>
-              <Typography>Tools to plan your spending.</Typography>
-              <br />
-              <br />
-              <LocalFloristIcon
-                color="inherit"
-                fontSize="large"
-                style={{ fontSize: 144 }}
-              />
-            </Box>
-          </Grid>
+            ></Grid>
+          </Fade>
         </Hidden>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          md={4}
+          lg={3}
+          style={{ backgroundColor: theme.palette.background.default }}
+        >
           <Box padding={6}>
             <Typography variant="h1">{props.title}</Typography>
             {props.children}
