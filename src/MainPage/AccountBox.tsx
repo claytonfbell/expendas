@@ -53,6 +53,9 @@ export const useAccountBoxStyles = makeStyles((theme) => ({
   link: {
     cursor: "pointer",
   },
+  checkbox: {
+    padding: 0,
+  },
 }))
 
 type AccountBoxProps = {
