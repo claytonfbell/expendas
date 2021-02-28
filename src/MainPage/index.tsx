@@ -37,10 +37,13 @@ import {
 import CycleNavigation from "../CycleNavigation"
 import { IAccount } from "../db/Account"
 import { ICycleItem, ICycleItemPopulated } from "../db/CycleItem"
+import { IPayment } from "../db/Payment"
 import { AccountIcon } from "../PlannerPage/AccountIcon"
 import { AmountInput } from "../PlannerPage/AmountInput"
 import { Currency } from "../PlannerPage/Currency"
 import { LargeTooltip } from "../PlannerPage/LargeTooltip"
+import AccountDialog from "../shared/AccountDialog"
+import PaymentDialog from "../shared/PaymentDialog"
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -120,9 +123,16 @@ export function MainPage() {
     )
     .reduce((sum, x) => sum + x.amount, startingBalance)
 
+  const [editAccount, setEditAccount] = React.useState<IAccount>()
+  const [editPayment, setEditPayment] = React.useState<IPayment>()
+
   return date === null ? null : (
     <>
-      <CycleNavigation date={date} onChange={(x) => setDate(x)} />
+      <CycleNavigation
+        cycleDates={cycleDates}
+        date={date}
+        onChange={(x) => setDate(x)}
+      />
 
       <FormControlLabel
         control={
@@ -161,6 +171,8 @@ export function MainPage() {
               accounts={accounts}
               isCurrentCycle={isCurrentCycle}
               date={date}
+              onEditAccount={(a) => setEditAccount(a)}
+              onEditPayment={(p) => setEditPayment(p)}
             />
           </Grid>
         ))}
@@ -175,6 +187,18 @@ export function MainPage() {
           </Grid>
         </Grid>
       </Box>
+
+      <AccountDialog
+        account={editAccount}
+        onClose={() => setEditAccount(undefined)}
+      />
+
+      {editPayment !== undefined ? (
+        <PaymentDialog
+          payment={editPayment}
+          onClose={() => setEditPayment(undefined)}
+        />
+      ) : null}
     </>
   )
 }
@@ -193,6 +217,8 @@ type AccountGroupProps = {
   cycleItems: ICycleItem[]
   isCurrentCycle: boolean
   date: string
+  onEditAccount: (account: IAccount) => void
+  onEditPayment: (payment: IPayment) => void
 }
 
 function AccountGroupBox(props: AccountGroupProps) {
@@ -253,6 +279,8 @@ function AccountGroupBox(props: AccountGroupProps) {
                 cycleItems={cycleItems}
                 date={date}
                 isCurrentCycle={isCurrentCycle}
+                onEditAccount={props.onEditAccount}
+                onEditPayment={props.onEditPayment}
               />
             ))}
           </Collapse>
@@ -301,6 +329,9 @@ const useAccountBoxStyles = makeStyles((theme) => ({
       borderTop: `2px solid ${lighten(theme.palette.primary.main, 0.5)}`,
     },
   },
+  link: {
+    cursor: "pointer",
+  },
 }))
 
 type AccountBoxProps = {
@@ -308,6 +339,8 @@ type AccountBoxProps = {
   cycleItems: ICycleItem[]
   date: string
   isCurrentCycle: boolean
+  onEditAccount: (account: IAccount) => void
+  onEditPayment: (payment: IPayment) => void
 }
 
 function AccountBox(props: AccountBoxProps) {
@@ -339,8 +372,13 @@ function AccountBox(props: AccountBoxProps) {
       <Box className={classes.title}>
         <Grid container justify="space-between">
           <Grid item>
-            <AccountIcon account={account} />
-            &nbsp;&nbsp;{account.name}
+            <Link
+              className={classes.link}
+              onClick={() => props.onEditAccount(account)}
+            >
+              <AccountIcon account={account} />
+              &nbsp;&nbsp;{account.name}
+            </Link>
           </Grid>
           <Grid item>
             <AmountInputTool
@@ -352,14 +390,18 @@ function AccountBox(props: AccountBoxProps) {
         </Grid>
       </Box>
       {cycleItems.map((item) => (
-        <CycleItemRow key={item._id} item={item} />
+        <CycleItemRow
+          key={item._id}
+          item={item}
+          onEditPayment={props.onEditPayment}
+        />
       ))}
       {cycleItems.length === 0 ? null : (
         <Box className={classes.item}>
           <Grid container>
             <Grid item xs={9} className={classes.left}></Grid>
             <Grid item xs={3} className={clsx("total", classes.right)}>
-              <Currency animate value={endingBalance} />
+              <Currency red animate value={endingBalance} />
             </Grid>
           </Grid>
         </Box>
@@ -370,6 +412,7 @@ function AccountBox(props: AccountBoxProps) {
 
 type CycleItemRowProps = {
   item: ICycleItemPopulated
+  onEditPayment: (payment: IPayment) => void
 }
 
 function CycleItemRow(props: CycleItemRowProps) {
@@ -395,7 +438,13 @@ function CycleItemRow(props: CycleItemRowProps) {
     >
       <Grid container>
         <Grid item xs={8} className={classes.left}>
-          {item.payment.paidTo}
+          <Link
+            color="inherit"
+            className={classes.link}
+            onClick={() => props.onEditPayment(item.payment)}
+          >
+            {item.payment.paidTo}
+          </Link>
         </Grid>
         <Grid item xs={1} className={classes.left}>
           <Fade in={isHover}>
@@ -414,6 +463,7 @@ function CycleItemRow(props: CycleItemRowProps) {
         </Grid>
         <Grid item xs={3} className={classes.right}>
           <AmountInputTool
+            green={!item.isPaid}
             enabled
             value={item.amount}
             onChange={(x) => updateCycleItem({ ...item, amount: x })}
@@ -433,7 +483,8 @@ const useAmountInputToolStyles = makeStyles({
 type AmountInputToolProps = {
   value: number
   onChange: (newValue: number) => void
-  enabled: boolean
+  enabled?: boolean
+  green?: boolean
 }
 function AmountInputTool(props: AmountInputToolProps) {
   const classes = useAmountInputToolStyles()
@@ -456,11 +507,11 @@ function AmountInputTool(props: AmountInputToolProps) {
             className={classes.link}
             onClick={() => setOpen(true)}
           >
-            <Currency value={value} />
+            <Currency green={props.green} value={value} />
           </Link>
         )
       ) : (
-        <Currency value={value} />
+        <Currency green={props.green} value={value} />
       )}
     </>
   )

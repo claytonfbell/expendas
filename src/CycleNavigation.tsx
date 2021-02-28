@@ -2,17 +2,16 @@ import { Grid, IconButton } from "@material-ui/core"
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
 import ChevronRightIcon from "@material-ui/icons/ChevronRight"
 import moment from "moment"
-import { useFetchCycleDates } from "./api/cycleItems"
 
 type Props = {
   date: string
   onChange: (value: string) => void
+  cycleDates: string[]
 }
 
 export default function CycleNavigation(props: Props) {
+  const { cycleDates } = props
   let prev: string = null
-
-  const { data: cycleDates } = useFetchCycleDates()
 
   let x = cycleDates.indexOf(props.date) - 1
   if (typeof cycleDates[x] !== "undefined") {

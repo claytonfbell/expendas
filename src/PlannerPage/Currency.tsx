@@ -1,4 +1,3 @@
-import { useTheme } from "@material-ui/core"
 import React from "react"
 import AnimatedCounter from "../AnimatedCounter"
 import { formatMoney } from "../shared/formatMoney"
@@ -12,7 +11,7 @@ interface Props {
 }
 export function Currency(props: Props) {
   const RED = "#c82333"
-  const theme = useTheme()
+  const GREEN = "#0c9c58"
 
   return (
     <span
@@ -21,7 +20,7 @@ export function Currency(props: Props) {
           props.value < 0 && props.red
             ? RED
             : props.value > 0 && props.green
-            ? theme.palette.primary.main
+            ? GREEN
             : undefined,
         fontWeight: props.bold ? "bold" : undefined,
       }}
