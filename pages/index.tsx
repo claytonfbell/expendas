@@ -26,7 +26,7 @@ function SignIn() {
     signIn(state)
       .then(() => {
         setState((prev) => ({ ...prev, password: "" }))
-        router.push("/planner")
+        router.push("/main")
       })
       .catch((e) => setError(e))
   }

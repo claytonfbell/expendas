@@ -135,7 +135,9 @@ export default function PaymentDialog(props: Props) {
 
   const { data: unsortedAccounts } = useFetchAccounts()
 
-  const accounts = unsortedAccounts.sort((a, b) => a.name.localeCompare(b.name))
+  const accounts = [...unsortedAccounts].sort((a, b) =>
+    a.name.localeCompare(b.name)
+  )
   const [isIncome, setIsIncome] = useState(false)
   const thirtyOneDays = Array.from(Array(31).keys())
   const twelveMonths = Array.from(Array(12).keys())

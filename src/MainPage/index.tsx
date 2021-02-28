@@ -38,8 +38,10 @@ import CycleNavigation from "../CycleNavigation"
 import { IAccount } from "../db/Account"
 import { ICycleItem, ICycleItemPopulated } from "../db/CycleItem"
 import { IPayment } from "../db/Payment"
+import PayCardNow from "../PayCardNow"
 import { AccountIcon } from "../PlannerPage/AccountIcon"
 import { AmountInput } from "../PlannerPage/AmountInput"
+import { CarryOver } from "../PlannerPage/CarryOver"
 import { Currency } from "../PlannerPage/Currency"
 import { LargeTooltip } from "../PlannerPage/LargeTooltip"
 import AccountDialog from "../shared/AccountDialog"
@@ -90,6 +92,7 @@ export function MainPage() {
         (!assetsAccountTypes.includes(x.type) &&
           !loanAccountTypes.includes(x.type))
     )
+    .sort((a, b) => Math.abs(b.currentBalance) - Math.abs(a.currentBalance))
 
   React.useEffect(() => {
     if (cycleDates.length > 0 && date === null) {
@@ -171,8 +174,8 @@ export function MainPage() {
               accounts={accounts}
               isCurrentCycle={isCurrentCycle}
               date={date}
-              onEditAccount={(a) => setEditAccount(a)}
-              onEditPayment={(p) => setEditPayment(p)}
+              onEditAccount={(a) => setEditAccount({ ...a })}
+              onEditPayment={(p) => setEditPayment({ ...p })}
             />
           </Grid>
         ))}
@@ -199,6 +202,19 @@ export function MainPage() {
           onClose={() => setEditPayment(undefined)}
         />
       ) : null}
+
+      {accounts.map((account) => (
+        <CarryOver
+          key={account._id}
+          account={account}
+          items={cycleItems.filter(
+            (x) => x.payment.account._id === account._id
+          )}
+          date={date}
+          endDate={endDate}
+          isCurrentCycle={isCurrentCycle}
+        />
+      ))}
     </>
   )
 }
@@ -227,9 +243,10 @@ function AccountGroupBox(props: AccountGroupProps) {
   const [isExpanded, setIsExpanded] = React.useState(false)
 
   // filter-down
-  const accounts = (props.accounts || []).filter((x) =>
-    accountGroup.types.includes(x.type)
-  )
+  const accounts = (props.accounts || [])
+    .filter((x) => accountGroup.types.includes(x.type))
+    .sort((a, b) => Math.abs(b.currentBalance) - Math.abs(a.currentBalance))
+
   const cycleItems = (props.cycleItems || []).filter((x) =>
     accounts.map((y) => y._id).includes(x.payment.account._id)
   )
@@ -399,7 +416,34 @@ function AccountBox(props: AccountBoxProps) {
       {cycleItems.length === 0 ? null : (
         <Box className={classes.item}>
           <Grid container>
-            <Grid item xs={9} className={classes.left}></Grid>
+            <Grid item xs={9} className={classes.left}>
+              <Link
+                className={classes.link}
+                onClick={() =>
+                  props.onEditPayment({
+                    paidTo: "",
+                    amount: 0,
+                    repeatsOnDaysOfMonth: null,
+                    repeatsOnMonthsOfYear: null,
+                    repeatsUntilDate: null,
+                    repeatsWeekly: null,
+                    account: account._id,
+                    date,
+                  })
+                }
+              >
+                + Add Item
+              </Link>
+
+              {isCurrentCycle && account.type === "Checking Account" ? (
+                <PayCardNow
+                  account={account}
+                  endingBalance={endingBalance}
+                  onClick={(p) => props.onEditPayment(p)}
+                  date={date}
+                />
+              ) : null}
+            </Grid>
             <Grid item xs={3} className={clsx("total", classes.right)}>
               <Currency red animate value={endingBalance} />
             </Grid>

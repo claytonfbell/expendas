@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     "& a": {
       color: "#ffffff",
+      cursor: "pointer",
     },
   },
   navLinks: {
@@ -27,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
       marginRight: theme.spacing(2),
       display: "inline-block",
     },
+  },
+  right: {
+    textAlign: "right",
   },
 }))
 
@@ -43,14 +47,8 @@ function Content(props: Props) {
     <SignInProvider>
       <AppBar color="primary" className={classes.root}>
         <Toolbar>
-          <Grid
-            container
-            justify="space-between"
-            alignContent="center"
-            alignItems="center"
-            spacing={0}
-          >
-            <Grid item>
+          <Grid container alignContent="center" alignItems="center" spacing={0}>
+            <Grid item xs={9}>
               <Grid
                 container
                 spacing={3}
@@ -66,7 +64,7 @@ function Content(props: Props) {
                 </Hidden>
                 <Grid item>
                   <Box className={classes.navLinks}>
-                    <Link component={NextLink} href="/planner">
+                    <Link component={NextLink} href="/main">
                       Main
                     </Link>
                     <Link component={NextLink} href="/payments">
@@ -79,10 +77,8 @@ function Content(props: Props) {
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item>
-              <a href="javascript:;" onClick={signOut}>
-                Logout
-              </a>
+            <Grid item xs={3} className={classes.right}>
+              <Link onClick={signOut}>Logout</Link>
             </Grid>
           </Grid>
         </Toolbar>
