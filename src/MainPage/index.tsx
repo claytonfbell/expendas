@@ -218,38 +218,40 @@ function AccountGroupBox(props: AccountGroupProps) {
     startingBalance +
     cycleItems.filter((x) => !x.isPaid).reduce((x, y) => x + y.amount, 0)
 
-  return accounts.length === 0 ? null : (
-    <Paper elevation={4} className={classes.root}>
-      <Box>
-        <List>
-          <ListItem button onClick={() => setIsExpanded(!isExpanded)}>
-            <ListItemIcon>
-              {!isExpanded ? (
-                <ExpandLessIcon style={{ color: "#fff" }} />
-              ) : (
-                <ExpandMoreIcon style={{ color: "#fff" }} />
-              )}
-            </ListItemIcon>
-            <ListItemText>{accountGroup.label}</ListItemText>
-            <ListItemSecondaryAction>
-              <Currency animate value={endingBalance} />
-            </ListItemSecondaryAction>
-          </ListItem>
-        </List>
-        <Collapse in={isExpanded}>
-          <Divider />
-          {accounts.map((account) => (
-            <AccountBox
-              key={account._id}
-              account={account}
-              cycleItems={cycleItems}
-              date={date}
-              isCurrentCycle={isCurrentCycle}
-            />
-          ))}
-        </Collapse>
-      </Box>
-    </Paper>
+  return (
+    <Fade in={accounts.length > 0}>
+      <Paper elevation={4} className={classes.root}>
+        <Box>
+          <List>
+            <ListItem button onClick={() => setIsExpanded(!isExpanded)}>
+              <ListItemIcon>
+                {!isExpanded ? (
+                  <ExpandLessIcon style={{ color: "#fff" }} />
+                ) : (
+                  <ExpandMoreIcon style={{ color: "#fff" }} />
+                )}
+              </ListItemIcon>
+              <ListItemText>{accountGroup.label}</ListItemText>
+              <ListItemSecondaryAction>
+                <Currency animate value={endingBalance} />
+              </ListItemSecondaryAction>
+            </ListItem>
+          </List>
+          <Collapse in={isExpanded}>
+            <Divider />
+            {accounts.map((account) => (
+              <AccountBox
+                key={account._id}
+                account={account}
+                cycleItems={cycleItems}
+                date={date}
+                isCurrentCycle={isCurrentCycle}
+              />
+            ))}
+          </Collapse>
+        </Box>
+      </Paper>
+    </Fade>
   )
 }
 
