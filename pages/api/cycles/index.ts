@@ -35,18 +35,18 @@ export default async (
 export class CycleService {
   async getCycleDatesWithHouseHold(household: IHousehold, months: number) {
     const rangeStart: Moment = moment()
+      .subtract(8, "hours")
       .hour(0)
       .minute(0)
       .second(0)
       .millisecond(0)
-      .subtract(8, "hours")
     const rangeEnd: Moment = moment()
+      .subtract(8, "hours")
       .hour(0)
       .minute(0)
       .second(0)
       .millisecond(0)
       .add(months, "months")
-      .subtract(8, "hours")
 
     // FETCH ALL PAYMENTS
     const allPayments = await Payment.find({
