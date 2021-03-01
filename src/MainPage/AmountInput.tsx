@@ -67,6 +67,8 @@ export function AmountInput(props: Props) {
       autoFocus
       className={classes.inputAmount}
       type="number"
+      pattern="[0-9]+([\.][0-9]+)?"
+      step="0.01"
       value={value}
       onChange={(e) => setValue(e.target.value.replace(/[^\d-.]/g, ""))}
       onBlur={() => props.onChange(dollarsToCents(value))}
