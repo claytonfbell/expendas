@@ -5,8 +5,8 @@ import { formatMoney } from "../shared/formatMoney"
 
 const useStyles = makeStyles({
   root: {
-    // fontFamily: `'Ubuntu Mono', monospace`,
     fontFamily: `'Roboto Mono', monospace`,
+    whiteSpace: "nowrap",
   },
 })
 
