@@ -39,12 +39,14 @@ export class CycleService {
       .minute(0)
       .second(0)
       .millisecond(0)
+      .subtract(8, "hours")
     const rangeEnd: Moment = moment()
       .hour(0)
       .minute(0)
       .second(0)
       .millisecond(0)
       .add(months, "months")
+      .subtract(8, "hours")
 
     // FETCH ALL PAYMENTS
     const allPayments = await Payment.find({
