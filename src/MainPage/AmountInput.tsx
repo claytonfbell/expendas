@@ -11,6 +11,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingBottom: 0,
     paddingTop: 0,
     backgroundColor: "transparent",
+    "&::-webkit-inner-spin-button": {
+      WebkitAppearance: "none",
+      margin: 0,
+    },
+    MozAppearance: "textfield",
   },
 }))
 
@@ -61,7 +66,7 @@ export function AmountInput(props: Props) {
     <input
       autoFocus
       className={classes.inputAmount}
-      type="text"
+      type="number"
       value={value}
       onChange={(e) => setValue(e.target.value.replace(/[^\d-.]/g, ""))}
       onBlur={() => props.onChange(dollarsToCents(value))}

@@ -76,7 +76,7 @@ export default function PayCardNow(props: Props) {
       payAmount > 0 ? (
         <div>
           <br />
-          <Link href="javasciript:;" onClick={handleClick}>
+          <Link style={{ cursor: "pointer" }} onClick={handleClick}>
             ** Pay {formatMoney(payAmount)} to {toAccount.name} **
           </Link>
         </div>

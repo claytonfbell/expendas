@@ -6,13 +6,13 @@ import { IAccount } from "../db/Account"
 import { ICycleItem } from "../db/CycleItem"
 import { IPayment } from "../db/Payment"
 import PayCardNow from "../PayCardNow"
-import { AccountIcon } from "./AccountIcon"
 import { AmountInputTool } from "./AmountInputTool"
 import { Currency } from "./Currency"
 import { CycleItemRow } from "./CycleItemRow"
 
 export const useAccountBoxStyles = makeStyles((theme) => ({
   title: {
+    borderTop: `1px solid ${theme.palette.primary.main}`,
     color: theme.palette.text.primary,
     backgroundColor: lighten(theme.palette.primary.main, 0.67),
     paddingLeft: theme.spacing(2),
@@ -35,11 +35,18 @@ export const useAccountBoxStyles = makeStyles((theme) => ({
       color: lighten(theme.palette.text.primary, 0.7),
     },
   },
-
   left: {
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(1),
+    paddingLeft: theme.spacing(1),
+  },
+  leftLink: {
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
     paddingLeft: theme.spacing(2),
+  },
+  alignRight: {
+    textAlign: "right",
   },
   right: {
     paddingTop: theme.spacing(1),
@@ -95,16 +102,15 @@ export function AccountBox(props: AccountBoxProps) {
     <>
       <Box className={classes.title}>
         <Grid container justify="space-between">
-          <Grid item>
+          <Grid item xs={8}>
             <Link
               className={classes.link}
               onClick={() => props.onEditAccount(account)}
             >
-              <AccountIcon account={account} />
-              &nbsp;&nbsp;{account.name}
+              {account.name}
             </Link>
           </Grid>
-          <Grid item>
+          <Grid item xs={4} className={classes.alignRight}>
             <AmountInputTool
               enabled={isCurrentCycle}
               value={startingBalance}
@@ -123,7 +129,7 @@ export function AccountBox(props: AccountBoxProps) {
       {cycleItems.length === 0 ? null : (
         <Box className={classes.item}>
           <Grid container>
-            <Grid item xs={9} className={classes.left}>
+            <Grid item xs={9} className={classes.leftLink}>
               <Link
                 className={classes.link}
                 onClick={() =>

@@ -1,6 +1,14 @@
+import { makeStyles } from "@material-ui/core"
 import React from "react"
 import AnimatedCounter from "../AnimatedCounter"
 import { formatMoney } from "../shared/formatMoney"
+
+const useStyles = makeStyles({
+  root: {
+    // fontFamily: `'Ubuntu Mono', monospace`,
+    fontFamily: `'Roboto Mono', monospace`,
+  },
+})
 
 interface Props {
   value: number
@@ -10,11 +18,13 @@ interface Props {
   green?: boolean
 }
 export function Currency(props: Props) {
+  const classes = useStyles()
   const RED = "#c82333"
   const GREEN = "#0c9c58"
 
   return (
     <span
+      className={classes.root}
       style={{
         color:
           props.value < 0 && props.red

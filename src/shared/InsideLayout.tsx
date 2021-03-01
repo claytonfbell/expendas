@@ -19,8 +19,12 @@ import { SignInProvider, useSignIn } from "../SignInProvider"
 const useStyles = makeStyles((theme) => ({
   root: {
     "& a": {
-      color: "#ffffff",
+      color: theme.palette.primary.contrastText,
       cursor: "pointer",
+      textDecoration: "none",
+      "&:hover": {
+        textDecoration: "underline",
+      },
     },
   },
   navLinks: {

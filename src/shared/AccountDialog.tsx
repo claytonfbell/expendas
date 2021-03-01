@@ -87,7 +87,7 @@ export default function AccountDialog(props: Props) {
             size="small"
           >
             <DisplayError error={error} />
-            <Grid container spacing={2}>
+            <Grid container spacing={1}>
               <Grid item xs={12}>
                 <Select
                   name="type"
@@ -113,24 +113,26 @@ export default function AccountDialog(props: Props) {
                   fulleWidth
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={isNew ? 6 : 4}>
                 <SubmitButton>{isNew ? "Create" : "Save"}</SubmitButton>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={isNew ? 6 : 4}>
                 <Button variant="outlined" fullWidth onClick={props.onClose}>
                   Cancel
                 </Button>
               </Grid>
-              <Grid item xs={4}>
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  color="danger"
-                  onClick={() => setShowDeleteConfirm(true)}
-                >
-                  Delete
-                </Button>
-              </Grid>
+              {!isNew ? (
+                <Grid item xs={4}>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    color="danger"
+                    onClick={() => setShowDeleteConfirm(true)}
+                  >
+                    Delete
+                  </Button>
+                </Grid>
+              ) : null}
             </Grid>
             <br />
           </Form>

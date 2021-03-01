@@ -446,13 +446,13 @@ export default function PaymentDialog(props: Props) {
           </Collapse>
 
           <br />
-          <Grid container spacing={2}>
-            <Grid item xs={4}>
+          <Grid container spacing={1}>
+            <Grid item xs={state._id !== undefined ? 4 : 6}>
               <SubmitButton>
                 {state._id === undefined ? `Create` : `Save`}
               </SubmitButton>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={state._id !== undefined ? 4 : 6}>
               <Button fullWidth variant="outlined" onClick={props.onClose}>
                 Cancel
               </Button>

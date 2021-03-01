@@ -1,4 +1,4 @@
-import { Box, Checkbox, Fade, Grid, Link } from "@material-ui/core"
+import { Box, Checkbox, Grid, Link } from "@material-ui/core"
 import clsx from "clsx"
 import React, { ChangeEvent } from "react"
 import { useUpdateCycleItem } from "../api/cycleItems"
@@ -25,12 +25,8 @@ export function CycleItemRow(props: Props) {
     updateCycleItem({ ...item, isPaid: e.target.checked })
   }
 
-  const [isHover, setIsHover] = React.useState(false)
-
   return (
     <Box
-      onMouseOver={() => setIsHover(true)}
-      onMouseOut={() => setIsHover(false)}
       key={item._id}
       className={clsx(classes.item, item.isPaid ? "paid" : undefined)}
     >
@@ -38,20 +34,18 @@ export function CycleItemRow(props: Props) {
         <Grid item xs={9} className={classes.left}>
           <Grid container spacing={1}>
             <Grid item xs={1} alignContent="flex-start">
-              <Fade in={isHover}>
-                <LargeTooltip
-                  arrow
-                  placement="left"
-                  title="Check if this item has already been settled and no longer impacts your account balance."
-                >
-                  <Checkbox
-                    className={classes.checkbox}
-                    size="small"
-                    checked={item.isPaid}
-                    onChange={handlePaidClick(item)}
-                  />
-                </LargeTooltip>
-              </Fade>
+              <LargeTooltip
+                arrow
+                placement="left"
+                title="Check if this item has already been settled and no longer impacts your account balance."
+              >
+                <Checkbox
+                  className={classes.checkbox}
+                  size="small"
+                  checked={item.isPaid}
+                  onChange={handlePaidClick(item)}
+                />
+              </LargeTooltip>
             </Grid>
             <Grid item xs={11}>
               <Link

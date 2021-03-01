@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
     marginBottom: theme.spacing(2),
+    [theme.breakpoints.up("lg")]: {
+      minWidth: 400,
+    },
   },
 }))
 
@@ -74,7 +77,7 @@ export function AccountGroupBox(props: Props) {
   return (
     <Fade in={accounts.length > 0} unmountOnExit>
       <Grid item xs={12} md={6} lg={4}>
-        <Paper elevation={4} className={classes.root}>
+        <Paper elevation={6} className={classes.root}>
           <Box>
             <List>
               <ListItem button onClick={() => setIsExpanded(!isExpanded)}>
@@ -86,9 +89,11 @@ export function AccountGroupBox(props: Props) {
                   )}
                 </ListItemIcon>
                 <ListItemText>{accountGroup.label}</ListItemText>
-                <ListItemSecondaryAction>
-                  <Currency animate value={endingBalance} />
-                </ListItemSecondaryAction>
+                {!isExpanded ? (
+                  <ListItemSecondaryAction>
+                    <Currency animate value={endingBalance} />
+                  </ListItemSecondaryAction>
+                ) : null}
               </ListItem>
             </List>
             <Collapse in={isExpanded}>
@@ -105,6 +110,15 @@ export function AccountGroupBox(props: Props) {
                 />
               ))}
             </Collapse>
+            {isExpanded ? (
+              <List>
+                <ListItem button onClick={() => setIsExpanded(!isExpanded)}>
+                  <ListItemSecondaryAction>
+                    <Currency animate value={endingBalance} />
+                  </ListItemSecondaryAction>
+                </ListItem>
+              </List>
+            ) : null}
           </Box>
         </Paper>
       </Grid>

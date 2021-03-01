@@ -1,5 +1,6 @@
 import {
   Box,
+  Container,
   FormControlLabel,
   Grid,
   makeStyles,
@@ -29,7 +30,7 @@ import { Currency } from "./Currency"
 const useStyles = makeStyles((theme) => ({
   grid: {
     [theme.breakpoints.up("lg")]: {
-      maxHeight: `calc(100vh - 100px)`,
+      maxHeight: `calc(100vh - 170px)`,
     },
     marginBottom: 200,
   },
@@ -64,20 +65,43 @@ export function MainPage() {
   const [includeSettled, setIncludeSettled] = React.useState(false)
 
   // filter-down
-  const accounts = unfilteredAccounts
-    .filter(
-      (x) => includeSavings || !savingsInvestmentsAccountTypes.includes(x.type)
-    )
-    .filter(
-      (x) =>
-        includePropertyLoans ||
-        (!assetsAccountTypes.includes(x.type) &&
-          !loanAccountTypes.includes(x.type))
-    )
-    .sort((a, b) => Math.abs(b.currentBalance) - Math.abs(a.currentBalance))
-
-  const cycleItems = unfilteredCycleItems.filter(
-    (x) => includeSettled || !x.isPaid
+  const cycleItems = React.useMemo(
+    () => unfilteredCycleItems.filter((x) => includeSettled || !x.isPaid),
+    [includeSettled, unfilteredCycleItems]
+  )
+  const accounts = React.useMemo(
+    () =>
+      unfilteredAccounts
+        // remove savings and investments
+        .filter(
+          (x) =>
+            includeSavings || !savingsInvestmentsAccountTypes.includes(x.type)
+        )
+        // remove property and loans
+        .filter(
+          (x) =>
+            includePropertyLoans ||
+            (!assetsAccountTypes.includes(x.type) &&
+              !loanAccountTypes.includes(x.type))
+        )
+        // remove accounts that have no activity unless including undettled
+        .filter(
+          (x) =>
+            includeSettled ||
+            x.currentBalance !== 0 ||
+            cycleItems.filter((y) => y.payment.account._id === x._id).length > 0
+        )
+        // resort numerically
+        .sort(
+          (a, b) => Math.abs(b.currentBalance) - Math.abs(a.currentBalance)
+        ),
+    [
+      cycleItems,
+      includePropertyLoans,
+      includeSavings,
+      includeSettled,
+      unfilteredAccounts,
+    ]
   )
 
   React.useEffect(() => {
@@ -180,14 +204,16 @@ export function MainPage() {
         ))}
       </Grid>
       <Box className={classes.footer}>
-        <Grid container>
-          <Grid item xs={6}>
-            <Currency animate value={startingBalance} />
+        <Container>
+          <Grid container>
+            <Grid item xs={6}>
+              <Currency animate value={startingBalance} />
+            </Grid>
+            <Grid item className="right" xs={6}>
+              <Currency animate value={endingBalance} />
+            </Grid>
           </Grid>
-          <Grid item className="right" xs={6}>
-            <Currency animate value={endingBalance} />
-          </Grid>
-        </Grid>
+        </Container>
       </Box>
 
       <AccountDialog
