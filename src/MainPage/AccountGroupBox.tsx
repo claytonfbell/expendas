@@ -110,7 +110,7 @@ export function AccountGroupBox(props: Props) {
                 />
               ))}
             </Collapse>
-            {isExpanded ? (
+            {isExpanded && accounts.length > 1 ? (
               <List>
                 <ListItem button onClick={() => setIsExpanded(!isExpanded)}>
                   <ListItemSecondaryAction>
