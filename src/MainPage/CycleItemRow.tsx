@@ -31,7 +31,7 @@ export function CycleItemRow(props: Props) {
       className={clsx(classes.item, item.isPaid ? "paid" : undefined)}
     >
       <Grid container>
-        <Grid item xs={9} className={classes.left}>
+        <Grid item xs={8} className={classes.left}>
           <Grid container spacing={1}>
             <Grid item xs={1} alignContent="flex-start">
               <LargeTooltip
@@ -58,7 +58,7 @@ export function CycleItemRow(props: Props) {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={3} className={classes.right}>
+        <Grid item xs={4} className={classes.right}>
           <AmountInputTool
             green={!item.isPaid}
             enabled
