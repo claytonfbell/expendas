@@ -1,7 +1,13 @@
-import { Grid, IconButton } from "@material-ui/core"
+import { Fade, Grid, IconButton, makeStyles } from "@material-ui/core"
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
 import ChevronRightIcon from "@material-ui/icons/ChevronRight"
 import moment from "moment"
+
+const useStyles = makeStyles({
+  root: {
+    whiteSpace: "nowrap",
+  },
+})
 
 type Props = {
   date: string
@@ -10,6 +16,7 @@ type Props = {
 }
 
 export default function CycleNavigation(props: Props) {
+  const classes = useStyles()
   const { cycleDates } = props
   let prev: string = null
 
@@ -25,16 +32,21 @@ export default function CycleNavigation(props: Props) {
   }
 
   return (
-    <Grid container justify="center" alignItems="center">
+    <Grid
+      className={classes.root}
+      container
+      justify="center"
+      alignItems="center"
+    >
       <Grid item>
         <div style={{ fontSize: 32 }}>
           {cycleDates.length > 0 ? (
             <>
-              {prev !== null ? (
+              <Fade in={prev !== null}>
                 <IconButton onClick={() => props.onChange(prev)}>
                   <ChevronLeftIcon />
                 </IconButton>
-              ) : null}
+              </Fade>
 
               {moment(props.date).format("M/D/YYYY")}
 
