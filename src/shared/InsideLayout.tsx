@@ -49,7 +49,7 @@ function Content(props: Props) {
   const classes = useStyles()
   return (
     <SignInProvider>
-      <AppBar color="primary" className={classes.root}>
+      <AppBar color="primary" position="static" className={classes.root}>
         <Toolbar>
           <Grid container alignContent="center" alignItems="center" spacing={0}>
             <Grid item xs={9}>

@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     left: 0,
     width: `100vw`,
     paddingLeft: theme.spacing(4),
-    paddingRight: theme.spacing(4),
+    paddingRight: 31,
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
     color: theme.palette.primary.contrastText,
@@ -208,10 +208,7 @@ export function MainPage() {
       <Box className={classes.footer}>
         <Container>
           <Grid container>
-            <Grid item xs={6}>
-              <Currency animate value={startingBalance} />
-            </Grid>
-            <Grid item className="right" xs={6}>
+            <Grid item className="right" xs={12}>
               <Currency animate value={endingBalance} />
             </Grid>
           </Grid>

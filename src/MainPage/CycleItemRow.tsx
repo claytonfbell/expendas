@@ -32,8 +32,8 @@ export function CycleItemRow(props: Props) {
     >
       <Grid container>
         <Grid item xs={8} className={classes.left}>
-          <Grid container spacing={1}>
-            <Grid item xs={1} alignContent="flex-start">
+          <Grid container spacing={2}>
+            <Grid item alignContent="flex-start">
               <LargeTooltip
                 arrow
                 placement="left"
@@ -47,7 +47,7 @@ export function CycleItemRow(props: Props) {
                 />
               </LargeTooltip>
             </Grid>
-            <Grid item xs={11}>
+            <Grid item xs={10}>
               <Link
                 color="inherit"
                 className={classes.link}

@@ -38,7 +38,7 @@ export const useAccountBoxStyles = makeStyles((theme) => ({
   left: {
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(1),
-    paddingLeft: theme.spacing(1),
+    paddingLeft: theme.spacing(2),
   },
   leftLink: {
     paddingTop: theme.spacing(1),
@@ -62,6 +62,7 @@ export const useAccountBoxStyles = makeStyles((theme) => ({
   },
   checkbox: {
     padding: 0,
+    mrginRight: theme.spacing(2),
   },
 }))
 
@@ -129,7 +130,7 @@ export function AccountBox(props: AccountBoxProps) {
       {cycleItems.length === 0 ? null : (
         <Box className={classes.item}>
           <Grid container>
-            <Grid item xs={9} className={classes.leftLink}>
+            <Grid item xs={8} className={classes.leftLink}>
               <Link
                 className={classes.link}
                 onClick={() =>
@@ -147,19 +148,22 @@ export function AccountBox(props: AccountBoxProps) {
               >
                 + Add Item
               </Link>
-
-              {isCurrentCycle && account.type === "Checking Account" ? (
-                <PayCardNow
-                  account={account}
-                  endingBalance={endingBalance}
-                  onClick={(p) => props.onEditPayment(p)}
-                  date={date}
-                />
-              ) : null}
             </Grid>
-            <Grid item xs={3} className={clsx("total", classes.right)}>
+            <Grid item xs={4} className={clsx("total", classes.right)}>
               <Currency red animate value={endingBalance} />
             </Grid>
+            {isCurrentCycle && account.type === "Checking Account" ? (
+              <Grid item xs={12}>
+                <Box padding={2}>
+                  <PayCardNow
+                    account={account}
+                    endingBalance={endingBalance}
+                    onClick={(p) => props.onEditPayment(p)}
+                    date={date}
+                  />
+                </Box>
+              </Grid>
+            ) : null}
           </Grid>
         </Box>
       )}

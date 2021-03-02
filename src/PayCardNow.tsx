@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-import { Link } from "@material-ui/core"
+import { Button } from "@material-ui/core"
 import moment from "moment"
 import { useFetchAccounts } from "./api/accounts"
 import { useFetchCycleItems } from "./api/cycleItems"
@@ -76,9 +76,15 @@ export default function PayCardNow(props: Props) {
       payAmount > 0 ? (
         <div>
           <br />
-          <Link style={{ cursor: "pointer" }} onClick={handleClick}>
-            ** Pay {formatMoney(payAmount)} to {toAccount.name} **
-          </Link>
+          <Button
+            disableElevation
+            fullWidth
+            variant="outlined"
+            color="primary"
+            onClick={handleClick}
+          >
+            Pay {formatMoney(payAmount)} to {toAccount.name}
+          </Button>
         </div>
       ) : null}
     </>
