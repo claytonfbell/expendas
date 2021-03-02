@@ -1,6 +1,6 @@
 import { Fade } from "@material-ui/core"
 import makeStyles from "@material-ui/core/styles/makeStyles"
-import Alert from "material-ui-bootstrap/dist/Alert"
+import { Alert } from "material-ui-bootstrap"
 import { useEffect, useRef, useState } from "react"
 import ReactMarkdown from "react-markdown"
 import { RestError } from "./rest"

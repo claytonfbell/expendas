@@ -11,14 +11,15 @@ import {
   RadioGroup,
   Typography,
 } from "@material-ui/core"
-import Alert from "material-ui-bootstrap/dist/Alert"
-import Button from "material-ui-bootstrap/dist/Button"
-import CurrencyField from "material-ui-pack/dist/CurrencyField"
-import DatePicker from "material-ui-pack/dist/DatePicker"
-import Form from "material-ui-pack/dist/Form"
-import Select from "material-ui-pack/dist/Select"
-import SubmitButton from "material-ui-pack/dist/SubmitButton"
-import TextField from "material-ui-pack/dist/TextField"
+import { Alert, Button } from "material-ui-bootstrap"
+import {
+  CurrencyField,
+  DatePicker,
+  Form,
+  Select,
+  SubmitButton,
+  TextField,
+} from "material-ui-pack"
 import moment from "moment-timezone"
 import { ChangeEvent, useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"

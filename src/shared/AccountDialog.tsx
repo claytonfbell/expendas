@@ -5,12 +5,14 @@ import {
   Grid,
   Typography,
 } from "@material-ui/core"
-import Button from "material-ui-bootstrap/dist/Button"
-import CurrencyField from "material-ui-pack/dist/CurrencyField"
-import Form from "material-ui-pack/dist/Form"
-import Select from "material-ui-pack/dist/Select"
-import SubmitButton from "material-ui-pack/dist/SubmitButton"
-import TextField from "material-ui-pack/dist/TextField"
+import { Button } from "material-ui-bootstrap"
+import {
+  CurrencyField,
+  Form,
+  Select,
+  SubmitButton,
+  TextField,
+} from "material-ui-pack"
 import React, { useEffect, useMemo, useState } from "react"
 import { allAccountTypes, creditCardTypes } from "../accountTypes"
 import {

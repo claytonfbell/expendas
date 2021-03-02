@@ -6,7 +6,7 @@ import {
   TableContainer,
 } from "@material-ui/core"
 import AddIcon from "@material-ui/icons/Add"
-import Button from "material-ui-bootstrap/dist/Button"
+import { Button } from "material-ui-bootstrap"
 import { useState } from "react"
 import { useFetchAccounts } from "../api/accounts"
 import { IAccount } from "../db/Account"
