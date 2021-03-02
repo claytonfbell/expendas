@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     left: 0,
     width: `100vw`,
     paddingLeft: theme.spacing(4),
-    paddingRight: 31,
+    paddingRight: 12,
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
     color: theme.palette.primary.contrastText,
