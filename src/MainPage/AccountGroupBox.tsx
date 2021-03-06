@@ -3,7 +3,6 @@ import {
   Collapse,
   Divider,
   Fade,
-  Grid,
   List,
   ListItem,
   ListItemIcon,
@@ -76,52 +75,50 @@ export function AccountGroupBox(props: Props) {
 
   return (
     <Fade in={accounts.length > 0} unmountOnExit>
-      <Grid item xs={12} md={6} lg={4}>
-        <Paper elevation={6} className={classes.root}>
-          <Box>
+      <Paper elevation={6} className={classes.root}>
+        <Box>
+          <List>
+            <ListItem button onClick={() => setIsExpanded(!isExpanded)}>
+              <ListItemIcon>
+                {!isExpanded ? (
+                  <ExpandLessIcon style={{ color: "#fff" }} />
+                ) : (
+                  <ExpandMoreIcon style={{ color: "#fff" }} />
+                )}
+              </ListItemIcon>
+              <ListItemText>{accountGroup.label}</ListItemText>
+              {!isExpanded ? (
+                <ListItemSecondaryAction>
+                  <Currency animate value={endingBalance} />
+                </ListItemSecondaryAction>
+              ) : null}
+            </ListItem>
+          </List>
+          <Collapse in={isExpanded}>
+            <Divider />
+            {accounts.map((account) => (
+              <AccountBox
+                key={account._id}
+                account={account}
+                cycleItems={cycleItems}
+                date={date}
+                isCurrentCycle={isCurrentCycle}
+                onEditAccount={props.onEditAccount}
+                onEditPayment={props.onEditPayment}
+              />
+            ))}
+          </Collapse>
+          {isExpanded && accounts.length > 1 ? (
             <List>
               <ListItem button onClick={() => setIsExpanded(!isExpanded)}>
-                <ListItemIcon>
-                  {!isExpanded ? (
-                    <ExpandLessIcon style={{ color: "#fff" }} />
-                  ) : (
-                    <ExpandMoreIcon style={{ color: "#fff" }} />
-                  )}
-                </ListItemIcon>
-                <ListItemText>{accountGroup.label}</ListItemText>
-                {!isExpanded ? (
-                  <ListItemSecondaryAction>
-                    <Currency animate value={endingBalance} />
-                  </ListItemSecondaryAction>
-                ) : null}
+                <ListItemSecondaryAction>
+                  <Currency animate value={endingBalance} />
+                </ListItemSecondaryAction>
               </ListItem>
             </List>
-            <Collapse in={isExpanded}>
-              <Divider />
-              {accounts.map((account) => (
-                <AccountBox
-                  key={account._id}
-                  account={account}
-                  cycleItems={cycleItems}
-                  date={date}
-                  isCurrentCycle={isCurrentCycle}
-                  onEditAccount={props.onEditAccount}
-                  onEditPayment={props.onEditPayment}
-                />
-              ))}
-            </Collapse>
-            {isExpanded && accounts.length > 1 ? (
-              <List>
-                <ListItem button onClick={() => setIsExpanded(!isExpanded)}>
-                  <ListItemSecondaryAction>
-                    <Currency animate value={endingBalance} />
-                  </ListItemSecondaryAction>
-                </ListItem>
-              </List>
-            ) : null}
-          </Box>
-        </Paper>
-      </Grid>
+          ) : null}
+        </Box>
+      </Paper>
     </Fade>
   )
 }

@@ -40,9 +40,26 @@ export type AccountGroup = {
   types: AccountType[]
 }
 
+export const cashGroup: AccountGroup = {
+  label: "Cash",
+  types: ["Cash", "Checking Account", "Savings Account"],
+}
+export const debtGroup: AccountGroup = {
+  label: "Debt",
+  types: ["Credit Card", "Loan", "Line of Credit"],
+}
+export const investmentGroup: AccountGroup = {
+  label: "Investments",
+  types: ["CD", "Investment"],
+}
+export const propertyGroup: AccountGroup = {
+  label: "Property",
+  types: ["Home Market Value", "Car Value"],
+}
+
 export const accountGroups: AccountGroup[] = [
-  { label: "Cash", types: ["Cash", "Checking Account", "Savings Account"] },
-  { label: "Debt", types: ["Credit Card", "Loan", "Line of Credit"] },
-  { label: "Investments", types: ["CD", "Investment"] },
-  { label: "Property", types: ["Home Market Value", "Car Value"] },
+  cashGroup,
+  debtGroup,
+  investmentGroup,
+  propertyGroup,
 ]

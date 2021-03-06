@@ -11,9 +11,12 @@ import {
 import moment from "moment"
 import React from "react"
 import {
-  accountGroups,
   assetsAccountTypes,
+  cashGroup,
+  debtGroup,
+  investmentGroup,
   loanAccountTypes,
+  propertyGroup,
   savingsInvestmentsAccountTypes,
 } from "../accountTypes"
 import { useFetchAccounts } from "../api/accounts"
@@ -28,12 +31,6 @@ import { CarryOver } from "./CarryOver"
 import { Currency } from "./Currency"
 
 const useStyles = makeStyles((theme) => ({
-  grid: {
-    [theme.breakpoints.up("lg")]: {
-      maxHeight: `calc(100vh - 170px)`,
-    },
-    marginBottom: 200,
-  },
   footer: {
     backgroundColor: theme.palette.primary.main,
     position: "fixed",
@@ -185,17 +182,11 @@ export function MainPage() {
       <br />
       <br />
 
-      <Grid
-        alignContent="flex-start"
-        className={classes.grid}
-        container
-        spacing={2}
-        direction={isMdDown ? "row" : "column"}
-      >
-        {accountGroups.map((accountGroup) => (
+      <Grid alignContent="flex-start" container spacing={2}>
+        <Grid item xs={12} md={6} lg={4}>
           <AccountGroupBox
-            key={accountGroup.label}
-            accountGroup={accountGroup}
+            key={cashGroup.label}
+            accountGroup={cashGroup}
             cycleItems={cycleItems}
             accounts={accounts}
             isCurrentCycle={isCurrentCycle}
@@ -203,7 +194,47 @@ export function MainPage() {
             onEditAccount={(a) => setEditAccount({ ...a })}
             onEditPayment={(p) => setEditPayment({ ...p })}
           />
-        ))}
+        </Grid>
+        <Grid item xs={12} md={6} lg={4}>
+          <AccountGroupBox
+            key={debtGroup.label}
+            accountGroup={debtGroup}
+            cycleItems={cycleItems}
+            accounts={accounts}
+            isCurrentCycle={isCurrentCycle}
+            date={date}
+            onEditAccount={(a) => setEditAccount({ ...a })}
+            onEditPayment={(p) => setEditPayment({ ...p })}
+          />
+        </Grid>
+        <Grid item xs={12} md={6} lg={4}>
+          <Grid alignContent="flex-start" container spacing={2}>
+            <Grid item xs={12}>
+              <AccountGroupBox
+                key={investmentGroup.label}
+                accountGroup={investmentGroup}
+                cycleItems={cycleItems}
+                accounts={accounts}
+                isCurrentCycle={isCurrentCycle}
+                date={date}
+                onEditAccount={(a) => setEditAccount({ ...a })}
+                onEditPayment={(p) => setEditPayment({ ...p })}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <AccountGroupBox
+                key={propertyGroup.label}
+                accountGroup={propertyGroup}
+                cycleItems={cycleItems}
+                accounts={accounts}
+                isCurrentCycle={isCurrentCycle}
+                date={date}
+                onEditAccount={(a) => setEditAccount({ ...a })}
+                onEditPayment={(p) => setEditPayment({ ...p })}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
       </Grid>
       <Box className={classes.footer}>
         <Container>
