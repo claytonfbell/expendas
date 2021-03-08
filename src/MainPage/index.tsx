@@ -209,30 +209,34 @@ export function MainPage() {
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
           <Grid alignContent="flex-start" container spacing={2}>
-            <Grid item xs={12}>
-              <AccountGroupBox
-                key={investmentGroup.label}
-                accountGroup={investmentGroup}
-                cycleItems={cycleItems}
-                accounts={accounts}
-                isCurrentCycle={isCurrentCycle}
-                date={date}
-                onEditAccount={(a) => setEditAccount({ ...a })}
-                onEditPayment={(p) => setEditPayment({ ...p })}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <AccountGroupBox
-                key={propertyGroup.label}
-                accountGroup={propertyGroup}
-                cycleItems={cycleItems}
-                accounts={accounts}
-                isCurrentCycle={isCurrentCycle}
-                date={date}
-                onEditAccount={(a) => setEditAccount({ ...a })}
-                onEditPayment={(p) => setEditPayment({ ...p })}
-              />
-            </Grid>
+            {includeSavings ? (
+              <Grid item xs={12}>
+                <AccountGroupBox
+                  key={investmentGroup.label}
+                  accountGroup={investmentGroup}
+                  cycleItems={cycleItems}
+                  accounts={accounts}
+                  isCurrentCycle={isCurrentCycle}
+                  date={date}
+                  onEditAccount={(a) => setEditAccount({ ...a })}
+                  onEditPayment={(p) => setEditPayment({ ...p })}
+                />
+              </Grid>
+            ) : null}
+            {includePropertyLoans ? (
+              <Grid item xs={12}>
+                <AccountGroupBox
+                  key={propertyGroup.label}
+                  accountGroup={propertyGroup}
+                  cycleItems={cycleItems}
+                  accounts={accounts}
+                  isCurrentCycle={isCurrentCycle}
+                  date={date}
+                  onEditAccount={(a) => setEditAccount({ ...a })}
+                  onEditPayment={(p) => setEditPayment({ ...p })}
+                />
+              </Grid>
+            ) : null}
           </Grid>
         </Grid>
       </Grid>

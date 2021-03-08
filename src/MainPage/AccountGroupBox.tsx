@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
-    marginBottom: theme.spacing(2),
     [theme.breakpoints.up("lg")]: {
       minWidth: 400,
     },
