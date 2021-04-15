@@ -21,6 +21,47 @@ const useStyles = makeStyles((theme) => ({
     backgroundPosition: "top center",
     position: "relative",
     boxShadow: "1px 2px 4px rgba(0, 0, 0, .075)",
+    textAlign: "center",
+  },
+  overlay: {
+    position: "relative",
+    background: "linear-gradient(0deg, #00000088 30%, #ffffff44 100%)",
+    height: "100vh",
+  },
+  titleBox: {
+    position: "absolute",
+    bottom: `15vh`,
+    width: "100%",
+  },
+  expendas: {
+    textAlign: "center",
+    color: "#ffffff",
+    fontWeight: "bold",
+    fontSize: 120,
+    letterSpacing: 6,
+    [theme.breakpoints.down("md")]: {
+      fontSize: 60,
+      letterSpacing: 3,
+    },
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 40,
+      letterSpacing: 2,
+    },
+  },
+  planYourPaycheck: {
+    textAlign: "center",
+    color: "#ffffff",
+    fontWeight: "bold",
+    fontSize: 42,
+    letterSpacing: 12,
+    [theme.breakpoints.down("md")]: {
+      fontSize: 21,
+      letterSpacing: 6,
+    },
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 14,
+      letterSpacing: 4,
+    },
   },
 }))
 
@@ -51,7 +92,16 @@ export default function StartLayout(props: Props) {
               style={{
                 backgroundImage: `url(${coverArtPhoto})`,
               }}
-            ></Grid>
+            >
+              <Box className={classes.overlay}>
+                <Box className={classes.titleBox}>
+                  <Box className={classes.expendas}>expendas</Box>
+                  <Box className={classes.planYourPaycheck}>
+                    plan your paycheck
+                  </Box>
+                </Box>
+              </Box>
+            </Grid>
           </Fade>
         </Hidden>
         <Grid
