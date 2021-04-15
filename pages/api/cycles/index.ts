@@ -61,6 +61,11 @@ export class CycleService {
         return account.type === "Checking Account"
       })
 
+    // need two checks to have a cycle
+    if (payChecks.length < 2) {
+      return []
+    }
+
     const cycles: Moment[] = []
 
     let cursor = moment(rangeStart)

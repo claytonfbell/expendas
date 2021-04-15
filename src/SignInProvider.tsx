@@ -81,7 +81,7 @@ export function SignInProvider(props: any) {
         setUser(x)
         setStatus("signedIn")
       })
-      .finally(() => {
+      .catch(() => {
         setBusy(false)
       })
   }, [])
