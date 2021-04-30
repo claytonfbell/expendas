@@ -36,6 +36,7 @@ type Props = {
   accounts: IAccount[]
   cycleItems: ICycleItem[]
   isCurrentCycle: boolean
+  includeSettled: boolean
   date: string
   onEditAccount: (account: IAccount) => void
   onEditPayment: (payment: IPayment) => void
@@ -98,6 +99,7 @@ export function AccountGroupBox(props: Props) {
             {accounts.map((account) => (
               <AccountBox
                 key={account._id}
+                includeSettled={props.includeSettled}
                 account={account}
                 cycleItems={cycleItems}
                 date={date}

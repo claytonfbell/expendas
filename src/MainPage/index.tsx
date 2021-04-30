@@ -186,6 +186,7 @@ export function MainPage() {
         <Grid item xs={12} md={6} lg={4}>
           <AccountGroupBox
             key={cashGroup.label}
+            includeSettled={includeSettled}
             accountGroup={cashGroup}
             cycleItems={cycleItems}
             accounts={accounts}
@@ -198,6 +199,7 @@ export function MainPage() {
         <Grid item xs={12} md={6} lg={4}>
           <AccountGroupBox
             key={debtGroup.label}
+            includeSettled={includeSettled}
             accountGroup={debtGroup}
             cycleItems={cycleItems}
             accounts={accounts}
@@ -213,6 +215,7 @@ export function MainPage() {
               <Grid item xs={12}>
                 <AccountGroupBox
                   key={investmentGroup.label}
+                  includeSettled={includeSettled}
                   accountGroup={investmentGroup}
                   cycleItems={cycleItems}
                   accounts={accounts}
@@ -227,6 +230,7 @@ export function MainPage() {
               <Grid item xs={12}>
                 <AccountGroupBox
                   key={propertyGroup.label}
+                  includeSettled={includeSettled}
                   accountGroup={propertyGroup}
                   cycleItems={cycleItems}
                   accounts={accounts}

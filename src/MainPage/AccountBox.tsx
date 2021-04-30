@@ -71,6 +71,7 @@ type AccountBoxProps = {
   cycleItems: ICycleItem[]
   date: string
   isCurrentCycle: boolean
+  includeSettled: boolean
   onEditAccount: (account: IAccount) => void
   onEditPayment: (payment: IPayment) => void
 }
@@ -127,7 +128,7 @@ export function AccountBox(props: AccountBoxProps) {
           onEditPayment={props.onEditPayment}
         />
       ))}
-      {cycleItems.length === 0 ? null : (
+      {cycleItems.length === 0 && !props.includeSettled ? null : (
         <Box className={classes.item}>
           <Grid container>
             <Grid item xs={8} className={classes.leftLink}>
