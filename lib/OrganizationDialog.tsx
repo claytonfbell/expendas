@@ -15,7 +15,6 @@ import {
   useRemoveOrganization,
   useUpdateOrganization,
 } from "./api/api"
-import { ApiKeyManage } from "./ApiKeyManage"
 import ConfirmDialog from "./ConfirmDialog"
 import DisplayError from "./DisplayError"
 import { Title } from "./Title"
@@ -111,11 +110,6 @@ export function OrganizationDialog(props: Props) {
                 {state !== undefined ? (
                   <UserManage state={state} setState={setState} />
                 ) : null}
-                <br />
-              </Grid>
-              <Grid item xs={12}>
-                <ApiKeyManage organization={organization} />
-                <br />
                 <br />
               </Grid>
               <Grid item xs={6}>

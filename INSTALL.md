@@ -16,8 +16,8 @@ curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
      sudo apt-get update && sudo apt-get install yarn
 
 
-git clone https://github.com/claytonfbell/status-monitor-app.git
-cd status-monitor-app
+git clone https://github.com/claytonfbell/expendas3.git
+cd expendas3
 yarn install
 yarn build
 yarn start
@@ -27,17 +27,13 @@ yarn global add pm2
 pm2 start yarn --name "nextjs" --interpreter bash -- start
 pm2 show nextjs
 
-# setup cront
-crontab -e
-# ADD: * * * * * curl -s "https://status-monitor.app/api/process"
-
 apt install nginx-full
 apt install certbot python3-certbot-nginx
 
 vim /etc/nginx/sites-available/default
-# CHANGE TO: server_name status-monitor.app;
+# CHANGE TO: server_name v3.expendas.com;
 service nginx restart
-sudo certbot --nginx -d status-monitor.app
+sudo certbot --nginx -d v3.expendas.com
 
 crontab -e
 # ADD: 0 5 * * * /usr/bin/certbot renew --quiet
@@ -57,7 +53,7 @@ vim /etc/nginx/sites-available/default
         error_page 502 503 /503.html;
         location /503.html {}
 
-cp /root/status-monitor-app/503.html /var/www/html
+cp /root/expendas3/503.html /var/www/html
 
 # https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-20-04
 apt install postgresql postgresql-contrib

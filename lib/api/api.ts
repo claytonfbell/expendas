@@ -1,21 +1,12 @@
-import {
-  ApiKey,
-  Organization,
-  Ping,
-  User,
-  UsersOnOrganizations,
-} from "@prisma/client"
+import { Organization, User, UsersOnOrganizations } from "@prisma/client"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { AddApiKeyRequest } from "./AddApiKeyRequest"
 import { AddOrganizationRequest } from "./AddOrganizationRequest"
 import { AddUserRequest } from "./AddUserRequest"
-import { FetchMonitorItemResponse } from "./FetchMonitorItemResponse"
 import { ForgotPasswordRequest } from "./ForgotPasswordRequest"
 import { ForgotPasswordResponse } from "./ForgotPasswordResponse"
 import { LoginRequest } from "./LoginRequest"
 import { LoginResponse } from "./LoginResponse"
-import { MonitorResponse } from "./MonitorResponse"
-import { PingRequest } from "./PingRequest"
 import { RegisterRequest } from "./RegisterRequest"
 import { RemoveApiKeyRequest } from "./RemoveApiKeyRequest"
 import { RemoveUserRequest } from "./RemoveUserRequest"
@@ -27,7 +18,6 @@ rest.setBaseURL(`/api`)
 
 export type OrganizationWithIncludes = Organization & {
   users: UsersOnOrganizationsWithUser[]
-  apiKeys: ApiKey[]
 }
 
 type UsersOnOrganizationsWithUser = UsersOnOrganizations & {
@@ -59,13 +49,6 @@ const api = {
     rest.post(`/organizations/addApiKey`, req),
   removeApiKey: (req: RemoveApiKeyRequest) =>
     rest.post(`/organizations/removeApiKey`, req),
-  ping: (req: PingRequest) => rest.post(`/ping`, req),
-  fetchMonitor: (organizationId: number | null) =>
-    rest.get(`/monitor`, { organizationId }),
-  fetchMonitorItem: (pingSetupId: number | null) =>
-    rest.get(`/monitor/${pingSetupId}`),
-  deleteMonitorItem: ({ pingSetupId }: DeleteMonitorItemParams) =>
-    rest.delete(`/monitor/${pingSetupId}`),
 }
 
 export function useForgotPassword() {
@@ -213,132 +196,6 @@ export function useRemoveUser() {
       onSuccess: (data) => {
         queryClient.setQueryData(["organizations", data.id], data)
         queryClient.refetchQueries("organizations")
-      },
-    }
-  )
-}
-
-export function useAddApiKey() {
-  const queryClient = useQueryClient()
-
-  return useMutation<OrganizationWithIncludes, RestError, AddApiKeyRequest>(
-    api.addApiKey,
-    {
-      onSuccess: (data) => {
-        queryClient.setQueryData(["organizations", data.id], data)
-        queryClient.refetchQueries("organizations")
-      },
-    }
-  )
-}
-
-export function useRemoveApiKey() {
-  const queryClient = useQueryClient()
-
-  return useMutation<OrganizationWithIncludes, RestError, RemoveApiKeyRequest>(
-    api.removeApiKey,
-    {
-      // optimistic update
-      onMutate: (data) => {
-        const predicate = ["organizations", data.organizationId]
-        const prevOrg = queryClient.getQueryData<
-          OrganizationWithIncludes | undefined
-        >(predicate)
-        if (prevOrg !== undefined) {
-          queryClient.setQueryData<OrganizationWithIncludes | undefined>(
-            predicate,
-            {
-              ...prevOrg,
-              apiKeys: prevOrg.apiKeys.filter((x) => x.id !== data.apiKeyId),
-            }
-          )
-        }
-        return () =>
-          queryClient.setQueryData<OrganizationWithIncludes | undefined>(
-            predicate,
-            prevOrg
-          )
-      },
-      onError: (err, newOrg, rollback) => {
-        // @ts-ignore
-        rollback()
-      },
-      onSuccess: (data) => {
-        queryClient.setQueryData(["organizations", data.id], data)
-        queryClient.refetchQueries("organizations")
-      },
-    }
-  )
-}
-
-export function usePing() {
-  const queryClient = useQueryClient()
-
-  return useMutation<Ping, RestError, PingRequest>(api.ping, {
-    onSuccess: () => {
-      queryClient.refetchQueries("monitor")
-    },
-  })
-}
-
-export function useFetchMonitor(organizationId: number | null) {
-  const queryClient = useQueryClient()
-
-  return useQuery<MonitorResponse, RestError>(
-    ["monitor", organizationId],
-    () => api.fetchMonitor(organizationId),
-    { enabled: organizationId !== null, refetchInterval: 20000 }
-  )
-}
-
-export function useFetchMonitorItem(pingSetupId: number | null) {
-  return useQuery<FetchMonitorItemResponse, RestError>(
-    ["pings", pingSetupId],
-    () => api.fetchMonitorItem(pingSetupId),
-    { enabled: pingSetupId !== null, refetchInterval: 20000 }
-  )
-}
-
-type DeleteMonitorItemParams = {
-  pingSetupId: number
-  organizationId: number
-}
-
-export function useDeleteMonitorItem() {
-  const queryClient = useQueryClient()
-
-  return useMutation<void, RestError, DeleteMonitorItemParams>(
-    api.deleteMonitorItem,
-    {
-      // optimistic update
-      onMutate: ({ organizationId, pingSetupId }) => {
-        const predicate = ["monitor", organizationId]
-        const prevMonitor = queryClient.getQueryData<
-          MonitorResponse | undefined
-        >(predicate)
-        if (prevMonitor !== undefined) {
-          queryClient.setQueryData<MonitorResponse | undefined>(predicate, {
-            ...prevMonitor,
-            groups: [...prevMonitor.groups].map((group) => ({
-              ...group,
-              items: [...group.items].filter(
-                (item) => item.pingSetup.id !== pingSetupId
-              ),
-            })),
-          })
-        }
-        return () =>
-          queryClient.setQueryData<MonitorResponse | undefined>(
-            predicate,
-            prevMonitor
-          )
-      },
-      onError: (err, newOrg, rollback) => {
-        // @ts-ignore
-        rollback()
-      },
-      onSuccess: () => {
-        queryClient.refetchQueries("monitor")
       },
     }
   )

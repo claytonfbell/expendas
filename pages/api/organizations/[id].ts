@@ -91,16 +91,15 @@ async function handler(
       // DELETE
       else if (req.method === "DELETE") {
         await requireAdminAuthentication(req, prisma, organization.id)
-        // delete the pings
-        await prisma.ping.deleteMany({
-          where: { pingSetup: { organizationId: { equals: organization.id } } },
+        // delete the payments
+        await prisma.payment.deleteMany({
+          where: { account: { organizationId: { equals: organization.id } } },
         })
         // delete the joins
         await prisma.organization.update({
           data: {
-            apiKeys: { deleteMany: {} },
             users: { deleteMany: {} },
-            pingSetups: { deleteMany: {} },
+            accounts: { deleteMany: {} },
           },
           where: { id: organization.id },
         })

@@ -1,6 +1,6 @@
 import Head from "next/head"
 import { Inside } from "../lib/Inside"
-import { MonitorList } from "../lib/MonitorList"
+import { OrganizationList } from "../lib/OrganizationList"
 
 export default function Home() {
   return (
@@ -11,7 +11,7 @@ export default function Home() {
       </Head>
 
       <Inside title="">
-        <MonitorList />
+        <OrganizationList />
       </Inside>
 
       {/* <ReactQueryDevtools /> */}

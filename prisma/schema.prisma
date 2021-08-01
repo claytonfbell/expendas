@@ -14,8 +14,7 @@ model Organization {
   id            Int                     @id @default(autoincrement())
   name          String?                 @unique @db.VarChar(255)
   users         UsersOnOrganizations[]
-  apiKeys       ApiKey[]
-  pingSetups    PingSetup[]
+  accounts      Account[]
 }
 
 model User {
@@ -39,44 +38,41 @@ model UsersOnOrganizations {
   @@id([userId, organizationId])
 }
 
-model ApiKey {
-  id                Int             @id @default(autoincrement())
-  organization      Organization    @relation(fields: [organizationId], references: [id])
-  organizationId    Int
-  apiKey            String?         @unique @db.VarChar(255)
-}
-
-model PingSetup {
+model Account {
   id                    Int             @id @default(autoincrement())
   organization          Organization    @relation(fields: [organizationId], references: [id])
   organizationId        Int
   name                  String          @db.VarChar(255)
-  groupName             String          @db.VarChar(255) @default("")
-  emails                String[]
-  notified              Boolean         @default(false)
-  pings                 Ping[]
-  lastPing              Ping?    @relation(name: "LastPing", fields: [lastPingId], references: [id])
-  lastPingId            Int?
-  lastSuccessfulPing    Ping?    @relation(name: "LastSuccessfulPing", fields: [lastSuccessfulPingId], references: [id])
-  lastSuccessfulPingId  Int?
-  @@unique([organizationId, name, groupName])
+  accountType           AccountType
+  balance               Int
+  payments              Payment[]
+
 }
 
-model Ping {
+enum AccountType {
+  Cash
+  Credit_Card
+  Checking_Account
+  Savings_Account
+  CD
+  Investment
+  Line_of_Credit
+  Loan
+  Home_Market_Value
+  Car_Value
+}
+
+model Payment {
   id                    Int             @id @default(autoincrement())
-  pingSetup             PingSetup       @relation(fields: [pingSetupId], references: [id])
-  pingSetupId           Int
-  tag                   String?         @db.VarChar(255)
-  details               String?         @db.Text
-  progressBar           Int?
-  interval              Int
-  time                  DateTime
-  success               Boolean         @default(false)
-  lastPingFor           PingSetup?      @relation(name:"LastPing")
-  lastSuccessfulPingFor PingSetup?      @relation(name:"LastSuccessfulPing")
-  @@index([pingSetupId, success])
+  account               Account    @relation(fields: [accountId], references: [id])
+  accountId             Int
+  description           String          @db.VarChar(255)
+  amount                Int
+  date                  String
+  repeatsUntilDate      String?
+  repeatsOnDaysOfMonth  Int[]
+  repeatsOnMonthsOfYear Int[]
+  repeatsWeekly         Int?
 }
-
-
 
 // npx prisma migrate dev --name init

@@ -1,21 +1,13 @@
 import { Box, Grid, Hidden, IconButton, Tab, Tabs } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import Add from "@material-ui/icons/Add"
-import SendIcon from "@material-ui/icons/Send"
 import SettingsIcon from "@material-ui/icons/Settings"
-import { Alert, Tooltip } from "material-ui-bootstrap"
+import { Tooltip } from "material-ui-bootstrap"
 import React, { useState } from "react"
 import { useStorageState } from "react-storage-hooks"
 import { AddOrganizationDialog } from "./AddOrganizationDialog"
-import {
-  useCheckLogin,
-  useFetchMonitor,
-  useFetchOrganizations,
-} from "./api/api"
-import { FilterStatusToggle } from "./FilterStatusToggle"
-import { MonitorGroupBox } from "./MonitorGroupBox"
+import { useCheckLogin, useFetchOrganizations } from "./api/api"
 import { OrganizationDialog } from "./OrganizationDialog"
-import { PingDialog } from "./PingDialog"
 
 const useStyles = makeStyles((theme) => ({
   tabsContainer: {
@@ -28,13 +20,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export function MonitorList() {
+export function OrganizationList() {
   const classes = useStyles()
   const { data: organizations = [] } = useFetchOrganizations()
 
   const [organizationId, setOrganizationId] = useStorageState<number | null>(
     sessionStorage,
-    "MonitorList.organizationId",
+    "OrganizationList.organizationId",
     null
   )
   React.useEffect(() => {
@@ -43,29 +35,7 @@ export function MonitorList() {
     }
   }, [organizationId, organizations, setOrganizationId])
 
-  const { data: monitorResponse, isLoading } = useFetchMonitor(organizationId)
-
-  const [showPing, setShowPing] = useState(false)
   const [showOrgDialog, setShowOrgDialog] = useState(false)
-
-  const [onlyFailures, setOnlyFailures] = useState<boolean>(false)
-
-  // apply filters
-  const filtered = (monitorResponse?.groups || [])
-    .map((y) => ({
-      ...y,
-      items: y.items
-        // apply selection filters
-        .filter(
-          (x) => (x.status === "ok" && !onlyFailures) || x.status === "failed"
-        )
-        // sort items alpbabetically
-        .sort((a, b) => a.pingSetup.name.localeCompare(b.pingSetup.name)),
-    }))
-    // remove groups not containing any items
-    .filter((x) => x.items.length > 0)
-    // sort groups alphabetically
-    .sort((a, b) => a.groupName.localeCompare(b.groupName))
 
   const { data: checkLogin } = useCheckLogin()
   const isAdmin =
@@ -109,12 +79,7 @@ export function MonitorList() {
 
       <Box padding={0} paddingTop={3} paddingBottom={3}>
         <Grid container spacing={2} justify="space-between" alignItems="center">
-          <Grid item>
-            <FilterStatusToggle
-              selected={onlyFailures}
-              onSelect={(v) => setOnlyFailures(v)}
-            />
-          </Grid>
+          <Grid item></Grid>
           <Grid item>
             {isAdmin ? (
               <Tooltip title="Organization Setup">
@@ -130,38 +95,9 @@ export function MonitorList() {
                 onClose={() => setShowOrgDialog(false)}
               />
             ) : null}
-            {isAdmin ? (
-              <Tooltip title="Submit a test ping">
-                <IconButton onClick={() => setShowPing(true)}>
-                  <SendIcon />
-                </IconButton>
-              </Tooltip>
-            ) : null}
-            <PingDialog
-              open={showPing}
-              onClose={() => setShowPing(false)}
-              defaultApiKey={
-                organizations
-                  .find((x) => x.id === organizationId)
-                  ?.apiKeys.find((x) => true)?.apiKey || ""
-              }
-            />
           </Grid>
         </Grid>
       </Box>
-
-      {isLoading ? "Loading..." : null}
-      {monitorResponse !== undefined ? (
-        <>
-          {filtered.length === 0 ? (
-            <Alert color="info">Nothing to display.</Alert>
-          ) : null}
-
-          {filtered.map((group) => {
-            return <MonitorGroupBox key={group.groupName} group={group} />
-          })}
-        </>
-      ) : null}
     </>
   )
 }

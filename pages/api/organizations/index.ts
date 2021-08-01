@@ -22,7 +22,6 @@ export const organizationInclude = {
       },
     },
   },
-  apiKeys: true,
 }
 
 async function handler(
