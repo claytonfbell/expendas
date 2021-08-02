@@ -16,7 +16,7 @@ export function sendEmail({ to, subject, text }: SendEmailArgs) {
 
   const msg = {
     to,
-    from: "noreply@status-monitor.app",
+    from: "noreply@expendas.com",
     subject,
     text,
     html,
@@ -86,16 +86,12 @@ const wrapWithTemplate = (
                 <div class="email-content">
                     ${body}
                     <center>
-                        <!-- Keep Apple Dark Mode from activating
-                        https://www.maildesigner365.com/the-secret-to-building-dark-mode-email-newsletters-for-macos-mojave-mail/ -->
-                        <image style="display: none;" src="https://www.etix.com/ticket/online3/images/etix-logo.svg" width="150"></image>
-
                         <!-- LOGO -->
                         <br/>
                         <br/>
                         
                     </center>
-                    <img src="https://status-monitor.app/logo.png" alt="logo" style="display: inline;" >
+                    <img src="https://v3.expendas.com/logo.png" alt="logo" style="display: inline;" >
 
                 </div>
                 <!--[if mso]></td></tr></table><![endif]-->

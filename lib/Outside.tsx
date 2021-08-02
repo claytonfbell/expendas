@@ -9,9 +9,7 @@ interface Props {
   children: React.ReactNode
 }
 
-const FOOTER_CONTENT = `Receive an alert notification when a successful "ping" isn't received within a specified interval of time.
-
-Useful when you have hundreds of automated reports and processes and can't afford to be the last one to know that it has stopped working.`
+const FOOTER_CONTENT = ``
 
 export function Outside(props: Props) {
   return (
@@ -31,7 +29,7 @@ export function Outside(props: Props) {
               <Grid item>
                 <IconButton
                   color="primary"
-                  href="https://github.com/claytonfbell/status-monitor-app"
+                  href="https://github.com/claytonfbell/expendas3"
                 >
                   <GitHubIcon />
                 </IconButton>

@@ -76,10 +76,10 @@ export function Inside(props: Props) {
                 </Hidden>
                 <Grid item>
                   <Hidden xsDown>
-                    <Tooltip title="github.com/claytonfbell/status-monitor-app">
+                    <Tooltip title="github.com/claytonfbell/expendas3">
                       <IconButton
                         color="primary"
-                        href="https://github.com/claytonfbell/status-monitor-app"
+                        href="https://github.com/claytonfbell/expendas3"
                       >
                         <GitHubIcon />
                       </IconButton>

@@ -42,7 +42,7 @@ async function handler(
       })
 
       // send email
-      const text = `Use this link to setup a new password, code expires in **10 minutes**. \n\nhttps://status-monitor.app/setPassword?authCode=${user.authCode}.`
+      const text = `Use this link to setup a new password, code expires in **10 minutes**. \n\nhttps://v3.expendas.com/setPassword?authCode=${user.authCode}.`
       sendEmail({ to: user.email, subject: "Password Reset Code", text })
         .then(() => {
           console.log("Email sent")

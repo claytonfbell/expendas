@@ -13,7 +13,7 @@ const withSession = (handler: NextIronHandler) =>
   withIronSession(handler, {
     password:
       process.env.SECRET_COOKIE_PASSWORD || "GzPWLYyiDT8Rx6NAn@rrNm-oR2LxH3ow",
-    cookieName: "status-monitor-app-session",
+    cookieName: "expendas-session",
     cookieOptions: {
       // the next line allows to use the session in non-https environments like
       // Next.js dev mode (http://localhost:3000)
