@@ -6,8 +6,8 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Status Monitor App</title>
-        <meta name="description" content="Status Monitor App" />
+        <title>Expendas</title>
+        <meta name="description" content="Expendas" />
       </Head>
 
       <Inside title="">

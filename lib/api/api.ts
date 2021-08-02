@@ -1,4 +1,9 @@
-import { Organization, User, UsersOnOrganizations } from "@prisma/client"
+import {
+  Account,
+  Organization,
+  User,
+  UsersOnOrganizations,
+} from "@prisma/client"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { AddApiKeyRequest } from "./AddApiKeyRequest"
 import { AddOrganizationRequest } from "./AddOrganizationRequest"
@@ -49,6 +54,21 @@ const api = {
     rest.post(`/organizations/addApiKey`, req),
   removeApiKey: (req: RemoveApiKeyRequest) =>
     rest.post(`/organizations/removeApiKey`, req),
+  fetchAccounts: (organizationId: number) =>
+    rest.get(`/organizations/${organizationId}/accounts`),
+  addAccount: (req: Account) =>
+    rest.post(`/organizations/${req.organizationId}/accounts`, req),
+  fetchAccount: (organizationId: number, accountId: number) =>
+    rest.get(`/organizations/${organizationId}/accounts/${accountId}`),
+  updateAccount: (account: Account) =>
+    rest.put(
+      `/organizations/${account.organizationId}/accounts/${account.id}`,
+      account
+    ),
+  removeAccount: (account: Account) =>
+    rest.delete(
+      `/organizations/${account.organizationId}/accounts/${account.id}`
+    ),
 }
 
 export function useForgotPassword() {
@@ -199,4 +219,47 @@ export function useRemoveUser() {
       },
     }
   )
+}
+
+export function useFetchAccounts(organizationId: number) {
+  return useQuery<Account[], RestError>(["accounts", organizationId], () =>
+    api.fetchAccounts(organizationId)
+  )
+}
+
+export function useAddAccount() {
+  const queryClient = useQueryClient()
+
+  return useMutation<Account, RestError, Account>(api.addAccount, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(["accounts", data.organizationId, data.id], data)
+      queryClient.refetchQueries("accounts")
+    },
+  })
+}
+
+export function useFetchAccount(organizationId: number, accountId: number) {
+  return useQuery<Account, RestError>(
+    ["accounts", organizationId, accountId],
+    () => api.fetchAccount(organizationId, accountId)
+  )
+}
+
+export function useUpdateAccount() {
+  const queryClient = useQueryClient()
+  return useMutation<Account, RestError, Account>(api.updateAccount, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(["accounts", data.organizationId, data.id], data)
+      queryClient.refetchQueries("accounts")
+    },
+  })
+}
+
+export function useRemoveAccount() {
+  const queryClient = useQueryClient()
+  return useMutation<void, RestError, Account>(api.removeAccount, {
+    onSuccess: () => {
+      queryClient.refetchQueries("accounts")
+    },
+  })
 }

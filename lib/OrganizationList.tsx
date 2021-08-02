@@ -5,6 +5,7 @@ import SettingsIcon from "@material-ui/icons/Settings"
 import { Tooltip } from "material-ui-bootstrap"
 import React, { useState } from "react"
 import { useStorageState } from "react-storage-hooks"
+import { AccountManage } from "./AccountManage"
 import { AddOrganizationDialog } from "./AddOrganizationDialog"
 import { useCheckLogin, useFetchOrganizations } from "./api/api"
 import { OrganizationDialog } from "./OrganizationDialog"
@@ -98,6 +99,9 @@ export function OrganizationList() {
           </Grid>
         </Grid>
       </Box>
+      {organizationId !== null ? (
+        <AccountManage organizationId={organizationId} />
+      ) : null}
     </>
   )
 }

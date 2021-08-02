@@ -39,3 +39,18 @@ export async function requireAdminAuthentication(
   }
   return user
 }
+
+export async function requireOrganizationAuthentication(
+  req: NextIronRequest,
+  prisma: PrismaClient,
+  organizationId: number
+) {
+  const user = await requireAuthentication(req, prisma)
+  const userOnOrganization = await prisma.usersOnOrganizations.findFirst({
+    where: { userId: user.id, organizationId },
+  })
+  if (userOnOrganization === null) {
+    throw new ForbiddenException()
+  }
+  return user
+}
