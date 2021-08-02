@@ -72,11 +72,12 @@ enum CreditCardType {
 
 model Payment {
   id                    Int             @id @default(autoincrement())
-  account               Account    @relation(fields: [accountId], references: [id])
+  account               Account         @relation(fields: [accountId], references: [id])
   accountId             Int
   description           String          @db.VarChar(255)
   amount                Int
   date                  String
+  isPaycheck            Boolean         @default(false)
   repeatsUntilDate      String?
   repeatsOnDaysOfMonth  Int[]
   repeatsOnMonthsOfYear Int[]

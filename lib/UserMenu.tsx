@@ -1,14 +1,19 @@
 import { Divider, ListItemIcon } from "@material-ui/core"
 import Menu from "@material-ui/core/Menu"
 import MenuItem from "@material-ui/core/MenuItem"
+import AccountBalanceIcon from "@material-ui/icons/AccountBalance"
+import AddIcon from "@material-ui/icons/Add"
 import CheckIcon from "@material-ui/icons/Check"
+import ExitToAppIcon from "@material-ui/icons/ExitToApp"
+import ReceiptIcon from "@material-ui/icons/Receipt"
+import SettingsIcon from "@material-ui/icons/Settings"
 import { Button } from "material-ui-bootstrap"
 import { useRouter } from "next/dist/client/router"
 import React, { useState } from "react"
 import { AddOrganizationDialog } from "./AddOrganizationDialog"
 import { useLogout } from "./api/api"
+import { useGlobalState } from "./GlobalStateProvider"
 import { OrganizationDialog } from "./OrganizationDialog"
-import { useSelectedOrganization } from "./useSelectedOrganization"
 
 export function UserMenu() {
   const { mutateAsync: logout } = useLogout()
@@ -25,10 +30,15 @@ export function UserMenu() {
   }
 
   const { organizations, organization, organizationId, setOrganizationId } =
-    useSelectedOrganization()
+    useGlobalState()
 
   const [openSettings, setOpenSettings] = useState(false)
   const [openAddOrg, setOpenAddOrg] = useState(false)
+
+  const menuClick = (action: () => void) => () => {
+    handleClose()
+    action()
+  }
 
   return (
     <>
@@ -50,7 +60,7 @@ export function UserMenu() {
           <>
             {organizations.map((o) => (
               <MenuItem key={o.id} onClick={() => setOrganizationId(o.id)}>
-                <ListItemIcon>
+                <ListItemIcon color="inherit" style={{ color: "green" }}>
                   {organizationId === o.id ? <CheckIcon /> : null}
                 </ListItemIcon>
 
@@ -60,23 +70,43 @@ export function UserMenu() {
             <Divider />
           </>
         ) : null}
-        <MenuItem onClick={() => setOpenAddOrg(true)}>
-          <ListItemIcon />
+
+        <MenuItem onClick={menuClick(() => setOpenSettings(true))}>
+          <ListItemIcon>
+            <SettingsIcon />
+          </ListItemIcon>
+          Organization Settings
+        </MenuItem>
+
+        <MenuItem onClick={menuClick(() => setOpenAddOrg(true))}>
+          <ListItemIcon>
+            <AddIcon />
+          </ListItemIcon>
           Add Organization
         </MenuItem>
-        <MenuItem onClick={() => router.push(`/accounts`)}>
-          <ListItemIcon />
+
+        <MenuItem onClick={menuClick(() => router.push(`/accounts`))}>
+          <ListItemIcon>
+            <AccountBalanceIcon />
+          </ListItemIcon>
           Accounts
         </MenuItem>
-        <MenuItem onClick={() => setOpenSettings(true)}>
-          <ListItemIcon />
-          Settings
+
+        <MenuItem onClick={menuClick(() => router.push(`/payments`))}>
+          <ListItemIcon>
+            <ReceiptIcon />
+          </ListItemIcon>
+          Payments
         </MenuItem>
-        <MenuItem onClick={() => logout()}>
-          <ListItemIcon />
+
+        <MenuItem onClick={menuClick(() => logout())}>
+          <ListItemIcon>
+            <ExitToAppIcon />
+          </ListItemIcon>
           Logout
         </MenuItem>
       </Menu>
+
       {organizationId !== null ? (
         <OrganizationDialog
           organizationId={organizationId}

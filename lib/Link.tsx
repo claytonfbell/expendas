@@ -10,7 +10,9 @@ interface Props {
 export function Link(props: Props) {
   return (
     <NextLink href={props.href}>
-      <MUILink style={{ cursor: "pointer" }}>{props.children}</MUILink>
+      <MUILink color="inherit" style={{ cursor: "pointer" }}>
+        {props.children}
+      </MUILink>
     </NextLink>
   )
 }

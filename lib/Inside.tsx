@@ -1,5 +1,6 @@
 import {
   AppBar,
+  Box,
   Container,
   Grid,
   Hidden,
@@ -14,6 +15,8 @@ import { useRouter } from "next/dist/client/router"
 import NextLink from "next/link"
 import React, { useEffect, useState } from "react"
 import { useCheckLogin } from "./api/api"
+import { BreadcrumbLink, ExpendasBreadcrumbs } from "./ExpendasBreadcrumbs"
+import { GlobalStateProvider } from "./GlobalStateProvider"
 import { Login } from "./Login"
 import { LogoComponent } from "./LogoComponent"
 import { Outside } from "./Outside"
@@ -23,6 +26,7 @@ import { UserMenu } from "./UserMenu"
 interface Props {
   title: string
   children: React.ReactNode
+  breadcrumbs: BreadcrumbLink[]
 }
 
 export function Inside(props: Props) {
@@ -52,7 +56,7 @@ export function Inside(props: Props) {
           <Login />
         </Outside>
       ) : (
-        <>
+        <GlobalStateProvider>
           <AppBar position="static" color="default" variant="outlined">
             <Toolbar>
               <Grid
@@ -91,6 +95,9 @@ export function Inside(props: Props) {
           </AppBar>
 
           <Container style={{ marginTop: 24 }}>
+            <Box marginBottom={2}>
+              <ExpendasBreadcrumbs links={props.breadcrumbs} />
+            </Box>
             <main>{props.children}</main>
             <footer
               style={
@@ -113,7 +120,7 @@ export function Inside(props: Props) {
               </Link>
             </footer>
           </Container>
-        </>
+        </GlobalStateProvider>
       )}
     </>
   )

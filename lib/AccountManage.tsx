@@ -20,13 +20,11 @@ import ConfirmDialog from "./ConfirmDialog"
 import { displayCreditCardType } from "./creditCardTypes"
 import DisplayError from "./DisplayError"
 import { formatMoney } from "./formatMoney"
+import { useGlobalState } from "./GlobalStateProvider"
 
-interface Props {
-  organizationId: number
-}
-
-export function AccountManage(props: Props) {
-  const { data, error: fetchError } = useFetchAccounts(props.organizationId)
+export function AccountManage() {
+  const { organizationId } = useGlobalState()
+  const { data, error: fetchError } = useFetchAccounts(organizationId)
 
   const { mutateAsync: removeAccount, error: removeError } = useRemoveAccount()
   const [accountToRemove, setAccountToRemove] = useState<Account>()
@@ -85,7 +83,7 @@ export function AccountManage(props: Props) {
         onClick={() =>
           setAccountToUpdate({
             id: 0,
-            organizationId: props.organizationId,
+            organizationId: organizationId || 0,
             name: "",
             accountType: "Checking_Account",
             balance: 0,

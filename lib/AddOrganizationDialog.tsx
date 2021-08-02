@@ -12,6 +12,7 @@ import React, { useState } from "react"
 import { AddOrganizationRequest } from "./api/AddOrganizationRequest"
 import { useAddOrganization } from "./api/api"
 import DisplayError from "./DisplayError"
+import { useGlobalState } from "./GlobalStateProvider"
 import { Title } from "./Title"
 
 interface Props {
@@ -24,6 +25,8 @@ export function AddOrganizationDialog(props: Props) {
     name: "",
   })
 
+  const { setOrganizationId } = useGlobalState()
+
   const {
     mutateAsync: addOrganization,
     isLoading,
@@ -31,7 +34,10 @@ export function AddOrganizationDialog(props: Props) {
   } = useAddOrganization()
 
   function handleSubmit() {
-    addOrganization(state).then(props.onClose)
+    addOrganization(state).then((newOrganization) => {
+      setOrganizationId(newOrganization.id)
+      props.onClose()
+    })
   }
 
   const theme = useTheme()
