@@ -24,21 +24,26 @@ async function handler(
         where: {
           organizationId,
         },
+        orderBy: { name: "asc" },
       })
 
       return accounts
     }
     // POST
     else if (req.method === "POST") {
-      const { name, accountType, balance }: Account = req.body
+      const { name, accountType, balance, creditCardType }: Account = req.body
       validate({ name }).notEmpty()
       validate({ accountType }).notEmpty()
       validate({ balance }).notEmpty()
+      if (accountType === "Credit_Card") {
+        validate({ creditCardType }).notEmpty()
+      }
 
       // check unique
       const exists = await prisma.account.findFirst({
         where: {
           name: { equals: name },
+          accountType: { equals: accountType },
           organizationId: { equals: organizationId },
         },
       })
@@ -53,6 +58,7 @@ async function handler(
           name,
           accountType,
           balance,
+          creditCardType,
         },
       })
 

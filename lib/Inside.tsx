@@ -7,18 +7,18 @@ import {
   Link,
   Toolbar,
 } from "@material-ui/core"
-import ExitToAppIcon from "@material-ui/icons/ExitToApp"
 import GitHubIcon from "@material-ui/icons/GitHub"
 import { Tooltip } from "material-ui-bootstrap"
 import { useDarkMode } from "material-ui-pack"
 import { useRouter } from "next/dist/client/router"
 import NextLink from "next/link"
 import React, { useEffect, useState } from "react"
-import { useCheckLogin, useLogout } from "./api/api"
+import { useCheckLogin } from "./api/api"
 import { Login } from "./Login"
 import { LogoComponent } from "./LogoComponent"
 import { Outside } from "./Outside"
 import { Title } from "./Title"
+import { UserMenu } from "./UserMenu"
 
 interface Props {
   title: string
@@ -26,7 +26,6 @@ interface Props {
 }
 
 export function Inside(props: Props) {
-  const { mutateAsync: logout } = useLogout()
   const { data: loginResponse, isLoading } = useCheckLogin()
   const { toggleDarkMode, darkMode } = useDarkMode()
 
@@ -85,11 +84,7 @@ export function Inside(props: Props) {
                       </IconButton>
                     </Tooltip>
                   </Hidden>
-                  <Tooltip title="Logout">
-                    <IconButton color="primary" onClick={() => logout()}>
-                      <ExitToAppIcon />
-                    </IconButton>
-                  </Tooltip>
+                  <UserMenu />
                 </Grid>
               </Grid>
             </Toolbar>

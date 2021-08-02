@@ -17,6 +17,7 @@ import { AccountDialog } from "./AccountDialog"
 import { displayAccountType } from "./accountTypes"
 import { useFetchAccounts, useRemoveAccount } from "./api/api"
 import ConfirmDialog from "./ConfirmDialog"
+import { displayCreditCardType } from "./creditCardTypes"
 import DisplayError from "./DisplayError"
 import { formatMoney } from "./formatMoney"
 
@@ -57,7 +58,12 @@ export function AccountManage(props: Props) {
             {(data || []).map((account) => (
               <TableRow key={account.id}>
                 <TableCell>{account.name}</TableCell>
-                <TableCell>{displayAccountType(account.accountType)}</TableCell>
+                <TableCell>
+                  {account.accountType === "Credit_Card" &&
+                  account.creditCardType !== null
+                    ? displayCreditCardType(account.creditCardType)
+                    : displayAccountType(account.accountType)}
+                </TableCell>
                 <TableCell>{formatMoney(account.balance)}</TableCell>
                 <TableCell>
                   <IconButton onClick={() => setAccountToUpdate(account)}>
@@ -83,6 +89,7 @@ export function AccountManage(props: Props) {
             name: "",
             accountType: "Checking_Account",
             balance: 0,
+            creditCardType: null,
           })
         }
       >

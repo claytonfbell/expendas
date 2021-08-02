@@ -1,7 +1,7 @@
 import { AccountType } from "@prisma/client"
 import { OptionType } from "material-ui-pack"
 
-export const accountTypes: AccountType[] = [
+const accountTypes: AccountType[] = [
   "CD",
   "Car_Value",
   "Cash",

@@ -44,6 +44,7 @@ model Account {
   organizationId        Int
   name                  String          @db.VarChar(255)
   accountType           AccountType
+  creditCardType        CreditCardType?
   balance               Int
   payments              Payment[]
 
@@ -60,6 +61,13 @@ enum AccountType {
   Loan
   Home_Market_Value
   Car_Value
+}
+
+enum CreditCardType {
+  Mastercard
+  Visa
+  American_Express
+  Discover
 }
 
 model Payment {
