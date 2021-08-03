@@ -15,7 +15,9 @@ import { Button } from "material-ui-bootstrap"
 import React, { useState } from "react"
 import { useFetchPayments, useRemovePayment } from "./api/api"
 import ConfirmDialog from "./ConfirmDialog"
+import { Currency } from "./Currency"
 import DisplayError from "./DisplayError"
+import { getRepeatingPaymentFeedback } from "./getRepeatingPaymentFeedback"
 import { useGlobalState } from "./GlobalStateProvider"
 import { PaymentDialog } from "./PaymentDialog"
 
@@ -42,17 +44,22 @@ export function PaymentManage() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
               <TableCell>Description</TableCell>
+              <TableCell>When</TableCell>
+              <TableCell>Amount</TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {(data || []).map((payment) => (
               <TableRow key={payment.id}>
-                <TableCell>{payment.id}</TableCell>
                 <TableCell>{payment.description}</TableCell>
-
+                <TableCell>
+                  {getRepeatingPaymentFeedback(payment).description}
+                </TableCell>
+                <TableCell>
+                  <Currency value={payment.amount} green />
+                </TableCell>
                 <TableCell>
                   <IconButton onClick={() => setPaymentToUpdate(payment)}>
                     <EditIcon />
@@ -87,10 +94,12 @@ export function PaymentManage() {
       >
         Add Payment
       </Button>
-      <PaymentDialog
-        payment={paymentToUpdate}
-        onClose={() => setPaymentToUpdate(undefined)}
-      />
+      {paymentToUpdate !== undefined ? (
+        <PaymentDialog
+          payment={paymentToUpdate}
+          onClose={() => setPaymentToUpdate(undefined)}
+        />
+      ) : null}
 
       <ConfirmDialog
         open={paymentToRemove !== undefined}

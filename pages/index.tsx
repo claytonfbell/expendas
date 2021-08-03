@@ -1,5 +1,6 @@
 import Head from "next/head"
 import { Inside } from "../lib/Inside"
+import { Main } from "../lib/Main"
 
 export default function Home() {
   return (
@@ -10,7 +11,7 @@ export default function Home() {
       </Head>
 
       <Inside title="Expendas" breadcrumbs={[]}>
-        {" "}
+        <Main />
       </Inside>
 
       {/* <ReactQueryDevtools /> */}

@@ -18,13 +18,13 @@ import { displayAccountType } from "./accountTypes"
 import { useFetchAccounts, useRemoveAccount } from "./api/api"
 import ConfirmDialog from "./ConfirmDialog"
 import { displayCreditCardType } from "./creditCardTypes"
+import { Currency } from "./Currency"
 import DisplayError from "./DisplayError"
-import { formatMoney } from "./formatMoney"
 import { useGlobalState } from "./GlobalStateProvider"
 
 export function AccountManage() {
   const { organizationId } = useGlobalState()
-  const { data, error: fetchError } = useFetchAccounts(organizationId)
+  const { data, error: fetchError } = useFetchAccounts()
 
   const { mutateAsync: removeAccount, error: removeError } = useRemoveAccount()
   const [accountToRemove, setAccountToRemove] = useState<Account>()
@@ -62,7 +62,9 @@ export function AccountManage() {
                     ? displayCreditCardType(account.creditCardType)
                     : displayAccountType(account.accountType)}
                 </TableCell>
-                <TableCell>{formatMoney(account.balance)}</TableCell>
+                <TableCell>
+                  <Currency value={account.balance} red />
+                </TableCell>
                 <TableCell>
                   <IconButton onClick={() => setAccountToUpdate(account)}>
                     <EditIcon />

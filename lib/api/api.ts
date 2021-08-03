@@ -1,12 +1,15 @@
 import {
   Account,
+  Item,
   Organization,
   Payment,
   User,
   UsersOnOrganizations,
 } from "@prisma/client"
 import { useMutation, useQuery, useQueryClient } from "react-query"
+import { AccountWithIncludes } from "../AccountWithIncludes"
 import { useGlobalState } from "../GlobalStateProvider"
+import { ItemWithIncludes } from "../ItemWithIncludes"
 import { AddOrganizationRequest } from "./AddOrganizationRequest"
 import { AddUserRequest } from "./AddUserRequest"
 import { ForgotPasswordRequest } from "./ForgotPasswordRequest"
@@ -82,6 +85,16 @@ const api = {
     ),
   removePayment: (organizationId: number, payment: Payment) =>
     rest.delete(`/organizations/${organizationId}/payments/${payment.id}`),
+
+  // dates
+  fetchDates: (organizationId: number) =>
+    rest.get(`/organizations/${organizationId}/dates`),
+
+  // items
+  fetchItems: (organizationId: number, date: string) =>
+    rest.get(`/organizations/${organizationId}/dates/${date}`),
+  updateItem: (organizationId: number, item: Item) =>
+    rest.put(`/organizations/${organizationId}/items/${item.id}`, item),
 }
 
 export function useForgotPassword() {
@@ -241,8 +254,10 @@ export function useRemoveUser() {
 }
 
 // accounts
-export function useFetchAccounts(organizationId: number | null) {
-  return useQuery<Account[], RestError>(
+export function useFetchAccounts() {
+  const { organizationId } = useGlobalState()
+
+  return useQuery<AccountWithIncludes[], RestError>(
     ["accounts", organizationId],
     () => api.fetchAccounts(organizationId || 0),
     { enabled: organizationId !== null }
@@ -269,12 +284,18 @@ export function useFetchAccount(organizationId: number, accountId: number) {
 
 export function useUpdateAccount() {
   const queryClient = useQueryClient()
-  return useMutation<Account, RestError, Account>(api.updateAccount, {
-    onSuccess: (data) => {
-      queryClient.setQueryData(["accounts", data.organizationId, data.id], data)
-      queryClient.refetchQueries("accounts")
-    },
-  })
+  return useMutation<AccountWithIncludes, RestError, AccountWithIncludes>(
+    api.updateAccount,
+    {
+      onSuccess: (data) => {
+        queryClient.setQueryData(
+          ["accounts", data.organizationId, data.id],
+          data
+        )
+        queryClient.refetchQueries("accounts")
+      },
+    }
+  )
 }
 
 export function useRemoveAccount() {
@@ -324,6 +345,28 @@ export function useUpdatePayment() {
   return useMutation<Payment, RestError, Payment>(
     (params) => api.updatePayment(organizationId || 0, params),
     {
+      // optimistic update
+      onMutate: (data) => {
+        const predicate = ["payments", organizationId]
+        const prev = queryClient.getQueryData<Payment[] | undefined>(predicate)
+        if (prev !== undefined) {
+          queryClient.setQueryData<Payment[] | undefined>(predicate, [
+            ...prev.map((x) => {
+              if (x.id === data.id) {
+                return data
+              }
+              return x
+            }),
+          ])
+        }
+        return () =>
+          queryClient.setQueryData<Payment[] | undefined>(predicate, prev)
+      },
+      onError: (err, newOrg, rollback) => {
+        // @ts-ignore
+        rollback()
+      },
+
       onSuccess: (data) => {
         queryClient.setQueryData(["payments", organizationId, data.id], data)
         queryClient.refetchQueries("payments")
@@ -341,6 +384,63 @@ export function useRemovePayment() {
     {
       onSuccess: () => {
         queryClient.refetchQueries("payments")
+      },
+    }
+  )
+}
+
+export function useFetchDates() {
+  const { organizationId } = useGlobalState()
+
+  return useQuery<string[], RestError>(
+    ["dates", organizationId],
+    () => api.fetchDates(organizationId || 0),
+    { enabled: organizationId !== null }
+  )
+}
+
+export function useFetchItems(date: string | null) {
+  const { organizationId } = useGlobalState()
+
+  return useQuery<ItemWithIncludes[], RestError>(
+    ["items", organizationId, date],
+    () => api.fetchItems(organizationId || 0, date || ""),
+    { enabled: organizationId !== null && date !== undefined }
+  )
+}
+
+export function useUpdateItem() {
+  const { organizationId } = useGlobalState()
+  const queryClient = useQueryClient()
+
+  return useMutation<Item, RestError, Item>(
+    (params) => api.updateItem(organizationId || 0, params),
+    {
+      // optimistic update
+      onMutate: (data) => {
+        const predicate = ["items", organizationId, data.date]
+        const prev = queryClient.getQueryData<Item[] | undefined>(predicate)
+        if (prev !== undefined) {
+          queryClient.setQueryData<Item[] | undefined>(predicate, [
+            ...prev.map((x) => {
+              if (x.id === data.id) {
+                return data
+              }
+              return x
+            }),
+          ])
+        }
+        return () =>
+          queryClient.setQueryData<Item[] | undefined>(predicate, prev)
+      },
+      onError: (err, newOrg, rollback) => {
+        // @ts-ignore
+        rollback()
+      },
+
+      onSuccess: (data) => {
+        queryClient.setQueryData(["items", organizationId, data.id], data)
+        queryClient.refetchQueries("items")
       },
     }
   )

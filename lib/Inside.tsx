@@ -104,11 +104,11 @@ export function Inside(props: Props) {
                 fixedFooter
                   ? {
                       position: "fixed",
-                      bottom: 20,
+                      bottom: 120,
                     }
                   : {
-                      marginTop: 48,
-                      marginBottom: 48,
+                      marginTop: 148,
+                      marginBottom: 148,
                     }
               }
             >

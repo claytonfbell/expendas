@@ -47,7 +47,7 @@ model Account {
   creditCardType        CreditCardType?
   balance               Int
   payments              Payment[]
-
+  carryOver             CarryOver[]
 }
 
 enum AccountType {
@@ -82,6 +82,26 @@ model Payment {
   repeatsOnDaysOfMonth  Int[]
   repeatsOnMonthsOfYear Int[]
   repeatsWeekly         Int?
+  items                 Item[]
+}
+
+model Item {
+  id                    Int             @id @default(autoincrement())
+  payment               Payment         @relation(fields: [paymentId], references: [id])
+  paymentId             Int
+  date                  String
+  amount                Int
+  isPaid                Boolean         @default(false)
+  @@index([date])
+}
+
+model CarryOver {
+  id                    Int             @id @default(autoincrement())
+  account               Account         @relation(fields: [accountId], references: [id])
+  accountId             Int
+  amount                Int
+  date                  String
+  @@unique([accountId, date])
 }
 
 // npx prisma migrate dev --name init

@@ -1,5 +1,5 @@
-import { Account } from "@prisma/client"
 import { NextApiResponse } from "next"
+import { AccountWithIncludes } from "../../../../../lib/AccountWithIncludes"
 import { requireOrganizationAuthentication } from "../../../../../lib/requireAuthentication"
 import { buildResponse } from "../../../../../lib/server/buildResponse"
 import { BadRequestException } from "../../../../../lib/server/HttpException"
@@ -32,7 +32,13 @@ async function handler(
     }
     // PUT
     else if (req.method === "PUT") {
-      const { name, accountType, balance, creditCardType }: Account = req.body
+      const {
+        name,
+        accountType,
+        balance,
+        creditCardType,
+        carryOver,
+      }: AccountWithIncludes = req.body
       validate({ name }).notEmpty()
       validate({ accountType }).notEmpty()
       validate({ balance }).notEmpty()
@@ -64,7 +70,33 @@ async function handler(
         where: { id: accountId },
       })
 
-      return account
+      carryOver.forEach(async ({ id, ...co }) => {
+        const exists = await prisma.carryOver.findUnique({
+          where: { accountId_date: { accountId, date: co.date } },
+        })
+        if (exists !== null) {
+          await prisma.carryOver.update({
+            data: {
+              amount: co.amount,
+            },
+            where: { id: exists.id },
+          })
+        } else {
+          await prisma.carryOver.create({
+            data: {
+              ...co,
+            },
+          })
+        }
+      })
+
+      // refetch with includes
+      return await prisma.account.findUnique({
+        where: {
+          id: accountId,
+        },
+        include: { carryOver: true },
+      })
     }
     // DELETE
     else if (req.method === "DELETE") {

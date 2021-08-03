@@ -1,4 +1,4 @@
-import { Payment } from "@prisma/client"
+import { Item } from "@prisma/client"
 import { NextApiResponse } from "next"
 import { requireOrganizationAuthentication } from "../../../../../lib/requireAuthentication"
 import { buildResponse } from "../../../../../lib/server/buildResponse"
@@ -12,45 +12,31 @@ async function handler(
 ): Promise<void> {
   buildResponse(res, async () => {
     const organizationId = Number(req.query.id)
-    const paymentId = Number(req.query.paymentId)
+    const itemId = Number(req.query.itemId)
     const user = await requireOrganizationAuthentication(
       req,
       prisma,
       organizationId
     )
-    const payment = await prisma.payment.findUnique({
-      where: {
-        id: paymentId,
-      },
-    })
-    validate({ payment }).notNull()
+
+    const item = await prisma.item.findUnique({ where: { id: itemId } })
 
     // GET
     if (req.method === "GET") {
-      return payment
+      return item
     }
     // PUT
     else if (req.method === "PUT") {
-      const { description, id, ...tmp }: Payment = req.body
-      validate({ description }).notEmpty()
+      const { amount, isPaid }: Item = req.body
+      validate({ amount }).notNull()
+      validate({ isPaid }).notNull()
 
-      // passed validation
-      const payment = await prisma.payment.update({
+      return await prisma.item.update({
+        where: { id: itemId },
         data: {
-          description,
-          ...tmp,
+          amount,
+          isPaid,
         },
-        where: { id: paymentId },
-      })
-
-      return payment
-    }
-    // DELETE
-    else if (req.method === "DELETE") {
-      await prisma.item.deleteMany({ where: { paymentId } })
-
-      await prisma.payment.delete({
-        where: { id: paymentId },
       })
     }
   })
