@@ -19,7 +19,10 @@ async function handler(
       organizationId
     )
 
-    const item = await prisma.item.findUnique({ where: { id: itemId } })
+    const item = await prisma.item.findUnique({
+      where: { id: itemId },
+      include: { payment: { include: { account: true } } },
+    })
 
     // GET
     if (req.method === "GET") {
@@ -37,6 +40,7 @@ async function handler(
           amount,
           isPaid,
         },
+        include: { payment: { include: { account: true } } },
       })
     }
   })

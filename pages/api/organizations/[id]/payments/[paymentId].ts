@@ -32,14 +32,38 @@ async function handler(
     }
     // PUT
     else if (req.method === "PUT") {
-      const { description, id, ...tmp }: Payment = req.body
+      const {
+        id,
+        description,
+        accountId,
+        amount,
+        date,
+        isPaycheck,
+        repeatsUntilDate,
+        repeatsOnDaysOfMonth,
+        repeatsOnMonthsOfYear,
+        repeatsWeekly,
+      }: Payment = req.body
       validate({ description }).notEmpty()
+      validate({ accountId }).notEmpty()
+      validate({ amount }).notEmpty()
+      validate({ date }).notEmpty()
+      validate({ isPaycheck }).notEmpty()
+      validate({ repeatsOnDaysOfMonth }).notEmpty()
+      validate({ repeatsOnMonthsOfYear }).notEmpty()
 
       // passed validation
       const payment = await prisma.payment.update({
         data: {
           description,
-          ...tmp,
+          accountId,
+          amount,
+          date,
+          isPaycheck,
+          repeatsOnDaysOfMonth,
+          repeatsOnMonthsOfYear,
+          repeatsUntilDate,
+          repeatsWeekly,
         },
         include: { account: true },
         where: { id: paymentId },

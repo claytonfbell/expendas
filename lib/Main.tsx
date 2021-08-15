@@ -54,7 +54,7 @@ export function Main() {
   const [date, setDate] = React.useState<string | null>(null)
 
   const { data: unfilteredItems = [] } = useFetchItems(date)
-  const { data: cycleDates = [] } = useFetchDates()
+  const { data: dates = [] } = useFetchDates()
   const { data: unfilteredAccounts = [] } = useFetchAccounts()
 
   const [includeSavings, setIncludeSavings] = React.useState(false)
@@ -101,13 +101,13 @@ export function Main() {
   )
 
   React.useEffect(() => {
-    if (cycleDates.length > 0 && date === null) {
-      setDate(cycleDates[0])
+    if (dates.length > 0 && date === null) {
+      setDate(dates[0])
     }
-  }, [cycleDates, date])
+  }, [dates, date])
 
   // find endDate
-  const endDate: string = cycleDates
+  const endDate: string = dates
     .filter((x) => moment(x).isAfter(date))
     .shift() as string
 
@@ -142,11 +142,7 @@ export function Main() {
 
   return date === null ? null : (
     <>
-      <CycleNavigation
-        dates={cycleDates}
-        date={date}
-        onChange={(x) => setDate(x)}
-      />
+      <CycleNavigation dates={dates} date={date} onChange={(x) => setDate(x)} />
 
       <FormControlLabel
         control={

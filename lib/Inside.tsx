@@ -16,6 +16,7 @@ import NextLink from "next/link"
 import React, { useEffect, useState } from "react"
 import { useCheckLogin } from "./api/api"
 import { BreadcrumbLink, ExpendasBreadcrumbs } from "./ExpendasBreadcrumbs"
+import { ExpendasErrorBoundary } from "./ExpendasErrorBoundary"
 import { GlobalStateProvider } from "./GlobalStateProvider"
 import { Login } from "./Login"
 import { LogoComponent } from "./LogoComponent"
@@ -98,7 +99,9 @@ export function Inside(props: Props) {
             <Box marginBottom={2}>
               <ExpendasBreadcrumbs links={props.breadcrumbs} />
             </Box>
-            <main>{props.children}</main>
+            <main>
+              <ExpendasErrorBoundary>{props.children}</ExpendasErrorBoundary>
+            </main>
             <footer
               style={
                 fixedFooter

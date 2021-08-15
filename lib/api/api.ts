@@ -406,7 +406,7 @@ export function useFetchItems(date: string | null) {
   return useQuery<ItemWithIncludes[], RestError>(
     ["items", organizationId, date],
     () => api.fetchItems(organizationId || 0, date || ""),
-    { enabled: organizationId !== null && date !== undefined }
+    { enabled: organizationId !== null && date !== null }
   )
 }
 
