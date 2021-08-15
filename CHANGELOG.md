@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.2](https://github.com/claytonfbell/expendas3/compare/v1.0.1...v1.0.2) (2021-08-15)
+
+
+### Bug Fixes
+
+* cosmetic adjustments ([9ff8941](https://github.com/claytonfbell/expendas3/commit/9ff8941a5dc2ad39c1940e8798902b87edfac75c))
+* Migrated site to the production domain ([ae87bba](https://github.com/claytonfbell/expendas3/commit/ae87bba0d2df647166e6d020a1d4aed9203fce9e))
+
 ### [1.0.1](https://github.com/claytonfbell/expendas3/compare/v1.0.0...v1.0.1) (2021-08-15)
 
 
