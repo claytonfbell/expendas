@@ -4,7 +4,7 @@ import { Account } from "@prisma/client"
 import moment from "moment"
 import { useFetchAccounts, useFetchItems } from "./api/api"
 import { formatMoney } from "./formatMoney"
-import { PaymentForm } from "./PaymentDialog"
+import { PaymentForm } from "./PaymentForm"
 
 interface Props {
   endingBalance: number
