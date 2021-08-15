@@ -1,7 +1,19 @@
-import { Box, fade, Grid, lighten, Link, makeStyles } from "@material-ui/core"
+import {
+  Box,
+  Fade,
+  fade,
+  Grid,
+  IconButton,
+  lighten,
+  Link,
+  makeStyles,
+  Tooltip,
+} from "@material-ui/core"
+import AddIcon from "@material-ui/icons/Add"
 import { Account, Payment } from "@prisma/client"
 import clsx from "clsx"
-import React from "react"
+import React, { useState } from "react"
+import { useDebounce } from "react-use"
 import { displayAccountType } from "./accountTypes"
 import { AccountWithIncludes } from "./AccountWithIncludes"
 import { AmountInputTool } from "./AmountInputTool"
@@ -65,6 +77,13 @@ export const useAccountBoxStyles = makeStyles((theme) => ({
     padding: 0,
     mrginRight: theme.spacing(2),
   },
+  addItemButton: {
+    color: theme.palette.primary.main,
+    marginLeft: theme.spacing(1),
+    fontSize: 18,
+    position: "absolute",
+    marginTop: -2,
+  },
 }))
 
 type AccountBoxProps = {
@@ -101,9 +120,37 @@ export function AccountBox(props: AccountBoxProps) {
 
   const { mutateAsync: updateAccount } = useUpdateAccount()
 
+  const handleAddItem = () =>
+    props.onEditPayment({
+      id: 0,
+      isPaycheck: false,
+      description: "",
+      amount: 0,
+      repeatsOnDaysOfMonth: [],
+      repeatsOnMonthsOfYear: [],
+      repeatsUntilDate: null,
+      repeatsWeekly: null,
+      accountId: account.id,
+      date,
+    })
+
+  const [isHoverDebounce, setIsHoverDebounce] = useState(false)
+  const [isHover, setIsHover] = useState(false)
+  useDebounce(
+    () => {
+      setIsHover(isHoverDebounce)
+    },
+    50,
+    [isHoverDebounce]
+  )
+
   return (
     <>
-      <Box className={classes.title}>
+      <Box
+        className={classes.title}
+        onMouseOver={() => setIsHoverDebounce(true)}
+        onMouseOut={() => setIsHoverDebounce(false)}
+      >
         <Grid container justify="space-between">
           <Grid item xs={8}>
             <Link
@@ -112,6 +159,18 @@ export function AccountBox(props: AccountBoxProps) {
             >
               {account.name} {displayAccountType(account.accountType)}
             </Link>
+
+            <Fade in={isHover}>
+              <Tooltip title="Add New Item">
+                <IconButton
+                  size="small"
+                  className={classes.addItemButton}
+                  onClick={handleAddItem}
+                >
+                  <AddIcon fontSize="inherit" />
+                </IconButton>
+              </Tooltip>
+            </Fade>
           </Grid>
           <Grid item xs={4} className={classes.alignRight}>
             <AmountInputTool
@@ -132,30 +191,18 @@ export function AccountBox(props: AccountBoxProps) {
       {cycleItems.length === 0 && !props.includeSettled ? null : (
         <Box className={classes.item}>
           <Grid container>
-            <Grid item xs={8} className={classes.leftLink}>
-              <Link
-                className={classes.link}
-                onClick={() =>
-                  props.onEditPayment({
-                    id: 0,
-                    isPaycheck: false,
-                    description: "",
-                    amount: 0,
-                    repeatsOnDaysOfMonth: [],
-                    repeatsOnMonthsOfYear: [],
-                    repeatsUntilDate: null,
-                    repeatsWeekly: null,
-                    accountId: account.id,
-                    date,
-                  })
-                }
-              >
-                + Add Item
-              </Link>
-            </Grid>
-            <Grid item xs={4} className={clsx("total", classes.right)}>
-              <Currency red animate value={endingBalance} />
-            </Grid>
+            {endingBalance !== startingBalance ? (
+              <>
+                <Grid item xs={8} className={classes.leftLink}>
+                  <Link className={classes.link} onClick={handleAddItem}>
+                    + Add New Item
+                  </Link>
+                </Grid>
+                <Grid item xs={4} className={clsx("total", classes.right)}>
+                  <Currency red animate value={endingBalance} />
+                </Grid>
+              </>
+            ) : null}
             {isCurrentCycle && account.accountType === "Checking_Account" ? (
               <Grid item xs={12}>
                 <Box padding={2}>

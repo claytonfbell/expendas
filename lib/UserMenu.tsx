@@ -1,4 +1,4 @@
-import { Divider, ListItemIcon } from "@material-ui/core"
+import { ListItemIcon } from "@material-ui/core"
 import Menu from "@material-ui/core/Menu"
 import MenuItem from "@material-ui/core/MenuItem"
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance"
@@ -56,9 +56,8 @@ export function UserMenu() {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {organizations !== undefined && organizations.length > 0 ? (
-          <>
-            {organizations.map((o) => (
+        {organizations !== undefined && organizations.length > 0
+          ? organizations.map((o) => (
               <MenuItem key={o.id} onClick={() => setOrganizationId(o.id)}>
                 <ListItemIcon color="inherit" style={{ color: "green" }}>
                   {organizationId === o.id ? <CheckIcon /> : null}
@@ -66,10 +65,8 @@ export function UserMenu() {
 
                 {o.name}
               </MenuItem>
-            ))}
-            <Divider />
-          </>
-        ) : null}
+            ))
+          : null}
 
         <MenuItem onClick={menuClick(() => setOpenSettings(true))}>
           <ListItemIcon>
