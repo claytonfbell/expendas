@@ -72,7 +72,16 @@ async function handler(
         where: { id: paymentId },
       })
 
-      await prisma.item.deleteMany({ where: { paymentId } })
+      // wipe out all items if this is a paycheck that was edited, in case the pay periods have changed
+      if (isPaycheck) {
+        await prisma.item.deleteMany({
+          where: { payment: { account: { organizationId } } },
+        })
+      }
+      // wipe out items for this specific payment
+      else {
+        await prisma.item.deleteMany({ where: { paymentId } })
+      }
 
       return payment
     }

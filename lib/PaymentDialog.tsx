@@ -204,6 +204,16 @@ export function PaymentDialog(props: Props) {
     }
   }, [state.date, state.repeatsOnMonthsOfYear])
 
+  // auto select the first date in the selection
+  useEffect(() => {
+    if (
+      state.repeatsOnDates.length > 0 &&
+      !state.repeatsOnDates.includes(state.date)
+    ) {
+      setState((prev) => ({ ...prev, date: state.repeatsOnDates[0] }))
+    }
+  }, [state.date, state.repeatsOnDates])
+
   const [openMultiDates, setOpenMultiDates] = useState(false)
 
   return (
