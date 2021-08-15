@@ -53,7 +53,7 @@ export function AccountGroupBox(props: Props) {
   const [isExpanded, setIsExpanded] = useStorageState(
     localStorage,
     `AccountGroupBox.isExpanded-${MD5(accountGroup.label)}`,
-    false
+    true
   )
 
   // filter-down
