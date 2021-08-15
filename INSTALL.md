@@ -31,9 +31,9 @@ apt install nginx-full
 apt install certbot python3-certbot-nginx
 
 vim /etc/nginx/sites-available/default
-# CHANGE TO: server_name v3.expendas.com;
+# CHANGE TO: server_name www.expendas.com expendas.com;
 service nginx restart
-sudo certbot --nginx -d v3.expendas.com
+sudo certbot --nginx -d www.expendas.com -d expendas.com
 
 crontab -e
 # ADD: 0 5 * * * /usr/bin/certbot renew --quiet

@@ -91,7 +91,7 @@ const wrapWithTemplate = (
                         <br/>
                         
                     </center>
-                    <img src="https://v3.expendas.com/logo.png" alt="logo" style="display: inline;" >
+                    <img src="https://expendas.com/logo.png" alt="logo" style="display: inline;" >
 
                 </div>
                 <!--[if mso]></td></tr></table><![endif]-->

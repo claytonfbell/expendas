@@ -55,7 +55,7 @@ async function handler(
         })
 
         // send email
-        const text = `You have been invited to Expendas. Use the link to setup a password for your account. This link will expire in **24 hours**. \n\nhttps://v3.expendas.com/setPassword?authCode=${addUser.authCode}.`
+        const text = `You have been invited to Expendas. Use the link to setup a password for your account. This link will expire in **24 hours**. \n\nhttps://expendas.com/setPassword?authCode=${addUser.authCode}.`
         sendEmail({
           to: addUser.email,
           subject: "Setup your Expendas account",

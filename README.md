@@ -1,3 +1,3 @@
 # Expendas
 
-<https://v3.expendas.com>
+<https://expendas.com>
