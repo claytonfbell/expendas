@@ -16,6 +16,7 @@ import {
 } from "material-ui-pack"
 import React, { useEffect, useState } from "react"
 import { accountTypeOptions } from "./accountTypes"
+import { AccountWithIncludes } from "./AccountWithIncludes"
 import { useAddAccount, useUpdateAccount } from "./api/api"
 import { RestError } from "./api/rest"
 import { creditCardTypeOptions } from "./creditCardTypes"
@@ -23,7 +24,7 @@ import DisplayError from "./DisplayError"
 import { Title } from "./Title"
 
 interface Props {
-  account: Account | undefined
+  account: Account | AccountWithIncludes | undefined
   onClose: () => void
 }
 
@@ -35,7 +36,9 @@ export function AccountDialog(props: Props) {
     }
   }, [props.account])
 
-  const [state, setState] = useState<Account | undefined>()
+  const [state, setState] = useState<
+    AccountWithIncludes | Account | undefined
+  >()
   useEffect(() => {
     setState(props.account)
   }, [props.account])
@@ -55,9 +58,11 @@ export function AccountDialog(props: Props) {
           .then(props.onClose)
           .catch((e) => setError(e))
       } else {
-        updateAccount(state)
-          .then(props.onClose)
-          .catch((e) => setError(e))
+        if ("carryOver" in state) {
+          updateAccount(state)
+            .then(props.onClose)
+            .catch((e) => setError(e))
+        }
       }
     }
   }
