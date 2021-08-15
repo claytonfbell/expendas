@@ -16,6 +16,7 @@
     "@material-ui/pickers": "^3.3.10",
     "@prisma/client": "2.26.0",
     "@ramonak/react-progress-bar": "^3.1.0",
+    "@randex/material-ui-multiple-dates-picker": "^0.4.0",
     "@sendgrid/mail": "^7.4.5",
     "clsx": "^1.1.1",
     "crypto-js": "^4.0.0",

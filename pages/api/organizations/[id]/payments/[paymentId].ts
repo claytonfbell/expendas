@@ -39,6 +39,7 @@ async function handler(
         amount,
         date,
         isPaycheck,
+        repeatsOnDates,
         repeatsUntilDate,
         repeatsOnDaysOfMonth,
         repeatsOnMonthsOfYear,
@@ -51,6 +52,7 @@ async function handler(
       validate({ isPaycheck }).notEmpty()
       validate({ repeatsOnDaysOfMonth }).notEmpty()
       validate({ repeatsOnMonthsOfYear }).notEmpty()
+      validate({ repeatsOnDates }).notEmpty()
 
       // passed validation
       const payment = await prisma.payment.update({
@@ -60,6 +62,7 @@ async function handler(
           amount,
           date,
           isPaycheck,
+          repeatsOnDates,
           repeatsOnDaysOfMonth,
           repeatsOnMonthsOfYear,
           repeatsUntilDate,

@@ -13,7 +13,15 @@ export function filterPaymentsOnDate(payments: Payment[], date: Moment) {
     if (moment(x.date).format("YYYYMMDD") === date.format("YYYYMMDD")) {
       return true
     }
+
     // repeating on dates
+    if (x.repeatsOnDates.length > 0) {
+      if (x.repeatsOnDates.includes(date.format("YYYY-MM-DD"))) {
+        return true
+      }
+    }
+
+    // repeating on days of month
     if (x.repeatsOnDaysOfMonth.length > 0) {
       // not yet
       if (moment(x.date).isAfter(date)) {

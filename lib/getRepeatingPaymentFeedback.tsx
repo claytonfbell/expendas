@@ -14,7 +14,11 @@ export function getRepeatingPaymentFeedback(
   if (schedule !== undefined) {
     msg = moment(schedule.date).format("l")
     // repeating on dates
-    if (schedule.repeatsOnDaysOfMonth.length > 0) {
+    if (schedule.repeatsOnDates.length > 0) {
+      msg = schedule.repeatsOnDates.map((x) => moment(x).format("l")).join(", ")
+    }
+    // repeating on days of month
+    else if (schedule.repeatsOnDaysOfMonth.length > 0) {
       msg =
         schedule.repeatsOnDaysOfMonth
           .map((x) => moment.localeData().ordinal(x))

@@ -1,4 +1,6 @@
 import {
+  Box,
+  Chip,
   Collapse,
   Dialog,
   DialogActions,
@@ -12,12 +14,15 @@ import {
   Typography,
 } from "@material-ui/core"
 import { Payment } from "@prisma/client"
+// @ts-ignore
+import MultipleDatesPicker from "@randex/material-ui-multiple-dates-picker"
 import { Alert, Button } from "material-ui-bootstrap"
 import {
   Checkbox,
   CheckboxBase,
   CurrencyField,
   DatePicker,
+  DisplayDate,
   Form,
   Select,
   SubmitButton,
@@ -43,7 +48,7 @@ interface Props {
   onClose: () => void
 }
 
-type RepeatsType = "weekly" | "dates"
+type RepeatsType = "weekly" | "daysOfMonth" | "dates"
 
 export function PaymentDialog(props: Props) {
   const [state, setState] = useState<PaymentForm>(props.payment)
@@ -151,10 +156,16 @@ export function PaymentDialog(props: Props) {
   const thirtyOneDays = Array.from(Array(31).keys())
   const twelveMonths = Array.from(Array(12).keys())
   const repeats =
-    state.repeatsOnDaysOfMonth.length > 0 || state.repeatsWeekly !== null
+    state.repeatsOnDaysOfMonth.length > 0 ||
+    state.repeatsWeekly !== null ||
+    state.repeatsOnDates.length > 0
   const repeatsMonths = state.repeatsOnMonthsOfYear.length > 0
   const repeatsType: RepeatsType =
-    state.repeatsWeekly !== null ? "weekly" : "dates"
+    state.repeatsOnDates.length > 0
+      ? "dates"
+      : state.repeatsWeekly !== null
+      ? "weekly"
+      : "daysOfMonth"
   const repeatsUntil = state.repeatsUntilDate !== null
 
   const [willDelete, setWillDelete] = useState<Payment>()
@@ -192,6 +203,8 @@ export function PaymentDialog(props: Props) {
       }
     }
   }, [state.date, state.repeatsOnMonthsOfYear])
+
+  const [openMultiDates, setOpenMultiDates] = useState(false)
 
   return (
     <Dialog open={props.payment !== undefined} onClose={props.onClose}>
@@ -263,6 +276,7 @@ export function PaymentDialog(props: Props) {
               if (!checked) {
                 setState((prev) => ({
                   ...prev,
+                  repeatsOnDates: [],
                   repeatsOnDaysOfMonth: [],
                   repeatsWeekly: null,
                   repeatsOnMonthsOfYear: [],
@@ -271,6 +285,7 @@ export function PaymentDialog(props: Props) {
               } else {
                 setState((prev) => ({
                   ...prev,
+                  repeatsOnDates: [],
                   repeatsOnDaysOfMonth: [],
                   repeatsWeekly: 1,
                   repeatsOnMonthsOfYear: [],
@@ -287,21 +302,72 @@ export function PaymentDialog(props: Props) {
                 value={repeatsType}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   const newType = event.target.value as RepeatsType
-                  if (newType === "dates") {
+                  if (newType === "daysOfMonth") {
                     setState((prev) => ({
                       ...prev,
+                      repeatsOnDates: [],
                       repeatsWeekly: null,
                       repeatsOnDaysOfMonth: [moment(state.date).date()],
+                    }))
+                  } else if (newType === "dates") {
+                    setState((prev) => ({
+                      ...prev,
+                      repeatsOnDates: [moment(state.date).format("YYYY-MM-DD")],
+                      repeatsWeekly: null,
+                      repeatsOnDaysOfMonth: [],
                     }))
                   } else {
                     setState((prev) => ({
                       ...prev,
+                      repeatsOnDates: [],
                       repeatsWeekly: 1,
                       repeatsOnDaysOfMonth: [],
                     }))
                   }
                 }}
               >
+                <FormControlLabel
+                  value="dates"
+                  control={<Radio />}
+                  label="On Select Dates"
+                />
+                <Collapse in={repeatsType === "dates"}>
+                  <Box marginLeft={4}>
+                    <Box marginTop={1} marginBottom={1}>
+                      {state.repeatsOnDates.map((x) => (
+                        <Chip
+                          key={x}
+                          size="small"
+                          style={{ marginRight: 4, marginBottom: 4 }}
+                          label={<DisplayDate ymd={x} />}
+                        />
+                      ))}
+                    </Box>
+                    <Button
+                      variant="outlined"
+                      onClick={() => setOpenMultiDates(!openMultiDates)}
+                    >
+                      Select Dates
+                    </Button>
+                    <MultipleDatesPicker
+                      open={openMultiDates}
+                      selectedDates={state.repeatsOnDates.map((x) =>
+                        moment(x).toDate()
+                      )}
+                      onCancel={() => setOpenMultiDates(false)}
+                      onSubmit={(dates: Date[]) => {
+                        setOpenMultiDates(false)
+                        setState((prev) => ({
+                          ...prev,
+                          repeatsOnDates: dates.map((x) =>
+                            moment(x).format("YYYY-MM-DD")
+                          ),
+                        }))
+                      }}
+                    />
+                  </Box>
+                </Collapse>
+
                 <FormControlLabel
                   value="weekly"
                   control={<Radio />}
@@ -319,14 +385,14 @@ export function PaymentDialog(props: Props) {
                 </Collapse>
 
                 <FormControlLabel
-                  value="dates"
+                  value="daysOfMonth"
                   control={<Radio />}
                   label="Monthly"
                 />
               </RadioGroup>
             </FormControl>
 
-            <Collapse in={repeatsType === "dates"}>
+            <Collapse in={repeatsType === "daysOfMonth"}>
               {thirtyOneDays.map((x) => (
                 <Button
                   key={x}

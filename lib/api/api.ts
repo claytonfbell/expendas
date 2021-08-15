@@ -372,6 +372,7 @@ export function useUpdatePayment() {
       onSuccess: (data) => {
         queryClient.setQueryData(["payments", organizationId, data.id], data)
         queryClient.refetchQueries("payments")
+        queryClient.refetchQueries("items")
       },
     }
   )

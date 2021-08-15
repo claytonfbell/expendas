@@ -78,6 +78,7 @@ model Payment {
   amount                Int
   date                  String
   isPaycheck            Boolean         @default(false)
+  repeatsOnDates        String[]
   repeatsUntilDate      String?
   repeatsOnDaysOfMonth  Int[]
   repeatsOnMonthsOfYear Int[]
