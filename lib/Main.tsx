@@ -52,7 +52,11 @@ const useStyles = makeStyles((theme) => ({
 
 export function Main() {
   const classes = useStyles()
-  const [date, setDate] = React.useState<string | null>(null)
+  const [date, setDate] = useStorageState<string | null>(
+    sessionStorage,
+    "Main.date",
+    null
+  )
 
   const { data: unfilteredItems = [] } = useFetchItems(date)
   const { data: dates = [] } = useFetchDates()
