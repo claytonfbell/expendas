@@ -29,6 +29,9 @@ const useStyles = makeStyles((theme) => ({
       minWidth: 400,
     },
   },
+  accounts: {
+    backgroundColor: theme.palette.background.default,
+  },
 }))
 
 type Props = {
@@ -96,18 +99,20 @@ export function AccountGroupBox(props: Props) {
           </List>
           <Collapse in={isExpanded}>
             <Divider />
-            {accounts.map((account) => (
-              <AccountBox
-                key={account.id}
-                includeSettled={props.includeSettled}
-                account={account}
-                cycleItems={cycleItems}
-                date={date}
-                isCurrentCycle={isCurrentCycle}
-                onEditAccount={props.onEditAccount}
-                onEditPayment={props.onEditPayment}
-              />
-            ))}
+            <Box className={classes.accounts}>
+              {accounts.map((account) => (
+                <AccountBox
+                  key={account.id}
+                  includeSettled={props.includeSettled}
+                  account={account}
+                  cycleItems={cycleItems}
+                  date={date}
+                  isCurrentCycle={isCurrentCycle}
+                  onEditAccount={props.onEditAccount}
+                  onEditPayment={props.onEditPayment}
+                />
+              ))}
+            </Box>
           </Collapse>
           {isExpanded && accounts.length > 1 ? (
             <List>

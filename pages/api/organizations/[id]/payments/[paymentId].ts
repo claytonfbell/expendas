@@ -22,6 +22,7 @@ async function handler(
       where: {
         id: paymentId,
       },
+      include: { account: true },
     })
     validate({ payment }).notNull()
 
@@ -40,8 +41,11 @@ async function handler(
           description,
           ...tmp,
         },
+        include: { account: true },
         where: { id: paymentId },
       })
+
+      await prisma.item.deleteMany({ where: { paymentId } })
 
       return payment
     }

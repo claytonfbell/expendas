@@ -2,6 +2,7 @@ import { Box, fade, Grid, lighten, Link, makeStyles } from "@material-ui/core"
 import { Account, Payment } from "@prisma/client"
 import clsx from "clsx"
 import React from "react"
+import { displayAccountType } from "./accountTypes"
 import { AccountWithIncludes } from "./AccountWithIncludes"
 import { AmountInputTool } from "./AmountInputTool"
 import { useUpdateAccount } from "./api/api"
@@ -11,9 +12,6 @@ import { ItemWithIncludes } from "./ItemWithIncludes"
 import { PayCardNow } from "./PayCardNow"
 
 export const useAccountBoxStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.background.default,
-  },
   title: {
     borderTop: `1px solid ${theme.palette.primary.main}`,
     color: theme.palette.text.primary,
@@ -104,7 +102,7 @@ export function AccountBox(props: AccountBoxProps) {
   const { mutateAsync: updateAccount } = useUpdateAccount()
 
   return (
-    <Box className={classes.root}>
+    <>
       <Box className={classes.title}>
         <Grid container justify="space-between">
           <Grid item xs={8}>
@@ -112,7 +110,7 @@ export function AccountBox(props: AccountBoxProps) {
               className={classes.link}
               onClick={() => props.onEditAccount(account)}
             >
-              {account.name}
+              {account.name} {displayAccountType(account.accountType)}
             </Link>
           </Grid>
           <Grid item xs={4} className={classes.alignRight}>
@@ -173,6 +171,6 @@ export function AccountBox(props: AccountBoxProps) {
           </Grid>
         </Box>
       )}
-    </Box>
+    </>
   )
 }

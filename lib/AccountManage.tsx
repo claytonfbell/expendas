@@ -5,8 +5,6 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
-  TableRow,
 } from "@material-ui/core"
 import DeleteIcon from "@material-ui/icons/Delete"
 import EditIcon from "@material-ui/icons/Edit"
@@ -21,6 +19,7 @@ import { displayCreditCardType } from "./creditCardTypes"
 import { Currency } from "./Currency"
 import DisplayError from "./DisplayError"
 import { useGlobalState } from "./GlobalStateProvider"
+import { StyledTableRow } from "./StyledTableRow"
 
 export function AccountManage() {
   const { organizationId } = useGlobalState()
@@ -43,38 +42,38 @@ export function AccountManage() {
       <DisplayError error={error} />
 
       <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Type</TableCell>
-              <TableCell>Balance</TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-          </TableHead>
+        <Table size="small">
           <TableBody>
-            {(data || []).map((account) => (
-              <TableRow key={account.id}>
-                <TableCell>{account.name}</TableCell>
-                <TableCell>
-                  {account.accountType === "Credit_Card" &&
-                  account.creditCardType !== null
-                    ? displayCreditCardType(account.creditCardType)
-                    : displayAccountType(account.accountType)}
-                </TableCell>
-                <TableCell>
-                  <Currency value={account.balance} red />
-                </TableCell>
-                <TableCell>
-                  <IconButton onClick={() => setAccountToUpdate(account)}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton onClick={() => setAccountToRemove(account)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            {(data || [])
+              .sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance))
+              .map((account) => (
+                <StyledTableRow key={account.id}>
+                  <TableCell>{account.name}</TableCell>
+                  <TableCell>
+                    {account.accountType === "Credit_Card" &&
+                    account.creditCardType !== null
+                      ? displayCreditCardType(account.creditCardType)
+                      : displayAccountType(account.accountType)}
+                  </TableCell>
+                  <TableCell>
+                    <Currency value={account.balance} red />
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      size="small"
+                      onClick={() => setAccountToUpdate(account)}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      onClick={() => setAccountToRemove(account)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </StyledTableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>

@@ -36,11 +36,7 @@ import {
 import { RestError } from "./api/rest"
 import DisplayError from "./DisplayError"
 import { getRepeatingPaymentFeedback } from "./getRepeatingPaymentFeedback"
-
-export type PaymentForm = Payment & {
-  accountId2?: number
-  isTransfer?: boolean
-}
+import { PaymentForm } from "./PaymentForm"
 
 interface Props {
   payment: PaymentForm
@@ -104,20 +100,25 @@ export function PaymentDialog(props: Props) {
             throw err
           }
           // submit two payments if transfer
-          await addPayment({
-            ...state,
-            amount: -Number(state.amount),
-            description: `Transfer to ${
-              accounts.find((x) => x.id === state.accountId2)?.name
-            }`,
-          })
-          await addPayment({
-            ...state,
-            accountId: state.accountId2 || 0,
-            description: `Transfer from ${
-              accounts.find((x) => x.id === state.accountId)?.name
-            }`,
-          })
+          const to = accounts.find((x) => x.id === state.accountId2)
+          const from = accounts.find((x) => x.id === state.accountId)
+
+          if (to !== undefined && from !== undefined) {
+            await addPayment({
+              ...state,
+              amount: -Number(state.amount),
+              description: `Transfer to ${to.name} ${displayAccountType(
+                to.accountType
+              )}`,
+            })
+            await addPayment({
+              ...state,
+              accountId: state.accountId2 || 0,
+              description: `Transfer from ${from.name} ${displayAccountType(
+                from.accountType
+              )}`,
+            })
+          }
           // refreshCycleItems()
           props.onClose()
         } else {

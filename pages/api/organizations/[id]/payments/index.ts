@@ -1,5 +1,5 @@
-import { Payment } from "@prisma/client"
 import { NextApiResponse } from "next"
+import { PaymentForm } from "../../../../../lib/PaymentForm"
 import { requireOrganizationAuthentication } from "../../../../../lib/requireAuthentication"
 import { buildResponse } from "../../../../../lib/server/buildResponse"
 import prisma from "../../../../../lib/server/prisma"
@@ -23,6 +23,7 @@ async function handler(
         where: {
           account: { organizationId },
         },
+        include: { account: true },
         orderBy: { id: "desc" },
       })
 
@@ -30,15 +31,25 @@ async function handler(
     }
     // POST
     else if (req.method === "POST") {
-      const { description, id, ...tmp }: Payment = req.body
+      const {
+        id,
+        description,
+        isTransfer,
+        accountId2,
+        amount,
+        ...tmp
+      }: PaymentForm = req.body
       validate({ description }).notEmpty()
+      validate({ amount }).notEmpty()
 
       // passed validation
       const payment = await prisma.payment.create({
         data: {
           description,
+          amount,
           ...tmp,
         },
+        include: { account: true },
       })
 
       return payment

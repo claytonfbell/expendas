@@ -13,6 +13,7 @@ import EditIcon from "@material-ui/icons/Edit"
 import { Payment } from "@prisma/client"
 import { Button } from "material-ui-bootstrap"
 import React, { useState } from "react"
+import { displayAccountType } from "./accountTypes"
 import { useFetchPayments, useRemovePayment } from "./api/api"
 import ConfirmDialog from "./ConfirmDialog"
 import { Currency } from "./Currency"
@@ -20,6 +21,7 @@ import DisplayError from "./DisplayError"
 import { getRepeatingPaymentFeedback } from "./getRepeatingPaymentFeedback"
 import { useGlobalState } from "./GlobalStateProvider"
 import { PaymentDialog } from "./PaymentDialog"
+import { StyledTableRow } from "./StyledTableRow"
 
 export function PaymentManage() {
   const { organizationId } = useGlobalState()
@@ -41,35 +43,48 @@ export function PaymentManage() {
     <>
       <DisplayError error={error} />
       <TableContainer component={Paper}>
-        <Table>
+        <Table size="small">
           <TableHead>
             <TableRow>
               <TableCell>Description</TableCell>
+              <TableCell>Account</TableCell>
               <TableCell>When</TableCell>
               <TableCell>Amount</TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {(data || []).map((payment) => (
-              <TableRow key={payment.id}>
-                <TableCell>{payment.description}</TableCell>
-                <TableCell>
-                  {getRepeatingPaymentFeedback(payment).description}
-                </TableCell>
-                <TableCell>
-                  <Currency value={payment.amount} green />
-                </TableCell>
-                <TableCell>
-                  <IconButton onClick={() => setPaymentToUpdate(payment)}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton onClick={() => setPaymentToRemove(payment)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            {(data || [])
+              .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount))
+              .map((payment) => (
+                <StyledTableRow key={payment.id}>
+                  <TableCell>{payment.description}</TableCell>
+                  <TableCell>
+                    {payment.account.name}{" "}
+                    {displayAccountType(payment.account.accountType)}
+                  </TableCell>
+                  <TableCell>
+                    {getRepeatingPaymentFeedback(payment).description}
+                  </TableCell>
+                  <TableCell>
+                    <Currency value={payment.amount} green />
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      size="small"
+                      onClick={() => setPaymentToUpdate(payment)}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      onClick={() => setPaymentToRemove(payment)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </StyledTableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>

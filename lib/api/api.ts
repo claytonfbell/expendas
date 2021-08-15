@@ -10,6 +10,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query"
 import { AccountWithIncludes } from "../AccountWithIncludes"
 import { useGlobalState } from "../GlobalStateProvider"
 import { ItemWithIncludes } from "../ItemWithIncludes"
+import { PaymentWithIncludes } from "../PaymentWithIncludes"
 import { AddOrganizationRequest } from "./AddOrganizationRequest"
 import { AddUserRequest } from "./AddUserRequest"
 import { ForgotPasswordRequest } from "./ForgotPasswordRequest"
@@ -309,7 +310,7 @@ export function useRemoveAccount() {
 
 // payments
 export function useFetchPayments(organizationId: number | null) {
-  return useQuery<Payment[], RestError>(
+  return useQuery<PaymentWithIncludes[], RestError>(
     ["payments", organizationId],
     () => api.fetchPayments(organizationId || 0),
     { enabled: organizationId !== null }
@@ -332,7 +333,7 @@ export function useAddPayment() {
 }
 
 export function useFetchPayment(organizationId: number, paymentId: number) {
-  return useQuery<Payment, RestError>(
+  return useQuery<PaymentWithIncludes, RestError>(
     ["payments", organizationId, paymentId],
     () => api.fetchPayment(organizationId, paymentId)
   )
