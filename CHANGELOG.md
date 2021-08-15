@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.3](https://github.com/claytonfbell/expendas3/compare/v1.0.2...v1.0.3) (2021-08-15)
+
+
+### Bug Fixes
+
+* cleaning up the ui ([14160f5](https://github.com/claytonfbell/expendas3/commit/14160f50c63a0fc1820f4bdef7b9f1fed9690563))
+* default the account boxes to expanded state ([053d6ee](https://github.com/claytonfbell/expendas3/commit/053d6ee39942670416c40494fe5934813914360d))
+* Persist ui states to localStorage ([8fdff29](https://github.com/claytonfbell/expendas3/commit/8fdff294f7baa54c38acfc0d20db37e1b36b5b07))
+* persiste the selected date in sessionStorage ([28ea45b](https://github.com/claytonfbell/expendas3/commit/28ea45b6ebab88ad87f2f8a1081396d1feb01b0d))
+* refetch items when payment is added ([2eaa40c](https://github.com/claytonfbell/expendas3/commit/2eaa40ca413ee5324e65bdbb4d85f4b9ac654fc5))
+
 ### [1.0.2](https://github.com/claytonfbell/expendas3/compare/v1.0.1...v1.0.2) (2021-08-15)
 
 
