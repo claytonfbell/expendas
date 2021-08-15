@@ -14,7 +14,9 @@ import {
 import ExpandLessIcon from "@material-ui/icons/ExpandLess"
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import { Account, Payment } from "@prisma/client"
+import { MD5 } from "crypto-js"
 import React from "react"
+import { useStorageState } from "react-storage-hooks"
 import { AccountBox } from "./AccountBox"
 import { AccountGroup } from "./AccountGroup"
 import { AccountWithIncludes } from "./AccountWithIncludes"
@@ -48,7 +50,11 @@ type Props = {
 export function AccountGroupBox(props: Props) {
   const classes = useStyles()
   const { accountGroup, isCurrentCycle, date } = props
-  const [isExpanded, setIsExpanded] = React.useState(false)
+  const [isExpanded, setIsExpanded] = useStorageState(
+    localStorage,
+    `AccountGroupBox.isExpanded-${MD5(accountGroup.label)}`,
+    false
+  )
 
   // filter-down
   const accounts = (props.accounts || [])

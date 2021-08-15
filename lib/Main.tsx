@@ -11,6 +11,7 @@ import {
 import { Account, CarryOver, Payment } from "@prisma/client"
 import moment from "moment"
 import React from "react"
+import { useStorageState } from "react-storage-hooks"
 import { AccountDialog } from "./AccountDialog"
 import {
   assetsAccountTypes,
@@ -57,9 +58,21 @@ export function Main() {
   const { data: dates = [] } = useFetchDates()
   const { data: unfilteredAccounts = [] } = useFetchAccounts()
 
-  const [includeSavings, setIncludeSavings] = React.useState(false)
-  const [includePropertyLoans, setIncludePropertyLoans] = React.useState(false)
-  const [includeSettled, setIncludeSettled] = React.useState(false)
+  const [includeSavings, setIncludeSavings] = useStorageState(
+    localStorage,
+    `Main.includeSavings`,
+    false
+  )
+  const [includePropertyLoans, setIncludePropertyLoans] = useStorageState(
+    localStorage,
+    `Main.includePropertyLoans`,
+    false
+  )
+  const [includeSettled, setIncludeSettled] = useStorageState(
+    localStorage,
+    `Main.includeSettled`,
+    false
+  )
 
   // filter-down
   const items = React.useMemo(

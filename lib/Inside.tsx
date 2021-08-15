@@ -97,7 +97,9 @@ export function Inside(props: Props) {
 
           <Container style={{ marginTop: 24 }}>
             <Box marginBottom={2}>
-              <ExpendasBreadcrumbs links={props.breadcrumbs} />
+              {props.breadcrumbs.length > 0 ? (
+                <ExpendasBreadcrumbs links={props.breadcrumbs} />
+              ) : null}
             </Box>
             <main>
               <ExpendasErrorBoundary>{props.children}</ExpendasErrorBoundary>
