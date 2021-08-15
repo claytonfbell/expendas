@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/claytonfbell/expendas3/compare/v1.0.3...v1.1.0) (2021-08-15)
+
+
+### Features
+
+* added repeatsOnDates property for payments ([5ad5b94](https://github.com/claytonfbell/expendas3/commit/5ad5b9485dc8c972b4e4e8429ad78de0fdbdfdca))
+
+
+### Bug Fixes
+
+* Clear out all items when paychecks are updates, also fix for repeatsOnDates ([1a02233](https://github.com/claytonfbell/expendas3/commit/1a02233da1c2d63e5981bf26c519a2d8729b808a))
+
 ### [1.0.3](https://github.com/claytonfbell/expendas3/compare/v1.0.2...v1.0.3) (2021-08-15)
 
 
