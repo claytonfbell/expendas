@@ -63,7 +63,10 @@ export function Main() {
 
   // filter-down
   const items = React.useMemo(
-    () => unfilteredItems.filter((x) => includeSettled || !x.isPaid),
+    () =>
+      unfilteredItems
+        .filter((x) => includeSettled || !x.isPaid)
+        .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount)),
     [includeSettled, unfilteredItems]
   )
   const accounts = React.useMemo(
