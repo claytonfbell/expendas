@@ -56,6 +56,7 @@ export function PayCardNow(props: Props) {
       accountId: props.account.id,
       accountId2: toAccount?.id,
       amount: -payAmount,
+      repeatsOnDates: [],
       repeatsOnDaysOfMonth: [],
       repeatsOnMonthsOfYear: [],
       repeatsUntilDate: null,

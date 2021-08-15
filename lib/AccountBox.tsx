@@ -126,6 +126,7 @@ export function AccountBox(props: AccountBoxProps) {
       isPaycheck: false,
       description: "",
       amount: 0,
+      repeatsOnDates: [],
       repeatsOnDaysOfMonth: [],
       repeatsOnMonthsOfYear: [],
       repeatsUntilDate: null,

@@ -99,6 +99,7 @@ export function PaymentManage() {
             description: "",
             amount: 0,
             date: "",
+            repeatsOnDates: [],
             repeatsUntilDate: null,
             repeatsOnDaysOfMonth: [],
             repeatsOnMonthsOfYear: [],
