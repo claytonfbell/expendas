@@ -16,8 +16,8 @@ curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
      sudo apt-get update && sudo apt-get install yarn
 
 
-git clone https://github.com/claytonfbell/expendas3.git
-cd expendas3
+git clone https://github.com/claytonfbell/expendas.git
+cd expendas
 yarn install
 yarn build
 yarn start
@@ -53,7 +53,7 @@ vim /etc/nginx/sites-available/default
         error_page 502 503 /503.html;
         location /503.html {}
 
-cp /root/expendas3/503.html /var/www/html
+cp /root/expendas/503.html /var/www/html
 
 # https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-20-04
 apt install postgresql postgresql-contrib

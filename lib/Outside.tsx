@@ -29,7 +29,7 @@ export function Outside(props: Props) {
               <Grid item>
                 <IconButton
                   color="primary"
-                  href="https://github.com/claytonfbell/expendas3"
+                  href="https://github.com/claytonfbell/expendas"
                 >
                   <GitHubIcon />
                 </IconButton>

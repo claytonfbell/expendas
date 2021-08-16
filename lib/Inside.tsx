@@ -80,10 +80,10 @@ export function Inside(props: Props) {
                 </Hidden>
                 <Grid item>
                   <Hidden xsDown>
-                    <Tooltip title="github.com/claytonfbell/expendas3">
+                    <Tooltip title="github.com/claytonfbell/expendas">
                       <IconButton
                         color="primary"
-                        href="https://github.com/claytonfbell/expendas3"
+                        href="https://github.com/claytonfbell/expendas"
                       >
                         <GitHubIcon />
                       </IconButton>

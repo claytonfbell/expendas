@@ -24,7 +24,7 @@ export const logo = (scale = 1, onDarkBackground = false) => {
      width="${width}"
      height="${height}"
      inkscape:version="1.0.2 (e86c8708, 2021-01-15)"
-     inkscape:export-filename="/Users/claytonbell/github-repos/expendas3/public/logo.png"
+     inkscape:export-filename="/Users/claytonbell/github-repos/expendas/public/logo.png"
      inkscape:export-xdpi="32.639999"
      inkscape:export-ydpi="32.639999">
     <metadata
