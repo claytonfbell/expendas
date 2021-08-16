@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/claytonfbell/expendas/compare/v1.1.0...v1.1.1) (2021-08-16)
+
+
+### Bug Fixes
+
+* added some bottom padding ([d978e6c](https://github.com/claytonfbell/expendas/commit/d978e6c306a8c7240fd81b43bd3cbd108c008779))
+* fixed type check error ([9a3d217](https://github.com/claytonfbell/expendas/commit/9a3d2177a2b658d9a29b1fe2b0f9575e78dc235f))
+* renamed github repo ([a99ee7b](https://github.com/claytonfbell/expendas/commit/a99ee7bc4516487a4c93d12677cf03296dff217a))
+
 ## [1.1.0](https://github.com/claytonfbell/expendas/compare/v1.0.3...v1.1.0) (2021-08-15)
 
 ### Features
