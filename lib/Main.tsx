@@ -124,7 +124,7 @@ export function Main() {
     if (dates.length > 0 && date === null) {
       setDate(dates[0])
     }
-  }, [dates, date])
+  }, [dates, date, setDate])
 
   // find endDate
   const endDate: string = dates
