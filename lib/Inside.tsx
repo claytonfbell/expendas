@@ -95,7 +95,7 @@ export function Inside(props: Props) {
             </Toolbar>
           </AppBar>
 
-          <Container style={{ marginTop: 24 }}>
+          <Container style={{ marginTop: 24, paddingBottom: 120 }}>
             <Box marginBottom={2}>
               {props.breadcrumbs.length > 0 ? (
                 <ExpendasBreadcrumbs links={props.breadcrumbs} />
