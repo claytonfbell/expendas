@@ -90,9 +90,9 @@ export function AccountGroupBox(props: Props) {
             <ListItem button onClick={() => setIsExpanded(!isExpanded)}>
               <ListItemIcon>
                 {!isExpanded ? (
-                  <ExpandLessIcon style={{ color: "#fff" }} />
-                ) : (
                   <ExpandMoreIcon style={{ color: "#fff" }} />
+                ) : (
+                  <ExpandLessIcon style={{ color: "#fff" }} />
                 )}
               </ListItemIcon>
               <ListItemText>{accountGroup.label}</ListItemText>
