@@ -84,7 +84,7 @@ export function AccountGroupBox(props: Props) {
 
   return (
     <Fade in={accounts.length > 0} unmountOnExit>
-      <Paper elevation={6} className={classes.root}>
+      <Paper variant="outlined" className={classes.root}>
         <Box>
           <List>
             <ListItem button onClick={() => setIsExpanded(!isExpanded)}>
