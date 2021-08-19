@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/claytonfbell/expendas/compare/v1.1.1...v1.2.0) (2021-08-19)
+
+
+### Features
+
+* Added new investment charts and figures ([4937df3](https://github.com/claytonfbell/expendas/commit/4937df3826f9b8a5f0ad163ebe9d0351ac65a495))
+
+
+### Bug Fixes
+
+* eslint warning and `JavaScript heap out of memory` ([66e57e2](https://github.com/claytonfbell/expendas/commit/66e57e244fd2322f0f5b4183ae0706034e70a658))
+* fixed icons ([d12a8e6](https://github.com/claytonfbell/expendas/commit/d12a8e6e6a961439ace9e3b191bda07a4871c7a0))
+* removed elevation style on boxes ([f959d42](https://github.com/claytonfbell/expendas/commit/f959d42559868580ce38bf59e6e487a50295d2b9))
+
 ### [1.1.1](https://github.com/claytonfbell/expendas/compare/v1.1.0...v1.1.1) (2021-08-16)
 
 
