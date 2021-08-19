@@ -38,6 +38,8 @@ async function handler(
         balance,
         creditCardType,
         carryOver,
+        totalDeposits,
+        totalFixedIncome,
       }: AccountWithIncludes = req.body
       validate({ name }).notEmpty()
       validate({ accountType }).notEmpty()
@@ -66,6 +68,8 @@ async function handler(
           accountType,
           balance,
           creditCardType,
+          totalDeposits,
+          totalFixedIncome,
         },
         where: { id: accountId },
       })

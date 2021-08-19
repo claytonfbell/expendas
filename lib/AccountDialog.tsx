@@ -1,4 +1,5 @@
 import {
+  Box,
   Dialog,
   DialogContent,
   Grid,
@@ -15,12 +16,15 @@ import {
   TextField,
 } from "material-ui-pack"
 import React, { useEffect, useState } from "react"
+import { debtGroup, investmentGroup } from "./AccountGroup"
 import { accountTypeOptions } from "./accountTypes"
 import { AccountWithIncludes } from "./AccountWithIncludes"
 import { useAddAccount, useUpdateAccount } from "./api/api"
 import { RestError } from "./api/rest"
 import { creditCardTypeOptions } from "./creditCardTypes"
+import { Currency } from "./Currency"
 import DisplayError from "./DisplayError"
+import { Percentage } from "./Percentage"
 import { Title } from "./Title"
 
 interface Props {
@@ -105,13 +109,81 @@ export function AccountDialog(props: Props) {
             ) : null}
             <Grid item xs={12}>
               <CurrencyField
+                label={
+                  state?.accountType === "Investment"
+                    ? "Current Balance"
+                    : undefined
+                }
                 name="balance"
                 inPennies
                 numeric
                 fullWidth
-                allowNegative
+                allowNegative={
+                  state !== undefined &&
+                  debtGroup.types.includes(state.accountType)
+                }
               />
             </Grid>
+
+            {state !== undefined &&
+            investmentGroup.types.includes(state.accountType) ? (
+              <>
+                <Grid item xs={12}>
+                  <CurrencyField
+                    name={"totalDeposits"}
+                    inPennies
+                    numeric
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <CurrencyField
+                    name={"totalFixedIncome"}
+                    inPennies
+                    numeric
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Box paddingLeft={2} paddingRight={2} paddingBottom={2}>
+                    <Grid container justify="space-between" spacing={2}>
+                      <Grid item>Equity</Grid>
+                      <Grid item>
+                        <Currency
+                          value={state.balance - (state.totalFixedIncome || 0)}
+                        />
+                      </Grid>
+                    </Grid>
+
+                    <Grid container justify="space-between" spacing={2}>
+                      <Grid item>Total Gain / Loss</Grid>
+                      <Grid item>
+                        <Currency
+                          value={state.balance - (state.totalDeposits || 0)}
+                          green
+                          red
+                        />
+                      </Grid>
+                    </Grid>
+
+                    <Grid container justify="space-between" spacing={2}>
+                      <Grid item>Total Gain / Loss</Grid>
+                      <Grid item>
+                        <Percentage
+                          value={
+                            (state.balance - (state.totalDeposits || 0)) /
+                            (state.totalDeposits || state.balance)
+                          }
+                          green
+                          red
+                        />
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </Grid>
+              </>
+            ) : null}
+
             <Grid item xs={6}>
               <SubmitButton>
                 {isNew ? "Add Account" : "Save Changes"}

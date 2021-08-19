@@ -5,11 +5,11 @@ import {
   Grid,
   Hidden,
   IconButton,
-  Link,
+  Link as MUILink,
   Toolbar,
 } from "@material-ui/core"
 import GitHubIcon from "@material-ui/icons/GitHub"
-import { Tooltip } from "material-ui-bootstrap"
+import { Button, Tooltip } from "material-ui-bootstrap"
 import { useDarkMode } from "material-ui-pack"
 import { useRouter } from "next/dist/client/router"
 import NextLink from "next/link"
@@ -21,7 +21,6 @@ import { GlobalStateProvider } from "./GlobalStateProvider"
 import { Login } from "./Login"
 import { LogoComponent } from "./LogoComponent"
 import { Outside } from "./Outside"
-import { Title } from "./Title"
 import { UserMenu } from "./UserMenu"
 
 interface Props {
@@ -75,7 +74,21 @@ export function Inside(props: Props) {
                 </Grid>
                 <Hidden mdDown>
                   <Grid item>
-                    <Title label={props.title} />
+                    <NextLink href="/">
+                      <Button>Main</Button>
+                    </NextLink>
+
+                    <NextLink href="/investments">
+                      <Button>Investments</Button>
+                    </NextLink>
+
+                    <NextLink href="/accounts">
+                      <Button>Accounts</Button>
+                    </NextLink>
+
+                    <NextLink href="/payments">
+                      <Button>Payments</Button>
+                    </NextLink>
                   </Grid>
                 </Hidden>
                 <Grid item>
@@ -117,12 +130,12 @@ export function Inside(props: Props) {
                     }
               }
             >
-              <Link
+              <MUILink
                 style={{ cursor: "pointer" }}
                 onClick={() => toggleDarkMode(!darkMode)}
               >
                 {darkMode ? `Light` : `Dark`}
-              </Link>
+              </MUILink>
             </footer>
           </Container>
         </GlobalStateProvider>

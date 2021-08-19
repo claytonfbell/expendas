@@ -12,6 +12,8 @@ import {
   Radio,
   RadioGroup,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@material-ui/core"
 import { Payment } from "@prisma/client"
 // @ts-ignore
@@ -215,9 +217,15 @@ export function PaymentDialog(props: Props) {
   }, [state.date, state.repeatsOnDates])
 
   const [openMultiDates, setOpenMultiDates] = useState(false)
+  const theme = useTheme()
+  const isXs = useMediaQuery(theme.breakpoints.down("xs"))
 
   return (
-    <Dialog open={props.payment !== undefined} onClose={props.onClose}>
+    <Dialog
+      open={props.payment !== undefined}
+      onClose={props.onClose}
+      fullScreen={isXs}
+    >
       <DialogTitle>
         {state.id === 0 ? `Create ` : ``}
         {state.isTransfer

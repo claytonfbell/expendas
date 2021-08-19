@@ -48,6 +48,8 @@ model Account {
   balance               Int
   payments              Payment[]
   carryOver             CarryOver[]
+  totalDeposits         Int?
+  totalFixedIncome      Int?
 }
 
 enum AccountType {

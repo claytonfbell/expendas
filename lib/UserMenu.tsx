@@ -7,6 +7,7 @@ import CheckIcon from "@material-ui/icons/Check"
 import ExitToAppIcon from "@material-ui/icons/ExitToApp"
 import ReceiptIcon from "@material-ui/icons/Receipt"
 import SettingsIcon from "@material-ui/icons/Settings"
+import ShowChartIcon from "@material-ui/icons/ShowChart"
 import { Button } from "material-ui-bootstrap"
 import { useRouter } from "next/dist/client/router"
 import React, { useState } from "react"
@@ -94,6 +95,13 @@ export function UserMenu() {
             <ReceiptIcon />
           </ListItemIcon>
           Payments
+        </MenuItem>
+
+        <MenuItem onClick={menuClick(() => router.push(`/investments`))}>
+          <ListItemIcon>
+            <ShowChartIcon />
+          </ListItemIcon>
+          Investments
         </MenuItem>
 
         <MenuItem onClick={menuClick(() => logout())}>

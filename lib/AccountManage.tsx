@@ -89,6 +89,8 @@ export function AccountManage() {
             accountType: "Checking_Account",
             balance: 0,
             creditCardType: null,
+            totalDeposits: 0,
+            totalFixedIncome: 0,
           })
         }
       >
