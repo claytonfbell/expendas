@@ -115,8 +115,11 @@ export function InvestmentPortfolio() {
               <Grid container spacing={2} justify="space-between">
                 {accounts.map((account) => (
                   <React.Fragment key={account.id}>
-                    <Grid item xs={7}>
+                    <Grid item xs={4}>
                       {account.name} {displayAccountType(account.accountType)}
+                    </Grid>
+                    <Grid item xs={3} style={{ textAlign: "right" }}>
+                      <Currency value={account.totalDeposits || 0} />
                     </Grid>
                     <Grid item xs={3} style={{ textAlign: "right" }}>
                       <Currency value={account.balance} />
@@ -134,12 +137,16 @@ export function InvestmentPortfolio() {
                   </React.Fragment>
                 ))}
 
-                <Grid item xs={7}>
+                <Grid item xs={4}>
                   TOTAL
+                </Grid>
+                <Grid item xs={3} style={{ textAlign: "right" }}>
+                  <Currency value={totalDeposits} />
                 </Grid>
                 <Grid item xs={3} style={{ textAlign: "right" }}>
                   <Currency value={total} />
                 </Grid>
+
                 <Grid item xs={2} style={{ textAlign: "right" }}>
                   <Percentage
                     green
