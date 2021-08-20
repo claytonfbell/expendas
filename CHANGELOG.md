@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/claytonfbell/expendas/compare/v1.2.0...v1.3.0) (2021-08-20)
+
+
+### Features
+
+* improved investments page ([ebb6703](https://github.com/claytonfbell/expendas/commit/ebb670372ef84df78f6bc95e6aee7eea79d91bbe))
+
+
+### Bug Fixes
+
+* added column for deposits ([454e09a](https://github.com/claytonfbell/expendas/commit/454e09a58e0a865e49d0cc014e8c093b96cca0b0))
+
 ## [1.2.0](https://github.com/claytonfbell/expendas/compare/v1.1.1...v1.2.0) (2021-08-19)
 
 
