@@ -288,6 +288,28 @@ export function useUpdateAccount() {
   return useMutation<AccountWithIncludes, RestError, AccountWithIncludes>(
     api.updateAccount,
     {
+      // optimistic update
+      onMutate: (data) => {
+        const predicate = ["accounts", data.organizationId]
+        const prev = queryClient.getQueryData<Account[] | undefined>(predicate)
+        if (prev !== undefined) {
+          queryClient.setQueryData<Account[] | undefined>(predicate, [
+            ...prev.map((x) => {
+              if (x.id === data.id) {
+                return data
+              }
+              return x
+            }),
+          ])
+        }
+        return () =>
+          queryClient.setQueryData<Account[] | undefined>(predicate, prev)
+      },
+      onError: (err, newOrg, rollback) => {
+        // @ts-ignore
+        rollback()
+      },
+
       onSuccess: (data) => {
         queryClient.setQueryData(
           ["accounts", data.organizationId, data.id],

@@ -15,7 +15,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@material-ui/core"
-import React from "react"
+import React, { useState } from "react"
 import {
   Bar,
   BarChart,
@@ -25,11 +25,15 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
+import { AccountDialog } from "./AccountDialog"
 import { investmentGroup } from "./AccountGroup"
 import { displayAccountType } from "./accountTypes"
-import { useFetchAccounts } from "./api/api"
+import { AccountWithIncludes } from "./AccountWithIncludes"
+import { AmountInputTool } from "./AmountInputTool"
+import { useFetchAccounts, useUpdateAccount } from "./api/api"
 import { Currency } from "./Currency"
 import { formatMoney } from "./formatMoney"
+import { Link } from "./Link"
 import { Percentage } from "./Percentage"
 
 type Data = {
@@ -63,6 +67,10 @@ export function InvestmentPortfolio() {
   const fixed = accounts.reduce((a, b) => a + (b.totalFixedIncome || 0), 0)
   const totalDeposits = accounts.reduce((a, b) => a + (b.totalDeposits || 0), 0)
   const total = equity + fixed
+
+  const { mutateAsync: updateAccount } = useUpdateAccount()
+
+  const [selectedAccount, setSelectedAccount] = useState<AccountWithIncludes>()
 
   return (
     <>
@@ -121,21 +129,42 @@ export function InvestmentPortfolio() {
                   return (
                     <TableRow key={account.id}>
                       <TableCell>
-                        {account.name} {displayAccountType(account.accountType)}
+                        <Link onClick={() => setSelectedAccount(account)}>
+                          {account.name}{" "}
+                          {displayAccountType(account.accountType)}
+                        </Link>
                       </TableCell>
                       <Hidden smDown>
                         <TableCell align="right">
-                          <Currency value={deposits} />
+                          <AmountInputTool
+                            enabled
+                            value={deposits}
+                            onChange={(totalDeposits) => {
+                              updateAccount({ ...account, totalDeposits })
+                            }}
+                          />
                         </TableCell>
                         <TableCell align="right">
                           <Currency value={account.balance - fixed} />
                         </TableCell>
                         <TableCell align="right">
-                          <Currency value={fixed} />
+                          <AmountInputTool
+                            enabled
+                            value={fixed}
+                            onChange={(totalFixedIncome) => {
+                              updateAccount({ ...account, totalFixedIncome })
+                            }}
+                          />
                         </TableCell>
                       </Hidden>
                       <TableCell align="right">
-                        <Currency value={account.balance} />
+                        <AmountInputTool
+                          enabled
+                          value={account.balance}
+                          onChange={(balance) => {
+                            updateAccount({ ...account, balance })
+                          }}
+                        />
                       </TableCell>
                       <Hidden smDown>
                         <TableCell align="right">
@@ -144,6 +173,7 @@ export function InvestmentPortfolio() {
                             green
                             red
                             value={account.balance - deposits}
+                            animate
                           />
                         </TableCell>
                       </Hidden>
@@ -177,7 +207,13 @@ export function InvestmentPortfolio() {
                   </TableCell>
                   <Hidden smDown>
                     <TableCell align="right">
-                      <Currency arrow red green value={total - totalDeposits} />
+                      <Currency
+                        arrow
+                        red
+                        green
+                        value={total - totalDeposits}
+                        animate
+                      />
                     </TableCell>
                   </Hidden>
                   <TableCell align="right">
@@ -211,6 +247,10 @@ export function InvestmentPortfolio() {
           </TableContainer>
         </Grid>
       </Grid>
+      <AccountDialog
+        account={selectedAccount}
+        onClose={() => setSelectedAccount(undefined)}
+      />
     </>
   )
 }

@@ -81,9 +81,9 @@ export function AmountInput(props: Props) {
 
   function handleKeyPress(e: KeyboardEvent<HTMLInputElement>) {
     // backspace clears input
-    if (e.key === "Backspace" && !firstKeyPressed) {
-      setValue("")
-    }
+    // if (e.key === "Backspace" && !firstKeyPressed) {
+    //   setValue("")
+    // }
 
     // escape key cancels by sending back original value
     if (e.key === "Escape") {

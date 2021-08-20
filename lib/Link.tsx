@@ -3,16 +3,25 @@ import NextLink from "next/link"
 import React from "react"
 
 interface Props {
-  href: string
+  href?: string
+  onClick?: () => void
   children: React.ReactNode
 }
 
 export function Link(props: Props) {
-  return (
-    <NextLink href={props.href}>
-      <MUILink color="inherit" style={{ cursor: "pointer" }}>
-        {props.children}
-      </MUILink>
-    </NextLink>
+  const muiLink = (
+    <MUILink
+      color="inherit"
+      style={{ cursor: "pointer" }}
+      onClick={props.onClick}
+    >
+      {props.children}
+    </MUILink>
+  )
+
+  return props.href !== undefined ? (
+    <NextLink href={props.href}>{muiLink}</NextLink>
+  ) : (
+    muiLink
   )
 }
