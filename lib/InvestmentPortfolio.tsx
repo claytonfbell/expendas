@@ -1,4 +1,20 @@
-import { Box, Grid, Paper, useMediaQuery, useTheme } from "@material-ui/core"
+import {
+  Box,
+  fade,
+  Grid,
+  Hidden,
+  makeStyles,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@material-ui/core"
 import React from "react"
 import {
   Bar,
@@ -32,11 +48,11 @@ export function InvestmentPortfolio() {
   const data: Data[] = accounts
     .sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance))
     .map((x) => {
-      const equity = (x.balance - (x.totalFixedIncome || 0)) / 100
+      const equity = x.balance - (x.totalFixedIncome || 0)
       return {
         name: isLg ? `${x.name} ${displayAccountType(x.accountType)}` : x.name,
         equity,
-        fixed: (x.totalFixedIncome || 0) / 100,
+        fixed: x.totalFixedIncome || 0,
       }
     })
 
@@ -50,115 +66,226 @@ export function InvestmentPortfolio() {
 
   return (
     <>
-      <ResponsiveContainer width="100%" height={600}>
-        <BarChart width={500} height={300} data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis hide />
-          <Tooltip
-            isAnimationActive={false}
-            label="name"
-            formatter={(x: number) => formatMoney(x * 100)}
-          />
-          <Bar
-            dataKey="equity"
-            stackId="a"
-            fill={theme.palette.primary.main}
-            name="Equity"
-          />
-          <Bar
-            dataKey="fixed"
-            stackId="a"
-            fill={theme.palette.secondary.main}
-            name="Fixed Income"
-          />
-        </BarChart>
-      </ResponsiveContainer>
-
       <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
-          <Paper variant="outlined">
-            <Box padding={2}>
-              <Grid container spacing={2} justify="space-between">
-                <Grid item xs={4}>
-                  Equity
-                </Grid>
-                <Grid item xs={4} style={{ textAlign: "right" }}>
-                  <Currency value={equity} />
-                </Grid>
-                <Grid item xs={4} style={{ textAlign: "right" }}>
-                  <Percentage value={equity / total} />
-                </Grid>
-                <Grid item xs={4}>
-                  Fixed Income
-                </Grid>
-                <Grid item xs={4} style={{ textAlign: "right" }}>
-                  <Currency value={fixed} />
-                </Grid>
-                <Grid item xs={4} style={{ textAlign: "right" }}>
-                  <Percentage value={fixed / total} />
-                </Grid>
-                <Grid item xs={4}>
-                  TOTAL
-                </Grid>
-                <Grid item xs={4} style={{ textAlign: "right" }}>
-                  <Currency value={total} />
-                </Grid>
-                <Grid item xs={4} style={{ textAlign: "right" }}></Grid>
-              </Grid>
-            </Box>
-          </Paper>
+        <Grid item xs={12} lg={6}>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart width={500} height={300} data={data}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" hide />
+              <YAxis hide />
+              <Tooltip
+                content={<CustomTooltip />}
+                isAnimationActive={false}
+                label="name"
+                formatter={(x: number) => formatMoney(x * 100)}
+              />
+              <Bar
+                dataKey="equity"
+                stackId="a"
+                fill={theme.palette.primary.main}
+                name="Equity"
+              />
+              <Bar
+                dataKey="fixed"
+                stackId="a"
+                fill={theme.palette.secondary.main}
+                name="Fixed Income"
+              />
+            </BarChart>
+          </ResponsiveContainer>
         </Grid>
-        <Grid item xs={12} md={6}>
-          <Paper variant="outlined">
-            <Box padding={2}>
-              <Grid container spacing={2} justify="space-between">
-                {accounts.map((account) => (
-                  <React.Fragment key={account.id}>
-                    <Grid item xs={4}>
-                      {account.name} {displayAccountType(account.accountType)}
-                    </Grid>
-                    <Grid item xs={3} style={{ textAlign: "right" }}>
-                      <Currency value={account.totalDeposits || 0} />
-                    </Grid>
-                    <Grid item xs={3} style={{ textAlign: "right" }}>
-                      <Currency value={account.balance} />
-                    </Grid>
-                    <Grid item xs={2} style={{ textAlign: "right" }}>
-                      <Percentage
-                        green
-                        red
-                        value={
-                          (account.balance - (account.totalDeposits || 0)) /
-                          (account.totalDeposits || 0)
-                        }
-                      />
-                    </Grid>
-                  </React.Fragment>
-                ))}
 
-                <Grid item xs={4}>
-                  TOTAL
-                </Grid>
-                <Grid item xs={3} style={{ textAlign: "right" }}>
-                  <Currency value={totalDeposits} />
-                </Grid>
-                <Grid item xs={3} style={{ textAlign: "right" }}>
-                  <Currency value={total} />
-                </Grid>
+        <Grid item xs={12}>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Account</TableCell>
+                  <Hidden smDown>
+                    <TableCell align="right">Deposits</TableCell>
+                    <TableCell align="right">Equity</TableCell>
+                    <TableCell align="right">Fixed Income</TableCell>
+                  </Hidden>
+                  <TableCell align="right">Total Value</TableCell>
+                  <Hidden smDown>
+                    <TableCell align="right">Gain / Loss</TableCell>
+                  </Hidden>
+                  <TableCell align="right">Gain / Loss</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {accounts.map((account) => {
+                  const deposits = account.totalDeposits || 0
+                  const fixed = account.totalFixedIncome || 0
 
-                <Grid item xs={2} style={{ textAlign: "right" }}>
-                  <Percentage
-                    green
-                    red
-                    value={(total - totalDeposits) / totalDeposits}
-                  />
-                </Grid>
-              </Grid>
-            </Box>
-          </Paper>
+                  return (
+                    <TableRow key={account.id}>
+                      <TableCell>
+                        {account.name} {displayAccountType(account.accountType)}
+                      </TableCell>
+                      <Hidden smDown>
+                        <TableCell align="right">
+                          <Currency value={deposits} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <Currency value={account.balance - fixed} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <Currency value={fixed} />
+                        </TableCell>
+                      </Hidden>
+                      <TableCell align="right">
+                        <Currency value={account.balance} />
+                      </TableCell>
+                      <Hidden smDown>
+                        <TableCell align="right">
+                          <Currency
+                            arrow
+                            green
+                            red
+                            value={account.balance - deposits}
+                          />
+                        </TableCell>
+                      </Hidden>
+                      <TableCell align="right">
+                        <Percentage
+                          arrow
+                          green
+                          red
+                          value={(account.balance - deposits) / deposits}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+
+                <TableRow>
+                  <TableCell>TOTAL</TableCell>
+                  <Hidden smDown>
+                    <TableCell align="right">
+                      <Currency value={totalDeposits} />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Currency value={total - fixed} />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Currency value={fixed} />
+                    </TableCell>
+                  </Hidden>
+                  <TableCell align="right">
+                    <Currency value={total} />
+                  </TableCell>
+                  <Hidden smDown>
+                    <TableCell align="right">
+                      <Currency arrow red green value={total - totalDeposits} />
+                    </TableCell>
+                  </Hidden>
+                  <TableCell align="right">
+                    <Percentage
+                      arrow
+                      green
+                      red
+                      value={(total - totalDeposits) / totalDeposits}
+                    />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell></TableCell>
+                  <Hidden smDown>
+                    <TableCell></TableCell>
+                    <TableCell align="right">
+                      <Percentage value={(total - fixed) / total} />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Percentage value={fixed / total} />
+                    </TableCell>
+                  </Hidden>
+                  <TableCell></TableCell>
+                  <Hidden smDown>
+                    <TableCell></TableCell>
+                  </Hidden>
+                  <TableCell></TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
         </Grid>
       </Grid>
     </>
   )
+}
+
+interface CustomTooltipProps {
+  payload?: [TooltipPayload, TooltipPayload]
+  label?: any
+  active?: boolean
+}
+
+type TooltipPayload = {
+  color: string
+  dataKey: string
+  fill: string
+  formatter: unknown
+  name: string
+  payload: TooltipPayloadValues
+  type: unknown
+  unit: unknown
+  value: number
+}
+
+type TooltipPayloadValues = {
+  equity: number
+  fixed: number
+  name: string
+}
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    color: "#ffffff",
+    borderRadius: 5,
+    backgroundColor: fade("#000", 0.9),
+    boxShadow: `5px 11px 22px 1px rgba(0,0,0,0.43)`,
+  },
+}))
+
+function CustomTooltip({ payload, label, active }: CustomTooltipProps) {
+  const classes = useStyles()
+  return active && payload !== undefined ? (
+    <Box className={classes.root} padding={1}>
+      <Grid container spacing={3} justify="space-between">
+        <Grid item>
+          <Typography>{label}</Typography>
+        </Grid>
+        <Grid item>
+          <Typography>
+            <Currency value={payload[0].value + payload[1].value} />
+          </Typography>
+        </Grid>
+      </Grid>
+      <Grid container spacing={1} justify="space-between">
+        <Grid item>
+          <Typography style={{ color: payload[0].fill }}>
+            {payload[0].name}
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Typography style={{ color: payload[0].fill }}>
+            <Currency value={payload[0].value} />
+          </Typography>
+        </Grid>
+      </Grid>
+      <Grid container spacing={1} justify="space-between">
+        <Grid item>
+          <Typography style={{ color: payload[1].fill }}>
+            {payload[1].name}
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Typography style={{ color: payload[1].fill }}>
+            <Currency value={payload[1].value} />
+          </Typography>
+        </Grid>
+      </Grid>
+    </Box>
+  ) : null
 }
