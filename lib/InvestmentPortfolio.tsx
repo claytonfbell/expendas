@@ -36,6 +36,14 @@ import { formatMoney } from "./formatMoney"
 import { Link } from "./Link"
 import { Percentage } from "./Percentage"
 
+const useStyles = makeStyles((theme) => ({
+  table: {
+    "& .total-row td": {
+      fontSize: `1.2em`,
+    },
+  },
+}))
+
 type Data = {
   name: string
   equity: number
@@ -43,6 +51,7 @@ type Data = {
 }
 
 export function InvestmentPortfolio() {
+  const classes = useStyles()
   const { data: unfiltered = [] } = useFetchAccounts()
   const accounts = unfiltered.filter((x) =>
     investmentGroup.types.includes(x.accountType)
@@ -105,7 +114,7 @@ export function InvestmentPortfolio() {
 
         <Grid item xs={12}>
           <TableContainer component={Paper}>
-            <Table>
+            <Table className={classes.table}>
               <TableHead>
                 <TableRow>
                   <TableCell>Account</TableCell>
@@ -118,7 +127,9 @@ export function InvestmentPortfolio() {
                   <Hidden smDown>
                     <TableCell align="right">Gain / Loss</TableCell>
                   </Hidden>
-                  <TableCell align="right">Gain / Loss</TableCell>
+                  <TableCell align="right">
+                    <Hidden smDown>Gain / Loss</Hidden>
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -189,7 +200,7 @@ export function InvestmentPortfolio() {
                   )
                 })}
 
-                <TableRow>
+                <TableRow className="total-row">
                   <TableCell>TOTAL</TableCell>
                   <Hidden smDown>
                     <TableCell align="right">
@@ -225,7 +236,7 @@ export function InvestmentPortfolio() {
                     />
                   </TableCell>
                 </TableRow>
-                <TableRow>
+                <TableRow className="total-row">
                   <TableCell></TableCell>
                   <Hidden smDown>
                     <TableCell></TableCell>
@@ -279,7 +290,7 @@ type TooltipPayloadValues = {
   name: string
 }
 
-const useStyles = makeStyles((theme) => ({
+const useCustomTooltipStyles = makeStyles((theme) => ({
   root: {
     color: "#ffffff",
     borderRadius: 5,
@@ -289,7 +300,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function CustomTooltip({ payload, label, active }: CustomTooltipProps) {
-  const classes = useStyles()
+  const classes = useCustomTooltipStyles()
   return active && payload !== undefined ? (
     <Box className={classes.root} padding={1}>
       <Grid container spacing={3} justify="space-between">
