@@ -127,10 +127,8 @@ export function InvestmentPortfolio() {
                   <TableCell align="right">Total Value</TableCell>
                   <Hidden xsDown>
                     <TableCell align="right">Gain / Loss</TableCell>
+                    <TableCell align="right">Gain / Loss</TableCell>
                   </Hidden>
-                  <TableCell align="right">
-                    <Hidden xsDown>Gain / Loss</Hidden>
-                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -188,15 +186,15 @@ export function InvestmentPortfolio() {
                             animate
                           />
                         </TableCell>
+                        <TableCell align="right">
+                          <Percentage
+                            arrow
+                            green
+                            red
+                            value={(account.balance - deposits) / deposits}
+                          />
+                        </TableCell>
                       </Hidden>
-                      <TableCell align="right">
-                        <Percentage
-                          arrow
-                          green
-                          red
-                          value={(account.balance - deposits) / deposits}
-                        />
-                      </TableCell>
                     </TableRow>
                   )
                 })}
@@ -227,15 +225,15 @@ export function InvestmentPortfolio() {
                         animate
                       />
                     </TableCell>
+                    <TableCell align="right">
+                      <Percentage
+                        arrow
+                        green
+                        red
+                        value={(total - totalDeposits) / totalDeposits}
+                      />
+                    </TableCell>
                   </Hidden>
-                  <TableCell align="right">
-                    <Percentage
-                      arrow
-                      green
-                      red
-                      value={(total - totalDeposits) / totalDeposits}
-                    />
-                  </TableCell>
                 </TableRow>
                 <TableRow className="total-row">
                   <TableCell></TableCell>
@@ -251,8 +249,8 @@ export function InvestmentPortfolio() {
                   <TableCell></TableCell>
                   <Hidden xsDown>
                     <TableCell></TableCell>
+                    <TableCell></TableCell>
                   </Hidden>
-                  <TableCell></TableCell>
                 </TableRow>
               </TableBody>
             </Table>
