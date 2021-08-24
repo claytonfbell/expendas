@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/claytonfbell/expendas/compare/v1.3.0...v1.4.0) (2021-08-24)
+
+
+### Features
+
+* ResponsiveTable component ([f1294e6](https://github.com/claytonfbell/expendas/commit/f1294e6d95b8e77d9bcebae324d23c283c2165c8))
+
+
+### Bug Fixes
+
+* Adjustments for mobile ([35679cb](https://github.com/claytonfbell/expendas/commit/35679cb149512c4e7c50815860fde299cd54c6cd))
+* Improvements to investment page to enter numbers ([a901a4d](https://github.com/claytonfbell/expendas/commit/a901a4ddda9d58b8773f1f235ab6add0e8bda62e))
+* mobile adjustments ([ddf87f9](https://github.com/claytonfbell/expendas/commit/ddf87f96f32b253233004f38a82f87a64af2b4f4))
+* styling total row ([a15efd5](https://github.com/claytonfbell/expendas/commit/a15efd5fdad54da9610c0d446de872c7dcd8e378))
+
 ## [1.3.0](https://github.com/claytonfbell/expendas/compare/v1.2.0...v1.3.0) (2021-08-20)
 
 
