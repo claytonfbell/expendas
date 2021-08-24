@@ -58,6 +58,7 @@ export function InvestmentPortfolio() {
   )
   const theme = useTheme()
   const isLg = useMediaQuery(theme.breakpoints.up("lg"))
+  const isXs = useMediaQuery(theme.breakpoints.down("xs"))
   const data: Data[] = accounts
     .sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance))
     .map((x) => {
@@ -85,7 +86,7 @@ export function InvestmentPortfolio() {
     <>
       <Grid container spacing={3}>
         <Grid item xs={12} lg={6}>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={isXs ? 180 : 300}>
             <BarChart width={500} height={300} data={data}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" hide />
@@ -118,17 +119,17 @@ export function InvestmentPortfolio() {
               <TableHead>
                 <TableRow>
                   <TableCell>Account</TableCell>
-                  <Hidden smDown>
+                  <Hidden xsDown>
                     <TableCell align="right">Deposits</TableCell>
                     <TableCell align="right">Equity</TableCell>
                     <TableCell align="right">Fixed Income</TableCell>
                   </Hidden>
                   <TableCell align="right">Total Value</TableCell>
-                  <Hidden smDown>
+                  <Hidden xsDown>
                     <TableCell align="right">Gain / Loss</TableCell>
                   </Hidden>
                   <TableCell align="right">
-                    <Hidden smDown>Gain / Loss</Hidden>
+                    <Hidden xsDown>Gain / Loss</Hidden>
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -145,7 +146,7 @@ export function InvestmentPortfolio() {
                           {displayAccountType(account.accountType)}
                         </Link>
                       </TableCell>
-                      <Hidden smDown>
+                      <Hidden xsDown>
                         <TableCell align="right">
                           <AmountInputTool
                             enabled
@@ -177,7 +178,7 @@ export function InvestmentPortfolio() {
                           }}
                         />
                       </TableCell>
-                      <Hidden smDown>
+                      <Hidden xsDown>
                         <TableCell align="right">
                           <Currency
                             arrow
@@ -202,7 +203,7 @@ export function InvestmentPortfolio() {
 
                 <TableRow className="total-row">
                   <TableCell>TOTAL</TableCell>
-                  <Hidden smDown>
+                  <Hidden xsDown>
                     <TableCell align="right">
                       <Currency value={totalDeposits} />
                     </TableCell>
@@ -216,7 +217,7 @@ export function InvestmentPortfolio() {
                   <TableCell align="right">
                     <Currency value={total} />
                   </TableCell>
-                  <Hidden smDown>
+                  <Hidden xsDown>
                     <TableCell align="right">
                       <Currency
                         arrow
@@ -238,7 +239,7 @@ export function InvestmentPortfolio() {
                 </TableRow>
                 <TableRow className="total-row">
                   <TableCell></TableCell>
-                  <Hidden smDown>
+                  <Hidden xsDown>
                     <TableCell></TableCell>
                     <TableCell align="right">
                       <Percentage value={(total - fixed) / total} />
@@ -248,7 +249,7 @@ export function InvestmentPortfolio() {
                     </TableCell>
                   </Hidden>
                   <TableCell></TableCell>
-                  <Hidden smDown>
+                  <Hidden xsDown>
                     <TableCell></TableCell>
                   </Hidden>
                   <TableCell></TableCell>
