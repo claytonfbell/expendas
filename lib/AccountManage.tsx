@@ -1,13 +1,4 @@
-import {
-  IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-} from "@material-ui/core"
-import DeleteIcon from "@material-ui/icons/Delete"
-import EditIcon from "@material-ui/icons/Edit"
+/* eslint-disable react/display-name */
 import { Account } from "@prisma/client"
 import { Button } from "material-ui-bootstrap"
 import React, { useState } from "react"
@@ -19,7 +10,7 @@ import { displayCreditCardType } from "./creditCardTypes"
 import { Currency } from "./Currency"
 import DisplayError from "./DisplayError"
 import { useGlobalState } from "./GlobalStateProvider"
-import { StyledTableRow } from "./StyledTableRow"
+import { ResponsiveTable } from "./ResponsiveTable"
 
 export function AccountManage() {
   const { organizationId } = useGlobalState()
@@ -41,42 +32,35 @@ export function AccountManage() {
     <>
       <DisplayError error={error} />
 
-      <TableContainer component={Paper}>
-        <Table size="small">
-          <TableBody>
-            {(data || [])
-              .sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance))
-              .map((account) => (
-                <StyledTableRow key={account.id}>
-                  <TableCell>{account.name}</TableCell>
-                  <TableCell>
-                    {account.accountType === "Credit_Card" &&
-                    account.creditCardType !== null
-                      ? displayCreditCardType(account.creditCardType)
-                      : displayAccountType(account.accountType)}
-                  </TableCell>
-                  <TableCell>
-                    <Currency value={account.balance} red />
-                  </TableCell>
-                  <TableCell>
-                    <IconButton
-                      size="small"
-                      onClick={() => setAccountToUpdate(account)}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      onClick={() => setAccountToRemove(account)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </StyledTableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <ResponsiveTable
+        onEdit={(account) => setAccountToUpdate(account)}
+        onDelete={(account) => setAccountToRemove(account)}
+        rowData={(data || []).sort(
+          (a, b) => Math.abs(b.balance) - Math.abs(a.balance)
+        )}
+        schema={[
+          {
+            headerLabel: "Account Name",
+            render: (account) => <>{account.name}</>,
+          },
+          {
+            headerLabel: "Account Type",
+            render: (account) => (
+              <>
+                {account.accountType === "Credit_Card" &&
+                account.creditCardType !== null
+                  ? displayCreditCardType(account.creditCardType)
+                  : displayAccountType(account.accountType)}
+              </>
+            ),
+          },
+          {
+            headerLabel: "Balance / Value",
+            alignRight: true,
+            render: (account) => <Currency value={account.balance} red />,
+          },
+        ]}
+      />
 
       <br />
       <br />

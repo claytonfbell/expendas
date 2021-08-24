@@ -1,16 +1,10 @@
+/* eslint-disable react/display-name */
 import {
   Box,
   fade,
   Grid,
-  Hidden,
   makeStyles,
-  Paper,
-  Table,
-  TableBody,
   TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
   useMediaQuery,
   useTheme,
@@ -35,10 +29,12 @@ import { Currency } from "./Currency"
 import { formatMoney } from "./formatMoney"
 import { Link } from "./Link"
 import { Percentage } from "./Percentage"
+import { ResponsiveTable } from "./ResponsiveTable"
+import { StyledTableRow } from "./StyledTableRow"
 
 const useStyles = makeStyles((theme) => ({
-  table: {
-    "& .total-row td": {
+  totalRow: {
+    "& td": {
       fontSize: `1.2em`,
     },
   },
@@ -114,94 +110,169 @@ export function InvestmentPortfolio() {
         </Grid>
 
         <Grid item xs={12}>
-          <TableContainer component={Paper}>
-            <Table className={classes.table}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Account</TableCell>
-                  <Hidden xsDown>
-                    <TableCell align="right">Deposits</TableCell>
-                    <TableCell align="right">Equity</TableCell>
-                    <TableCell align="right">Fixed Income</TableCell>
-                  </Hidden>
-                  <TableCell align="right">Total Value</TableCell>
-                  <Hidden xsDown>
-                    <TableCell align="right">Gain / Loss</TableCell>
-                    <TableCell align="right">Gain / Loss</TableCell>
-                  </Hidden>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {accounts.map((account) => {
-                  const deposits = account.totalDeposits || 0
-                  const fixed = account.totalFixedIncome || 0
-
+          <ResponsiveTable
+            rowData={accounts}
+            schema={[
+              {
+                headerLabel: "Account",
+                render: (account) => {
                   return (
-                    <TableRow key={account.id}>
-                      <TableCell>
-                        <Link onClick={() => setSelectedAccount(account)}>
-                          {account.name}{" "}
-                          {displayAccountType(account.accountType)}
-                        </Link>
-                      </TableCell>
-                      <Hidden xsDown>
-                        <TableCell align="right">
-                          <AmountInputTool
-                            enabled
-                            value={deposits}
-                            onChange={(totalDeposits) => {
-                              updateAccount({ ...account, totalDeposits })
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell align="right">
-                          <Currency value={account.balance - fixed} />
-                        </TableCell>
-                        <TableCell align="right">
-                          <AmountInputTool
-                            enabled
-                            value={fixed}
-                            onChange={(totalFixedIncome) => {
-                              updateAccount({ ...account, totalFixedIncome })
-                            }}
-                          />
-                        </TableCell>
-                      </Hidden>
-                      <TableCell align="right">
-                        <AmountInputTool
-                          enabled
-                          value={account.balance}
-                          onChange={(balance) => {
-                            updateAccount({ ...account, balance })
-                          }}
-                        />
-                      </TableCell>
-                      <Hidden xsDown>
-                        <TableCell align="right">
-                          <Currency
-                            arrow
-                            green
-                            red
-                            value={account.balance - deposits}
-                            animate
-                          />
-                        </TableCell>
-                        <TableCell align="right">
-                          <Percentage
-                            arrow
-                            green
-                            red
-                            value={(account.balance - deposits) / deposits}
-                          />
-                        </TableCell>
-                      </Hidden>
-                    </TableRow>
+                    <Link onClick={() => setSelectedAccount(account)}>
+                      {account.name} {displayAccountType(account.accountType)}
+                    </Link>
                   )
-                })}
-
-                <TableRow className="total-row">
-                  <TableCell>TOTAL</TableCell>
-                  <Hidden xsDown>
+                },
+              },
+              {
+                headerLabel: "Deposits",
+                alignRight: true,
+                render: (account) => {
+                  const deposits = account.totalDeposits || 0
+                  return (
+                    <AmountInputTool
+                      enabled
+                      value={deposits}
+                      onChange={(totalDeposits) => {
+                        updateAccount({ ...account, totalDeposits })
+                      }}
+                    />
+                  )
+                },
+              },
+              {
+                headerLabel: "Equity",
+                alignRight: true,
+                render: (account) => {
+                  const fixed = account.totalFixedIncome || 0
+                  return <Currency value={account.balance - fixed} />
+                },
+              },
+              {
+                headerLabel: "Fixed Income",
+                alignRight: true,
+                render: (account) => {
+                  const fixed = account.totalFixedIncome || 0
+                  return (
+                    <AmountInputTool
+                      enabled
+                      value={fixed}
+                      onChange={(totalFixedIncome) => {
+                        updateAccount({ ...account, totalFixedIncome })
+                      }}
+                    />
+                  )
+                },
+              },
+              {
+                headerLabel: "Total Value",
+                alignRight: true,
+                render: (account) => {
+                  return (
+                    <AmountInputTool
+                      enabled
+                      value={account.balance}
+                      onChange={(balance) => {
+                        updateAccount({ ...account, balance })
+                      }}
+                    />
+                  )
+                },
+              },
+              {
+                headerLabel: "Gain / Loss",
+                alignRight: true,
+                render: (account) => {
+                  const deposits = account.totalDeposits || 0
+                  return (
+                    <Currency
+                      arrow
+                      green
+                      red
+                      value={account.balance - deposits}
+                      animate
+                    />
+                  )
+                },
+              },
+              {
+                headerLabel: "Gain / Loss",
+                alignRight: true,
+                render: (account) => {
+                  const deposits = account.totalDeposits || 0
+                  return (
+                    <Percentage
+                      arrow
+                      green
+                      red
+                      value={(account.balance - deposits) / deposits}
+                    />
+                  )
+                },
+              },
+            ]}
+            totalRow={
+              isXs ? (
+                <Box padding={1}>
+                  <Grid container spacing={1} justify="space-between">
+                    <Grid item xs={6}>
+                      TOTAL DEPOSITS
+                    </Grid>
+                    <Grid item xs={6} style={{ textAlign: "right" }}>
+                      <Currency value={totalDeposits} />
+                    </Grid>
+                    <Grid item xs={6}>
+                      TOTAL EQUITY
+                    </Grid>
+                    <Grid item xs={2} style={{ textAlign: "right" }}>
+                      <Percentage value={(total - fixed) / total} />
+                    </Grid>
+                    <Grid item xs={4} style={{ textAlign: "right" }}>
+                      <Currency value={total - fixed} />
+                    </Grid>
+                    <Grid item xs={6}>
+                      TOTAL FIXED INCOME
+                    </Grid>
+                    <Grid item xs={2} style={{ textAlign: "right" }}>
+                      <Percentage value={fixed / total} />
+                    </Grid>
+                    <Grid item xs={4} style={{ textAlign: "right" }}>
+                      <Currency value={fixed} />
+                    </Grid>
+                    <Grid item xs={6}>
+                      TOTAL VALUE
+                    </Grid>
+                    <Grid item xs={6} style={{ textAlign: "right" }}>
+                      <Currency value={total} />
+                    </Grid>
+                    <Grid item xs={6}>
+                      GAIN / LOSS
+                    </Grid>
+                    <Grid item xs={6} style={{ textAlign: "right" }}>
+                      <Currency
+                        arrow
+                        red
+                        green
+                        value={total - totalDeposits}
+                        animate
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      GAIN / LOSS
+                    </Grid>
+                    <Grid item xs={6} style={{ textAlign: "right" }}>
+                      <Percentage
+                        arrow
+                        green
+                        red
+                        value={(total - totalDeposits) / totalDeposits}
+                      />
+                    </Grid>
+                  </Grid>
+                </Box>
+              ) : (
+                <>
+                  <StyledTableRow className={classes.totalRow}>
+                    <TableCell>TOTAL</TableCell>
                     <TableCell align="right">
                       <Currency value={totalDeposits} />
                     </TableCell>
@@ -211,11 +282,9 @@ export function InvestmentPortfolio() {
                     <TableCell align="right">
                       <Currency value={fixed} />
                     </TableCell>
-                  </Hidden>
-                  <TableCell align="right">
-                    <Currency value={total} />
-                  </TableCell>
-                  <Hidden xsDown>
+                    <TableCell align="right">
+                      <Currency value={total} />
+                    </TableCell>
                     <TableCell align="right">
                       <Currency
                         arrow
@@ -233,11 +302,9 @@ export function InvestmentPortfolio() {
                         value={(total - totalDeposits) / totalDeposits}
                       />
                     </TableCell>
-                  </Hidden>
-                </TableRow>
-                <TableRow className="total-row">
-                  <TableCell></TableCell>
-                  <Hidden xsDown>
+                  </StyledTableRow>
+                  <StyledTableRow className={classes.totalRow}>
+                    <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell align="right">
                       <Percentage value={(total - fixed) / total} />
@@ -245,16 +312,14 @@ export function InvestmentPortfolio() {
                     <TableCell align="right">
                       <Percentage value={fixed / total} />
                     </TableCell>
-                  </Hidden>
-                  <TableCell></TableCell>
-                  <Hidden xsDown>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
-                  </Hidden>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
+                    <TableCell></TableCell>
+                  </StyledTableRow>
+                </>
+              )
+            }
+          />
         </Grid>
       </Grid>
       <AccountDialog
