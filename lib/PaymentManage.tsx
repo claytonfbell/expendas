@@ -42,12 +42,12 @@ export function PaymentManage() {
         )}
         schema={[
           {
-            xsDownHidden: true,
+            smDownHidden: true,
             label: "Description",
             render: (payment) => payment.description,
           },
           {
-            xsDownHidden: true,
+            smDownHidden: true,
             label: "Account",
             render: (payment) =>
               `${payment.account.name} ${displayAccountType(
@@ -55,7 +55,7 @@ export function PaymentManage() {
               )}`,
           },
           {
-            xsDownHidden: true,
+            smDownHidden: true,
             label: "When",
             render: function render(payment) {
               return (
@@ -66,7 +66,7 @@ export function PaymentManage() {
             },
           },
           {
-            xsDownHidden: true,
+            smDownHidden: true,
             label: "Amount",
             render: function render(payment) {
               return <Currency value={payment.amount} green />
