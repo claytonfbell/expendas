@@ -23,13 +23,13 @@ export function ExpendasBreadcrumbs(props: Props) {
   return (
     <Breadcrumbs aria-label="breadcrumb">
       {links.map((link) => (
-        <React.Fragment key={link.label}>
+        <span key={link.label}>
           {link.href !== undefined ? (
             <Link href={link.href}>{link.label}</Link>
           ) : (
             <Typography color="textPrimary">{link.label}</Typography>
           )}
-        </React.Fragment>
+        </span>
       ))}
     </Breadcrumbs>
   )

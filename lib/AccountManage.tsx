@@ -1,7 +1,7 @@
-/* eslint-disable react/display-name */
 import { Account } from "@prisma/client"
 import { Button } from "material-ui-bootstrap"
-import React, { useState } from "react"
+import { ResponsiveTable } from "material-ui-pack"
+import React, { useEffect, useState } from "react"
 import { AccountDialog } from "./AccountDialog"
 import { displayAccountType } from "./accountTypes"
 import { useFetchAccounts, useRemoveAccount } from "./api/api"
@@ -10,7 +10,6 @@ import { displayCreditCardType } from "./creditCardTypes"
 import { Currency } from "./Currency"
 import DisplayError from "./DisplayError"
 import { useGlobalState } from "./GlobalStateProvider"
-import { ResponsiveTable } from "./ResponsiveTable"
 
 export function AccountManage() {
   const { organizationId } = useGlobalState()
@@ -28,11 +27,19 @@ export function AccountManage() {
 
   const error = fetchError || removeError
 
+  const [asc, setAsc] = useState(true)
+  useEffect(() => {
+    console.log(asc)
+  }, [asc])
+
   return (
     <>
       <DisplayError error={error} />
 
       <ResponsiveTable
+        striped
+        size="small"
+        elevation={4}
         onEdit={(account) => setAccountToUpdate(account)}
         onDelete={(account) => setAccountToRemove(account)}
         rowData={(data || []).sort(
@@ -40,24 +47,21 @@ export function AccountManage() {
         )}
         schema={[
           {
-            headerLabel: "Account Name",
-            render: (account) => <>{account.name}</>,
-          },
-          {
-            headerLabel: "Account Type",
-            render: (account) => (
-              <>
-                {account.accountType === "Credit_Card" &&
+            label: "Account",
+            render: (account) =>
+              `${account.name} ${
+                account.accountType === "Credit_Card" &&
                 account.creditCardType !== null
                   ? displayCreditCardType(account.creditCardType)
-                  : displayAccountType(account.accountType)}
-              </>
-            ),
+                  : displayAccountType(account.accountType)
+              }`,
           },
           {
-            headerLabel: "Balance / Value",
+            label: "Balance / Value",
             alignRight: true,
-            render: (account) => <Currency value={account.balance} red />,
+            render: function render(account) {
+              return <Currency value={account.balance} red />
+            },
           },
         ]}
       />

@@ -1380,9 +1380,9 @@ core-js-pure@^3.16.0:
   integrity sha512-wzlhZNepF/QA9yvx3ePDgNGudU5KDB8lu/TRPKelYA/QtSnkS/cLl2W+TIdEX1FAFcBr0YpY7tPDlcmXJ7AyiQ==
 
 core-js@^3.6.4:
-  version "3.16.0"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.16.0.tgz#1d46fb33720bc1fa7f90d20431f36a5540858986"
-  integrity sha512-5+5VxRFmSf97nM8Jr2wzOwLqRo6zphH2aX+7KsAUONObyzakDNq2G/bgbhinxB4PoV9L3aXQYhiDKyIKWd2c8g==
+  version "3.16.3"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.16.3.tgz#1f2d43c51a9ed014cc6c83440af14697ae4b75f2"
+  integrity sha512-lM3GftxzHNtPNUJg0v4pC2RC6puwMd6VZA7vXUczi+SKmCWSf4JwO89VJGMqbzmB7jlK7B5hr3S64PqwFL49cA==
 
 core-util-is@~1.0.0:
   version "1.0.2"
@@ -1395,9 +1395,9 @@ countries-and-timezones@^3.2.1:
   integrity sha512-ksg02vvHTEo+feCcBVFN7zAe+8EO7yfIJhLhwM9O3JsVMaxEYo+LrikxaiQnqSTbKgRwJlRZ8mYrpvAKQE0rsQ==
 
 country-region-data@^1.7.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/country-region-data/-/country-region-data-1.9.0.tgz#67761da1dcfd0f7e4430b81f63f20b53110a3fb8"
-  integrity sha512-SDc2ZylJCgooeL3zlm3TaIUIkRNYvzCgDHWSb7sq+QYmBT8R2TQsvwW1DCnxWlnybuimlRoXKxdlO4fiCacwEA==
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/country-region-data/-/country-region-data-1.10.0.tgz#f755950f2eebcc81ba30e13ea39be256bcb80948"
+  integrity sha512-tzVvQP9N5iGsisyDFUakJKHnZBfmp+9XaopCD/Bw5+lDsNQq+K+cVMEBkyz75FeSeN1JcdLmLGNdNMD6zHm2BQ==
 
 countup.js@^1.9.3:
   version "1.9.3"
@@ -3264,10 +3264,10 @@ material-ui-bootstrap@^2.3.0:
   dependencies:
     clsx "^1.1.1"
 
-material-ui-pack@^2.8.0:
-  version "2.8.0"
-  resolved "https://registry.yarnpkg.com/material-ui-pack/-/material-ui-pack-2.8.0.tgz#829af85efe3632891f69cf0409e9c8b72c86bfdf"
-  integrity sha512-Fi8/uOuhC9IUdaAq9n5xrgrrZSPXLgJB/3jXqMPDR6iJVAJgSCanX5N9u/juCimRExrjWei1jpPGUL4ALjfGGA==
+material-ui-pack@^2.9.1:
+  version "2.9.1"
+  resolved "https://registry.yarnpkg.com/material-ui-pack/-/material-ui-pack-2.9.1.tgz#1e2e55aacfdcf942cada76169647800180af5c55"
+  integrity sha512-KL3/uSeFOIBA/vwcYLDsMPdn8z5u4I5TNyvoaKZ1htm+ZTyu2EoCq9TRx9Mhpii3gWH1hWULH46G090ARhssyw==
   dependencies:
     "@date-io/moment" "^1.3.13"
     countries-and-timezones "^3.2.1"

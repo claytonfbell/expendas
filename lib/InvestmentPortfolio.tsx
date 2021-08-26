@@ -1,14 +1,15 @@
-/* eslint-disable react/display-name */
 import {
   Box,
   fade,
   Grid,
   makeStyles,
   TableCell,
+  TableRow,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@material-ui/core"
+import { ResponsiveTable } from "material-ui-pack"
 import React, { useState } from "react"
 import {
   Bar,
@@ -29,8 +30,6 @@ import { Currency } from "./Currency"
 import { formatMoney } from "./formatMoney"
 import { Link } from "./Link"
 import { Percentage } from "./Percentage"
-import { ResponsiveTable } from "./ResponsiveTable"
-import { StyledTableRow } from "./StyledTableRow"
 
 const useStyles = makeStyles((theme) => ({
   totalRow: {
@@ -111,11 +110,15 @@ export function InvestmentPortfolio() {
 
         <Grid item xs={12}>
           <ResponsiveTable
+            size="small"
+            striped
+            elevation={4}
             rowData={accounts}
             schema={[
               {
-                headerLabel: "Account",
-                render: (account) => {
+                smDownHidden: true,
+                label: "Account",
+                render: function render(account) {
                   return (
                     <Link onClick={() => setSelectedAccount(account)}>
                       {account.name} {displayAccountType(account.accountType)}
@@ -124,9 +127,10 @@ export function InvestmentPortfolio() {
                 },
               },
               {
-                headerLabel: "Deposits",
+                smDownHidden: true,
+                label: "Deposits",
                 alignRight: true,
-                render: (account) => {
+                render: function render(account) {
                   const deposits = account.totalDeposits || 0
                   return (
                     <AmountInputTool
@@ -140,17 +144,19 @@ export function InvestmentPortfolio() {
                 },
               },
               {
-                headerLabel: "Equity",
+                smDownHidden: true,
+                label: "Equity",
                 alignRight: true,
-                render: (account) => {
+                render: function render(account) {
                   const fixed = account.totalFixedIncome || 0
                   return <Currency value={account.balance - fixed} />
                 },
               },
               {
-                headerLabel: "Fixed Income",
+                smDownHidden: true,
+                label: "Fixed Income",
                 alignRight: true,
-                render: (account) => {
+                render: function render(account) {
                   const fixed = account.totalFixedIncome || 0
                   return (
                     <AmountInputTool
@@ -164,9 +170,10 @@ export function InvestmentPortfolio() {
                 },
               },
               {
-                headerLabel: "Total Value",
+                smDownHidden: true,
+                label: "Total Value",
                 alignRight: true,
-                render: (account) => {
+                render: function render(account) {
                   return (
                     <AmountInputTool
                       enabled
@@ -179,9 +186,10 @@ export function InvestmentPortfolio() {
                 },
               },
               {
-                headerLabel: "Gain / Loss",
+                smDownHidden: true,
+                label: "Gain / Loss",
                 alignRight: true,
-                render: (account) => {
+                render: function render(account) {
                   const deposits = account.totalDeposits || 0
                   return (
                     <Currency
@@ -195,9 +203,10 @@ export function InvestmentPortfolio() {
                 },
               },
               {
-                headerLabel: "Gain / Loss",
+                smDownHidden: true,
+                label: "Gain / Loss",
                 alignRight: true,
-                render: (account) => {
+                render: function render(account) {
                   const deposits = account.totalDeposits || 0
                   return (
                     <Percentage
@@ -271,7 +280,7 @@ export function InvestmentPortfolio() {
                 </Box>
               ) : (
                 <>
-                  <StyledTableRow className={classes.totalRow}>
+                  <TableRow className={classes.totalRow}>
                     <TableCell>TOTAL</TableCell>
                     <TableCell align="right">
                       <Currency value={totalDeposits} />
@@ -302,8 +311,8 @@ export function InvestmentPortfolio() {
                         value={(total - totalDeposits) / totalDeposits}
                       />
                     </TableCell>
-                  </StyledTableRow>
-                  <StyledTableRow className={classes.totalRow}>
+                  </TableRow>
+                  <TableRow className={classes.totalRow}>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell align="right">
@@ -315,7 +324,7 @@ export function InvestmentPortfolio() {
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
-                  </StyledTableRow>
+                  </TableRow>
                 </>
               )
             }
