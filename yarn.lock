@@ -162,7 +162,7 @@
   resolved "https://registry.yarnpkg.com/@hutson/parse-repository-url/-/parse-repository-url-3.0.2.tgz#98c23c950a3d9b6c8f0daed06da6c3af06981340"
   integrity sha512-H9XAx3hc0BQHY6l+IFSWHDySypcXsvsuLhgYLUGywmJ5pswRVQJUHpOsobnLYp2ZUaUlKiKDrgWWhosOwAEM8Q==
 
-"@material-ui/core@^4.3.2":
+"@material-ui/core@^4.12.3", "@material-ui/core@^4.3.2":
   version "4.12.3"
   resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.12.3.tgz#80d665caf0f1f034e52355c5450c0e38b099d3ca"
   integrity sha512-sdpgI/PL56QVsEJldwEe4FFaFTLUqN+rd7sSZiRCdx2E/C7z5yK0y/khAWVBH24tXwto7I1hCzNWfJGZIYJKnw==
@@ -170,24 +170,6 @@
     "@babel/runtime" "^7.4.4"
     "@material-ui/styles" "^4.11.4"
     "@material-ui/system" "^4.12.1"
-    "@material-ui/types" "5.1.0"
-    "@material-ui/utils" "^4.11.2"
-    "@types/react-transition-group" "^4.2.0"
-    clsx "^1.0.4"
-    hoist-non-react-statics "^3.3.2"
-    popper.js "1.16.1-lts"
-    prop-types "^15.7.2"
-    react-is "^16.8.0 || ^17.0.0"
-    react-transition-group "^4.4.0"
-
-"@material-ui/core@~4.11.0":
-  version "4.11.4"
-  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.11.4.tgz#4fb9fe5dec5dcf780b687e3a40cff78b2b9640a4"
-  integrity sha512-oqb+lJ2Dl9HXI9orc6/aN8ZIAMkeThufA5iZELf2LQeBn2NtjVilF5D2w7e9RpntAzDb4jK5DsVhkfOvFY/8fg==
-  dependencies:
-    "@babel/runtime" "^7.4.4"
-    "@material-ui/styles" "^4.11.4"
-    "@material-ui/system" "^4.11.3"
     "@material-ui/types" "5.1.0"
     "@material-ui/utils" "^4.11.2"
     "@types/react-transition-group" "^4.2.0"
@@ -250,7 +232,7 @@
     jss-plugin-vendor-prefixer "^10.5.1"
     prop-types "^15.7.2"
 
-"@material-ui/system@^4.11.3", "@material-ui/system@^4.12.1":
+"@material-ui/system@^4.12.1":
   version "4.12.1"
   resolved "https://registry.yarnpkg.com/@material-ui/system/-/system-4.12.1.tgz#2dd96c243f8c0a331b2bb6d46efd7771a399707c"
   integrity sha512-lUdzs4q9kEXZGhbN7BptyiS1rLNHe6kG9o8Y307HCvF4sQxbCgpL2qi+gUk+yI8a2DNk48gISEQxoxpgph0xIw==
@@ -3264,10 +3246,10 @@ material-ui-bootstrap@^2.3.0:
   dependencies:
     clsx "^1.1.1"
 
-material-ui-pack@^2.9.1:
-  version "2.9.1"
-  resolved "https://registry.yarnpkg.com/material-ui-pack/-/material-ui-pack-2.9.1.tgz#1e2e55aacfdcf942cada76169647800180af5c55"
-  integrity sha512-KL3/uSeFOIBA/vwcYLDsMPdn8z5u4I5TNyvoaKZ1htm+ZTyu2EoCq9TRx9Mhpii3gWH1hWULH46G090ARhssyw==
+material-ui-pack@^2.14.3:
+  version "2.14.3"
+  resolved "https://registry.yarnpkg.com/material-ui-pack/-/material-ui-pack-2.14.3.tgz#987be459e336755064745cac0a7d2e8cbc2a9776"
+  integrity sha512-IAjGJH9Nx+/fruVZ3EuRMwPbKJXENCXsKf2qjGN2EFgcYlQ+asktBmMrFuqrzS5sV73y+3BSXilPwmdUmMmOMw==
   dependencies:
     "@date-io/moment" "^1.3.13"
     countries-and-timezones "^3.2.1"
@@ -3281,6 +3263,7 @@ material-ui-pack@^2.9.1:
     moment "^2.29.1"
     moment-timezone "^0.5.33"
     react-draft-wysiwyg "^1.14.5"
+    react-markdown "^6.0.3"
 
 md5.js@^1.3.4:
   version "1.3.5"
@@ -4213,7 +4196,7 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-markdown@^6.0.2:
+react-markdown@^6.0.2, react-markdown@^6.0.3:
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/react-markdown/-/react-markdown-6.0.3.tgz#625ec767fa321d91801129387e7d31ee0cb99254"
   integrity sha512-kQbpWiMoBHnj9myLlmZG9T1JdoT/OEyHK7hqM6CqFT14MAkgWiWBUYijLyBmxbntaN6dCDicPcUhWhci1QYodg==

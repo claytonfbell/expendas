@@ -7,14 +7,7 @@ import {
   useTheme,
 } from "@material-ui/core"
 import { Account } from "@prisma/client"
-import { Button } from "material-ui-bootstrap"
-import {
-  CurrencyField,
-  Form,
-  Select,
-  SubmitButton,
-  TextField,
-} from "material-ui-pack"
+import { Form } from "material-ui-pack"
 import React, { useEffect, useState } from "react"
 import { debtGroup, investmentGroup } from "./AccountGroup"
 import { accountTypeOptions } from "./accountTypes"
@@ -23,7 +16,6 @@ import { useAddAccount, useUpdateAccount } from "./api/api"
 import { RestError } from "./api/rest"
 import { creditCardTypeOptions } from "./creditCardTypes"
 import { Currency } from "./Currency"
-import DisplayError from "./DisplayError"
 import { Percentage } from "./Percentage"
 import { Title } from "./Title"
 
@@ -91,111 +83,100 @@ export function AccountDialog(props: Props) {
           margin="none"
           busy={isBusy}
           onSubmit={handleSubmit}
-        >
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <DisplayError error={error} />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField name="name" formatter="capitalize" />
-            </Grid>
-            <Grid item xs={12}>
-              <Select name="accountType" options={accountTypeOptions} />
-            </Grid>
-            {state?.accountType === "Credit_Card" ? (
-              <Grid item xs={12}>
-                <Select name="creditCardType" options={creditCardTypeOptions} />
-              </Grid>
-            ) : null}
-            <Grid item xs={12}>
-              <CurrencyField
-                label={
-                  state?.accountType === "Investment"
-                    ? "Current Balance"
-                    : undefined
+          onCancel={props.onClose}
+          error={error?.message}
+          submitLabel={isNew ? "Add Account" : "Save Changes"}
+          schema={{
+            name: "capitalize",
+            accountType: { type: "select", options: accountTypeOptions },
+            creditCardType:
+              state?.accountType === "Credit_Card"
+                ? { type: "select", options: creditCardTypeOptions }
+                : undefined,
+            balance: {
+              type: "currency",
+              inPennies: true,
+              numeric: true,
+              label:
+                state?.accountType === "Investment"
+                  ? "Current Balance"
+                  : undefined,
+              allowNegative:
+                state !== undefined &&
+                debtGroup.types.includes(state.accountType),
+            },
+
+            ...(state?.accountType !== undefined &&
+            investmentGroup.types.includes(state?.accountType)
+              ? {
+                  totalDeposits: {
+                    type: "currency",
+                    inPennies: true,
+                    numeric: true,
+                    fullWidth: true,
+                  },
+                  totalFixedIncome: {
+                    type: "currency",
+                    inPennies: true,
+                    numeric: true,
+                    fullWidth: true,
+                  },
                 }
-                name="balance"
-                inPennies
-                numeric
-                fullWidth
-                allowNegative={
-                  state !== undefined &&
-                  debtGroup.types.includes(state.accountType)
-                }
-              />
-            </Grid>
+              : {}),
+          }}
+          layout={{
+            totalFixedIncome:
+              state === undefined
+                ? undefined
+                : {
+                    xs: 12,
+                    renderAfter: (
+                      <Grid item xs={12}>
+                        <Box paddingLeft={2} paddingRight={2} paddingBottom={2}>
+                          <Grid container justify="space-between" spacing={2}>
+                            <Grid item>Equity</Grid>
+                            <Grid item>
+                              <Currency
+                                value={
+                                  state.balance - (state.totalFixedIncome || 0)
+                                }
+                              />
+                            </Grid>
+                          </Grid>
 
-            {state !== undefined &&
-            investmentGroup.types.includes(state.accountType) ? (
-              <>
-                <Grid item xs={12}>
-                  <CurrencyField
-                    name={"totalDeposits"}
-                    inPennies
-                    numeric
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <CurrencyField
-                    name={"totalFixedIncome"}
-                    inPennies
-                    numeric
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Box paddingLeft={2} paddingRight={2} paddingBottom={2}>
-                    <Grid container justify="space-between" spacing={2}>
-                      <Grid item>Equity</Grid>
-                      <Grid item>
-                        <Currency
-                          value={state.balance - (state.totalFixedIncome || 0)}
-                        />
+                          <Grid container justify="space-between" spacing={2}>
+                            <Grid item>Total Gain / Loss</Grid>
+                            <Grid item>
+                              <Currency
+                                value={
+                                  state.balance - (state.totalDeposits || 0)
+                                }
+                                green
+                                red
+                              />
+                            </Grid>
+                          </Grid>
+
+                          <Grid container justify="space-between" spacing={2}>
+                            <Grid item>Total Gain / Loss</Grid>
+                            <Grid item>
+                              <Percentage
+                                value={
+                                  (state.balance - (state.totalDeposits || 0)) /
+                                  (state.totalDeposits || state.balance)
+                                }
+                                green
+                                red
+                              />
+                            </Grid>
+                          </Grid>
+                        </Box>
                       </Grid>
-                    </Grid>
+                    ),
+                  },
+          }}
+        />
 
-                    <Grid container justify="space-between" spacing={2}>
-                      <Grid item>Total Gain / Loss</Grid>
-                      <Grid item>
-                        <Currency
-                          value={state.balance - (state.totalDeposits || 0)}
-                          green
-                          red
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container justify="space-between" spacing={2}>
-                      <Grid item>Total Gain / Loss</Grid>
-                      <Grid item>
-                        <Percentage
-                          value={
-                            (state.balance - (state.totalDeposits || 0)) /
-                            (state.totalDeposits || state.balance)
-                          }
-                          green
-                          red
-                        />
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </Grid>
-              </>
-            ) : null}
-
-            <Grid item xs={6}>
-              <SubmitButton>
-                {isNew ? "Add Account" : "Save Changes"}
-              </SubmitButton>
-            </Grid>
-            <Grid item xs={6}>
-              <Button fullWidth variant="outlined" onClick={props.onClose}>
-                Cancel
-              </Button>
-            </Grid>
-          </Grid>
-        </Form>
         <br />
       </DialogContent>
     </Dialog>
