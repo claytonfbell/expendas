@@ -1,15 +1,17 @@
+import GitHubIcon from "@mui/icons-material/GitHub"
 import {
   AppBar,
   Box,
+  Button,
   Container,
+  CssBaseline,
   Grid,
   Hidden,
   IconButton,
   Link as MUILink,
   Toolbar,
-} from "@material-ui/core"
-import GitHubIcon from "@material-ui/icons/GitHub"
-import { Button, Tooltip } from "material-ui-bootstrap"
+  Tooltip,
+} from "@mui/material"
 import { useDarkMode } from "material-ui-pack"
 import { useRouter } from "next/dist/client/router"
 import NextLink from "next/link"
@@ -51,6 +53,7 @@ export function Inside(props: Props) {
 
   return (
     <>
+      <CssBaseline />
       {isLoading ? null : loginResponse === undefined ? (
         <Outside title="Login">
           <Login />
@@ -62,7 +65,7 @@ export function Inside(props: Props) {
               <Grid
                 container
                 spacing={1}
-                justify="space-between"
+                justifyContent="space-between"
                 alignItems="center"
               >
                 <Grid item>
@@ -108,7 +111,12 @@ export function Inside(props: Props) {
             </Toolbar>
           </AppBar>
 
-          <Container style={{ marginTop: 24, paddingBottom: 120 }}>
+          <Container
+            style={{
+              marginTop: 24,
+              paddingBottom: 120,
+            }}
+          >
             <Box marginBottom={2}>
               {props.breadcrumbs.length > 0 ? (
                 <ExpendasBreadcrumbs links={props.breadcrumbs} />

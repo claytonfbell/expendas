@@ -1,5 +1,5 @@
-import { Box, Container, Grid, IconButton } from "@material-ui/core"
-import GitHubIcon from "@material-ui/icons/GitHub"
+import GitHubIcon from "@mui/icons-material/GitHub"
+import { Box, Container, Grid, IconButton } from "@mui/material"
 import React from "react"
 import ReactMarkdown from "react-markdown"
 import { LogoComponent } from "./LogoComponent"
@@ -21,7 +21,7 @@ export function Outside(props: Props) {
               container
               alignItems="center"
               alignContent="center"
-              justify="space-between"
+              justifyContent="space-between"
             >
               <Grid item>
                 <LogoComponent scale={0.27} />

@@ -3,11 +3,10 @@ import {
   Container,
   FormControlLabel,
   Grid,
-  makeStyles,
   Switch,
   useMediaQuery,
   useTheme,
-} from "@material-ui/core"
+} from "@mui/material"
 import { Account, CarryOver, Payment } from "@prisma/client"
 import moment from "moment"
 import React from "react"
@@ -29,29 +28,8 @@ import { Currency } from "./Currency"
 import { CycleNavigation } from "./CycleNavigation"
 import { PaymentDialog } from "./PaymentDialog"
 
-const useStyles = makeStyles((theme) => ({
-  footer: {
-    backgroundColor: theme.palette.primary.main,
-    position: "fixed",
-    bottom: 0,
-    left: 0,
-    width: `100vw`,
-    paddingLeft: theme.spacing(4),
-    paddingRight: 16,
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-    color: theme.palette.primary.contrastText,
-    [theme.breakpoints.up("sm")]: {
-      fontSize: 24,
-    },
-    "& .right": {
-      textAlign: "right",
-    },
-  },
-}))
-
 export function Main() {
-  const classes = useStyles()
+  const theme = useTheme()
   const [date, setDate] = useStorageState<string | null>(
     sessionStorage,
     "Main.date",
@@ -157,7 +135,6 @@ export function Main() {
   const [editAccount, setEditAccount] = React.useState<Account>()
   const [editPayment, setEditPayment] = React.useState<Payment>()
 
-  const theme = useTheme()
   const isMdDown = useMediaQuery(theme.breakpoints.down("md"))
 
   return date === null ? null : (
@@ -255,7 +232,26 @@ export function Main() {
           </Grid>
         </Grid>
       </Grid>
-      <Box className={classes.footer}>
+      <Box
+        sx={{
+          backgroundColor: theme.palette.primary.main,
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: `100vw`,
+          paddingLeft: theme.spacing(4),
+          paddingRight: 16,
+          paddingTop: theme.spacing(2),
+          paddingBottom: theme.spacing(2),
+          color: theme.palette.primary.contrastText,
+          [theme.breakpoints.up("sm")]: {
+            fontSize: 24,
+          },
+          "& .right": {
+            textAlign: "right",
+          },
+        }}
+      >
         <Container>
           <Grid container>
             <Grid item className="right" xs={12}>

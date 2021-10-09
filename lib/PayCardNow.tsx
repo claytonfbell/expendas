@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-import { Button } from "@material-ui/core"
+import { Button } from "@mui/material"
 import { Account } from "@prisma/client"
 import moment from "moment"
 import { useFetchAccounts, useFetchItems } from "./api/api"

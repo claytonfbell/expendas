@@ -1,14 +1,13 @@
 import {
+  alpha,
   Box,
-  fade,
   Grid,
-  makeStyles,
   TableCell,
   TableRow,
   Typography,
   useMediaQuery,
   useTheme,
-} from "@material-ui/core"
+} from "@mui/material"
 import { ResponsiveTable } from "material-ui-pack"
 import React, { useState } from "react"
 import {
@@ -31,14 +30,6 @@ import { formatMoney } from "./formatMoney"
 import { Link } from "./Link"
 import { Percentage } from "./Percentage"
 
-const useStyles = makeStyles((theme) => ({
-  totalRow: {
-    "& td": {
-      fontSize: `1.2em`,
-    },
-  },
-}))
-
 type Data = {
   name: string
   equity: number
@@ -46,12 +37,11 @@ type Data = {
 }
 
 export function InvestmentPortfolio() {
-  const classes = useStyles()
+  const theme = useTheme()
   const { data: unfiltered = [] } = useFetchAccounts()
   const accounts = unfiltered.filter((x) =>
     investmentGroup.types.includes(x.accountType)
   )
-  const theme = useTheme()
   const isLg = useMediaQuery(theme.breakpoints.up("lg"))
   const isXs = useMediaQuery(theme.breakpoints.down("xs"))
   const data: Data[] = accounts
@@ -222,7 +212,7 @@ export function InvestmentPortfolio() {
             totalRow={
               isXs ? (
                 <Box padding={1}>
-                  <Grid container spacing={1} justify="space-between">
+                  <Grid container spacing={1} justifyContent="space-between">
                     <Grid item xs={6}>
                       TOTAL DEPOSITS
                     </Grid>
@@ -280,7 +270,13 @@ export function InvestmentPortfolio() {
                 </Box>
               ) : (
                 <>
-                  <TableRow className={classes.totalRow}>
+                  <TableRow
+                    sx={{
+                      "& td": {
+                        fontSize: `1.2em`,
+                      },
+                    }}
+                  >
                     <TableCell>TOTAL</TableCell>
                     <TableCell align="right">
                       <Currency value={totalDeposits} />
@@ -312,7 +308,13 @@ export function InvestmentPortfolio() {
                       />
                     </TableCell>
                   </TableRow>
-                  <TableRow className={classes.totalRow}>
+                  <TableRow
+                    sx={{
+                      "& td": {
+                        fontSize: `1.2em`,
+                      },
+                    }}
+                  >
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell align="right">
@@ -363,20 +365,18 @@ type TooltipPayloadValues = {
   name: string
 }
 
-const useCustomTooltipStyles = makeStyles((theme) => ({
-  root: {
-    color: "#ffffff",
-    borderRadius: 5,
-    backgroundColor: fade("#000", 0.9),
-    boxShadow: `5px 11px 22px 1px rgba(0,0,0,0.43)`,
-  },
-}))
-
 function CustomTooltip({ payload, label, active }: CustomTooltipProps) {
-  const classes = useCustomTooltipStyles()
   return active && payload !== undefined ? (
-    <Box className={classes.root} padding={1}>
-      <Grid container spacing={3} justify="space-between">
+    <Box
+      sx={{
+        color: "#ffffff",
+        borderRadius: 5,
+        backgroundColor: alpha("#000", 0.9),
+        boxShadow: `5px 11px 22px 1px rgba(0,0,0,0.43)`,
+      }}
+      padding={1}
+    >
+      <Grid container spacing={3} justifyContent="space-between">
         <Grid item>
           <Typography>{label}</Typography>
         </Grid>
@@ -386,7 +386,7 @@ function CustomTooltip({ payload, label, active }: CustomTooltipProps) {
           </Typography>
         </Grid>
       </Grid>
-      <Grid container spacing={1} justify="space-between">
+      <Grid container spacing={1} justifyContent="space-between">
         <Grid item>
           <Typography style={{ color: payload[0].fill }}>
             {payload[0].name}
@@ -398,7 +398,7 @@ function CustomTooltip({ payload, label, active }: CustomTooltipProps) {
           </Typography>
         </Grid>
       </Grid>
-      <Grid container spacing={1} justify="space-between">
+      <Grid container spacing={1} justifyContent="space-between">
         <Grid item>
           <Typography style={{ color: payload[1].fill }}>
             {payload[1].name}

@@ -1,3 +1,5 @@
+import ExpandLessIcon from "@mui/icons-material/ExpandLess"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import {
   Box,
   Collapse,
@@ -8,11 +10,9 @@ import {
   ListItemIcon,
   ListItemSecondaryAction,
   ListItemText,
-  makeStyles,
   Paper,
-} from "@material-ui/core"
-import ExpandLessIcon from "@material-ui/icons/ExpandLess"
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
+  useTheme,
+} from "@mui/material"
 import { Account, Payment } from "@prisma/client"
 import { MD5 } from "crypto-js"
 import React from "react"
@@ -22,19 +22,6 @@ import { AccountGroup } from "./AccountGroup"
 import { AccountWithIncludes } from "./AccountWithIncludes"
 import { Currency } from "./Currency"
 import { ItemWithIncludes } from "./ItemWithIncludes"
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.primary.contrastText,
-    [theme.breakpoints.up("lg")]: {
-      minWidth: 400,
-    },
-  },
-  accounts: {
-    backgroundColor: theme.palette.background.default,
-  },
-}))
 
 type Props = {
   accountGroup: AccountGroup
@@ -48,7 +35,7 @@ type Props = {
 }
 
 export function AccountGroupBox(props: Props) {
-  const classes = useStyles()
+  const theme = useTheme()
   const { accountGroup, isCurrentCycle, date } = props
   const [isExpanded, setIsExpanded] = useStorageState(
     localStorage,
@@ -84,7 +71,13 @@ export function AccountGroupBox(props: Props) {
 
   return (
     <Fade in={accounts.length > 0} unmountOnExit>
-      <Paper variant="outlined" className={classes.root}>
+      <Paper
+        variant="outlined"
+        sx={{
+          backgroundColor: theme.palette.primary.main,
+          color: theme.palette.primary.contrastText,
+        }}
+      >
         <Box>
           <List>
             <ListItem button onClick={() => setIsExpanded(!isExpanded)}>
@@ -105,7 +98,11 @@ export function AccountGroupBox(props: Props) {
           </List>
           <Collapse in={isExpanded}>
             <Divider />
-            <Box className={classes.accounts}>
+            <Box
+              sx={{
+                backgroundColor: theme.palette.background.default,
+              }}
+            >
               {accounts.map((account) => (
                 <AccountBox
                   key={account.id}

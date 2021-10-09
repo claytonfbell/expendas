@@ -1,5 +1,7 @@
 import {
+  Alert,
   Box,
+  Button,
   Chip,
   Collapse,
   Dialog,
@@ -14,11 +16,8 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
-} from "@material-ui/core"
+} from "@mui/material"
 import { Payment } from "@prisma/client"
-// @ts-ignore
-import MultipleDatesPicker from "@randex/material-ui-multiple-dates-picker"
-import { Alert, Button } from "material-ui-bootstrap"
 import {
   Checkbox,
   CheckboxBase,
@@ -26,6 +25,7 @@ import {
   DatePicker,
   DisplayDate,
   Form,
+  MultipleDatePicker,
   Select,
   SubmitButton,
   TextField,
@@ -144,7 +144,7 @@ export function PaymentDialog(props: Props) {
         // refreshCycleItems()
         props.onClose()
       }
-    } catch (e) {
+    } catch (e: any) {
       setError(e)
     }
   }
@@ -367,19 +367,14 @@ export function PaymentDialog(props: Props) {
                     >
                       Select Dates
                     </Button>
-                    <MultipleDatesPicker
+                    <MultipleDatePicker
                       open={openMultiDates}
-                      selectedDates={state.repeatsOnDates.map((x) =>
-                        moment(x).toDate()
-                      )}
-                      onCancel={() => setOpenMultiDates(false)}
-                      onSubmit={(dates: Date[]) => {
-                        setOpenMultiDates(false)
+                      onClose={() => setOpenMultiDates(false)}
+                      dates={state.repeatsOnDates}
+                      onChange={(repeatsOnDates) => {
                         setState((prev) => ({
                           ...prev,
-                          repeatsOnDates: dates.map((x) =>
-                            moment(x).format("YYYY-MM-DD")
-                          ),
+                          repeatsOnDates,
                         }))
                       }}
                     />
@@ -526,7 +521,7 @@ export function PaymentDialog(props: Props) {
             {feedback.errors.length > 0 ? (
               <>
                 <br />
-                <Alert color="danger">
+                <Alert color="error">
                   <ReactMarkdown>
                     {`${feedback.errors.join("  \n")}`}
                   </ReactMarkdown>
@@ -552,7 +547,7 @@ export function PaymentDialog(props: Props) {
                 <Button
                   fullWidth
                   variant="outlined"
-                  color="danger"
+                  color="error"
                   onClick={() => setWillDelete(state)}
                 >
                   Delete

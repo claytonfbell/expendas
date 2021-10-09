@@ -1,13 +1,7 @@
-import { Fade, Grid, IconButton, makeStyles } from "@material-ui/core"
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
-import ChevronRightIcon from "@material-ui/icons/ChevronRight"
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
+import ChevronRightIcon from "@mui/icons-material/ChevronRight"
+import { Fade, Grid, IconButton } from "@mui/material"
 import moment from "moment"
-
-const useStyles = makeStyles({
-  root: {
-    whiteSpace: "nowrap",
-  },
-})
 
 type Props = {
   date: string
@@ -16,7 +10,6 @@ type Props = {
 }
 
 export function CycleNavigation(props: Props) {
-  const classes = useStyles()
   const { dates } = props
   let prev: string | null = null
 
@@ -33,9 +26,11 @@ export function CycleNavigation(props: Props) {
 
   return (
     <Grid
-      className={classes.root}
+      sx={{
+        whiteSpace: "nowrap",
+      }}
       container
-      justify="center"
+      justifyContent="center"
       alignItems="center"
     >
       <Grid item>

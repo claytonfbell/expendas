@@ -1,4 +1,4 @@
-import moment, { Moment } from "moment"
+import moment, { Moment } from "moment-timezone"
 import { filterPaymentsOnDate } from "./filterPaymentsOnDate"
 import { BadRequestException } from "./HttpException"
 import prisma from "./prisma"

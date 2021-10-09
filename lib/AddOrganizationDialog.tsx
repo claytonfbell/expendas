@@ -1,12 +1,12 @@
 import {
+  Button,
   Dialog,
   DialogContent,
   Grid,
   Typography,
   useMediaQuery,
   useTheme,
-} from "@material-ui/core"
-import { Button } from "material-ui-bootstrap"
+} from "@mui/material"
 import { Form, SubmitButton, TextField } from "material-ui-pack"
 import React, { useState } from "react"
 import { AddOrganizationRequest } from "./api/AddOrganizationRequest"

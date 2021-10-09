@@ -1,4 +1,6 @@
 import { User } from ".prisma/client"
+import AddIcon from "@mui/icons-material/Add"
+import DeleteIcon from "@mui/icons-material/Delete"
 import {
   Button,
   Dialog,
@@ -10,9 +12,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
-} from "@material-ui/core"
-import AddIcon from "@material-ui/icons/Add"
-import DeleteIcon from "@material-ui/icons/Delete"
+} from "@mui/material"
 import { CheckboxBase, Form, SubmitButton, TextField } from "material-ui-pack"
 import React, { useState } from "react"
 import { AddUserRequest } from "./api/AddUserRequest"

@@ -1,33 +1,29 @@
-import CssBaseline from "@material-ui/core/CssBaseline"
-import { ThemeProvider } from "@material-ui/core/styles"
+import { CacheProvider, EmotionCache } from "@emotion/react"
+import CssBaseline from "@mui/material/CssBaseline"
+import { ThemeProvider } from "@mui/material/styles"
 import { DarkModeProvider, useDarkMode } from "material-ui-pack"
+import { AppProps } from "next/app"
 import Head from "next/head"
-import PropTypes from "prop-types"
-import React from "react"
+import * as React from "react"
 import { QueryClient, QueryClientProvider } from "react-query"
+import createEmotionCache from "../lib/createEmotionCache"
 import theme from "../lib/theme"
 
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache()
+
+interface MyAppProps extends AppProps {
+  emotionCache?: EmotionCache
+}
 const queryClient = new QueryClient()
 
-export default function MyApp(props) {
-  const { Component, pageProps } = props
-
-  React.useEffect(() => {
-    // Remove the server-side injected CSS.
-    const jssStyles = document.querySelector("#jss-server-side")
-    if (jssStyles) {
-      jssStyles.parentElement.removeChild(jssStyles)
-    }
-  }, [])
-
+export default function MyApp(props: MyAppProps) {
+  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
   return (
-    <React.Fragment>
+    <CacheProvider value={emotionCache}>
       <Head>
         <title>Expendas</title>
-        <meta
-          name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width"
-        />
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <QueryClientProvider client={queryClient}>
         <DarkModeProvider>
@@ -38,18 +34,13 @@ export default function MyApp(props) {
           </MyThemeProvider>
         </DarkModeProvider>
       </QueryClientProvider>
-    </React.Fragment>
+    </CacheProvider>
   )
 }
 
-function MyThemeProvider(props) {
+function MyThemeProvider(props: any) {
   const { Component, pageProps } = props
   const { createMuiThemeWithDarkMode } = useDarkMode()
   const myTheme = createMuiThemeWithDarkMode(theme)
   return <ThemeProvider theme={myTheme}>{props.children}</ThemeProvider>
-}
-
-MyApp.propTypes = {
-  Component: PropTypes.elementType.isRequired,
-  pageProps: PropTypes.object.isRequired,
 }

@@ -1,13 +1,7 @@
-import { Link, makeStyles } from "@material-ui/core"
+import { Link } from "@mui/material"
 import React from "react"
 import { AmountInput } from "./AmountInput"
 import { Currency } from "./Currency"
-
-const useStyles = makeStyles({
-  link: {
-    cursor: "pointer",
-  },
-})
 
 type Props = {
   value: number
@@ -16,7 +10,6 @@ type Props = {
   green?: boolean
 }
 export function AmountInputTool(props: Props) {
-  const classes = useStyles()
   const { enabled, value, onChange } = props
   const [open, setOpen] = React.useState(false)
 
@@ -33,7 +26,9 @@ export function AmountInputTool(props: Props) {
         ) : (
           <Link
             color="inherit"
-            className={classes.link}
+            sx={{
+              cursor: "pointer",
+            }}
             onClick={() => setOpen(true)}
           >
             <Currency green={props.green} value={value} />

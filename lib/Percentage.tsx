@@ -1,14 +1,9 @@
-import { makeStyles } from "@material-ui/core"
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown"
-import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp"
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp"
+import { styled } from "@mui/system"
 import React from "react"
 
-const useStyles = makeStyles({
-  root: {
-    fontFamily: `'Roboto Mono', monospace`,
-    whiteSpace: "nowrap",
-  },
-})
+const StyledSpan = styled("span")``
 
 interface Props {
   value: number
@@ -18,7 +13,6 @@ interface Props {
   arrow?: boolean
 }
 export function Percentage(props: Props) {
-  const classes = useStyles()
   const RED = "#c82333"
   const GREEN = "#0c9c58"
   const DOWN_ARROW = (
@@ -35,8 +29,11 @@ export function Percentage(props: Props) {
   )
 
   return (
-    <span
-      className={classes.root}
+    <StyledSpan
+      sx={{
+        fontFamily: `'Roboto Mono', monospace`,
+        whiteSpace: "nowrap",
+      }}
       style={{
         color:
           props.value < 0 && props.red
@@ -50,6 +47,6 @@ export function Percentage(props: Props) {
       {props.arrow && props.value > 0 ? UP_ARROW : null}
       {props.arrow && props.value < 0 ? DOWN_ARROW : null}
       {(props.value * 100).toFixed(1)}%
-    </span>
+    </StyledSpan>
   )
 }

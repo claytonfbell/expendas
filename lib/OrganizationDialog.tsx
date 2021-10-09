@@ -1,11 +1,11 @@
 import {
+  Button,
   Dialog,
   DialogContent,
   Grid,
   useMediaQuery,
   useTheme,
-} from "@material-ui/core"
-import { Button } from "material-ui-bootstrap"
+} from "@mui/material"
 import { Form, TextField } from "material-ui-pack"
 import React, { useEffect, useState } from "react"
 import { useStorageState } from "react-storage-hooks"
@@ -131,7 +131,7 @@ export function OrganizationDialog(props: Props) {
               <Grid item xs={12}>
                 <Button
                   style={{ marginTop: 12 }}
-                  color="danger"
+                  color="error"
                   fullWidth
                   onClick={() => setWarnDelete(true)}
                   variant="outlined"

@@ -5,7 +5,7 @@ import {
   Grid,
   useMediaQuery,
   useTheme,
-} from "@material-ui/core"
+} from "@mui/material"
 import { Account } from "@prisma/client"
 import { Form } from "material-ui-pack"
 import React, { useEffect, useState } from "react"
@@ -133,7 +133,11 @@ export function AccountDialog(props: Props) {
                     renderAfter: (
                       <Grid item xs={12}>
                         <Box paddingLeft={2} paddingRight={2} paddingBottom={2}>
-                          <Grid container justify="space-between" spacing={2}>
+                          <Grid
+                            container
+                            justifyContent="space-between"
+                            spacing={2}
+                          >
                             <Grid item>Equity</Grid>
                             <Grid item>
                               <Currency
@@ -144,7 +148,11 @@ export function AccountDialog(props: Props) {
                             </Grid>
                           </Grid>
 
-                          <Grid container justify="space-between" spacing={2}>
+                          <Grid
+                            container
+                            justifyContent="space-between"
+                            spacing={2}
+                          >
                             <Grid item>Total Gain / Loss</Grid>
                             <Grid item>
                               <Currency
@@ -157,7 +165,11 @@ export function AccountDialog(props: Props) {
                             </Grid>
                           </Grid>
 
-                          <Grid container justify="space-between" spacing={2}>
+                          <Grid
+                            container
+                            justifyContent="space-between"
+                            spacing={2}
+                          >
                             <Grid item>Total Gain / Loss</Grid>
                             <Grid item>
                               <Percentage

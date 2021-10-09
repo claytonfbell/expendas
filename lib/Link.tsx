@@ -1,4 +1,4 @@
-import { Link as MUILink } from "@material-ui/core"
+import { Link as MUILink } from "@mui/material"
 import NextLink from "next/link"
 import React from "react"
 

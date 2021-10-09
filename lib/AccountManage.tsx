@@ -1,5 +1,5 @@
+import { Button } from "@mui/material"
 import { Account } from "@prisma/client"
-import { Button } from "material-ui-bootstrap"
 import { ResponsiveTable } from "material-ui-pack"
 import React, { useEffect, useState } from "react"
 import { AccountDialog } from "./AccountDialog"

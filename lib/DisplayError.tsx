@@ -1,6 +1,4 @@
-import { Fade } from "@material-ui/core"
-import makeStyles from "@material-ui/core/styles/makeStyles"
-import { Alert } from "material-ui-bootstrap"
+import { Alert, AlertTitle, Box, Fade, useTheme } from "@mui/material"
 import React from "react"
 import ReactMarkdown from "react-markdown"
 import { RestError } from "./api/rest"
@@ -8,26 +6,13 @@ import { RestError } from "./api/rest"
 const scrollToRef = (ref: any) =>
   window.scrollTo(0, ref.current.offsetTop - 100)
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(2),
-    width: "100%",
-  },
-  md: {
-    "& p": {
-      margin: 0,
-    },
-  },
-}))
-
 interface Props {
   error: RestError | null | undefined
   onClose?: () => void
   title?: string
 }
 export default function DisplayError(props: Props) {
-  const classes = useStyles()
+  const theme = useTheme()
   const [show, setShow] = React.useState(false)
 
   const myRef = React.useRef(null)
@@ -56,16 +41,29 @@ export default function DisplayError(props: Props) {
   return (
     <>
       <Fade in={show} unmountOnExit>
-        <div ref={myRef} className={classes.root}>
-          <Alert dismissible show={show} onClose={handleClose}>
-            {props.title && <Alert.Heading>{props.title}</Alert.Heading>}
+        <Box
+          ref={myRef}
+          sx={{
+            marginTop: theme.spacing(1),
+            marginBottom: theme.spacing(2),
+            width: "100%",
+          }}
+        >
+          <Alert color="error" onClose={handleClose}>
+            {props.title && <AlertTitle>{props.title}</AlertTitle>}
             {props.error && (
-              <ReactMarkdown className={classes.md}>
-                {props.error.message}
-              </ReactMarkdown>
+              <Box
+                sx={{
+                  "& p": {
+                    margin: 0,
+                  },
+                }}
+              >
+                <ReactMarkdown>{props.error.message}</ReactMarkdown>
+              </Box>
             )}
           </Alert>
-        </div>
+        </Box>
       </Fade>
     </>
   )

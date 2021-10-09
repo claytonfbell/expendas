@@ -1,15 +1,17 @@
+import AddIcon from "@mui/icons-material/Add"
 import {
+  alpha,
   Box,
   Fade,
-  fade,
   Grid,
   IconButton,
   lighten,
   Link,
-  makeStyles,
+  Theme,
   Tooltip,
-} from "@material-ui/core"
-import AddIcon from "@material-ui/icons/Add"
+  useTheme,
+} from "@mui/material"
+import { SxProps } from "@mui/system"
 import { Account, Payment } from "@prisma/client"
 import clsx from "clsx"
 import React, { useState } from "react"
@@ -23,68 +25,26 @@ import { CycleItemRow } from "./CycleItemRow"
 import { ItemWithIncludes } from "./ItemWithIncludes"
 import { PayCardNow } from "./PayCardNow"
 
-export const useAccountBoxStyles = makeStyles((theme) => ({
-  title: {
-    borderTop: `1px solid ${theme.palette.primary.main}`,
-    color: theme.palette.text.primary,
-    backgroundColor: fade(theme.palette.primary.main, 0.2),
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-    textTransform: "uppercase",
-    "&:nth-of-type(odd)": {
-      backgroundColor: fade(theme.palette.primary.main, 0.3),
-    },
+export const accountBoxStylesItem = (theme: Theme): SxProps<Theme> => ({
+  color: theme.palette.text.primary,
+  "&:nth-of-type(odd)": {
+    backgroundColor: alpha(theme.palette.primary.main, 0.12),
   },
-  item: {
-    color: theme.palette.text.primary,
-    // backgroundColor: theme.palette.background.paper,
-    "&:nth-of-type(odd)": {
-      backgroundColor: fade(theme.palette.primary.main, 0.12),
-    },
-    "&.paid": {
-      textDecoration: "line-through",
-      color: lighten(theme.palette.text.primary, 0.7),
-    },
+  "&.paid": {
+    textDecoration: "line-through",
+    color: lighten(theme.palette.text.primary, 0.7),
   },
-  left: {
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-    paddingLeft: theme.spacing(2),
+})
+
+export const accountBoxStylesRight = (theme: Theme): SxProps<Theme> => ({
+  paddingTop: theme.spacing(1),
+  paddingBottom: theme.spacing(1),
+  paddingRight: theme.spacing(2),
+  textAlign: "right",
+  "&.total": {
+    borderTop: `2px solid ${lighten(theme.palette.primary.main, 0.5)}`,
   },
-  leftLink: {
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-    paddingLeft: theme.spacing(2),
-  },
-  alignRight: {
-    textAlign: "right",
-  },
-  right: {
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-    paddingRight: theme.spacing(2),
-    textAlign: "right",
-    "&.total": {
-      borderTop: `2px solid ${lighten(theme.palette.primary.main, 0.5)}`,
-    },
-  },
-  link: {
-    cursor: "pointer",
-  },
-  checkbox: {
-    padding: 0,
-    mrginRight: theme.spacing(2),
-  },
-  addItemButton: {
-    color: theme.palette.primary.main,
-    marginLeft: theme.spacing(1),
-    fontSize: 18,
-    position: "absolute",
-    marginTop: -2,
-  },
-}))
+})
 
 type AccountBoxProps = {
   account: AccountWithIncludes
@@ -97,7 +57,7 @@ type AccountBoxProps = {
 }
 
 export function AccountBox(props: AccountBoxProps) {
-  const classes = useAccountBoxStyles()
+  const theme = useTheme()
   const { account, date, isCurrentCycle } = props
 
   const cycleItems = (props.cycleItems || []).filter(
@@ -148,14 +108,26 @@ export function AccountBox(props: AccountBoxProps) {
   return (
     <>
       <Box
-        className={classes.title}
+        sx={{
+          borderTop: `1px solid ${theme.palette.primary.main}`,
+          color: theme.palette.text.primary,
+          backgroundColor: alpha(theme.palette.primary.main, 0.2),
+          paddingLeft: theme.spacing(2),
+          paddingRight: theme.spacing(2),
+          paddingTop: theme.spacing(1),
+          paddingBottom: theme.spacing(1),
+          textTransform: "uppercase",
+          "&:nth-of-type(odd)": {
+            backgroundColor: alpha(theme.palette.primary.main, 0.3),
+          },
+        }}
         onMouseOver={() => setIsHoverDebounce(true)}
         onMouseOut={() => setIsHoverDebounce(false)}
       >
-        <Grid container justify="space-between">
+        <Grid container justifyContent="space-between">
           <Grid item xs={8}>
             <Link
-              className={classes.link}
+              sx={{ cursor: "pointer" }}
               onClick={() => props.onEditAccount(account)}
             >
               {account.name} {displayAccountType(account.accountType)}
@@ -165,7 +137,13 @@ export function AccountBox(props: AccountBoxProps) {
               <Tooltip title="Add New Item">
                 <IconButton
                   size="small"
-                  className={classes.addItemButton}
+                  sx={{
+                    color: theme.palette.primary.main,
+                    marginLeft: theme.spacing(1),
+                    fontSize: 18,
+                    position: "absolute",
+                    marginTop: -2,
+                  }}
                   onClick={handleAddItem}
                 >
                   <AddIcon fontSize="inherit" />
@@ -173,7 +151,13 @@ export function AccountBox(props: AccountBoxProps) {
               </Tooltip>
             </Fade>
           </Grid>
-          <Grid item xs={4} className={classes.alignRight}>
+          <Grid
+            item
+            xs={4}
+            sx={{
+              textAlign: "right",
+            }}
+          >
             <AmountInputTool
               enabled={isCurrentCycle}
               value={startingBalance}
@@ -190,16 +174,29 @@ export function AccountBox(props: AccountBoxProps) {
         />
       ))}
       {cycleItems.length === 0 && !props.includeSettled ? null : (
-        <Box className={classes.item}>
+        <Box sx={accountBoxStylesItem(theme)}>
           <Grid container>
             {endingBalance !== startingBalance ? (
               <>
-                <Grid item xs={8} className={classes.leftLink}>
-                  <Link className={classes.link} onClick={handleAddItem}>
+                <Grid
+                  item
+                  xs={8}
+                  sx={{
+                    paddingTop: theme.spacing(1),
+                    paddingBottom: theme.spacing(1),
+                    paddingLeft: theme.spacing(2),
+                  }}
+                >
+                  <Link sx={{ cursor: "pointer" }} onClick={handleAddItem}>
                     + Add New Item
                   </Link>
                 </Grid>
-                <Grid item xs={4} className={clsx("total", classes.right)}>
+                <Grid
+                  item
+                  xs={4}
+                  sx={accountBoxStylesRight(theme)}
+                  className={clsx("total")}
+                >
                   <Currency red animate value={endingBalance} />
                 </Grid>
               </>

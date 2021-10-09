@@ -1,5 +1,5 @@
-import Breadcrumbs from "@material-ui/core/Breadcrumbs"
-import Typography from "@material-ui/core/Typography"
+import Breadcrumbs from "@mui/material/Breadcrumbs"
+import Typography from "@mui/material/Typography"
 import { useRouter } from "next/dist/client/router"
 import React from "react"
 import { Link } from "./Link"

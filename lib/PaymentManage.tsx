@@ -1,6 +1,5 @@
-import { Box } from "@material-ui/core"
+import { Box, Button } from "@mui/material"
 import { Payment } from "@prisma/client"
-import { Button } from "material-ui-bootstrap"
 import { ResponsiveTable } from "material-ui-pack"
 import React, { useState } from "react"
 import { displayAccountType } from "./accountTypes"

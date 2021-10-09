@@ -1,5 +1,4 @@
-import { Box, Grid } from "@material-ui/core"
-import { Button } from "material-ui-bootstrap"
+import { Box, Button, Grid } from "@mui/material"
 import { Form, SubmitButton, TextField } from "material-ui-pack"
 import { useRouter } from "next/dist/client/router"
 import React, { useState } from "react"

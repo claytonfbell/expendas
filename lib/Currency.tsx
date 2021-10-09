@@ -1,16 +1,11 @@
-import { makeStyles } from "@material-ui/core"
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown"
-import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp"
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp"
+import { styled } from "@mui/system"
 import React from "react"
 import AnimatedCounter from "./AnimatedCounter"
 import { formatMoney } from "./formatMoney"
 
-const useStyles = makeStyles({
-  root: {
-    fontFamily: `'Roboto Mono', monospace`,
-    whiteSpace: "nowrap",
-  },
-})
+const StyledSpan = styled("span")``
 
 interface Props {
   value: number
@@ -21,7 +16,6 @@ interface Props {
   arrow?: boolean
 }
 export function Currency(props: Props) {
-  const classes = useStyles()
   const RED = "#c82333"
   const GREEN = "#0c9c58"
   const DOWN_ARROW = (
@@ -38,9 +32,10 @@ export function Currency(props: Props) {
   )
 
   return (
-    <span
-      className={classes.root}
-      style={{
+    <StyledSpan
+      sx={{
+        fontFamily: `'Roboto Mono', monospace`,
+        whiteSpace: "nowrap",
         color:
           props.value < 0 && props.red
             ? RED
@@ -58,6 +53,6 @@ export function Currency(props: Props) {
       ) : (
         formatMoney(props.value)
       )}
-    </span>
+    </StyledSpan>
   )
 }

@@ -1,62 +1,27 @@
 /* eslint-disable jsx-a11y/no-autofocus */
+import AddIcon from "@mui/icons-material/Add"
+import RemoveIcon from "@mui/icons-material/Remove"
 import {
   Box,
   Button,
   Fade,
   lighten,
-  makeStyles,
-  Theme,
   useMediaQuery,
   useTheme,
-} from "@material-ui/core"
-import AddIcon from "@material-ui/icons/Add"
-import RemoveIcon from "@material-ui/icons/Remove"
+} from "@mui/material"
+import { styled } from "@mui/system"
 import React, { KeyboardEvent, useEffect, useState } from "react"
 import useDebounce from "react-use/lib/useDebounce"
-
-const useStyles = makeStyles((theme: Theme) => ({
-  root: { position: "relative" },
-  inputAmount: {
-    textAlign: "right",
-    fontFamily: `'Roboto Mono', monospace`,
-    fontSize: theme.typography.fontSize,
-    width: 80,
-    lineHeight: 1,
-    paddingRight: 0,
-    paddingBottom: 0,
-    paddingTop: 0,
-    backgroundColor: "transparent",
-    "&::-webkit-inner-spin-button": {
-      WebkitAppearance: "none",
-      margin: 0,
-    },
-    MozAppearance: "textfield",
-    outline: "none",
-    border: 0,
-    "&:focus": {
-      outline: "none",
-      border: 0,
-      backgroundColor: lighten(theme.palette.primary.main, 0.7),
-      borderRadius: 3,
-    },
-  },
-  plusNegative: {
-    position: "absolute",
-    right: 84,
-    fontSize: 12,
-    minWidth: 48,
-    padding: 0,
-    margin: 0,
-  },
-}))
 
 type Props = {
   value: number
   onChange: (value: number) => void
 }
 
+const StyledInput = styled("input")``
+
 export function AmountInput(props: Props) {
-  const classes = useStyles()
+  const theme = useTheme()
 
   const [value, setValue] = useState<string>(centsToDollars(props.value))
   useEffect(() => {
@@ -118,14 +83,20 @@ export function AmountInput(props: Props) {
     [close, props.onChange]
   )
 
-  const theme = useTheme()
   const isXs = useMediaQuery(theme.breakpoints.down("xs"))
 
   return (
-    <Box className={classes.root}>
+    <Box sx={{ position: "relative" }}>
       <Fade in={isXs} unmountOnExit>
         <Button
-          className={classes.plusNegative}
+          sx={{
+            position: "absolute",
+            right: 84,
+            fontSize: 12,
+            minWidth: 48,
+            padding: 0,
+            margin: 0,
+          }}
           size="small"
           onClick={handleToggleNegative}
         >
@@ -133,8 +104,31 @@ export function AmountInput(props: Props) {
           <AddIcon fontSize="inherit" />
         </Button>
       </Fade>
-      <input
-        className={classes.inputAmount}
+      <StyledInput
+        sx={{
+          textAlign: "right",
+          fontFamily: `'Roboto Mono', monospace`,
+          fontSize: theme.typography.fontSize,
+          width: 80,
+          lineHeight: 1,
+          paddingRight: 0,
+          paddingBottom: 0,
+          paddingTop: 0,
+          backgroundColor: "transparent",
+          "&::-webkit-inner-spin-button": {
+            WebkitAppearance: "none",
+            margin: 0,
+          },
+          MozAppearance: "textfield",
+          outline: "none",
+          border: 0,
+          "&:focus": {
+            outline: "none",
+            border: 0,
+            backgroundColor: lighten(theme.palette.primary.main, 0.7),
+            borderRadius: 3,
+          },
+        }}
         autoFocus
         type="text"
         pattern="[0-9]*"

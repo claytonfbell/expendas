@@ -1,8 +1,8 @@
-import { Box, Checkbox, Grid, Link, Tooltip } from "@material-ui/core"
+import { Box, Checkbox, Grid, Link, Tooltip, useTheme } from "@mui/material"
 import { Payment } from "@prisma/client"
 import clsx from "clsx"
 import React, { ChangeEvent } from "react"
-import { useAccountBoxStyles } from "./AccountBox"
+import { accountBoxStylesItem, accountBoxStylesRight } from "./AccountBox"
 import { AmountInputTool } from "./AmountInputTool"
 import { useUpdateItem } from "./api/api"
 import { ItemWithIncludes } from "./ItemWithIncludes"
@@ -13,7 +13,7 @@ type Props = {
 }
 
 export function CycleItemRow(props: Props) {
-  const classes = useAccountBoxStyles()
+  const theme = useTheme()
   const { item } = props
 
   const { mutateAsync: updateItem } = useUpdateItem()
@@ -24,9 +24,20 @@ export function CycleItemRow(props: Props) {
     }
 
   return (
-    <Box className={clsx(classes.item, item.isPaid ? "paid" : undefined)}>
+    <Box
+      sx={accountBoxStylesItem(theme)}
+      className={clsx(item.isPaid ? "paid" : undefined)}
+    >
       <Grid container>
-        <Grid item xs={8} className={classes.left}>
+        <Grid
+          item
+          xs={8}
+          sx={{
+            paddingTop: theme.spacing(1),
+            paddingBottom: theme.spacing(1),
+            paddingLeft: theme.spacing(2),
+          }}
+        >
           <Grid container spacing={2}>
             <Grid item alignContent="flex-start">
               <Tooltip
@@ -34,7 +45,9 @@ export function CycleItemRow(props: Props) {
                 title="Check if this item has already been settled and no longer impacts your account balance."
               >
                 <Checkbox
-                  className={classes.checkbox}
+                  sx={{
+                    padding: 0,
+                  }}
                   size="small"
                   checked={item.isPaid}
                   onChange={handlePaidClick(item)}
@@ -44,7 +57,9 @@ export function CycleItemRow(props: Props) {
             <Grid item xs={10}>
               <Link
                 color="inherit"
-                className={classes.link}
+                sx={{
+                  cursor: "pointer",
+                }}
                 onClick={() => props.onEditPayment(item.payment)}
               >
                 {item.payment.description}
@@ -52,7 +67,7 @@ export function CycleItemRow(props: Props) {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={4} className={classes.right}>
+        <Grid item xs={4} sx={accountBoxStylesRight(theme)}>
           <AmountInputTool
             green={!item.isPaid}
             enabled

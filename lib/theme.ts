@@ -1,8 +1,7 @@
-import { ThemeOptions } from "@material-ui/core"
+import { ThemeOptions } from "@mui/material"
 
 export const PRIMARY_COLOR = "#0088b3"
 
-// Create a theme instance.
 const theme: ThemeOptions = {
   palette: {
     primary: {
@@ -13,11 +12,29 @@ const theme: ThemeOptions = {
       main: "#e0a800",
     },
   },
-
-  overrides: {
+  typography: {
+    fontSize: 12,
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+        },
+      },
+    },
     MuiTab: {
-      root: {
-        textTransform: "none",
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+        },
+      },
+    },
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          textDecoration: "none",
+        },
       },
     },
   },

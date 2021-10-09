@@ -1,5 +1,4 @@
-import { Grid } from "@material-ui/core"
-import { Button } from "material-ui-bootstrap"
+import { Button, Grid } from "@mui/material"
 import { Form, SubmitButton, TextField } from "material-ui-pack"
 import { useRouter } from "next/dist/client/router"
 import React, { useState } from "react"
@@ -60,7 +59,7 @@ export default function Register() {
           </Grid>
           <Grid item xs={12}>
             <SubmitButton>Register</SubmitButton>
-          </Grid>{" "}
+          </Grid>
           <Grid item xs={12}>
             <Button
               variant="outlined"
