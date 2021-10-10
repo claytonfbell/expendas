@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/claytonfbell/expendas/compare/v1.4.0...v1.5.0) (2021-10-10)
+
+
+### Features
+
+* Upgraded to MUI v5 ([8bb286c](https://github.com/claytonfbell/expendas/commit/8bb286c36fc248778a849256eef52b720e166c1a))
+
+
+### Bug Fixes
+
+* Finished ResponsiveTable component, moved it to material-ui-pack ([7f3bcc0](https://github.com/claytonfbell/expendas/commit/7f3bcc0f1eb5a33bd532154c6c31889e50711479))
+* responsive adjustment to payments table ([ad672f6](https://github.com/claytonfbell/expendas/commit/ad672f609b62e600eb5974c19b239b39e67bc875))
+* Upgraded material-ui-pack, @material-ui/core ([5d8d905](https://github.com/claytonfbell/expendas/commit/5d8d90552ce691aaecccf425be22f6862c9572fa))
+
 ## [1.4.0](https://github.com/claytonfbell/expendas/compare/v1.3.0...v1.4.0) (2021-08-24)
 
 
