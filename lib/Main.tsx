@@ -239,8 +239,14 @@ export function Main() {
           bottom: 0,
           left: 0,
           width: `100vw`,
-          paddingLeft: theme.spacing(4),
-          paddingRight: 16,
+          paddingLeft: 0,
+          paddingRight: theme.spacing(2),
+          [theme.breakpoints.up("lg")]: {
+            paddingRight: 0,
+          },
+          [theme.breakpoints.down("md")]: {
+            paddingRight: theme.spacing(4),
+          },
           paddingTop: theme.spacing(2),
           paddingBottom: theme.spacing(2),
           color: theme.palette.primary.contrastText,
