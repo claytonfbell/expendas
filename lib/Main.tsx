@@ -244,9 +244,6 @@ export function Main() {
           [theme.breakpoints.up("lg")]: {
             paddingRight: 0,
           },
-          [theme.breakpoints.down("md")]: {
-            paddingRight: theme.spacing(4),
-          },
           paddingTop: theme.spacing(2),
           paddingBottom: theme.spacing(2),
           color: theme.palette.primary.contrastText,
