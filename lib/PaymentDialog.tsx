@@ -218,7 +218,7 @@ export function PaymentDialog(props: Props) {
 
   const [openMultiDates, setOpenMultiDates] = useState(false)
   const theme = useTheme()
-  const isXs = useMediaQuery(theme.breakpoints.down("xs"))
+  const isXs = useMediaQuery(theme.breakpoints.down("sm"))
 
   return (
     <Dialog

@@ -75,7 +75,7 @@ export function Inside(props: Props) {
                     </a>
                   </NextLink>
                 </Grid>
-                <Hidden mdDown>
+                <Hidden lgDown>
                   <Grid item>
                     <NextLink href="/">
                       <Button>Main</Button>
@@ -95,7 +95,7 @@ export function Inside(props: Props) {
                   </Grid>
                 </Hidden>
                 <Grid item>
-                  <Hidden xsDown>
+                  <Hidden smDown>
                     <Tooltip title="github.com/claytonfbell/expendas">
                       <IconButton
                         color="primary"

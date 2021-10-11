@@ -43,7 +43,7 @@ export function InvestmentPortfolio() {
     investmentGroup.types.includes(x.accountType)
   )
   const isLg = useMediaQuery(theme.breakpoints.up("lg"))
-  const isXs = useMediaQuery(theme.breakpoints.down("xs"))
+  const isXs = useMediaQuery(theme.breakpoints.down("sm"))
   const data: Data[] = accounts
     .sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance))
     .map((x) => {

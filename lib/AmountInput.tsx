@@ -83,7 +83,7 @@ export function AmountInput(props: Props) {
     [close, props.onChange]
   )
 
-  const isXs = useMediaQuery(theme.breakpoints.down("xs"))
+  const isXs = useMediaQuery(theme.breakpoints.down("sm"))
 
   return (
     <Box sx={{ position: "relative" }}>

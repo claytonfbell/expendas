@@ -7,7 +7,7 @@ interface Props {
 
 export function Title(props: Props) {
   const theme = useTheme()
-  const isXsDown = useMediaQuery(theme.breakpoints.down("xs"))
+  const isXsDown = useMediaQuery(theme.breakpoints.down("sm"))
 
   return (
     <Typography

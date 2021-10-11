@@ -135,7 +135,7 @@ export function Main() {
   const [editAccount, setEditAccount] = React.useState<Account>()
   const [editPayment, setEditPayment] = React.useState<Payment>()
 
-  const isMdDown = useMediaQuery(theme.breakpoints.down("md"))
+  const isMdDown = useMediaQuery(theme.breakpoints.down("lg"))
 
   return date === null ? null : (
     <>
