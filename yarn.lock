@@ -3351,10 +3351,10 @@ match-sorter@^6.0.2:
     "@babel/runtime" "^7.12.5"
     remove-accents "0.4.2"
 
-material-ui-pack@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/material-ui-pack/-/material-ui-pack-5.1.0.tgz#261b16de75966e8be0117c15ab7ab7e58b1c4403"
-  integrity sha512-ZlVDvb4cn1h/Jb3OB3B2FIJe6m+q2rWPB92XdCNWTGtGVwuySzPHZHTIABbg9EGweJGAtfgqzEQxr5YgAADEbA==
+material-ui-pack@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/material-ui-pack/-/material-ui-pack-5.1.1.tgz#987bbf8ec2ccb743fbd49c5ceff2461e34501b30"
+  integrity sha512-Gi93SovBWZFLxPnvsUaPwXKFn4+swENb7mROYOBCJc412epY3HIdeBNhUM5fxYwMGfDS5JKq2Qt351c1ceF3Uw==
   dependencies:
     "@date-io/moment" "^1.3.13"
     countries-and-timezones "^3.2.1"
