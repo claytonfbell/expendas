@@ -3351,6 +3351,11 @@ match-sorter@^6.0.2:
     "@babel/runtime" "^7.12.5"
     remove-accents "0.4.2"
 
+material-ui-bootstrap@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/material-ui-bootstrap/-/material-ui-bootstrap-5.1.1.tgz#73839a56f2ad105172cfa954c063d8b03161d88c"
+  integrity sha512-J047ILRqitXd1JGSusOsAtAYDChXC4Yy3l7PEM7bhwD2WJjNfEEL70l3MYg6CGSA+0kZ2acDbNX2Amytnv7bDA==
+
 material-ui-pack@^5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/material-ui-pack/-/material-ui-pack-5.1.1.tgz#987bbf8ec2ccb743fbd49c5ceff2461e34501b30"

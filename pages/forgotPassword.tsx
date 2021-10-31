@@ -1,11 +1,10 @@
-import { Alert, Button, Grid } from "@mui/material"
-import { Form, SubmitButton, TextField } from "material-ui-pack"
+import { Alert } from "@mui/material"
+import { Form } from "material-ui-pack"
 import { useRouter } from "next/dist/client/router"
 import React, { useState } from "react"
 import ReactMarkdown from "react-markdown"
 import { useForgotPassword } from "../lib/api/api"
 import { ForgotPasswordRequest } from "../lib/api/ForgotPasswordRequest"
-import DisplayError from "../lib/DisplayError"
 import { Outside } from "../lib/Outside"
 
 export default function ForgotPassword() {
@@ -24,40 +23,29 @@ export default function ForgotPassword() {
 
   return (
     <Outside title="Forgot Password">
+      {message !== undefined ? (
+        <Alert color="success">
+          <ReactMarkdown>{message}</ReactMarkdown>
+        </Alert>
+      ) : null}
+
       <Form
+        error={error?.message}
+        busy={isLoading}
         state={state}
         setState={setState}
         onSubmit={handleSubmit}
-        busy={isLoading}
-        size="small"
-        margin="none"
-      >
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <DisplayError error={error} />
-            {message !== undefined ? (
-              <Alert color="success">
-                <ReactMarkdown>{message}</ReactMarkdown>
-              </Alert>
-            ) : null}
-          </Grid>
-          <Grid item xs={12}>
-            <TextField name="email" />
-          </Grid>
-          <Grid item xs={12}>
-            <SubmitButton>Send Link to Setup Password</SubmitButton>
-          </Grid>
-          <Grid item xs={12}>
-            <Button
-              variant="outlined"
-              fullWidth
-              onClick={() => router.push("/")}
-            >
-              Go Back
-            </Button>
-          </Grid>
-        </Grid>
-      </Form>
+        submitLabel="Send Link to Setup Password"
+        onCancel={() => router.push("/")}
+        cancelLabel="Go Back"
+        schema={{
+          email: "email",
+        }}
+        layout={{
+          submitButton: { xs: 12 },
+          cancelButton: { xs: 12 },
+        }}
+      />
     </Outside>
   )
 }

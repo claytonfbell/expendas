@@ -1,11 +1,10 @@
-import { Alert, Button, Grid } from "@mui/material"
-import { Form, SubmitButton, TextField } from "material-ui-pack"
+import { Alert } from "@mui/material"
+import { Form } from "material-ui-pack"
 import { useRouter } from "next/dist/client/router"
 import React, { useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
 import { useResetPassword } from "../lib/api/api"
 import { ResetPasswordRequest } from "../lib/api/ResetPasswordRequest"
-import DisplayError from "../lib/DisplayError"
 import { Outside } from "../lib/Outside"
 
 export default function ResetPassword() {
@@ -31,47 +30,24 @@ export default function ResetPassword() {
 
   return (
     <Outside title="Set Password">
+      {message !== undefined ? (
+        <Alert color="success">
+          <ReactMarkdown>{message}</ReactMarkdown>
+        </Alert>
+      ) : null}
       <Form
+        error={error?.message}
+        busy={isLoading}
         state={state}
         setState={setState}
         onSubmit={handleSubmit}
-        busy={isLoading}
-        size="small"
-        margin="none"
-      >
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <DisplayError error={error} />
-            {message !== undefined ? (
-              <Alert color="success">
-                <ReactMarkdown>{message}</ReactMarkdown>
-              </Alert>
-            ) : null}
-          </Grid>
-          <Grid item xs={12}>
-            <TextField name="authCode" label="Reset Code" />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              name="password"
-              formatter="newPassword"
-              label="New Password"
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <SubmitButton>Set Password</SubmitButton>
-          </Grid>
-          <Grid item xs={12}>
-            <Button
-              variant="outlined"
-              fullWidth
-              onClick={() => router.push("/")}
-            >
-              Cancel
-            </Button>
-          </Grid>
-        </Grid>
-      </Form>
+        submitLabel="Set Password"
+        onCancel={() => router.push("/")}
+        schema={{
+          authCode: { type: "text", label: "Reset Code" },
+          password: { type: "newPassword", label: "New Password" },
+        }}
+      />
     </Outside>
   )
 }
