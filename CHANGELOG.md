@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/claytonfbell/expendas/compare/v1.5.0...v1.6.0) (2021-10-31)
+
+
+### Features
+
+* Refactored the outside pages, added Demo animation ([efea5c7](https://github.com/claytonfbell/expendas/commit/efea5c79238bc38e22ee9d2c4d60f83acbae7802))
+
+
+### Bug Fixes
+
+* Added favicon and social image back ([3af5bc8](https://github.com/claytonfbell/expendas/commit/3af5bc8fdc07b50f20b11738f1efdf9327919583))
+* breakpoint changes for MUI v5 ([42b00c7](https://github.com/claytonfbell/expendas/commit/42b00c7faa1c0bf6ec091e3d2ab304af3f4e202d))
+* more responsive fixes ([0678d5c](https://github.com/claytonfbell/expendas/commit/0678d5cb92510d088f5c16475ffdefed91d816a0))
+* more responsive fixes ([c654ce4](https://github.com/claytonfbell/expendas/commit/c654ce44d674ce756460fdb71362983406b2448b))
+* updated material-ui-pack ([66dfb28](https://github.com/claytonfbell/expendas/commit/66dfb28f4c9dcdbee34ee74ecbafdd23292d5f0f))
+
 ## [1.5.0](https://github.com/claytonfbell/expendas/compare/v1.4.0...v1.5.0) (2021-10-10)
 
 
