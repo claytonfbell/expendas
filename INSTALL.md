@@ -5,28 +5,21 @@
 ```bash
 apt-get update && apt-get dist-upgrade
 
-curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
+# install docker https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04
+sudo apt update
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+apt-cache policy docker-ce
+sudo apt install docker-ce
+sudo systemctl status docker
 
-## Run `sudo apt-get install -y nodejs` to install Node.js 14.x and npm
-## You may also need development tools to build native addons:
-     sudo apt-get install gcc g++ make
-## To install the Yarn package manager, run:
-     curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | sudo tee /usr/share/keyrings/yarnkey.gpg >/dev/null
-     echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-     sudo apt-get update && sudo apt-get install yarn
-
-
+# startup our app
 git clone https://github.com/claytonfbell/expendas.git
 cd expendas
-yarn install
-yarn build
-yarn start
+./deploy.sh
 
-# with pm2
-yarn global add pm2
-pm2 start yarn --name "nextjs" --interpreter bash -- start
-pm2 show nextjs
-
+# setup nginx as our web server proxy and SSL handler
 apt install nginx-full
 apt install certbot python3-certbot-nginx
 
