@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.0](https://github.com/claytonfbell/expendas/compare/v1.6.1...v1.7.0) (2022-03-17)
+
+
+### Features
+
+* switched to use Dockerfile for building and running, switched from yarn to npm, switched to node v16 ([92eb311](https://github.com/claytonfbell/expendas/commit/92eb311d162777ff73e41f531c5cc09d6494a070))
+
+
+### Bug Fixes
+
+* added startup script ([898233e](https://github.com/claytonfbell/expendas/commit/898233e33802a702f60dfdb2b746e0c6c4375574))
+* got startup script working ([e2d372e](https://github.com/claytonfbell/expendas/commit/e2d372ec7bf9cb2f1ac9bec63c5baaca747b9bf9))
+* Made some optimizations to deployment ([aa7bc6a](https://github.com/claytonfbell/expendas/commit/aa7bc6aa91f8cb40ed7335883093c20cd900074e))
+* startup.sh execute permission ([ad77807](https://github.com/claytonfbell/expendas/commit/ad77807ce40cb47ef30ee8ce5837c13517558234))
+* trying to get startup script working ([7e4c17d](https://github.com/claytonfbell/expendas/commit/7e4c17de0021e038ba6bcd6a9211e0768bc4fa77))
+
 ### [1.6.1](https://github.com/claytonfbell/expendas/compare/v1.6.0...v1.6.1) (2021-10-31)
 
 
