@@ -31,13 +31,6 @@ sudo certbot --nginx -d www.expendas.com -d expendas.com
 crontab -e
 # ADD: 0 5 * * * /usr/bin/certbot renew --quiet
 
-touch /etc/rc.local
-chmod +x /etc/rc.local
-vim /etc/rc.local
-
-    #!/bin/bash
-    /root/expendas/startup.sh
-
 apt install net-tools
 vim /etc/nginx/sites-available/default
 
