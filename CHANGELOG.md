@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.1](https://github.com/claytonfbell/expendas/compare/v1.7.0...v1.7.1) (2022-06-22)
+
+
+### Bug Fixes
+
+* Clear carryOver table entries when account deleted ([06a02c3](https://github.com/claytonfbell/expendas/commit/06a02c3e5c3954a326919c9cb8b0b18846337777))
+
 ## [1.7.0](https://github.com/claytonfbell/expendas/compare/v1.6.1...v1.7.0) (2022-03-17)
 
 
