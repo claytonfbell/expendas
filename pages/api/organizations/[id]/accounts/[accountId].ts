@@ -104,6 +104,7 @@ async function handler(
     }
     // DELETE
     else if (req.method === "DELETE") {
+      await prisma.carryOver.deleteMany({ where: { accountId } })
       await prisma.account.delete({
         where: { id: accountId },
         include: { payments: true },
