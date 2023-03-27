@@ -1,110 +1,121 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+generator client {
+    provider = "prisma-client-js"
 }
 
-generator client {
-  provider = "prisma-client-js"
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model Organization {
-  id            Int                     @id @default(autoincrement())
-  name          String?                 @unique @db.VarChar(255)
-  users         UsersOnOrganizations[]
-  accounts      Account[]
+    id       Int                    @id @default(autoincrement())
+    name     String?                @unique(map: "Organization.name_unique") @db.VarChar(255)
+    accounts Account[]
+    users    UsersOnOrganizations[]
+    Video    Video[]
 }
 
 model User {
-  id                Int                     @id @default(autoincrement())
-  firstName         String?                 @db.VarChar(255)
-  lastName          String?                 @db.VarChar(255)
-  email             String                  @unique @db.VarChar(255)
-  passwordHash      String?                 @db.VarChar(255)
-  organizations     UsersOnOrganizations[]
-  authCode          String?                 @db.VarChar(255)
-  authCodeExpiresAt DateTime?
-  @@index([authCode])
+    id                Int                    @id @default(autoincrement())
+    firstName         String?                @db.VarChar(255)
+    lastName          String?                @db.VarChar(255)
+    email             String                 @unique(map: "User.email_unique") @db.VarChar(255)
+    passwordHash      String?                @db.VarChar(255)
+    authCode          String?                @db.VarChar(255)
+    authCodeExpiresAt DateTime?
+    organizations     UsersOnOrganizations[]
+
+    @@index([authCode], map: "User.authCode_index")
 }
 
 model UsersOnOrganizations {
-  organization      Organization    @relation(fields: [organizationId], references: [id])
-  organizationId    Int
-  user              User            @relation(fields: [userId], references: [id])
-  userId            Int
-  isAdmin           Boolean         @default(false)
-  @@id([userId, organizationId])
+    organizationId Int
+    userId         Int
+    isAdmin        Boolean      @default(false)
+    organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@id([userId, organizationId])
 }
 
 model Account {
-  id                    Int             @id @default(autoincrement())
-  organization          Organization    @relation(fields: [organizationId], references: [id])
-  organizationId        Int
-  name                  String          @db.VarChar(255)
-  accountType           AccountType
-  creditCardType        CreditCardType?
-  balance               Int
-  payments              Payment[]
-  carryOver             CarryOver[]
-  totalDeposits         Int?
-  totalFixedIncome      Int?
-}
-
-enum AccountType {
-  Cash
-  Credit_Card
-  Checking_Account
-  Savings_Account
-  CD
-  Investment
-  Line_of_Credit
-  Loan
-  Home_Market_Value
-  Car_Value
-}
-
-enum CreditCardType {
-  Mastercard
-  Visa
-  American_Express
-  Discover
+    id               Int             @id @default(autoincrement())
+    organizationId   Int
+    name             String          @db.VarChar(255)
+    accountType      AccountType
+    balance          Int
+    creditCardType   CreditCardType?
+    totalDeposits    Int?
+    totalFixedIncome Int?
+    organization     Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    carryOver        CarryOver[]
+    payments         Payment[]
 }
 
 model Payment {
-  id                    Int             @id @default(autoincrement())
-  account               Account         @relation(fields: [accountId], references: [id])
-  accountId             Int
-  description           String          @db.VarChar(255)
-  amount                Int
-  date                  String
-  isPaycheck            Boolean         @default(false)
-  repeatsOnDates        String[]
-  repeatsUntilDate      String?
-  repeatsOnDaysOfMonth  Int[]
-  repeatsOnMonthsOfYear Int[]
-  repeatsWeekly         Int?
-  items                 Item[]
+    id                    Int      @id @default(autoincrement())
+    accountId             Int
+    description           String   @db.VarChar(255)
+    amount                Int
+    date                  String
+    repeatsUntilDate      String?
+    repeatsOnDaysOfMonth  Int[]
+    repeatsOnMonthsOfYear Int[]
+    repeatsWeekly         Int?
+    isPaycheck            Boolean  @default(false)
+    repeatsOnDates        String[]
+    items                 Item[]
+    account               Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
 }
 
 model Item {
-  id                    Int             @id @default(autoincrement())
-  payment               Payment         @relation(fields: [paymentId], references: [id])
-  paymentId             Int
-  date                  String
-  amount                Int
-  isPaid                Boolean         @default(false)
-  @@index([date])
+    id        Int     @id @default(autoincrement())
+    paymentId Int
+    date      String
+    amount    Int
+    isPaid    Boolean @default(false)
+    payment   Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+    @@index([date], map: "Item.date_index")
 }
 
 model CarryOver {
-  id                    Int             @id @default(autoincrement())
-  account               Account         @relation(fields: [accountId], references: [id])
-  accountId             Int
-  amount                Int
-  date                  String
-  @@unique([accountId, date])
+    id        Int     @id @default(autoincrement())
+    accountId Int
+    amount    Int
+    date      String
+    account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+    @@unique([accountId, date], map: "CarryOver.accountId_date_unique")
+}
+
+model Video {
+    id             Int          @id @default(autoincrement())
+    organizationId Int
+    name           String       @db.VarChar(255)
+    description    String
+    muxData        Json
+    Organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+enum AccountType {
+    Cash
+    Credit_Card
+    Checking_Account
+    Savings_Account
+    CD
+    Investment
+    Line_of_Credit
+    Loan
+    Home_Market_Value
+    Car_Value
+}
+
+enum CreditCardType {
+    Mastercard
+    Visa
+    American_Express
+    Discover
 }
 
 // npx prisma migrate dev --name init
