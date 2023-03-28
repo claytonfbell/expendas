@@ -49,6 +49,7 @@ model Account {
     organization     Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
     carryOver        CarryOver[]
     payments         Payment[]
+    accountBucket    AccountBucket?
 }
 
 model Payment {
@@ -106,6 +107,12 @@ enum CreditCardType {
     Visa
     American_Express
     Discover
+}
+
+enum AccountBucket {
+    Roth_And_HSA
+    Traditional
+    After_Tax
 }
 
 // npx prisma migrate dev --name init
