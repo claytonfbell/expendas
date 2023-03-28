@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.2](https://github.com/claytonfbell/expendas/compare/v1.7.1...v1.7.2) (2023-03-28)
+
+
+### Bug Fixes
+
+* added account bucket typed ([0bab61e](https://github.com/claytonfbell/expendas/commit/0bab61e7f5eed879fb51abbf697256ef1c4113fa))
+* apply account buckets to accounts ([7f07a12](https://github.com/claytonfbell/expendas/commit/7f07a12017f7bc7af46a973535502c44485d9073))
+* copy-backup script ([5207624](https://github.com/claytonfbell/expendas/commit/5207624e708c661f9c4ea2a4a4454af2d1c087b3))
+* display tax bucket totals ([d1299c1](https://github.com/claytonfbell/expendas/commit/d1299c111e6ca24efde63aab3fad5ffae5af4f9e))
+* got prisma back on track after a lot of trouble ([dca9bbe](https://github.com/claytonfbell/expendas/commit/dca9bbe4146ec4d9dc8a2b0471645ef6a495b99e))
+* removed the rougue table ([d850d66](https://github.com/claytonfbell/expendas/commit/d850d660acaf58f291d4eaccc322876e45200569))
+* upgrade prisma client ([ff524e8](https://github.com/claytonfbell/expendas/commit/ff524e85f95d56dea186b6c40d1b8b382a9aad29))
+
 ### [1.7.1](https://github.com/claytonfbell/expendas/compare/v1.7.0...v1.7.1) (2022-06-22)
 
 
