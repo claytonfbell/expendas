@@ -12,7 +12,6 @@ model Organization {
     name     String?                @unique(map: "Organization.name_unique") @db.VarChar(255)
     accounts Account[]
     users    UsersOnOrganizations[]
-    Video    Video[]
 }
 
 model User {
@@ -87,15 +86,6 @@ model CarryOver {
     account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
     @@unique([accountId, date], map: "CarryOver.accountId_date_unique")
-}
-
-model Video {
-    id             Int          @id @default(autoincrement())
-    organizationId Int
-    name           String       @db.VarChar(255)
-    description    String
-    muxData        Json
-    Organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 }
 
 enum AccountType {
