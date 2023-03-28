@@ -1,7 +1,7 @@
 import { Button } from "@mui/material"
 import { Account } from "@prisma/client"
 import { ResponsiveTable } from "material-ui-pack"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { AccountDialog } from "./AccountDialog"
 import { displayAccountType } from "./accountTypes"
 import { useFetchAccounts, useRemoveAccount } from "./api/api"
@@ -79,6 +79,7 @@ export function AccountManage() {
             creditCardType: null,
             totalDeposits: 0,
             totalFixedIncome: 0,
+            accountBucket: "After_Tax",
           })
         }
       >
