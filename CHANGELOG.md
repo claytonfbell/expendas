@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.3](https://github.com/claytonfbell/expendas/compare/v1.7.2...v1.7.3) (2023-03-28)
+
+
+### Bug Fixes
+
+* fixed typescript error ([460bc16](https://github.com/claytonfbell/expendas/commit/460bc1615528a6cedd9a6227421c8c784d964f25))
+
 ### [1.7.2](https://github.com/claytonfbell/expendas/compare/v1.7.1...v1.7.2) (2023-03-28)
 
 
