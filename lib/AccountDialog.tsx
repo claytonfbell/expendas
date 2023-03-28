@@ -8,7 +8,8 @@ import {
 } from "@mui/material"
 import { Account } from "@prisma/client"
 import { Form } from "material-ui-pack"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
+import { accountBucketOptions } from "./accountBuckets"
 import { debtGroup, investmentGroup } from "./AccountGroup"
 import { accountTypeOptions } from "./accountTypes"
 import { AccountWithIncludes } from "./AccountWithIncludes"
@@ -89,6 +90,10 @@ export function AccountDialog(props: Props) {
           schema={{
             name: "capitalize",
             accountType: { type: "select", options: accountTypeOptions },
+            accountBucket:
+              state?.accountType === "Investment"
+                ? { type: "select", options: accountBucketOptions }
+                : undefined,
             creditCardType:
               state?.accountType === "Credit_Card"
                 ? { type: "select", options: creditCardTypeOptions }

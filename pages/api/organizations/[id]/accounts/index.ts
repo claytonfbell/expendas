@@ -32,9 +32,16 @@ async function handler(
     }
     // POST
     else if (req.method === "POST") {
-      const { name, accountType, balance, creditCardType }: Account = req.body
+      const {
+        name,
+        accountType,
+        balance,
+        creditCardType,
+        accountBucket,
+      }: Account = req.body
       validate({ name }).notEmpty()
       validate({ accountType }).notEmpty()
+      validate({ accountBucket }).notEmpty()
       validate({ balance }).notEmpty()
       if (accountType === "Credit_Card") {
         validate({ creditCardType }).notEmpty()
@@ -60,6 +67,7 @@ async function handler(
           accountType,
           balance,
           creditCardType,
+          accountBucket,
         },
       })
 

@@ -35,6 +35,7 @@ async function handler(
       const {
         name,
         accountType,
+        accountBucket,
         balance,
         creditCardType,
         carryOver,
@@ -43,6 +44,7 @@ async function handler(
       }: AccountWithIncludes = req.body
       validate({ name }).notEmpty()
       validate({ accountType }).notEmpty()
+      validate({ accountBucket }).notEmpty()
       validate({ balance }).notEmpty()
       if (accountType === "Credit_Card") {
         validate({ creditCardType }).notEmpty()
@@ -66,6 +68,7 @@ async function handler(
         data: {
           name,
           accountType,
+          accountBucket,
           balance,
           creditCardType,
           totalDeposits,
