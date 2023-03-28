@@ -2,14 +2,17 @@ import {
   alpha,
   Box,
   Grid,
+  Table,
+  TableBody,
   TableCell,
+  TableHead,
   TableRow,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material"
 import { ResponsiveTable } from "material-ui-pack"
-import React, { useState } from "react"
+import { useState } from "react"
 import {
   Bar,
   BarChart,
@@ -66,6 +69,20 @@ export function InvestmentPortfolio() {
   const { mutateAsync: updateAccount } = useUpdateAccount()
 
   const [selectedAccount, setSelectedAccount] = useState<AccountWithIncludes>()
+
+  const totalRothAndHSA = accounts.reduce(
+    (a, b) => a + (b.accountBucket === "Roth_And_HSA" ? b.balance : 0),
+    0
+  )
+  const totalTraditional = accounts.reduce(
+    (a, b) => a + (b.accountBucket === "Traditional" ? b.balance : 0),
+    0
+  )
+
+  const totalAfterTax = accounts.reduce(
+    (a, b) => a + (b.accountBucket === "After_Tax" ? b.balance : 0),
+    0
+  )
 
   return (
     <>
@@ -331,6 +348,36 @@ export function InvestmentPortfolio() {
               )
             }
           />
+        </Grid>
+        <Grid item xs={12}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Tax Bucket</TableCell>
+                <TableCell align="right">Total</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>Roth and HSA</TableCell>
+                <TableCell align="right">
+                  <Currency value={totalRothAndHSA} />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Traditional</TableCell>
+                <TableCell align="right">
+                  <Currency value={totalTraditional} />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>After Tax</TableCell>
+                <TableCell align="right">
+                  <Currency value={totalAfterTax} />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </Grid>
       </Grid>
       <AccountDialog
