@@ -41,7 +41,9 @@ async function handler(
       }: Account = req.body
       validate({ name }).notEmpty()
       validate({ accountType }).notEmpty()
-      validate({ accountBucket }).notEmpty()
+      if (accountType === "Investment") {
+        validate({ accountBucket }).notEmpty()
+      }
       validate({ balance }).notEmpty()
       if (accountType === "Credit_Card") {
         validate({ creditCardType }).notEmpty()
