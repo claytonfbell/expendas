@@ -2,15 +2,13 @@ import {
   alpha,
   Box,
   Grid,
-  Table,
-  TableBody,
   TableCell,
-  TableHead,
   TableRow,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material"
+import { AccountBucket } from "@prisma/client"
 import { ResponsiveTable } from "material-ui-pack"
 import { useState } from "react"
 import {
@@ -22,6 +20,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
+import { displayAccountBucket } from "./accountBuckets"
 import { AccountDialog } from "./AccountDialog"
 import { investmentGroup } from "./AccountGroup"
 import { displayAccountType } from "./accountTypes"
@@ -34,7 +33,7 @@ import { Link } from "./Link"
 import { Percentage } from "./Percentage"
 
 type Data = {
-  name: string
+  name: AccountBucket
   equity: number
   fixed: number
 }
@@ -47,16 +46,27 @@ export function InvestmentPortfolio() {
   )
   const isLg = useMediaQuery(theme.breakpoints.up("lg"))
   const isXs = useMediaQuery(theme.breakpoints.down("sm"))
-  const data: Data[] = accounts
+  const data = accounts
     .sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance))
     .map((x) => {
       const equity = x.balance - (x.totalFixedIncome || 0)
       return {
-        name: isLg ? `${x.name} ${displayAccountType(x.accountType)}` : x.name,
+        name: x.accountBucket || "After_Tax",
         equity,
         fixed: x.totalFixedIncome || 0,
       }
     })
+    .reduce((a: Data[], b) => {
+      const existing = a.find((x) => x.name === b.name)
+      if (existing) {
+        existing.equity += b.equity
+        existing.fixed += b.fixed
+      } else {
+        a.push(b)
+      }
+      return a
+    }, [])
+    .map((x) => ({ ...x, name: displayAccountBucket(x.name) }))
 
   const equity = accounts.reduce(
     (a, b) => a + b.balance - (b.totalFixedIncome || 0),
@@ -91,7 +101,7 @@ export function InvestmentPortfolio() {
           <ResponsiveContainer width="100%" height={isXs ? 180 : 300}>
             <BarChart width={500} height={300} data={data}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" hide />
+              <XAxis dataKey="name" />
               <YAxis hide />
               <Tooltip
                 content={<CustomTooltip />}
@@ -113,6 +123,35 @@ export function InvestmentPortfolio() {
               />
             </BarChart>
           </ResponsiveContainer>
+        </Grid>
+
+        <Grid item xs={12}>
+          <ResponsiveTable
+            size="small"
+            striped
+            elevation={4}
+            rowData={data}
+            schema={[
+              {
+                label: "Retirement Bucket",
+                render: (x) => x.name,
+              },
+              {
+                label: "Equity",
+                render: (x) => <Currency value={x.equity} />,
+                xsDownHidden: true,
+              },
+              {
+                label: "Fixed Income",
+                render: (x) => <Currency value={x.fixed} />,
+                xsDownHidden: true,
+              },
+              {
+                label: "Total",
+                render: (x) => <Currency value={x.equity + x.fixed} />,
+              },
+            ]}
+          />
         </Grid>
 
         <Grid item xs={12}>
@@ -348,36 +387,6 @@ export function InvestmentPortfolio() {
               )
             }
           />
-        </Grid>
-        <Grid item xs={12}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Tax Bucket</TableCell>
-                <TableCell align="right">Total</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell>Roth and HSA</TableCell>
-                <TableCell align="right">
-                  <Currency value={totalRothAndHSA} />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Traditional</TableCell>
-                <TableCell align="right">
-                  <Currency value={totalTraditional} />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>After Tax</TableCell>
-                <TableCell align="right">
-                  <Currency value={totalAfterTax} />
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
         </Grid>
       </Grid>
       <AccountDialog
