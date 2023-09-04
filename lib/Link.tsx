@@ -9,19 +9,15 @@ interface Props {
 }
 
 export function Link(props: Props) {
-  const muiLink = (
+  return (
     <MUILink
       color="inherit"
       style={{ cursor: "pointer" }}
       onClick={props.onClick}
+      component={props.href !== undefined ? NextLink : "a"}
+      href={props.href}
     >
       {props.children}
     </MUILink>
-  )
-
-  return props.href !== undefined ? (
-    <NextLink href={props.href}>{muiLink}</NextLink>
-  ) : (
-    muiLink
   )
 }
