@@ -12,7 +12,7 @@ export const buildResponse = async (
     } else {
       res.status(200).json(result)
     }
-  } catch (e) {
+  } catch (e: any) {
     console.log(e)
     const status = e.status || 500
     res.status(status).json({ status, message: e.message })
