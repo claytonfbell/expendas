@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.8.0](https://github.com/claytonfbell/expendas/compare/v1.7.3...v1.8.0) (2023-09-04)
+
+
+### Bug Fixes
+
+* chart our tax buckets ([87d9862](https://github.com/claytonfbell/expendas/commit/87d9862a968ed25f849a2654ac345c7216ff802c))
+* validate bucket type only for investment accounts ([efd77fc](https://github.com/claytonfbell/expendas/commit/efd77fcae65cef7a2e237005da8fb656d125ea85))
+
 ### [1.7.3](https://github.com/claytonfbell/expendas/compare/v1.7.2...v1.7.3) (2023-03-28)
 
 
