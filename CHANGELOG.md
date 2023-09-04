@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.8.1](https://github.com/claytonfbell/expendas/compare/v1.8.0...v1.8.1) (2023-09-04)
+
+
+### Bug Fixes
+
+* typescript error fixed ([aac1b6e](https://github.com/claytonfbell/expendas/commit/aac1b6e28397d61eab58a507a22169c949fccb8e))
+
 ## [1.8.0](https://github.com/claytonfbell/expendas/compare/v1.7.3...v1.8.0) (2023-09-04)
 
 
