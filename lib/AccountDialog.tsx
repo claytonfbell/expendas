@@ -100,7 +100,6 @@ export function AccountDialog(props: Props) {
             balance: {
               type: "currency",
               inPennies: true,
-              numeric: true,
               label:
                 state?.accountType === "Investment"
                   ? "Current Balance"
@@ -116,7 +115,6 @@ export function AccountDialog(props: Props) {
                   totalFixedIncome: {
                     type: "currency",
                     inPennies: true,
-                    numeric: true,
                     fullWidth: true,
                   },
                 }

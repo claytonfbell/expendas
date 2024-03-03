@@ -31,8 +31,10 @@ import {
   TextField,
 } from "material-ui-pack"
 import moment from "moment-timezone"
-import React, { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
+import DisplayError from "./DisplayError"
+import { PaymentForm } from "./PaymentForm"
 import { displayAccountType } from "./accountTypes"
 import {
   useAddPayment,
@@ -41,9 +43,7 @@ import {
   useUpdatePayment,
 } from "./api/api"
 import { RestError } from "./api/rest"
-import DisplayError from "./DisplayError"
 import { getRepeatingPaymentFeedback } from "./getRepeatingPaymentFeedback"
-import { PaymentForm } from "./PaymentForm"
 
 interface Props {
   payment: PaymentForm
@@ -260,13 +260,12 @@ export function PaymentDialog(props: Props) {
             <Checkbox name="isPaycheck" />
           </Collapse>
 
-          <CurrencyField name="amount" numeric blankZero inPennies fullWidth />
+          <CurrencyField name="amount" inPennies fullWidth />
           <Collapse in={!state.isTransfer}>
             <TextField name="description" label="Description" />
           </Collapse>
           <Select
             allowNull
-            isNumeric
             name="accountId"
             label={state.isTransfer || !isIncome ? "From Account" : "Account"}
             options={accounts.map((x) => ({
@@ -277,7 +276,6 @@ export function PaymentDialog(props: Props) {
           <Collapse in={state.isTransfer}>
             <Select
               allowNull
-              isNumeric
               name="accountId2"
               label="Transfer To"
               options={accounts.map((x) => ({
@@ -393,7 +391,6 @@ export function PaymentDialog(props: Props) {
                       value,
                       label: `Every ${value > 1 ? `${value} weeks` : `week`}`,
                     }))}
-                    isNumeric
                   />
                 </Collapse>
 
