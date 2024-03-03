@@ -44,7 +44,6 @@ model Account {
     accountType      AccountType
     balance          Int
     creditCardType   CreditCardType?
-    totalDeposits    Int?
     totalFixedIncome Int?
     organization     Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
     carryOver        CarryOver[]

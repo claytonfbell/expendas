@@ -1,8 +1,8 @@
 import { NextApiResponse } from "next"
 import { AccountWithIncludes } from "../../../../../lib/AccountWithIncludes"
 import { requireOrganizationAuthentication } from "../../../../../lib/requireAuthentication"
-import { buildResponse } from "../../../../../lib/server/buildResponse"
 import { BadRequestException } from "../../../../../lib/server/HttpException"
+import { buildResponse } from "../../../../../lib/server/buildResponse"
 import prisma from "../../../../../lib/server/prisma"
 import withSession, { NextIronRequest } from "../../../../../lib/server/session"
 import validate from "../../../../../lib/server/validate"
@@ -39,7 +39,6 @@ async function handler(
         balance,
         creditCardType,
         carryOver,
-        totalDeposits,
         totalFixedIncome,
       }: AccountWithIncludes = req.body
       validate({ name }).notEmpty()
@@ -73,7 +72,6 @@ async function handler(
           accountBucket,
           balance,
           creditCardType,
-          totalDeposits,
           totalFixedIncome,
         },
         where: { id: accountId },

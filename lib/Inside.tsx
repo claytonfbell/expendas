@@ -32,7 +32,7 @@ interface Props {
 }
 
 export function Inside(props: Props) {
-  const { data: loginResponse, isLoading } = useCheckLogin()
+  const { data: loginResponse } = useCheckLogin()
   const { toggleDarkMode, darkMode } = useDarkMode()
 
   // timer
@@ -54,7 +54,7 @@ export function Inside(props: Props) {
   return (
     <>
       <CssBaseline />
-      {isLoading ? null : loginResponse === undefined ? (
+      {loginResponse === undefined ? (
         <Outside title="Login">
           <Login />
         </Outside>

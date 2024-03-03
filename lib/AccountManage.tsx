@@ -3,13 +3,13 @@ import { Account } from "@prisma/client"
 import { ResponsiveTable } from "material-ui-pack"
 import { useEffect, useState } from "react"
 import { AccountDialog } from "./AccountDialog"
-import { displayAccountType } from "./accountTypes"
-import { useFetchAccounts, useRemoveAccount } from "./api/api"
 import ConfirmDialog from "./ConfirmDialog"
-import { displayCreditCardType } from "./creditCardTypes"
 import { Currency } from "./Currency"
 import DisplayError from "./DisplayError"
 import { useGlobalState } from "./GlobalStateProvider"
+import { displayAccountType } from "./accountTypes"
+import { useFetchAccounts, useRemoveAccount } from "./api/api"
+import { displayCreditCardType } from "./creditCardTypes"
 
 export function AccountManage() {
   const { organizationId } = useGlobalState()
@@ -77,7 +77,6 @@ export function AccountManage() {
             accountType: "Checking_Account",
             balance: 0,
             creditCardType: null,
-            totalDeposits: 0,
             totalFixedIncome: 0,
             accountBucket: "After_Tax",
           })

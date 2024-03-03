@@ -9,16 +9,15 @@ import {
 import { Account } from "@prisma/client"
 import { Form } from "material-ui-pack"
 import { useEffect, useState } from "react"
-import { accountBucketOptions } from "./accountBuckets"
 import { debtGroup, investmentGroup } from "./AccountGroup"
-import { accountTypeOptions } from "./accountTypes"
 import { AccountWithIncludes } from "./AccountWithIncludes"
+import { Currency } from "./Currency"
+import { Title } from "./Title"
+import { accountBucketOptions } from "./accountBuckets"
+import { accountTypeOptions } from "./accountTypes"
 import { useAddAccount, useUpdateAccount } from "./api/api"
 import { RestError } from "./api/rest"
 import { creditCardTypeOptions } from "./creditCardTypes"
-import { Currency } from "./Currency"
-import { Percentage } from "./Percentage"
-import { Title } from "./Title"
 
 interface Props {
   account: Account | AccountWithIncludes | undefined
@@ -114,12 +113,6 @@ export function AccountDialog(props: Props) {
             ...(state?.accountType !== undefined &&
             investmentGroup.types.includes(state?.accountType)
               ? {
-                  totalDeposits: {
-                    type: "currency",
-                    inPennies: true,
-                    numeric: true,
-                    fullWidth: true,
-                  },
                   totalFixedIncome: {
                     type: "currency",
                     inPennies: true,
@@ -149,41 +142,6 @@ export function AccountDialog(props: Props) {
                                 value={
                                   state.balance - (state.totalFixedIncome || 0)
                                 }
-                              />
-                            </Grid>
-                          </Grid>
-
-                          <Grid
-                            container
-                            justifyContent="space-between"
-                            spacing={2}
-                          >
-                            <Grid item>Total Gain / Loss</Grid>
-                            <Grid item>
-                              <Currency
-                                value={
-                                  state.balance - (state.totalDeposits || 0)
-                                }
-                                green
-                                red
-                              />
-                            </Grid>
-                          </Grid>
-
-                          <Grid
-                            container
-                            justifyContent="space-between"
-                            spacing={2}
-                          >
-                            <Grid item>Total Gain / Loss</Grid>
-                            <Grid item>
-                              <Percentage
-                                value={
-                                  (state.balance - (state.totalDeposits || 0)) /
-                                  (state.totalDeposits || state.balance)
-                                }
-                                green
-                                red
                               />
                             </Grid>
                           </Grid>

@@ -73,7 +73,6 @@ export function InvestmentPortfolio() {
     0
   )
   const fixed = accounts.reduce((a, b) => a + (b.totalFixedIncome || 0), 0)
-  const totalDeposits = accounts.reduce((a, b) => a + (b.totalDeposits || 0), 0)
   const total = equity + fixed
 
   const { mutateAsync: updateAccount } = useUpdateAccount()
@@ -174,23 +173,6 @@ export function InvestmentPortfolio() {
               },
               {
                 smDownHidden: true,
-                label: "Deposits",
-                alignRight: true,
-                render: function render(account) {
-                  const deposits = account.totalDeposits || 0
-                  return (
-                    <AmountInputTool
-                      enabled
-                      value={deposits}
-                      onChange={(totalDeposits) => {
-                        updateAccount({ ...account, totalDeposits })
-                      }}
-                    />
-                  )
-                },
-              },
-              {
-                smDownHidden: true,
                 label: "Equity",
                 alignRight: true,
                 render: function render(account) {
@@ -231,50 +213,11 @@ export function InvestmentPortfolio() {
                   )
                 },
               },
-              {
-                smDownHidden: true,
-                label: "Gain / Loss",
-                alignRight: true,
-                render: function render(account) {
-                  const deposits = account.totalDeposits || 0
-                  return (
-                    <Currency
-                      arrow
-                      green
-                      red
-                      value={account.balance - deposits}
-                      animate
-                    />
-                  )
-                },
-              },
-              {
-                smDownHidden: true,
-                label: "Gain / Loss",
-                alignRight: true,
-                render: function render(account) {
-                  const deposits = account.totalDeposits || 0
-                  return (
-                    <Percentage
-                      arrow
-                      green
-                      red
-                      value={(account.balance - deposits) / deposits}
-                    />
-                  )
-                },
-              },
             ]}
             totalRow={
               isXs ? (
                 <Box padding={1}>
                   <Grid container spacing={1} justifyContent="space-between">
-                    <Grid item xs={6}>
-                      TOTAL DEPOSITS
-                    </Grid>
-                    <Grid item xs={6} style={{ textAlign: "right" }}>
-                      <Currency value={totalDeposits} />
-                    </Grid>
                     <Grid item xs={6}>
                       TOTAL EQUITY
                     </Grid>
@@ -299,29 +242,6 @@ export function InvestmentPortfolio() {
                     <Grid item xs={6} style={{ textAlign: "right" }}>
                       <Currency value={total} />
                     </Grid>
-                    <Grid item xs={6}>
-                      GAIN / LOSS
-                    </Grid>
-                    <Grid item xs={6} style={{ textAlign: "right" }}>
-                      <Currency
-                        arrow
-                        red
-                        green
-                        value={total - totalDeposits}
-                        animate
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      GAIN / LOSS
-                    </Grid>
-                    <Grid item xs={6} style={{ textAlign: "right" }}>
-                      <Percentage
-                        arrow
-                        green
-                        red
-                        value={(total - totalDeposits) / totalDeposits}
-                      />
-                    </Grid>
                   </Grid>
                 </Box>
               ) : (
@@ -335,9 +255,6 @@ export function InvestmentPortfolio() {
                   >
                     <TableCell>TOTAL</TableCell>
                     <TableCell align="right">
-                      <Currency value={totalDeposits} />
-                    </TableCell>
-                    <TableCell align="right">
                       <Currency value={total - fixed} />
                     </TableCell>
                     <TableCell align="right">
@@ -345,23 +262,6 @@ export function InvestmentPortfolio() {
                     </TableCell>
                     <TableCell align="right">
                       <Currency value={total} />
-                    </TableCell>
-                    <TableCell align="right">
-                      <Currency
-                        arrow
-                        red
-                        green
-                        value={total - totalDeposits}
-                        animate
-                      />
-                    </TableCell>
-                    <TableCell align="right">
-                      <Percentage
-                        arrow
-                        green
-                        red
-                        value={(total - totalDeposits) / totalDeposits}
-                      />
                     </TableCell>
                   </TableRow>
                   <TableRow
@@ -372,15 +272,12 @@ export function InvestmentPortfolio() {
                     }}
                   >
                     <TableCell></TableCell>
-                    <TableCell></TableCell>
                     <TableCell align="right">
                       <Percentage value={(total - fixed) / total} />
                     </TableCell>
                     <TableCell align="right">
                       <Percentage value={fixed / total} />
                     </TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
                     <TableCell></TableCell>
                   </TableRow>
                 </>
