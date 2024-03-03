@@ -114,4 +114,8 @@ enum AccountBucket {
     After_Tax
 }
 
+// run in development
 // npx prisma migrate dev --name init
+
+// run in production
+// npx prisma migrate deploy
