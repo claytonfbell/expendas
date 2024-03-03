@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.9.0](https://github.com/claytonfbell/expendas/compare/v1.8.3...v1.9.0) (2024-03-03)
+
+
+### Features
+
+* added copy button for easy copying ([302545b](https://github.com/claytonfbell/expendas/commit/302545b28441fc2413844919468cfea7433f4ca7))
+* removed tracking deposits and gain/loss calculations ([0e12fa1](https://github.com/claytonfbell/expendas/commit/0e12fa1666b8147e74008dc2dfec43d6b7c99372))
+
+
+### Bug Fixes
+
+* downgraded @mui/lab ([302a556](https://github.com/claytonfbell/expendas/commit/302a5564a1fa98ef75d5f4e122fa39fee1d42bf2))
+* upgraded material-ui-pack ([245a7f4](https://github.com/claytonfbell/expendas/commit/245a7f40e31945cdea6199c1bbd4694a4e751fbe))
+
 ### [1.8.3](https://github.com/claytonfbell/expendas/compare/v1.8.2...v1.8.3) (2023-09-05)
 
 ### [1.8.2](https://github.com/claytonfbell/expendas/compare/v1.8.1...v1.8.2) (2023-09-05)
