@@ -1,7 +1,10 @@
+import FileCopyIcon from "@mui/icons-material/FileCopy"
 import {
   alpha,
   Box,
   Grid,
+  IconButton,
+  Stack,
   TableCell,
   TableRow,
   Typography,
@@ -147,7 +150,22 @@ export function InvestmentPortfolio() {
               },
               {
                 label: "Total",
-                render: (x) => <Currency value={x.equity + x.fixed} />,
+                render: (x) => (
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <Currency value={x.equity + x.fixed} />
+                    <IconButton
+                      size="small"
+                      onClick={() => {
+                        // copy to clipboard
+                        navigator.clipboard.writeText(
+                          `${(x.equity + x.fixed) / 100}`
+                        )
+                      }}
+                    >
+                      <FileCopyIcon />
+                    </IconButton>
+                  </Stack>
+                ),
               },
             ]}
           />
