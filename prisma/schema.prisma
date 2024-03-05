@@ -8,10 +8,11 @@ datasource db {
 }
 
 model Organization {
-    id       Int                    @id @default(autoincrement())
-    name     String?                @unique(map: "Organization.name_unique") @db.VarChar(255)
-    accounts Account[]
-    users    UsersOnOrganizations[]
+    id              Int                    @id @default(autoincrement())
+    name            String?                @unique(map: "Organization.name_unique") @db.VarChar(255)
+    accounts        Account[]
+    users           UsersOnOrganizations[]
+    PlaidCredential PlaidCredential[]
 }
 
 model User {
@@ -37,18 +38,34 @@ model UsersOnOrganizations {
     @@id([userId, organizationId])
 }
 
-model Account {
-    id               Int             @id @default(autoincrement())
+model PlaidCredential {
+    id               Int              @id @default(autoincrement())
     organizationId   Int
-    name             String          @db.VarChar(255)
-    accountType      AccountType
-    balance          Int
-    creditCardType   CreditCardType?
-    totalFixedIncome Int?
-    organization     Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-    carryOver        CarryOver[]
-    payments         Payment[]
-    accountBucket    AccountBucket?
+    accessToken      String           @db.VarChar(255)
+    organization     Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    accounts         Account[]
+    lastUpdated      DateTime?
+    metadata         String
+    plaidItemId      String           @db.VarChar(255)
+    plaidRequestId   String           @db.VarChar(255)
+    plaidEnvironment PlaidEnvironment
+}
+
+model Account {
+    id                Int              @id @default(autoincrement())
+    organizationId    Int
+    name              String           @db.VarChar(255)
+    accountType       AccountType
+    balance           Int
+    creditCardType    CreditCardType?
+    totalFixedIncome  Int?
+    organization      Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    carryOver         CarryOver[]
+    payments          Payment[]
+    accountBucket     AccountBucket?
+    plaidCredentialId Int?
+    plaidCredential   PlaidCredential? @relation(fields: [plaidCredentialId], references: [id])
+    plaidAccountId    String?          @db.VarChar(255)
 }
 
 model Payment {
@@ -112,6 +129,12 @@ enum AccountBucket {
     Roth_And_HSA
     Traditional
     After_Tax
+}
+
+enum PlaidEnvironment {
+    Development
+    Sandbox
+    Production
 }
 
 // run in development

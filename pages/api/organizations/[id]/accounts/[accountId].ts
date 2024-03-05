@@ -23,6 +23,10 @@ async function handler(
       where: {
         id: accountId,
       },
+      include: {
+        carryOver: true,
+        plaidCredential: { select: { lastUpdated: true } },
+      },
     })
     validate({ account }).notNull()
 

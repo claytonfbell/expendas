@@ -1,8 +1,8 @@
 import { Account } from "@prisma/client"
 import { NextApiResponse } from "next"
 import { requireOrganizationAuthentication } from "../../../../../lib/requireAuthentication"
-import { buildResponse } from "../../../../../lib/server/buildResponse"
 import { BadRequestException } from "../../../../../lib/server/HttpException"
+import { buildResponse } from "../../../../../lib/server/buildResponse"
 import prisma from "../../../../../lib/server/prisma"
 import withSession, { NextIronRequest } from "../../../../../lib/server/session"
 import validate from "../../../../../lib/server/validate"
@@ -24,7 +24,10 @@ async function handler(
         where: {
           organizationId,
         },
-        include: { carryOver: true },
+        include: {
+          carryOver: true,
+          plaidCredential: { select: { lastUpdated: true } },
+        },
         orderBy: { name: "asc" },
       })
 
