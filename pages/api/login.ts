@@ -4,8 +4,8 @@ import { NextApiResponse } from "next"
 import { LoginRequest } from "../../lib/api/LoginRequest"
 import { LoginResponse } from "../../lib/api/LoginResponse"
 import { requireAuthentication } from "../../lib/requireAuthentication"
-import { buildResponse } from "../../lib/server/buildResponse"
 import { BadRequestException } from "../../lib/server/HttpException"
+import { buildResponse } from "../../lib/server/buildResponse"
 import prisma from "../../lib/server/prisma"
 import withSession, { NextIronRequest } from "../../lib/server/session"
 import validate from "../../lib/server/validate"
@@ -20,7 +20,10 @@ async function handler(
       return
     } else if (req.method === "GET") {
       const user = await requireAuthentication(req, prisma)
-      const data: LoginResponse = { user }
+      const data: LoginResponse = {
+        user,
+        isSuperAdmin: user.id === Number(process.env.SUPER_ADMIN_USER_ID),
+      }
       return data
     } else if (req.method === "POST") {
       let { email = "", password }: LoginRequest = req.body
@@ -50,7 +53,10 @@ async function handler(
       req.session.set("user", user)
       await req.session.save()
 
-      const data: LoginResponse = { user }
+      const data: LoginResponse = {
+        user,
+        isSuperAdmin: user.id === Number(process.env.SUPER_ADMIN_USER_ID),
+      }
       return data
     }
   })

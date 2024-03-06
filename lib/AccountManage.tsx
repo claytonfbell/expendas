@@ -14,16 +14,18 @@ import { Currency } from "./Currency"
 import DisplayError from "./DisplayError"
 import { useGlobalState } from "./GlobalStateProvider"
 import { displayAccountType } from "./accountTypes"
-import { useFetchAccounts, useRemoveAccount } from "./api/api"
+import { useCheckLogin, useFetchAccounts, useRemoveAccount } from "./api/api"
 import {
   useCreateLinkToken,
   useCreatePlaidCredential,
   useRefreshPlaidAccounts,
 } from "./api/plaid-api"
+import { useScrapeEmailsFromFidelityAndUpdateBalances } from "./api/useScrapeEmailsFromFidelityAndUpdateBalances"
 import { displayCreditCardType } from "./creditCardTypes"
 
 export function AccountManage() {
   const { organizationId } = useGlobalState()
+  const { data: login } = useCheckLogin()
   const { data, error: fetchError } = useFetchAccounts()
 
   const { mutateAsync: removeAccount, error: removeError } = useRemoveAccount()
@@ -48,7 +50,13 @@ export function AccountManage() {
     error: refreshError,
   } = useRefreshPlaidAccounts()
 
-  const error = fetchError || removeError || refreshError
+  const {
+    mutateAsync: scrape,
+    status: scrapeStatus,
+    error: scrapeError,
+  } = useScrapeEmailsFromFidelityAndUpdateBalances()
+
+  const error = fetchError || removeError || refreshError || scrapeError
 
   return (
     <>
@@ -73,6 +81,15 @@ export function AccountManage() {
           >
             Refresh Accounts
           </Button>
+          {login?.isSuperAdmin === true ? (
+            <Button
+              variant="outlined"
+              disabled={scrapeStatus === "loading"}
+              onClick={() => scrape()}
+            >
+              Scrape Fidelity Balances from Emails
+            </Button>
+          ) : null}
         </Stack>
 
         <ResponsiveTable
