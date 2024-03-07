@@ -78,9 +78,7 @@ async function fetchAccounts(plaidCredential: PlaidCredential) {
         await prisma.account.update({
           where: { id: existingAccount.id },
           data: {
-            name: account.name,
             balance: dollarsToCents(account.balances.current?.valueOf() || 0),
-            accountType: AccountType.Checking_Account,
           },
         })
       }
