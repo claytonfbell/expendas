@@ -3,8 +3,8 @@ import { SHA3 } from "crypto-js"
 import { NextApiResponse } from "next"
 import { LoginResponse } from "../../lib/api/LoginResponse"
 import { RegisterRequest } from "../../lib/api/RegisterRequest"
-import { buildResponse } from "../../lib/server/buildResponse"
 import { BadRequestException } from "../../lib/server/HttpException"
+import { buildResponse } from "../../lib/server/buildResponse"
 import prisma from "../../lib/server/prisma"
 import withSession, { NextIronRequest } from "../../lib/server/session"
 import validate from "../../lib/server/validate"
@@ -79,7 +79,7 @@ async function handler(
       req.session.set("user", user)
       await req.session.save()
 
-      const data: LoginResponse = { user }
+      const data: LoginResponse = { user, isSuperAdmin: false }
       return data
     })
   }
