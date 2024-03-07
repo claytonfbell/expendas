@@ -30,8 +30,8 @@ async function handler(
         language: "en",
         country_codes: [CountryCode.Us],
         products: [
-          // Products.Transactions,
-          // Products.Investments,
+          Products.Transactions,
+          Products.Investments,
           Products.Liabilities,
         ],
       })
