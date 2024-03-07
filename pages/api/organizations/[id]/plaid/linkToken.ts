@@ -31,7 +31,7 @@ async function handler(
         country_codes: [CountryCode.Us],
         products: [
           Products.Transactions,
-          Products.Investments,
+          // Products.Investments,
           // Products.Liabilities
         ],
       })

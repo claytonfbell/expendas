@@ -1,7 +1,7 @@
 import { PlaidEnvironment } from "@prisma/client"
 import { Configuration, PlaidApi, PlaidEnvironments } from "plaid"
 
-export const PLAID_ENVIRONMENT: PlaidEnvironment = PlaidEnvironment.Development
+export const PLAID_ENVIRONMENT: PlaidEnvironment = PlaidEnvironment.Production
 
 export function getPlaidClient() {
   const configuration = new Configuration({
