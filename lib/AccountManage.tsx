@@ -113,7 +113,7 @@ export function AccountManage() {
                 }`,
             },
             {
-              label: "Last Refreshed",
+              label: "Last Refreshed (Plaid)",
               render: (account) => (
                 <>
                   {(account.plaidCredential?.lastUpdated || null) === null ? (
