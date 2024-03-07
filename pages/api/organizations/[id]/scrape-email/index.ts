@@ -50,6 +50,14 @@ const accountScrapeMappings: AccountScrapeMap[] = [
     accountId: 34,
     fidelityAccountLastFour: process.env.FIDELITY_ACCOUNT_LAST_FOUR_34,
   },
+  {
+    accountId: 11,
+    fidelityAccountLastFour: process.env.FIDELITY_ACCOUNT_LAST_FOUR_11,
+  },
+  {
+    accountId: 29,
+    fidelityAccountLastFour: process.env.FIDELITY_ACCOUNT_LAST_FOUR_29,
+  },
 ]
 
 async function scrapeEmailsFromFidelityAndUpdateBalances() {
