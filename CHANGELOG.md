@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.10.0](https://github.com/claytonfbell/expendas/compare/v1.9.0...v1.10.0) (2024-03-07)
+
+
+### Features
+
+* Plaid integration ([6dae059](https://github.com/claytonfbell/expendas/commit/6dae059b1a47e74a96e2b8812a14d3b2c9f7d904))
+* scrape fidelity balances from email inbox ([19482a7](https://github.com/claytonfbell/expendas/commit/19482a75a658d4a439c4eb6126d75db8dde3b4bf))
+
 ## [1.9.0](https://github.com/claytonfbell/expendas/compare/v1.8.3...v1.9.0) (2024-03-03)
 
 
