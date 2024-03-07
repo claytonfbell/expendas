@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.10.1](https://github.com/claytonfbell/expendas/compare/v1.10.0...v1.10.1) (2024-03-07)
+
+
+### Bug Fixes
+
+* fixed ts error ([9eceb4d](https://github.com/claytonfbell/expendas/commit/9eceb4dbca2ac6abeca1f47a0fe477eab2ae326b))
+
 ## [1.10.0](https://github.com/claytonfbell/expendas/compare/v1.9.0...v1.10.0) (2024-03-07)
 
 
