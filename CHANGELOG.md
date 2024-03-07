@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.10.2](https://github.com/claytonfbell/expendas/compare/v1.10.1...v1.10.2) (2024-03-07)
+
+
+### Bug Fixes
+
+* added label on column ([1b7700a](https://github.com/claytonfbell/expendas/commit/1b7700a4e6e0cd2df78b009c626004b4ef951415))
+* added two more fidelity accounts to scrape ([3a4dc6b](https://github.com/claytonfbell/expendas/commit/3a4dc6b95b4bcaaf2057e7664c56054bf331fb4c))
+* plaid adjustments ([e721dd3](https://github.com/claytonfbell/expendas/commit/e721dd3ab3875c5f0eacfcffe1275cdddc6e4949))
+
 ### [1.10.1](https://github.com/claytonfbell/expendas/compare/v1.10.0...v1.10.1) (2024-03-07)
 
 
