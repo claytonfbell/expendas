@@ -6,12 +6,21 @@ import { getPlaidClient } from "../../../../../lib/server/getPlaidClient"
 import prisma from "../../../../../lib/server/prisma"
 import withSession, { NextIronRequest } from "../../../../../lib/server/session"
 
+export type LinkTokenRequest = {
+  products?: Products[]
+}
+
 async function handler(
   req: NextIronRequest,
   res: NextApiResponse
 ): Promise<void> {
   buildResponse(res, async () => {
     const organizationId = Number(req.query.id)
+    const { products } = req.body as LinkTokenRequest
+    if (products === undefined || products.length === 0) {
+      throw new Error("Must select at least one product to link.")
+    }
+
     const user = await requireOrganizationAuthentication(
       req,
       prisma,
@@ -29,11 +38,7 @@ async function handler(
         },
         language: "en",
         country_codes: [CountryCode.Us],
-        products: [
-          Products.Transactions,
-          Products.Investments,
-          Products.Liabilities,
-        ],
+        products,
       })
 
       if (result.status === 200) {

@@ -1,5 +1,6 @@
 import { PlaidLinkOnSuccessMetadata } from "react-plaid-link"
 import { useMutation, useQueryClient } from "react-query"
+import { LinkTokenRequest } from "../../pages/api/organizations/[id]/plaid/linkToken"
 import { useGlobalState } from "../GlobalStateProvider"
 import rest, { RestError } from "./rest"
 
@@ -9,8 +10,9 @@ interface CreateLinkTokenResponse {
 
 export function useCreateLinkToken() {
   const { organizationId } = useGlobalState()
-  return useMutation<CreateLinkTokenResponse, RestError>(() =>
-    rest.post(`/organizations/${organizationId}/plaid/linkToken`)
+  return useMutation<CreateLinkTokenResponse, RestError, LinkTokenRequest>(
+    (params) =>
+      rest.post(`/organizations/${organizationId}/plaid/linkToken`, params)
   )
 }
 

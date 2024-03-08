@@ -1,7 +1,20 @@
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance"
-import { Button, Stack } from "@mui/material"
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Stack,
+} from "@mui/material"
 import { Account } from "@prisma/client"
-import { DisplayDateTime, ResponsiveTable } from "material-ui-pack"
+import {
+  CheckboxBase,
+  DisplayDateTime,
+  DisplayError,
+  ResponsiveTable,
+} from "material-ui-pack"
+import { Products } from "plaid"
 import { useEffect, useState } from "react"
 import {
   PlaidLinkOnSuccessMetadata,
@@ -11,7 +24,6 @@ import {
 import { AccountDialog } from "./AccountDialog"
 import ConfirmDialog from "./ConfirmDialog"
 import { Currency } from "./Currency"
-import DisplayError from "./DisplayError"
 import { useGlobalState } from "./GlobalStateProvider"
 import { displayAccountType } from "./accountTypes"
 import { useCheckLogin, useFetchAccounts, useRemoveAccount } from "./api/api"
@@ -43,7 +55,14 @@ export function AccountManage() {
     console.log(asc)
   }, [asc])
 
-  const { mutateAsync: createLinkToken, data: linkToken } = useCreateLinkToken()
+  const {
+    mutateAsync: createLinkToken,
+    data: linkToken,
+    status: linkStatus,
+    error: createLinkTokenError,
+    reset: resetLinkToken,
+  } = useCreateLinkToken()
+
   const {
     mutateAsync: refreshPlaidAccounts,
     status: refreshStatus,
@@ -58,16 +77,30 @@ export function AccountManage() {
 
   const error = fetchError || removeError || refreshError || scrapeError
 
+  const [showPlaidOptions, setShowPlaidOptions] = useState(false)
+  const products: Products[] = [
+    Products.Transactions,
+    Products.Investments,
+    Products.Liabilities,
+  ]
+  const [selectedProducts, setSelectedProducts] = useState<Products[]>([])
+
+  useEffect(() => {
+    if (showPlaidOptions) {
+      resetLinkToken()
+    }
+  }, [resetLinkToken, showPlaidOptions])
+
   return (
     <>
-      <DisplayError error={error} />
+      <DisplayError error={error?.message} />
 
       <Stack spacing={2}>
         <Stack direction="row" spacing={3}>
           <Button
             startIcon={<AccountBalanceIcon />}
             variant="outlined"
-            onClick={() => createLinkToken()}
+            onClick={() => setShowPlaidOptions(true)}
           >
             Link Accounts and Import Data
           </Button>
@@ -91,6 +124,58 @@ export function AccountManage() {
             </Button>
           ) : null}
         </Stack>
+
+        <Dialog
+          open={showPlaidOptions}
+          onClose={() => setShowPlaidOptions(false)}
+          fullWidth
+          maxWidth="xs"
+        >
+          <DialogTitle>Link Accounts and Import Data</DialogTitle>
+          <DialogContent>
+            <Stack spacing={1}>
+              <DisplayError error={createLinkTokenError?.message} />
+              {products.map((product) => (
+                <Box key={product}>
+                  <CheckboxBase
+                    label={product}
+                    value={selectedProducts.includes(product)}
+                    onChange={() => {
+                      setSelectedProducts((prev) =>
+                        prev.includes(product)
+                          ? prev.filter((x) => x !== product)
+                          : [...prev, product]
+                      )
+                    }}
+                  />
+                </Box>
+              ))}
+              <Stack direction="row" spacing={2}>
+                <Button
+                  disabled={linkStatus === "loading"}
+                  fullWidth
+                  size="large"
+                  variant="contained"
+                  onClick={() => {
+                    createLinkToken({ products: selectedProducts }).then(() => {
+                      setShowPlaidOptions(false)
+                    })
+                  }}
+                >
+                  Continue
+                </Button>
+                <Button
+                  fullWidth
+                  size="large"
+                  variant="outlined"
+                  onClick={() => setShowPlaidOptions(false)}
+                >
+                  Cancel
+                </Button>
+              </Stack>
+            </Stack>
+          </DialogContent>
+        </Dialog>
 
         <ResponsiveTable
           striped
