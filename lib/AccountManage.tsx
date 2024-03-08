@@ -96,7 +96,7 @@ export function AccountManage() {
       <DisplayError error={error?.message} />
 
       <Stack spacing={2}>
-        <Stack direction="row" spacing={3}>
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={3}>
           <Button
             startIcon={<AccountBalanceIcon />}
             variant="outlined"
@@ -281,5 +281,5 @@ function PlaidLink({ token }: PlaidLinkProps) {
     }
   }, [open, ready])
 
-  return <>PLAID LINK {token}</>
+  return <></>
 }
