@@ -13,7 +13,7 @@ FROM base as deps
 RUN mkdir /app
 WORKDIR /app
 
-ADD package.json package-lock.json ./
+ADD .npmrc package.json package-lock.json ./
 RUN npm install --production=false
 # Setup production node_modules
 FROM base as production-deps
@@ -22,7 +22,7 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY --from=deps /app/node_modules /app/node_modules
-ADD package.json package-lock.json ./
+ADD .npmrc package.json package-lock.json ./
 RUN npm prune --production
 
 # Build the app
@@ -51,6 +51,7 @@ COPY --from=production-deps /app/node_modules /app/node_modules
 COPY --from=build /app/node_modules/.prisma /app/node_modules/.prisma
 COPY --from=build /app/.next /app/.next
 COPY --from=build /app/public /app/public
+COPY --from=build /app/.npmrc ./.npmrc
 COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/next.config.js ./
 COPY --from=build /app/.env ./
