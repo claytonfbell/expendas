@@ -40,7 +40,6 @@
     "react-markdown": "^6.0.3",
     "react-plaid-link": "^3.5.1",
     "react-query": "^3.39.3",
-    "react-query-devtools": "^2.6.3",
     "react-storage-hooks": "^4.0.1",
     "react-use": "^17.5.0",
     "recharts": "^2.12.2",
