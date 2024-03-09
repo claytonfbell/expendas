@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.10.3](https://github.com/claytonfbell/expendas/compare/v1.10.2...v1.10.3) (2024-03-09)
+
+
+### Bug Fixes
+
+* adjustments to plaid integration ([a78ba65](https://github.com/claytonfbell/expendas/commit/a78ba658eb161656a4dfdc7df7bc2ae96994c3e0))
+* display issue ([c2c0800](https://github.com/claytonfbell/expendas/commit/c2c080019665f50f3840d0a9bf244998b0e851b0))
+* npx npm-check-updates -u ([14557f9](https://github.com/claytonfbell/expendas/commit/14557f926724978056b77ba62f558d1a34cef89c))
+* plaid adjustments ([5e105a2](https://github.com/claytonfbell/expendas/commit/5e105a2f4438857efeb467370ad9958b570b3d4a))
+* plaid options ([dc05cdc](https://github.com/claytonfbell/expendas/commit/dc05cdce3a22190e217116cc51126a750256534d))
+
 ### [1.10.2](https://github.com/claytonfbell/expendas/compare/v1.10.1...v1.10.2) (2024-03-07)
 
 
