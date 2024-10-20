@@ -53,10 +53,10 @@ sudo -u postgres createuser --interactive
 sudo -u postgres psql
 ALTER USER app WITH PASSWORD 'hy8jmn3!';
 
-vim /etc/postgresql/12/main/postgresql.conf
+vim /etc/postgresql/16/main/postgresql.conf
 # ADD: listen_addresses = '*'
 
-vim /etc/postgresql/12/main/pg_hba.conf
+vim /etc/postgresql/16/main/pg_hba.conf
 # ADD: host    all             app     0.0.0.0/0               md5
 
 # ENABLE SWAP
@@ -71,4 +71,12 @@ cat /proc/sys/vm/swappiness
 vim /etc/sysctl.conf
 # ADD: vm.swappiness=10
 
+```
+
+## Database migration 2024-10-20
+
+```bash
+pg_dump -C -h expendas.com -U app postgres | psql -h localhost -U app postgres
+pg_dump -C -h expendas.com -U app backup | psql -h localhost -U app backup
+pg_dump -C -h expendas.com -U app staging | psql -h localhost -U app staging
 ```
