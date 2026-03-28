@@ -70,23 +70,28 @@ export async function populateMissingTickerPrices() {
 
     console.log("massiveResponse", massiveResponse)
 
-    // insert or update the price in the database
-    await prisma.tickerPrice.upsert({
-      where: {
-        ticker_date: {
+    if (
+      massiveResponse.status === "OK" ||
+      massiveResponse.status === "NOT_FOUND"
+    ) {
+      // insert or update the price in the database
+      await prisma.tickerPrice.upsert({
+        where: {
+          ticker_date: {
+            ticker: "VOO",
+            date: dateToFetch,
+          },
+        },
+        update: {
+          price: (massiveResponse.close ?? 0) * 100, // convert to cents, 0 if market was closed that day and no price is available
+        },
+        create: {
           ticker: "VOO",
+          price: (massiveResponse.close ?? 0) * 100, // convert to cents, 0 if market was closed that day and no price is available
           date: dateToFetch,
         },
-      },
-      update: {
-        price: (massiveResponse.close ?? 0) * 100, // convert to cents, 0 if market was closed that day and no price is available
-      },
-      create: {
-        ticker: "VOO",
-        price: (massiveResponse.close ?? 0) * 100, // convert to cents, 0 if market was closed that day and no price is available
-        date: dateToFetch,
-      },
-    })
+      })
+    }
   }
 }
 
@@ -112,7 +117,7 @@ function isTooSoonForMassiveRequest(): boolean {
 }
 
 type MassiveApiResponse = {
-  status: "OK" | "NOT_FOUND"
+  status: "OK" | "NOT_FOUND" | "ERROR"
   message?: string
   from?: string
   symbol?: string
