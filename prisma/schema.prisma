@@ -66,6 +66,9 @@ model Account {
     plaidCredentialId Int?
     plaidCredential   PlaidCredential? @relation(fields: [plaidCredentialId], references: [id])
     plaidAccountId    String?          @db.VarChar(255)
+    tickerPriceId     Int?
+    tickerPrice       TickerPrice?     @relation(fields: [tickerPriceId], references: [id])
+
 }
 
 model Payment {
@@ -103,6 +106,16 @@ model CarryOver {
     account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
     @@unique([accountId, date], map: "CarryOver.accountId_date_unique")
+}
+
+model TickerPrice {
+    id        Int     @id @default(autoincrement())
+    ticker    String  @db.VarChar(255)
+    price     Int // cents
+    date      String
+    accounts  Account[]
+
+    @@unique([ticker, date], map: "TickerPrice.ticker_date_unique")
 }
 
 enum AccountType {

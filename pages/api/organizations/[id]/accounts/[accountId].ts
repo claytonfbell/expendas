@@ -1,8 +1,10 @@
+import { TickerPrice } from "@prisma/client"
 import { NextApiResponse } from "next"
 import { AccountWithIncludes } from "../../../../../lib/AccountWithIncludes"
 import { requireOrganizationAuthentication } from "../../../../../lib/requireAuthentication"
 import { BadRequestException } from "../../../../../lib/server/HttpException"
 import { buildResponse } from "../../../../../lib/server/buildResponse"
+import { getLatestTickerPrice } from "../../../../../lib/server/populateMissingTickerPrices"
 import prisma from "../../../../../lib/server/prisma"
 import withSession, { NextIronRequest } from "../../../../../lib/server/session"
 import validate from "../../../../../lib/server/validate"
@@ -69,6 +71,13 @@ async function handler(
       }
 
       // passed validation
+
+      // if its an investment account - stick it to current tickerPrice
+      let latestTickerPrice: TickerPrice | null = null
+      if (accountType === "Investment") {
+        latestTickerPrice = await getLatestTickerPrice()
+      }
+
       const account = await prisma.account.update({
         data: {
           name,
@@ -77,6 +86,7 @@ async function handler(
           balance,
           creditCardType,
           totalFixedIncome,
+          tickerPriceId: latestTickerPrice ? latestTickerPrice.id : null,
         },
         where: { id: accountId },
       })
