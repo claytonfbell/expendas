@@ -238,6 +238,7 @@ export function AccountManage() {
             accountBucket: "After_Tax",
             plaidCredentialId: null,
             plaidAccountId: null,
+            tickerPriceId: null,
           })
         }
       >
