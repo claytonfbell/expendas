@@ -21,26 +21,17 @@ export async function populateMissingTickerPrices() {
     take: 365 * 3,
   })
 
-  // fill the fiveMissingDates array with any missing dates in a row, starting from yesterday and going back up to 90 days, but stop once we find a date that is already in the database (to avoid too many requests to the massive.com API)
-  for (let i = 0; i < 365 * 3; i++) {
-    const dateToCheck = moment().subtract(i, "days").format("YYYY-MM-DD")
+  // fill the fiveMissingDates array with any missing dates in a row, starting from yesterday
+  for (let i = 1; i < 365 * 3; i++) {
+    // start from yesterday
+    const dateToCheck = moment()
+      .tz("America/Los_Angeles")
+      .subtract(i, "days")
+      .format("YYYY-MM-DD")
     const found = mostRecentLimitThreeYears.find(
       (tp) => tp.date === dateToCheck
     )
 
-    // is before market closing (today at 1pm Pacific time)
-    const marketCloseTime = moment().tz("America/Los_Angeles").set({
-      hour: 13,
-      minute: 0,
-      second: 0,
-      millisecond: 0,
-    })
-    const now = moment()
-    if (i === 0 && now.isBefore(marketCloseTime)) {
-      // if it's before market closing time, skip checking for today's date and move on to yesterday
-      console.log("skipping today's date since it's before market close time")
-      continue
-    }
     if (!found) {
       fiveMissingDates.push(dateToCheck)
     }
@@ -94,6 +85,43 @@ export async function populateMissingTickerPrices() {
         },
       })
     }
+  }
+
+  // now use alphavantage.co api to get TODAY's price (after marke close) don't have to wait for massive.com to update with today's price
+  const alphavantageUrl = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=VOO&apikey=${process.env.ALPHAVANTAGE_API_KEY}`
+  const alphavantageResponse: AlphaVantageQuote = await fetch(
+    alphavantageUrl
+  ).then((res) => res.json())
+
+  const today = moment().tz("America/Los_Angeles").format("YYYY-MM-DD")
+  const currentPriceData = alphavantageResponse["Global Quote"]
+    ? alphavantageResponse["Global Quote"]
+    : undefined
+  if (
+    currentPriceData &&
+    currentPriceData["07. latest trading day"] === today
+  ) {
+    console.log("todayPriceData", currentPriceData)
+    await prisma.tickerPrice.upsert({
+      where: {
+        ticker_date: {
+          ticker: "VOO",
+          date: today,
+        },
+      },
+      update: {
+        price: Math.round(parseFloat(currentPriceData["05. price"]) * 100), // convert to cents
+      },
+      create: {
+        ticker: "VOO",
+        price: Math.round(parseFloat(currentPriceData["05. price"]) * 100), // convert to cents
+        date: today,
+      },
+    })
+  } else {
+    console.log(
+      `no price data found for today (${today}) from alphavantage.co response`
+    )
   }
 }
 
@@ -224,4 +252,21 @@ export async function getAllTimeHighTickerPrice() {
     },
   })
   return allTimeHigh
+}
+
+export interface AlphaVantageQuote {
+  "Global Quote"?: GlobalQuote
+}
+
+export interface GlobalQuote {
+  "01. symbol": string
+  "02. open": string
+  "03. high": string
+  "04. low": string
+  "05. price": string
+  "06. volume": string
+  "07. latest trading day": string
+  "08. previous close": string
+  "09. change": string
+  "10. change percent": string
 }
