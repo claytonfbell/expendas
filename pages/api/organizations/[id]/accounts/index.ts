@@ -1,4 +1,5 @@
 import { Account } from "@prisma/client"
+import moment from "moment"
 import { NextApiResponse } from "next"
 import { requireOrganizationAuthentication } from "../../../../../lib/requireAuthentication"
 import { BadRequestException } from "../../../../../lib/server/HttpException"
@@ -22,6 +23,7 @@ async function handler(
     // GET
     if (req.method === "GET") {
       await autoUpdateInvestmentAccountBalances()
+      await updateAccountBalanceHistory(organizationId)
 
       const accounts = await prisma.account.findMany({
         where: {
@@ -85,3 +87,29 @@ async function handler(
 }
 
 export default withSession(handler)
+
+async function updateAccountBalanceHistory(organizationId: number) {
+  const accounts = await prisma.account.findMany({
+    where: {
+      organizationId,
+    },
+  })
+  for (const account of accounts) {
+    await prisma.accountBalanceHistory.upsert({
+      where: {
+        accountId_date: {
+          accountId: account.id,
+          date: moment().format("YYYY-MM-DD"),
+        },
+      },
+      update: {
+        balance: account.balance,
+      },
+      create: {
+        accountId: account.id,
+        balance: account.balance,
+        date: moment().format("YYYY-MM-DD"),
+      },
+    })
+  }
+}

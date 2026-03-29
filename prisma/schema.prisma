@@ -68,6 +68,7 @@ model Account {
     plaidAccountId    String?          @db.VarChar(255)
     tickerPriceId     Int?
     tickerPrice       TickerPrice?     @relation(fields: [tickerPriceId], references: [id])
+    balanceHistory    AccountBalanceHistory[]
 
 }
 
@@ -116,6 +117,16 @@ model TickerPrice {
     accounts  Account[]
 
     @@unique([ticker, date], map: "TickerPrice.ticker_date_unique")
+}
+
+model AccountBalanceHistory {
+    id        Int     @id @default(autoincrement())
+    accountId Int
+    balance   Int
+    date      String
+    account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+    @@unique([accountId, date], map: "AccountBalanceHistory.accountId_date_unique")
 }
 
 enum AccountType {
