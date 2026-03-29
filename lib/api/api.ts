@@ -267,6 +267,7 @@ export function useFetchAccounts() {
     queryKey: ["accounts", organizationId],
     queryFn: () => api.fetchAccounts(organizationId || 0),
     enabled: organizationId !== null,
+    refetchInterval: 65_000, // 65 seconds
   })
 }
 
