@@ -7,7 +7,7 @@ import {
   useTheme,
 } from "@mui/material"
 import { Form, TextField } from "material-ui-pack"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useStorageState } from "react-storage-hooks"
 import {
   OrganizationWithIncludes,
@@ -38,7 +38,7 @@ export function OrganizationDialog(props: Props) {
 
   const {
     mutateAsync: updateOrganization,
-    isLoading: isUpdating,
+    isPending: isUpdating,
     error: updateError,
   } = useUpdateOrganization()
 

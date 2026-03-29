@@ -64,11 +64,11 @@ export function PaymentDialog(props: Props) {
 
   const [error, setError] = useState<RestError>()
 
-  const { mutateAsync: addPayment, isLoading: isCreatingPayment } =
+  const { mutateAsync: addPayment, isPending: isCreatingPayment } =
     useAddPayment()
-  const { mutateAsync: updatePayment, isLoading: isUpdatingPayment } =
+  const { mutateAsync: updatePayment, isPending: isUpdatingPayment } =
     useUpdatePayment()
-  const { mutateAsync: deletePayment, isLoading: isRemovingPayment } =
+  const { mutateAsync: deletePayment, isPending: isRemovingPayment } =
     useRemovePayment()
 
   const isBusy = isCreatingPayment || isUpdatingPayment || isRemovingPayment
@@ -166,8 +166,8 @@ export function PaymentDialog(props: Props) {
     state.repeatsOnDates.length > 0
       ? "dates"
       : state.repeatsWeekly !== null
-      ? "weekly"
-      : "daysOfMonth"
+        ? "weekly"
+        : "daysOfMonth"
   const repeatsUntil = state.repeatsUntilDate !== null
 
   const [willDelete, setWillDelete] = useState<Payment>()
@@ -231,8 +231,8 @@ export function PaymentDialog(props: Props) {
         {state.isTransfer
           ? "Account Transfer"
           : isIncome
-          ? `Deposit`
-          : `Payment`}
+            ? `Deposit`
+            : `Payment`}
       </DialogTitle>
       <DialogContent>
         <DisplayError error={error} />

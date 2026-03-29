@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useGlobalState } from "../GlobalStateProvider"
 import rest, { RestError } from "./rest"
 
@@ -13,13 +13,11 @@ export function useScrapeEmailsFromFidelityAndUpdateBalances() {
   return useMutation<
     ScrapeEmailsFromFidelityAndUpdateBalancesResponse,
     RestError
-  >(
-    () => rest.post(`/organizations/${organizationId}/scrape-email`),
-
-    {
-      onSuccess: () => {
-        queryClient.refetchQueries({ queryKey: ["accounts", organizationId] })
-      },
-    }
-  )
+  >({
+    mutationFn: () =>
+      rest.post(`/organizations/${organizationId}/scrape-email`),
+    onSuccess: () => {
+      queryClient.refetchQueries({ queryKey: ["accounts", organizationId] })
+    },
+  })
 }

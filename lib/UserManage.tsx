@@ -38,13 +38,13 @@ export function UserManage(props: Props) {
   // user
   const {
     mutateAsync: addUser,
-    isLoading: isAddingUser,
+    isPending: isAddingUser,
     error: addUserError,
   } = useAddUser()
 
   const {
     mutateAsync: removeUser,
-    isLoading: isRemovingUser,
+    isPending: isRemovingUser,
     error: removeUserError,
   } = useRemoveUser()
 

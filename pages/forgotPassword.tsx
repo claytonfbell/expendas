@@ -1,7 +1,7 @@
 import { Alert } from "@mui/material"
 import { Form } from "material-ui-pack"
 import { useRouter } from "next/dist/client/router"
-import React, { useState } from "react"
+import { useState } from "react"
 import ReactMarkdown from "react-markdown"
 import { useForgotPassword } from "../lib/api/api"
 import { ForgotPasswordRequest } from "../lib/api/ForgotPasswordRequest"
@@ -12,7 +12,7 @@ export default function ForgotPassword() {
     email: "",
   })
 
-  const { mutateAsync: forgotPassword, isLoading, error } = useForgotPassword()
+  const { mutateAsync: forgotPassword, isPending, error } = useForgotPassword()
   const [message, setMessage] = useState<string>()
 
   function handleSubmit() {
@@ -31,7 +31,7 @@ export default function ForgotPassword() {
 
       <Form
         error={error?.message}
-        busy={isLoading}
+        busy={isPending}
         state={state}
         setState={setState}
         onSubmit={handleSubmit}

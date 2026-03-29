@@ -39,10 +39,10 @@ export function AccountDialog(props: Props) {
     setState(props.account)
   }, [props.account])
 
-  const { mutateAsync: updateAccount, isLoading: isUpdating } =
+  const { mutateAsync: updateAccount, isPending: isUpdating } =
     useUpdateAccount()
 
-  const { mutateAsync: addAccount, isLoading: isAdding } = useAddAccount()
+  const { mutateAsync: addAccount, isPending: isAdding } = useAddAccount()
 
   const isNew = state?.id === 0
   const isBusy = isUpdating || isAdding

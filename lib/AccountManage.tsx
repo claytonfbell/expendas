@@ -109,7 +109,7 @@ export function AccountManage() {
           ) : null}
           <Button
             variant="outlined"
-            disabled={refreshStatus === "loading"}
+            disabled={refreshStatus === "pending"}
             onClick={() => refreshPlaidAccounts()}
           >
             Refresh Accounts
@@ -117,7 +117,7 @@ export function AccountManage() {
           {login?.isSuperAdmin === true ? (
             <Button
               variant="outlined"
-              disabled={scrapeStatus === "loading"}
+              disabled={scrapeStatus === "pending"}
               onClick={() => scrape()}
             >
               Scrape Fidelity Balances from Emails
@@ -152,7 +152,7 @@ export function AccountManage() {
               ))}
               <Stack direction="row" spacing={2}>
                 <Button
-                  disabled={linkStatus === "loading"}
+                  disabled={linkStatus === "pending"}
                   fullWidth
                   size="large"
                   variant="contained"

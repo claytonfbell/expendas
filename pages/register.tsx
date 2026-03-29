@@ -1,6 +1,6 @@
 import { Form } from "material-ui-pack"
 import { useRouter } from "next/dist/client/router"
-import React, { useState } from "react"
+import { useState } from "react"
 import { useRegister } from "../lib/api/api"
 import { RegisterRequest } from "../lib/api/RegisterRequest"
 import { Outside } from "../lib/Outside"
@@ -14,7 +14,7 @@ export default function Register() {
     organization: "",
   })
 
-  const { mutateAsync: register, isLoading, error } = useRegister()
+  const { mutateAsync: register, isPending, error } = useRegister()
 
   function handleSubmit() {
     register(state)
@@ -26,7 +26,7 @@ export default function Register() {
     <Outside title="Create New Account">
       <Form
         error={error?.message}
-        busy={isLoading}
+        busy={isPending}
         state={state}
         setState={setState}
         onSubmit={handleSubmit}

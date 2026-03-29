@@ -1,7 +1,7 @@
 import { Box } from "@mui/material"
 import { Form, TextField } from "material-ui-pack"
 import { useRouter } from "next/dist/client/router"
-import React, { useState } from "react"
+import { useState } from "react"
 import { useLogin } from "./api/api"
 import { LoginRequest } from "./api/LoginRequest"
 import { Link } from "./Link"
@@ -12,7 +12,7 @@ export function Login() {
     password: "",
   })
 
-  const { mutateAsync: login, isLoading, error } = useLogin()
+  const { mutateAsync: login, isPending, error } = useLogin()
 
   function handleSubmit() {
     login(state)
@@ -23,7 +23,7 @@ export function Login() {
   return (
     <Form
       error={error?.message}
-      busy={isLoading}
+      busy={isPending}
       state={state}
       setState={setState}
       onSubmit={handleSubmit}

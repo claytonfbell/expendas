@@ -1,5 +1,5 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { PlaidLinkOnSuccessMetadata } from "react-plaid-link"
-import { useMutation, useQueryClient } from "react-query"
 import { LinkTokenRequest } from "../../pages/api/organizations/[id]/plaid/linkToken"
 import { useGlobalState } from "../GlobalStateProvider"
 import rest, { RestError } from "./rest"
@@ -10,10 +10,10 @@ interface CreateLinkTokenResponse {
 
 export function useCreateLinkToken() {
   const { organizationId } = useGlobalState()
-  return useMutation<CreateLinkTokenResponse, RestError, LinkTokenRequest>(
-    (params) =>
-      rest.post(`/organizations/${organizationId}/plaid/linkToken`, params)
-  )
+  return useMutation<CreateLinkTokenResponse, RestError, LinkTokenRequest>({
+    mutationFn: (params) =>
+      rest.post(`/organizations/${organizationId}/plaid/linkToken`, params),
+  })
 }
 
 export function useCreatePlaidCredential() {
@@ -22,23 +22,23 @@ export function useCreatePlaidCredential() {
     void,
     RestError,
     { public_token: string; metadata: PlaidLinkOnSuccessMetadata }
-  >(({ public_token, metadata }) =>
-    rest.post(`/organizations/${organizationId}/plaid/credential`, {
-      public_token,
-      metadata,
-    })
-  )
+  >({
+    mutationFn: ({ public_token, metadata }) =>
+      rest.post(`/organizations/${organizationId}/plaid/credential`, {
+        public_token,
+        metadata,
+      }),
+  })
 }
 
 export function useRefreshPlaidAccounts() {
   const queryClient = useQueryClient()
   const { organizationId } = useGlobalState()
-  return useMutation<void, RestError>(
-    () => rest.post(`/organizations/${organizationId}/plaid/accounts`),
-    {
-      onSuccess: () => {
-        queryClient.refetchQueries({ queryKey: ["accounts", organizationId] })
-      },
-    }
-  )
+  return useMutation<void, RestError>({
+    mutationFn: () =>
+      rest.post(`/organizations/${organizationId}/plaid/accounts`),
+    onSuccess: () => {
+      queryClient.refetchQueries({ queryKey: ["accounts", organizationId] })
+    },
+  })
 }

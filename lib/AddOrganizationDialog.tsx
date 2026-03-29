@@ -8,7 +8,7 @@ import {
   useTheme,
 } from "@mui/material"
 import { Form, SubmitButton, TextField } from "material-ui-pack"
-import React, { useState } from "react"
+import { useState } from "react"
 import { AddOrganizationRequest } from "./api/AddOrganizationRequest"
 import { useAddOrganization } from "./api/api"
 import DisplayError from "./DisplayError"
@@ -29,7 +29,7 @@ export function AddOrganizationDialog(props: Props) {
 
   const {
     mutateAsync: addOrganization,
-    isLoading,
+    isPending,
     error,
   } = useAddOrganization()
 
@@ -61,7 +61,7 @@ export function AddOrganizationDialog(props: Props) {
           setState={setState}
           size="small"
           margin="none"
-          busy={isLoading}
+          busy={isPending}
           onSubmit={handleSubmit}
         >
           <Grid container spacing={1}>
