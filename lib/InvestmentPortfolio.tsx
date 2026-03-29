@@ -133,7 +133,7 @@ export function InvestmentPortfolio() {
   return (
     <>
       <Grid container spacing={3}>
-        <Grid item xs={12} lg={6}>
+        <Grid item xs={12}>
           <ResponsiveContainer width="100%" height={isXs ? 180 : 300}>
             <BarChart width={500} height={300} data={data}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -159,6 +159,14 @@ export function InvestmentPortfolio() {
               />
             </BarChart>
           </ResponsiveContainer>
+        </Grid>
+
+        <Grid item xs={12}>
+          <HorizontalRangeBar
+            low={marketThreeYearLowTotal ?? 0}
+            current={total}
+            high={marketHighTotal ?? 0}
+          />
         </Grid>
 
         <Grid item xs={12}>
@@ -337,13 +345,6 @@ export function InvestmentPortfolio() {
                 </>
               )
             }
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <HorizontalRangeBar
-            low={marketThreeYearLowTotal ?? 0}
-            current={total}
-            high={marketHighTotal ?? 0}
           />
         </Grid>
       </Grid>
