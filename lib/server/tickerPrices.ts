@@ -88,41 +88,74 @@ export async function populateMissingTickerPrices() {
   }
 
   // now use alphavantage.co api to get TODAY's price (after marke close) don't have to wait for massive.com to update with today's price
-  const alphavantageUrl = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=VOO&apikey=${process.env.ALPHAVANTAGE_API_KEY}`
-  const alphavantageResponse: AlphaVantageQuote = await fetch(
-    alphavantageUrl
-  ).then((res) => res.json())
+  if (isTooSoonForAlphaVantageRequest()) {
+    console.log(
+      "too soon for alphavantage.co request, skipping fetching today's price to avoid hitting rate limit"
+    )
+    return
+  } else {
+    console.log("fetching today's price from alphavantage.co")
 
-  const today = moment().tz("America/Los_Angeles").format("YYYY-MM-DD")
-  const currentPriceData = alphavantageResponse["Global Quote"]
-    ? alphavantageResponse["Global Quote"]
-    : undefined
-  if (
-    currentPriceData &&
-    currentPriceData["07. latest trading day"] === today
-  ) {
-    console.log("todayPriceData", currentPriceData)
-    await prisma.tickerPrice.upsert({
-      where: {
-        ticker_date: {
+    const alphavantageUrl = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=VOO&apikey=${process.env.ALPHAVANTAGE_API_KEY}`
+    const alphavantageResponse: AlphaVantageQuote = await fetch(
+      alphavantageUrl
+    ).then((res) => res.json())
+
+    const today = moment().tz("America/Los_Angeles").format("YYYY-MM-DD")
+    const currentPriceData = alphavantageResponse["Global Quote"]
+      ? alphavantageResponse["Global Quote"]
+      : undefined
+    if (
+      currentPriceData &&
+      currentPriceData["07. latest trading day"] === today
+    ) {
+      console.log("todayPriceData", currentPriceData)
+      await prisma.tickerPrice.upsert({
+        where: {
+          ticker_date: {
+            ticker: "VOO",
+            date: today,
+          },
+        },
+        update: {
+          price: Math.round(parseFloat(currentPriceData["05. price"]) * 100), // convert to cents
+        },
+        create: {
           ticker: "VOO",
+          price: Math.round(parseFloat(currentPriceData["05. price"]) * 100), // convert to cents
           date: today,
         },
-      },
-      update: {
-        price: Math.round(parseFloat(currentPriceData["05. price"]) * 100), // convert to cents
-      },
-      create: {
-        ticker: "VOO",
-        price: Math.round(parseFloat(currentPriceData["05. price"]) * 100), // convert to cents
-        date: today,
-      },
-    })
-  } else {
-    console.log(
-      `no price data found for today (${today}) from alphavantage.co response`
-    )
+      })
+    } else {
+      console.log(
+        `no price data found for today (${today}) from alphavantage.co response`
+      )
+    }
   }
+}
+
+const alphaVantageRequests: Moment[] = []
+
+function isTooSoonForAlphaVantageRequest(): boolean {
+  const maxCount = 1
+  const timeWindowMinutes = 1
+
+  const now = moment()
+  const timeAgo = now.subtract(timeWindowMinutes, "minutes")
+
+  // Remove timestamps that are older than 5 minutes
+  while (
+    alphaVantageRequests.length > 0 &&
+    alphaVantageRequests[0].isBefore(timeAgo)
+  ) {
+    alphaVantageRequests.shift()
+  }
+
+  const tooSoon = alphaVantageRequests.length >= maxCount
+  if (!tooSoon) {
+    alphaVantageRequests.push(moment())
+  }
+  return tooSoon
 }
 
 const massiveRequests: Moment[] = []
