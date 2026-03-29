@@ -7,24 +7,26 @@ export async function populateMissingTickerPrices() {
   // go back as far as 90 days in the past, but stop once we find 5 missing dates in a row (to avoid too many requests to the massive.com API)
   const fiveMissingDates: string[] = []
 
-  // find the most recent 90 saved ticker prices for VOO
-  const mostRecentLimit90 = await prisma.tickerPrice.findMany({
+  // find the most recent 3 years saved ticker prices for VOO
+  const mostRecentLimitThreeYears = await prisma.tickerPrice.findMany({
     orderBy: {
       date: "desc",
     },
     where: {
       ticker: "VOO",
       date: {
-        gte: moment().subtract(90, "days").format("YYYY-MM-DD"),
+        gte: moment().subtract(3, "years").format("YYYY-MM-DD"),
       },
     },
-    take: 90,
+    take: 365 * 3,
   })
 
   // fill the fiveMissingDates array with any missing dates in a row, starting from yesterday and going back up to 90 days, but stop once we find a date that is already in the database (to avoid too many requests to the massive.com API)
-  for (let i = 0; i < 90; i++) {
+  for (let i = 0; i < 365 * 3; i++) {
     const dateToCheck = moment().subtract(i, "days").format("YYYY-MM-DD")
-    const found = mostRecentLimit90.find((tp) => tp.date === dateToCheck)
+    const found = mostRecentLimitThreeYears.find(
+      (tp) => tp.date === dateToCheck
+    )
 
     // is before market closing (today at 1pm Pacific time)
     const marketCloseTime = moment().tz("America/Los_Angeles").set({
@@ -191,4 +193,35 @@ export async function autoUpdateInvestmentAccountBalances() {
       )
     }
   }
+}
+
+export async function getThreeYearLowTickerPrice() {
+  const threeYearsAgo = moment().subtract(3, "years").format("YYYY-MM-DD")
+  const threeYearLow = await prisma.tickerPrice.findFirst({
+    where: {
+      ticker: "VOO",
+      date: {
+        gte: threeYearsAgo,
+      },
+      price: {
+        gt: 0,
+      },
+    },
+    orderBy: {
+      price: "asc",
+    },
+  })
+  return threeYearLow
+}
+
+export async function getAllTimeHighTickerPrice() {
+  const allTimeHigh = await prisma.tickerPrice.findFirst({
+    where: {
+      ticker: "VOO",
+    },
+    orderBy: {
+      price: "desc",
+    },
+  })
+  return allTimeHigh
 }

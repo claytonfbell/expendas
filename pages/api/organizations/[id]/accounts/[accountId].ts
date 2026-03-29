@@ -4,9 +4,9 @@ import { AccountWithIncludes } from "../../../../../lib/AccountWithIncludes"
 import { requireOrganizationAuthentication } from "../../../../../lib/requireAuthentication"
 import { BadRequestException } from "../../../../../lib/server/HttpException"
 import { buildResponse } from "../../../../../lib/server/buildResponse"
-import { getLatestTickerPrice } from "../../../../../lib/server/populateMissingTickerPrices"
 import prisma from "../../../../../lib/server/prisma"
 import withSession, { NextIronRequest } from "../../../../../lib/server/session"
+import { getLatestTickerPrice } from "../../../../../lib/server/tickerPrices"
 import validate from "../../../../../lib/server/validate"
 
 async function handler(

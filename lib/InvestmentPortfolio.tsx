@@ -13,7 +13,7 @@ import {
 } from "@mui/material"
 import { AccountBucket } from "@prisma/client"
 import { ResponsiveTable } from "material-ui-pack"
-import { useState } from "react"
+import React, { useState } from "react"
 import {
   Bar,
   BarChart,
@@ -29,7 +29,11 @@ import { investmentGroup } from "./AccountGroup"
 import { displayAccountType } from "./accountTypes"
 import { AccountWithIncludes } from "./AccountWithIncludes"
 import { AmountInputTool } from "./AmountInputTool"
-import { useFetchAccounts, useUpdateAccount } from "./api/api"
+import {
+  useFetchAccounts,
+  useFetchTickerPrices,
+  useUpdateAccount,
+} from "./api/api"
 import { Currency } from "./Currency"
 import { formatMoney } from "./formatMoney"
 import { Link } from "./Link"
@@ -95,6 +99,35 @@ export function InvestmentPortfolio() {
     (a, b) => a + (b.accountBucket === "After_Tax" ? b.balance : 0),
     0
   )
+
+  const { data: tickerPrices } = useFetchTickerPrices()
+  const marketHighEquity = React.useMemo(() => {
+    if (tickerPrices) {
+      return (equity / tickerPrices.currentPrice) * tickerPrices.allTimeHigh
+    }
+    return undefined
+  }, [equity, tickerPrices])
+
+  const marketHighTotal = React.useMemo(() => {
+    if (marketHighEquity) {
+      return marketHighEquity + fixed
+    }
+    return undefined
+  }, [marketHighEquity, fixed])
+
+  const marketThreeYearLowEquity = React.useMemo(() => {
+    if (tickerPrices) {
+      return (equity / tickerPrices.currentPrice) * tickerPrices.threeYearLow
+    }
+    return undefined
+  }, [equity, tickerPrices])
+
+  const marketThreeYearLowTotal = React.useMemo(() => {
+    if (marketThreeYearLowEquity) {
+      return marketThreeYearLowEquity + fixed
+    }
+    return undefined
+  }, [marketThreeYearLowEquity, fixed])
 
   return (
     <>
@@ -255,10 +288,26 @@ export function InvestmentPortfolio() {
                       <Currency value={fixed} />
                     </Grid>
                     <Grid item xs={6}>
-                      TOTAL VALUE
+                      <strong>TOTAL VALUE</strong>
                     </Grid>
                     <Grid item xs={6} style={{ textAlign: "right" }}>
-                      <Currency value={total} />
+                      <strong>
+                        <Currency value={total} />
+                      </strong>
+                    </Grid>
+
+                    <Grid item xs={6}>
+                      ALL TIME HIGH VALUE
+                    </Grid>
+                    <Grid item xs={6} style={{ textAlign: "right" }}>
+                      <Currency value={marketHighTotal ?? 0} />
+                    </Grid>
+
+                    <Grid item xs={6}>
+                      THREE YEAR LOW VALUE
+                    </Grid>
+                    <Grid item xs={6} style={{ textAlign: "right" }}>
+                      <Currency value={marketThreeYearLowTotal ?? 0} />
                     </Grid>
                   </Grid>
                 </Box>
@@ -298,6 +347,31 @@ export function InvestmentPortfolio() {
                     </TableCell>
                     <TableCell></TableCell>
                   </TableRow>
+
+                  {tickerPrices != undefined && (
+                    <>
+                      <TableRow>
+                        <TableCell>Market All Time High</TableCell>
+                        <TableCell align="right">
+                          <Currency value={marketHighEquity ?? 0} />
+                        </TableCell>
+                        <TableCell align="right"></TableCell>
+                        <TableCell align="right">
+                          <Currency value={marketHighTotal ?? 0} />
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Market three year Low</TableCell>
+                        <TableCell align="right">
+                          <Currency value={marketThreeYearLowEquity ?? 0} />
+                        </TableCell>
+                        <TableCell align="right"></TableCell>
+                        <TableCell align="right">
+                          <Currency value={marketThreeYearLowTotal ?? 0} />
+                        </TableCell>
+                      </TableRow>
+                    </>
+                  )}
                 </>
               )
             }

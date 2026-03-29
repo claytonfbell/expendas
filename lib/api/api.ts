@@ -7,6 +7,7 @@ import {
   UsersOnOrganizations,
 } from "@prisma/client"
 import { useMutation, useQuery, useQueryClient } from "react-query"
+import { TickerPriceResponse } from "../../pages/api/tickerPrices"
 import { AccountWithIncludes } from "../AccountWithIncludes"
 import { useGlobalState } from "../GlobalStateProvider"
 import { ItemWithIncludes } from "../ItemWithIncludes"
@@ -263,6 +264,13 @@ export function useFetchAccounts() {
     () => api.fetchAccounts(organizationId || 0),
     { enabled: organizationId !== null }
   )
+}
+
+export function useFetchTickerPrices() {
+  return useQuery<TickerPriceResponse, RestError>({
+    queryKey: ["tickerPrices"],
+    queryFn: () => rest.get(`/tickerPrices`),
+  })
 }
 
 export function useAddAccount() {
