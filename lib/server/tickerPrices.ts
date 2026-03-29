@@ -24,16 +24,17 @@ export async function populateMissingTickerPrices() {
   // fill the fiveMissingDates array with any missing dates in a row, starting from yesterday
   for (let i = 1; i < 365 * 3; i++) {
     // start from yesterday
-    const dateToCheck = moment()
+    const dateToCheckMoment = moment()
       .tz("America/Los_Angeles")
       .subtract(i, "days")
-      .format("YYYY-MM-DD")
 
     // skip date if its Saturday or Sunday since market is closed and we won't get a price for those days
-    const dayOfWeek = moment(dateToCheck).tz("America/Los_Angeles").day()
+    const dayOfWeek = dateToCheckMoment.day()
     if (dayOfWeek === 0 || dayOfWeek === 6) {
       continue
     }
+
+    const dateToCheck = dateToCheckMoment.format("YYYY-MM-DD")
 
     const found = mostRecentLimitThreeYears.find(
       (tp) => tp.date === dateToCheck
