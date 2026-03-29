@@ -18,11 +18,11 @@ export async function populateMissingTickerPrices() {
         gte: moment().subtract(2, "years").format("YYYY-MM-DD"),
       },
     },
-    take: 365 * 2,
+    take: 90,
   })
 
   // fill the fiveMissingDates array with any missing dates in a row, starting from yesterday
-  for (let i = 1; i < 365 * 2; i++) {
+  for (let i = 1; i < 90; i++) {
     // start from yesterday
     const dateToCheckMoment = moment()
       .tz("America/Los_Angeles")
