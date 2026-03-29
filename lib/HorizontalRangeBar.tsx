@@ -59,8 +59,12 @@ export function HorizontalRangeBar({ low, current, high }: Props) {
 
         <HorizontalRangeBarIndicator
           containerRef={currentRef}
-          align="center"
-          left={currentPositionInPixels}
+          align={highColision ? "end" : "center"}
+          left={
+            highColision
+              ? currentPositionInPixels - currentWidth / 2
+              : currentPositionInPixels
+          }
           value={current}
           color="primary"
           label="Current"
