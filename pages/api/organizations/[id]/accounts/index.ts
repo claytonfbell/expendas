@@ -94,12 +94,14 @@ async function updateAccountBalanceHistory(organizationId: number) {
       organizationId,
     },
   })
+
+  const today = moment().tz("America/Los_Angeles").format("YYYY-MM-DD")
   for (const account of accounts) {
     await prisma.accountBalanceHistory.upsert({
       where: {
         accountId_date: {
           accountId: account.id,
-          date: moment().format("YYYY-MM-DD"),
+          date: today,
         },
       },
       update: {
@@ -108,7 +110,7 @@ async function updateAccountBalanceHistory(organizationId: number) {
       create: {
         accountId: account.id,
         balance: account.balance,
-        date: moment().format("YYYY-MM-DD"),
+        date: today,
       },
     })
   }
