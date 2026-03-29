@@ -28,6 +28,13 @@ export async function populateMissingTickerPrices() {
       .tz("America/Los_Angeles")
       .subtract(i, "days")
       .format("YYYY-MM-DD")
+
+    // skip date if its Saturday or Sunday since market is closed and we won't get a price for those days
+    const dayOfWeek = moment(dateToCheck).tz("America/Los_Angeles").day()
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+      continue
+    }
+
     const found = mostRecentLimitThreeYears.find(
       (tp) => tp.date === dateToCheck
     )
