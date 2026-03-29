@@ -36,6 +36,7 @@ import {
 } from "./api/api"
 import { Currency } from "./Currency"
 import { formatMoney } from "./formatMoney"
+import { HorizontalRangeBar } from "./HorizontalRangeBar"
 import { Link } from "./Link"
 import { Percentage } from "./Percentage"
 
@@ -295,20 +296,6 @@ export function InvestmentPortfolio() {
                         <Currency value={total} />
                       </strong>
                     </Grid>
-
-                    <Grid item xs={6}>
-                      ALL TIME HIGH VALUE
-                    </Grid>
-                    <Grid item xs={6} style={{ textAlign: "right" }}>
-                      <Currency value={marketHighTotal ?? 0} />
-                    </Grid>
-
-                    <Grid item xs={6}>
-                      THREE YEAR LOW VALUE
-                    </Grid>
-                    <Grid item xs={6} style={{ textAlign: "right" }}>
-                      <Currency value={marketThreeYearLowTotal ?? 0} />
-                    </Grid>
                   </Grid>
                 </Box>
               ) : (
@@ -347,34 +334,16 @@ export function InvestmentPortfolio() {
                     </TableCell>
                     <TableCell></TableCell>
                   </TableRow>
-
-                  {tickerPrices != undefined && (
-                    <>
-                      <TableRow>
-                        <TableCell>Market All Time High</TableCell>
-                        <TableCell align="right">
-                          <Currency value={marketHighEquity ?? 0} />
-                        </TableCell>
-                        <TableCell align="right"></TableCell>
-                        <TableCell align="right">
-                          <Currency value={marketHighTotal ?? 0} />
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>Market three year Low</TableCell>
-                        <TableCell align="right">
-                          <Currency value={marketThreeYearLowEquity ?? 0} />
-                        </TableCell>
-                        <TableCell align="right"></TableCell>
-                        <TableCell align="right">
-                          <Currency value={marketThreeYearLowTotal ?? 0} />
-                        </TableCell>
-                      </TableRow>
-                    </>
-                  )}
                 </>
               )
             }
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <HorizontalRangeBar
+            low={marketThreeYearLowTotal ?? 0}
+            current={total}
+            high={marketHighTotal ?? 0}
           />
         </Grid>
       </Grid>
