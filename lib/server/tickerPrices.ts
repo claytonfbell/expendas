@@ -7,22 +7,22 @@ export async function populateMissingTickerPrices() {
   // go back as far as 90 days in the past, but stop once we find 5 missing dates in a row (to avoid too many requests to the massive.com API)
   const fiveMissingDates: string[] = []
 
-  // find the most recent 3 years saved ticker prices for VOO
-  const mostRecentLimitThreeYears = await prisma.tickerPrice.findMany({
+  // find the most recent 2 years saved ticker prices for VOO
+  const mostRecentLimitTwoYears = await prisma.tickerPrice.findMany({
     orderBy: {
       date: "desc",
     },
     where: {
       ticker: "VOO",
       date: {
-        gte: moment().subtract(3, "years").format("YYYY-MM-DD"),
+        gte: moment().subtract(2, "years").format("YYYY-MM-DD"),
       },
     },
-    take: 365 * 3,
+    take: 365 * 2,
   })
 
   // fill the fiveMissingDates array with any missing dates in a row, starting from yesterday
-  for (let i = 1; i < 365 * 3; i++) {
+  for (let i = 1; i < 365 * 2; i++) {
     // start from yesterday
     const dateToCheckMoment = moment()
       .tz("America/Los_Angeles")
@@ -36,9 +36,7 @@ export async function populateMissingTickerPrices() {
 
     const dateToCheck = dateToCheckMoment.format("YYYY-MM-DD")
 
-    const found = mostRecentLimitThreeYears.find(
-      (tp) => tp.date === dateToCheck
-    )
+    const found = mostRecentLimitTwoYears.find((tp) => tp.date === dateToCheck)
 
     if (!found) {
       fiveMissingDates.push(dateToCheck)
@@ -264,13 +262,13 @@ export async function autoUpdateInvestmentAccountBalances() {
   }
 }
 
-export async function getThreeYearLowTickerPrice() {
-  const threeYearsAgo = moment().subtract(3, "years").format("YYYY-MM-DD")
-  const threeYearLow = await prisma.tickerPrice.findFirst({
+export async function getTwoYearLowTickerPrice() {
+  const twoYearsAgo = moment().subtract(2, "years").format("YYYY-MM-DD")
+  const twoYearLow = await prisma.tickerPrice.findFirst({
     where: {
       ticker: "VOO",
       date: {
-        gte: threeYearsAgo,
+        gte: twoYearsAgo,
       },
       price: {
         gt: 0,
@@ -280,7 +278,7 @@ export async function getThreeYearLowTickerPrice() {
       price: "asc",
     },
   })
-  return threeYearLow
+  return twoYearLow
 }
 
 export async function getAllTimeHighTickerPrice() {

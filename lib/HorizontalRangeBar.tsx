@@ -52,7 +52,7 @@ export function HorizontalRangeBar({ low, current, high }: Props) {
           align="start"
           value={low}
           color="error"
-          label="3 Year Low"
+          label="2 Year Low"
           Icon={ArrowDropDownIcon}
           collides={false}
         />

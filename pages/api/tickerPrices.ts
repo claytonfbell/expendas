@@ -5,7 +5,7 @@ import withSession, { NextIronRequest } from "../../lib/server/session"
 import {
   getAllTimeHighTickerPrice,
   getLatestTickerPrice,
-  getThreeYearLowTickerPrice,
+  getTwoYearLowTickerPrice,
 } from "../../lib/server/tickerPrices"
 
 async function handler(
@@ -20,14 +20,14 @@ async function handler(
       const allTimeHigh = await getAllTimeHighTickerPrice().then(
         (price) => price?.price ?? 0
       )
-      const threeYearLow = await getThreeYearLowTickerPrice().then(
+      const twoYearLow = await getTwoYearLowTickerPrice().then(
         (price) => price?.price ?? 0
       )
 
       const response: TickerPriceResponse = {
         currentPrice,
         allTimeHigh,
-        threeYearLow,
+        twoYearLow,
       }
       return response
     })
@@ -39,5 +39,5 @@ export default withSession(handler)
 export type TickerPriceResponse = {
   currentPrice: number
   allTimeHigh: number
-  threeYearLow: number
+  twoYearLow: number
 }

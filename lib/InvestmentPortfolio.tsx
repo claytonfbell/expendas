@@ -116,19 +116,19 @@ export function InvestmentPortfolio() {
     return undefined
   }, [marketHighEquity, fixed])
 
-  const marketThreeYearLowEquity = React.useMemo(() => {
+  const marketTwoYearLowEquity = React.useMemo(() => {
     if (tickerPrices) {
-      return (equity / tickerPrices.currentPrice) * tickerPrices.threeYearLow
+      return (equity / tickerPrices.currentPrice) * tickerPrices.twoYearLow
     }
     return undefined
   }, [equity, tickerPrices])
 
-  const marketThreeYearLowTotal = React.useMemo(() => {
-    if (marketThreeYearLowEquity) {
-      return marketThreeYearLowEquity + fixed
+  const marketTwoYearLowTotal = React.useMemo(() => {
+    if (marketTwoYearLowEquity) {
+      return marketTwoYearLowEquity + fixed
     }
     return undefined
-  }, [marketThreeYearLowEquity, fixed])
+  }, [marketTwoYearLowEquity, fixed])
 
   return (
     <>
@@ -163,7 +163,7 @@ export function InvestmentPortfolio() {
 
         <Grid item xs={12}>
           <HorizontalRangeBar
-            low={marketThreeYearLowTotal ?? 0}
+            low={marketTwoYearLowTotal ?? 0}
             current={total}
             high={marketHighTotal ?? 0}
           />
