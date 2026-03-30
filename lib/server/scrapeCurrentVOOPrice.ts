@@ -13,7 +13,7 @@ export async function scrapeCurrentVOOPrice(): Promise<number | null> {
       const match = matches[matches.length - 1].match(regex)
       if (match && match.length > 1) {
         const priceStr = match[1].replace(/,/g, "")
-        const price = parseFloat(priceStr)
+        const price = parseFloat(priceStr) * 100 // convert to cents
         return price
       }
     }
