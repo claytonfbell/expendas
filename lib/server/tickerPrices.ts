@@ -125,52 +125,6 @@ export async function populateMissingTickerPrices() {
       console.log("failed to scrape today's price from yahoo finance")
     }
   }
-
-  // now use alphavantage.co api to get TODAY's price (after marke close) don't have to wait for massive.com to update with today's price
-  //   if (isTooSoonForAlphaVantageRequest()) {
-  //     console.log(
-  //       "too soon for alphavantage.co request, skipping fetching today's price to avoid hitting rate limit"
-  //     )
-  //     return
-  //   } else {
-  //     console.log("fetching today's price from alphavantage.co")
-
-  //     const alphavantageUrl = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=VOO&apikey=${process.env.ALPHAVANTAGE_API_KEY}`
-  //     const alphavantageResponse: AlphaVantageQuote = await fetch(
-  //       alphavantageUrl
-  //     ).then((res) => res.json())
-
-  //     const today = moment().tz("America/Los_Angeles").format("YYYY-MM-DD")
-  //     const currentPriceData = alphavantageResponse["Global Quote"]
-  //       ? alphavantageResponse["Global Quote"]
-  //       : undefined
-  //     if (
-  //       currentPriceData &&
-  //       currentPriceData["07. latest trading day"] === today
-  //     ) {
-  //       console.log("todayPriceData", currentPriceData)
-  //       await prisma.tickerPrice.upsert({
-  //         where: {
-  //           ticker_date: {
-  //             ticker: "VOO",
-  //             date: today,
-  //           },
-  //         },
-  //         update: {
-  //           price: Math.round(parseFloat(currentPriceData["05. price"]) * 100), // convert to cents
-  //         },
-  //         create: {
-  //           ticker: "VOO",
-  //           price: Math.round(parseFloat(currentPriceData["05. price"]) * 100), // convert to cents
-  //           date: today,
-  //         },
-  //       })
-  //     } else {
-  //       console.log(
-  //         `no price data found for today (${today}) from alphavantage.co response`
-  //       )
-  //     }
-  //   }
 }
 
 const scrapeRequests: Moment[] = []
@@ -246,49 +200,6 @@ export async function getLatestTickerPrice() {
   return latestTickerPrice
 }
 
-export async function autoUpdateInvestmentAccountBalances() {
-  const latestTickerPrice = await getLatestTickerPrice()
-
-  // get investment accounts
-  const investmentAccounts = await prisma.account.findMany({
-    where: {
-      accountType: "Investment",
-      tickerPrice: {
-        not: null,
-      },
-    },
-  })
-
-  for (const account of investmentAccounts) {
-    if (
-      account.tickerPrice &&
-      latestTickerPrice &&
-      account.tickerPrice !== latestTickerPrice.price
-    ) {
-      // calculate number of shares based on old price
-      const equityBalance = account.balance - (account.totalFixedIncome ?? 0)
-      const numShares = equityBalance / account.tickerPrice
-      // calculate new balance based on latest price
-      const newBalance =
-        numShares * latestTickerPrice.price + (account.totalFixedIncome ?? 0)
-
-      await prisma.account.update({
-        where: {
-          id: account.id,
-        },
-        data: {
-          balance: Math.round(newBalance),
-          tickerPrice: latestTickerPrice.price,
-        },
-      })
-    } else {
-      console.log(
-        `skipping account ${account.id} because ticker price is already up to date`
-      )
-    }
-  }
-}
-
 export async function getTwoYearLowTickerPrice() {
   const twoYearsAgo = moment().subtract(2, "years").format("YYYY-MM-DD")
   const twoYearLow = await prisma.tickerPrice.findFirst({
@@ -318,21 +229,4 @@ export async function getAllTimeHighTickerPrice() {
     },
   })
   return allTimeHigh
-}
-
-export interface AlphaVantageQuote {
-  "Global Quote"?: GlobalQuote
-}
-
-export interface GlobalQuote {
-  "01. symbol": string
-  "02. open": string
-  "03. high": string
-  "04. low": string
-  "05. price": string
-  "06. volume": string
-  "07. latest trading day": string
-  "08. previous close": string
-  "09. change": string
-  "10. change percent": string
 }

@@ -3,10 +3,10 @@ import moment from "moment"
 import { NextApiResponse } from "next"
 import { requireOrganizationAuthentication } from "../../../../../lib/requireAuthentication"
 import { BadRequestException } from "../../../../../lib/server/HttpException"
+import { autoUpdateInvestmentAccountBalances } from "../../../../../lib/server/autoUpdateInvestmentAccountBalances"
 import { buildResponse } from "../../../../../lib/server/buildResponse"
 import prisma from "../../../../../lib/server/prisma"
 import withSession, { NextIronRequest } from "../../../../../lib/server/session"
-import { autoUpdateInvestmentAccountBalances } from "../../../../../lib/server/tickerPrices"
 import validate from "../../../../../lib/server/validate"
 
 async function handler(
