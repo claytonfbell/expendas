@@ -96,9 +96,7 @@ export async function populateMissingTickerPrices() {
 
   // now scrape today's current VOO price from yahoo finance
   if (isTooSoonForScrapeRequest()) {
-    console.log(
-      "too soon for scrape request, skipping scraping today's price to avoid hitting rate limit"
-    )
+    console.log("too soon for scrape request")
     return
   } else {
     console.log("scraping today's price from yahoo finance")
@@ -132,7 +130,7 @@ const scrapeRequests: Moment[] = []
 
 function isTooSoonForScrapeRequest(): boolean {
   const maxCount = 1
-  const timeWindowMinutes = 1
+  const timeWindowMinutes = 5
 
   const now = moment()
   const timeAgo = now.subtract(timeWindowMinutes, "minutes")
