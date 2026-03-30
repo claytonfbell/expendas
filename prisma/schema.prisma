@@ -66,8 +66,7 @@ model Account {
     plaidCredentialId Int?
     plaidCredential   PlaidCredential? @relation(fields: [plaidCredentialId], references: [id])
     plaidAccountId    String?          @db.VarChar(255)
-    tickerPriceId     Int?
-    tickerPrice       TickerPrice?     @relation(fields: [tickerPriceId], references: [id])
+    tickerPrice       Int?
     balanceHistory    AccountBalanceHistory[]
 
 }
@@ -114,7 +113,6 @@ model TickerPrice {
     ticker    String  @db.VarChar(255)
     price     Int // cents
     date      String
-    accounts  Account[]
 
     @@unique([ticker, date], map: "TickerPrice.ticker_date_unique")
 }

@@ -1,6 +1,7 @@
 import { TickerPrice } from "@prisma/client"
 import moment, { Moment } from "moment-timezone"
 import prisma from "./prisma"
+import { scrapeCurrentVOOPrice } from "./scrapeVoo"
 
 export async function populateMissingTickerPrices() {
   // try and find up to five missing dates in row that need to be fetched from the massive.com API and populated in the database
@@ -93,29 +94,17 @@ export async function populateMissingTickerPrices() {
     }
   }
 
-  // now use alphavantage.co api to get TODAY's price (after marke close) don't have to wait for massive.com to update with today's price
-  if (isTooSoonForAlphaVantageRequest()) {
+  // now scrape today's current VOO price from yahoo finance
+  if (isTooSoonForScrapeRequest()) {
     console.log(
-      "too soon for alphavantage.co request, skipping fetching today's price to avoid hitting rate limit"
+      "too soon for scrape request, skipping scraping today's price to avoid hitting rate limit"
     )
     return
   } else {
-    console.log("fetching today's price from alphavantage.co")
-
-    const alphavantageUrl = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=VOO&apikey=${process.env.ALPHAVANTAGE_API_KEY}`
-    const alphavantageResponse: AlphaVantageQuote = await fetch(
-      alphavantageUrl
-    ).then((res) => res.json())
-
-    const today = moment().tz("America/Los_Angeles").format("YYYY-MM-DD")
-    const currentPriceData = alphavantageResponse["Global Quote"]
-      ? alphavantageResponse["Global Quote"]
-      : undefined
-    if (
-      currentPriceData &&
-      currentPriceData["07. latest trading day"] === today
-    ) {
-      console.log("todayPriceData", currentPriceData)
+    console.log("scraping today's price from yahoo finance")
+    const scrapedPrice = await scrapeCurrentVOOPrice()
+    if (scrapedPrice !== null) {
+      const today = moment().tz("America/Los_Angeles").format("YYYY-MM-DD")
       await prisma.tickerPrice.upsert({
         where: {
           ticker_date: {
@@ -124,25 +113,69 @@ export async function populateMissingTickerPrices() {
           },
         },
         update: {
-          price: Math.round(parseFloat(currentPriceData["05. price"]) * 100), // convert to cents
+          price: scrapedPrice,
         },
         create: {
           ticker: "VOO",
-          price: Math.round(parseFloat(currentPriceData["05. price"]) * 100), // convert to cents
+          price: scrapedPrice,
           date: today,
         },
       })
     } else {
-      console.log(
-        `no price data found for today (${today}) from alphavantage.co response`
-      )
+      console.log("failed to scrape today's price from yahoo finance")
     }
   }
+
+  // now use alphavantage.co api to get TODAY's price (after marke close) don't have to wait for massive.com to update with today's price
+  //   if (isTooSoonForAlphaVantageRequest()) {
+  //     console.log(
+  //       "too soon for alphavantage.co request, skipping fetching today's price to avoid hitting rate limit"
+  //     )
+  //     return
+  //   } else {
+  //     console.log("fetching today's price from alphavantage.co")
+
+  //     const alphavantageUrl = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=VOO&apikey=${process.env.ALPHAVANTAGE_API_KEY}`
+  //     const alphavantageResponse: AlphaVantageQuote = await fetch(
+  //       alphavantageUrl
+  //     ).then((res) => res.json())
+
+  //     const today = moment().tz("America/Los_Angeles").format("YYYY-MM-DD")
+  //     const currentPriceData = alphavantageResponse["Global Quote"]
+  //       ? alphavantageResponse["Global Quote"]
+  //       : undefined
+  //     if (
+  //       currentPriceData &&
+  //       currentPriceData["07. latest trading day"] === today
+  //     ) {
+  //       console.log("todayPriceData", currentPriceData)
+  //       await prisma.tickerPrice.upsert({
+  //         where: {
+  //           ticker_date: {
+  //             ticker: "VOO",
+  //             date: today,
+  //           },
+  //         },
+  //         update: {
+  //           price: Math.round(parseFloat(currentPriceData["05. price"]) * 100), // convert to cents
+  //         },
+  //         create: {
+  //           ticker: "VOO",
+  //           price: Math.round(parseFloat(currentPriceData["05. price"]) * 100), // convert to cents
+  //           date: today,
+  //         },
+  //       })
+  //     } else {
+  //       console.log(
+  //         `no price data found for today (${today}) from alphavantage.co response`
+  //       )
+  //     }
+  //   }
 }
 
-const alphaVantageRequests: Moment[] = []
+const scrapeRequests: Moment[] = []
 
-function isTooSoonForAlphaVantageRequest(): boolean {
+function isTooSoonForScrapeRequest(): boolean {
   const maxCount = 1
   const timeWindowMinutes = 1
 
@@ -150,16 +183,13 @@ function isTooSoonForAlphaVantageRequest(): boolean {
   const timeAgo = now.subtract(timeWindowMinutes, "minutes")
 
   // Remove timestamps that are older than 5 minutes
-  while (
-    alphaVantageRequests.length > 0 &&
-    alphaVantageRequests[0].isBefore(timeAgo)
-  ) {
-    alphaVantageRequests.shift()
+  while (scrapeRequests.length > 0 && scrapeRequests[0].isBefore(timeAgo)) {
+    scrapeRequests.shift()
   }
 
-  const tooSoon = alphaVantageRequests.length >= maxCount
+  const tooSoon = scrapeRequests.length >= maxCount
   if (!tooSoon) {
-    alphaVantageRequests.push(moment())
+    scrapeRequests.push(moment())
   }
   return tooSoon
 }
@@ -223,12 +253,9 @@ export async function autoUpdateInvestmentAccountBalances() {
   const investmentAccounts = await prisma.account.findMany({
     where: {
       accountType: "Investment",
-      tickerPriceId: {
+      tickerPrice: {
         not: null,
       },
-    },
-    include: {
-      tickerPrice: true,
     },
   })
 
@@ -236,11 +263,11 @@ export async function autoUpdateInvestmentAccountBalances() {
     if (
       account.tickerPrice &&
       latestTickerPrice &&
-      account.tickerPrice.date !== latestTickerPrice.date
+      account.tickerPrice !== latestTickerPrice.price
     ) {
       // calculate number of shares based on old price
       const equityBalance = account.balance - (account.totalFixedIncome ?? 0)
-      const numShares = equityBalance / account.tickerPrice.price
+      const numShares = equityBalance / account.tickerPrice
       // calculate new balance based on latest price
       const newBalance =
         numShares * latestTickerPrice.price + (account.totalFixedIncome ?? 0)
@@ -251,7 +278,7 @@ export async function autoUpdateInvestmentAccountBalances() {
         },
         data: {
           balance: Math.round(newBalance),
-          tickerPriceId: latestTickerPrice.id,
+          tickerPrice: latestTickerPrice.price,
         },
       })
     } else {

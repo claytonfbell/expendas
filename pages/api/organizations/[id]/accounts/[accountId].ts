@@ -86,7 +86,7 @@ async function handler(
           balance,
           creditCardType,
           totalFixedIncome,
-          tickerPriceId: latestTickerPrice ? latestTickerPrice.id : null,
+          tickerPrice: latestTickerPrice ? latestTickerPrice.price : null,
         },
         where: { id: accountId },
       })
