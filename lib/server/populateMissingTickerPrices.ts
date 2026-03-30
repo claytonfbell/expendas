@@ -121,7 +121,7 @@ export async function populateMissingTickerPrices() {
     console.log("too soon for scrape request")
     return
   } else {
-    console.log("scraping today's price from yahoo finance")
+    console.log("scraping today's price from the web")
     const scrapedPrice = await scrapeCurrentVOOPrice()
     if (scrapedPrice !== null) {
       console.log("scrapedPrice", scrapedPrice)
@@ -145,7 +145,7 @@ export async function populateMissingTickerPrices() {
         },
       })
     } else {
-      console.log("failed to scrape today's price from yahoo finance")
+      console.log("failed to scrape today's price from the web")
     }
   }
 }
