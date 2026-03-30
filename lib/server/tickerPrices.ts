@@ -9,7 +9,7 @@ export async function populateMissingTickerPrices() {
   // go back as far as 90 days in the past, but stop once we find 5 missing dates in a row (to avoid too many requests to the massive.com API)
   const fiveMissingDates: string[] = []
 
-  // find the most recent 2 years saved ticker prices for VOO
+  // find the most recent saved ticker prices for VOO
   const mostRecent = await prisma.tickerPrice.findMany({
     orderBy: {
       date: "desc",
@@ -17,7 +17,7 @@ export async function populateMissingTickerPrices() {
     where: {
       ticker: "VOO",
       date: {
-        gte: moment().subtract(2, "years").format("YYYY-MM-DD"),
+        gte: moment().subtract(90, "days").format("YYYY-MM-DD"),
       },
       closed: true, // only consider closed prices, we want to replace any non-closed prices with massive.com prices
     },

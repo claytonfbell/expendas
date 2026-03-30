@@ -37,9 +37,9 @@ export async function autoUpdateInvestmentAccountBalances() {
         },
       })
     } else {
-      console.log(
-        `skipping account ${account.id} because ticker price is already up to date`
-      )
+      //   console.log(
+      //     `skipping account ${account.id} because ticker price is already up to date`
+      //   )
     }
   }
 }
