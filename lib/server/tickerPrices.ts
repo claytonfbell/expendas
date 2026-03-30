@@ -108,7 +108,14 @@ export async function populateMissingTickerPrices() {
       durationMs: 5 * 60 * 1000, // 5 minutes
     },
   ])
-  if (scrapeRateLimit.isRateLimited()) {
+
+  const today = moment().tz("America/Los_Angeles").format("YYYY-MM-DD")
+  // check if saturday or sunday, if so skip since market is closed and we won't get a price for today
+  const dayOfWeek = moment().tz("America/Los_Angeles").day()
+  if (dayOfWeek === 0 || dayOfWeek === 6) {
+    console.log("markets closed weekends, skipping scrape for today's price")
+    return
+  } else if (scrapeRateLimit.isRateLimited()) {
     console.log("too soon for scrape request")
     return
   } else {
@@ -116,7 +123,7 @@ export async function populateMissingTickerPrices() {
     const scrapedPrice = await scrapeCurrentVOOPrice()
     if (scrapedPrice !== null) {
       console.log("scrapedPrice", scrapedPrice)
-      const today = moment().tz("America/Los_Angeles").format("YYYY-MM-DD")
+
       await prisma.tickerPrice.upsert({
         where: {
           ticker_date: {
