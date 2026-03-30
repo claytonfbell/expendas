@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.10.4](https://github.com/claytonfbell/expendas/compare/v1.10.3...v1.10.4) (2026-03-30)
+
+
+### Bug Fixes
+
+* added horizontal range bar ([c50399c](https://github.com/claytonfbell/expendas/commit/c50399c6c713623835b0eaae7cf50c30055add30))
+* added rate limit class ([96ccbf7](https://github.com/claytonfbell/expendas/commit/96ccbf79f7562b46364737a9009dbf0532034e53))
+* adjustments ([2ae1848](https://github.com/claytonfbell/expendas/commit/2ae18486fe08d2e005907371d8054f95ca35a0b9))
+* backfill 90 days of ticker prices ([d74ff13](https://github.com/claytonfbell/expendas/commit/d74ff13a48bec4bea2609798e083f467537d8da5))
+* cleanup ([87edbc4](https://github.com/claytonfbell/expendas/commit/87edbc4a721447b9de7685127c414e54b8aef0fc))
+* cleanup ([874c3bf](https://github.com/claytonfbell/expendas/commit/874c3bfba9b5160118017101edea7273777c6d96))
+* cleanup ([6f5f0ee](https://github.com/claytonfbell/expendas/commit/6f5f0eed9b24478175c11518482eecd1dc913588))
+* layout improvements ([0b11a8f](https://github.com/claytonfbell/expendas/commit/0b11a8fbd6d5023ac5d642f52d28c3137744c9d7))
+* logging ([4d70e94](https://github.com/claytonfbell/expendas/commit/4d70e94b4c66c298394483f043b1fcf1cde24cfa))
+* modified to two year low range calculation ([87fa2e0](https://github.com/claytonfbell/expendas/commit/87fa2e0a9a6d2bf81f556664fad65613ecabc44d))
+* refetch accounts every minute to keep filling in VOO ticker price history ([1c30a9c](https://github.com/claytonfbell/expendas/commit/1c30a9c602e11aa0f258c78a73a9272fe1f902f9))
+* refetchOnWindowFocus default true ([8fe51c2](https://github.com/claytonfbell/expendas/commit/8fe51c2e7192e94e10cab5356593d9947b9b5e7f))
+* scrape latest voo price from yahoo, support updating price and balance multiple times a day during trading ([9397731](https://github.com/claytonfbell/expendas/commit/93977310bf7d1bfc6f77fd787b7fe6d770d8f6ce))
+* skip checking voo price on weekends ([90e6616](https://github.com/claytonfbell/expendas/commit/90e6616027f1cc9d075d232302d2ac957aa63b49))
+* skip weekends on ticker prices ([cde3488](https://github.com/claytonfbell/expendas/commit/cde34882e8d59567c848054dd9dc8c10ac24d273))
+* skip weekends on ticker prices ([17ae99f](https://github.com/claytonfbell/expendas/commit/17ae99f76e5673c65987d2c52ac1260e0878be22))
+* track scraped prices as not-closed to replace them ([bbb1008](https://github.com/claytonfbell/expendas/commit/bbb1008bf5a38b376b1281825a3d56c42c2897e2))
+* update scrape rate limit ([bd3cec0](https://github.com/claytonfbell/expendas/commit/bd3cec081c122dba014d5cbd0b5374df633ac2eb))
+
 ### [1.10.3](https://github.com/claytonfbell/expendas/compare/v1.10.2...v1.10.3) (2024-03-09)
 
 
