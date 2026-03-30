@@ -1,6 +1,7 @@
 import { TickerPrice } from "@prisma/client"
-import moment, { Moment } from "moment-timezone"
+import moment from "moment-timezone"
 import prisma from "./prisma"
+import { RateLimit } from "./RateLimit"
 import { scrapeCurrentVOOPrice } from "./scrapeVoo"
 
 export async function populateMissingTickerPrices() {
@@ -49,9 +50,15 @@ export async function populateMissingTickerPrices() {
 
   console.log("fiveMissingDates", fiveMissingDates)
 
+  const massiveRateLimit = new RateLimit("massiveApi", [
+    {
+      max: 5,
+      durationMs: 60 * 60 * 1000, // 1 hour
+    },
+  ])
   let keepGoing = true
   while (keepGoing && fiveMissingDates.length > 0) {
-    if (isTooSoonForMassiveRequest()) {
+    if (massiveRateLimit.isRateLimited()) {
       keepGoing = false
       console.log(
         "too soon for massive.com request, stopping to avoid hitting rate limit"
@@ -95,7 +102,13 @@ export async function populateMissingTickerPrices() {
   }
 
   // now scrape today's current VOO price from yahoo finance
-  if (isTooSoonForScrapeRequest()) {
+  const scrapeRateLimit = new RateLimit("scrapeCurrentVOOPrice", [
+    {
+      max: 1,
+      durationMs: 5 * 60 * 1000, // 5 minutes
+    },
+  ])
+  if (scrapeRateLimit.isRateLimited()) {
     console.log("too soon for scrape request")
     return
   } else {
@@ -124,48 +137,6 @@ export async function populateMissingTickerPrices() {
       console.log("failed to scrape today's price from yahoo finance")
     }
   }
-}
-
-const scrapeRequests: Moment[] = []
-
-function isTooSoonForScrapeRequest(): boolean {
-  const maxCount = 1
-  const timeWindowMinutes = 5
-
-  const now = moment()
-  const timeAgo = now.subtract(timeWindowMinutes, "minutes")
-
-  // Remove timestamps that are older than 5 minutes
-  while (scrapeRequests.length > 0 && scrapeRequests[0].isBefore(timeAgo)) {
-    scrapeRequests.shift()
-  }
-
-  const tooSoon = scrapeRequests.length >= maxCount
-  if (!tooSoon) {
-    scrapeRequests.push(moment())
-  }
-  return tooSoon
-}
-
-const massiveRequests: Moment[] = []
-
-function isTooSoonForMassiveRequest(): boolean {
-  const maxCount = 5
-  const timeWindowMinutes = 1
-
-  const now = moment()
-  const timeAgo = now.subtract(timeWindowMinutes, "minutes")
-
-  // Remove timestamps that are older than 5 minutes
-  while (massiveRequests.length > 0 && massiveRequests[0].isBefore(timeAgo)) {
-    massiveRequests.shift()
-  }
-
-  const tooSoon = massiveRequests.length >= maxCount
-  if (!tooSoon) {
-    massiveRequests.push(moment())
-  }
-  return tooSoon
 }
 
 type MassiveApiResponse = {
