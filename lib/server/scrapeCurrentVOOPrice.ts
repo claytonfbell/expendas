@@ -12,8 +12,10 @@ export async function scrapeCurrentVOOPrice(): Promise<number | null> {
       const regex = /<span class="QuoteStrip-lastPrice">(.*?)<\/span>/
       const match = matches[matches.length - 1].match(regex)
       if (match && match.length > 1) {
+        console.log("Raw scraped price string: ", match[1])
         const priceStr = match[1].replace(/,/g, "")
         const price = parseFloat(priceStr) * 100 // convert to cents
+        console.log("Scraped VOO price: ", price)
         return price
       }
     }
