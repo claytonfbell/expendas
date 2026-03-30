@@ -113,6 +113,7 @@ model TickerPrice {
     ticker    String  @db.VarChar(255)
     price     Int // cents
     date      String
+    closed    Boolean @default(true)
 
     @@unique([ticker, date], map: "TickerPrice.ticker_date_unique")
 }

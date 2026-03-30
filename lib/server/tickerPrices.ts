@@ -10,7 +10,7 @@ export async function populateMissingTickerPrices() {
   const fiveMissingDates: string[] = []
 
   // find the most recent 2 years saved ticker prices for VOO
-  const mostRecentLimitTwoYears = await prisma.tickerPrice.findMany({
+  const mostRecent = await prisma.tickerPrice.findMany({
     orderBy: {
       date: "desc",
     },
@@ -19,6 +19,7 @@ export async function populateMissingTickerPrices() {
       date: {
         gte: moment().subtract(2, "years").format("YYYY-MM-DD"),
       },
+      closed: true, // only consider closed prices, we want to replace any non-closed prices with massive.com prices
     },
     take: 90,
   })
@@ -38,7 +39,7 @@ export async function populateMissingTickerPrices() {
 
     const dateToCheck = dateToCheckMoment.format("YYYY-MM-DD")
 
-    const found = mostRecentLimitTwoYears.find((tp) => tp.date === dateToCheck)
+    const found = mostRecent.find((tp) => tp.date === dateToCheck)
 
     if (!found) {
       fiveMissingDates.push(dateToCheck)
@@ -91,11 +92,13 @@ export async function populateMissingTickerPrices() {
         },
         update: {
           price: (massiveResponse.close ?? 0) * 100, // convert to cents, 0 if market was closed that day and no price is available
+          closed: true,
         },
         create: {
           ticker: "VOO",
           price: (massiveResponse.close ?? 0) * 100, // convert to cents, 0 if market was closed that day and no price is available
           date: dateToFetch,
+          closed: true,
         },
       })
     }
@@ -133,11 +136,13 @@ export async function populateMissingTickerPrices() {
         },
         update: {
           price: scrapedPrice,
+          closed: false,
         },
         create: {
           ticker: "VOO",
           price: scrapedPrice,
           date: today,
+          closed: false,
         },
       })
     } else {
