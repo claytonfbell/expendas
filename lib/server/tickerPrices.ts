@@ -104,6 +104,7 @@ export async function populateMissingTickerPrices() {
     console.log("scraping today's price from yahoo finance")
     const scrapedPrice = await scrapeCurrentVOOPrice()
     if (scrapedPrice !== null) {
+      console.log("scrapedPrice", scrapedPrice)
       const today = moment().tz("America/Los_Angeles").format("YYYY-MM-DD")
       await prisma.tickerPrice.upsert({
         where: {
