@@ -29,8 +29,14 @@ export class RateLimit {
           hit.moment.isAfter(
             now.clone().subtract(option.durationMs, "milliseconds")
           )
-      ).length
-      if (hitsInWindow >= option.max) {
+      )
+      if (hitsInWindow.length >= option.max) {
+        console.log(
+          `Rate limit exceeded for ${this.name}: ${hitsInWindow.length} hits in the last ${option.durationMs} ms`
+        )
+        console.log(
+          hitsInWindow.map((hit) => hit.moment.toISOString()).join(", ")
+        )
         return true
       }
     }
