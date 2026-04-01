@@ -23,6 +23,7 @@ async function handler(
         include: {
           balanceHistory: {
             select: {
+              id: true,
               balance: true,
               fixedIncome: true,
               date: true,
@@ -59,6 +60,8 @@ async function handler(
         tickerPrices.map((tp) => [tp.date, tp.price])
       )
 
+      const promises: Promise<any>[] = []
+
       const balanceHistoryWithMarketHighAndLow = balanceHistory.map(
         (account) => {
           return {
@@ -87,6 +90,24 @@ async function handler(
                     entry.fixedIncome
                   : null
 
+              // update the entry with the market high and low
+              promises.push(
+                new Promise(async (resolve) => {
+                  await prisma.accountBalanceHistory.update({
+                    where: {
+                      id: entry.id,
+                    },
+                    data: {
+                      marketHigh:
+                        marketHigh !== null ? Math.round(marketHigh) : null,
+                      marketLow:
+                        marketLow !== null ? Math.round(marketLow) : null,
+                    },
+                  })
+                  resolve(null)
+                })
+              )
+
               return {
                 ...entry,
                 marketLow: marketLow !== null ? Math.round(marketLow) : null,
@@ -96,6 +117,8 @@ async function handler(
           }
         }
       )
+
+      await Promise.all(promises)
 
       return balanceHistoryWithMarketHighAndLow
     }

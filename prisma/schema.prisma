@@ -123,6 +123,8 @@ model AccountBalanceHistory {
     accountId   Int
     balance     Int
     fixedIncome Int     @default(0)
+    marketHigh  Int?
+    marketLow   Int?
     date        String
     account     Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
