@@ -111,30 +111,6 @@ export function TrendsReports() {
           formatter={(x) => formatCurrency(parseFloat(x?.toString() ?? "0"))}
         />
         <Legend />
-        <Line
-          type="monotone"
-          dataKey="balance"
-          stroke={theme.palette.primary.main}
-          strokeWidth={6}
-          isAnimationActive={true}
-          name="Investment Balance"
-        />
-        <Line
-          type="monotone"
-          dataKey="marketHigh"
-          stroke={theme.palette.success.main}
-          strokeWidth={6}
-          isAnimationActive={true}
-          name="Market High"
-        />
-        <Line
-          type="monotone"
-          dataKey="marketLow"
-          stroke={theme.palette.error.main}
-          strokeWidth={6}
-          isAnimationActive={true}
-          name="Market Low"
-        />
 
         <Line
           type="monotone"
@@ -143,6 +119,33 @@ export function TrendsReports() {
           strokeWidth={6}
           isAnimationActive={true}
           name="Total Net Worth"
+        />
+
+        <Line
+          type="monotone"
+          dataKey="marketHigh"
+          stroke={theme.palette.success.main}
+          strokeWidth={6}
+          isAnimationActive={true}
+          name="Market High"
+        />
+
+        <Line
+          type="monotone"
+          dataKey="balance"
+          stroke={theme.palette.primary.main}
+          strokeWidth={6}
+          isAnimationActive={true}
+          name="Investment Balance"
+        />
+
+        <Line
+          type="monotone"
+          dataKey="marketLow"
+          stroke={theme.palette.error.main}
+          strokeWidth={6}
+          isAnimationActive={true}
+          name="Market Low"
         />
       </LineChart>
     </>
