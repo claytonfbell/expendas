@@ -1,5 +1,9 @@
 import moment from "moment"
 import prisma from "./prisma"
+import {
+  getAllTimeHighTickerPrice,
+  getTwoYearLowTickerPrice,
+} from "./tickerPrices"
 
 export async function updateAccountBalanceHistory(organizationId: number) {
   const accounts = await prisma.account.findMany({
@@ -20,7 +24,28 @@ export async function updateAccountBalanceHistory(organizationId: number) {
   const existingMap = new Map<number, (typeof existingRows)[0]>(
     existingRows.map((row) => [row.accountId, row])
   )
+
+  const marketHighPrice = (await getAllTimeHighTickerPrice())!.price
+  const marketLowPrice = (await getTwoYearLowTickerPrice())!.price
+
   for (const account of accounts) {
+    // calculate marketHigh and marketLow
+    const fixedIncome = account.totalFixedIncome ?? 0
+    const currentPrice = account.tickerPrice ?? 0
+    const shares = (account.balance - fixedIncome) / currentPrice
+    const marketHigh =
+      account.accountType === "Investment"
+        ? Math.round(shares * marketHighPrice + fixedIncome)
+        : null
+    const marketLow =
+      account.accountType === "Investment"
+        ? Math.round(shares * marketLowPrice + fixedIncome)
+        : null
+
+    console.log(
+      `account ${account.id}: marketHigh: ${marketHigh}, marketLow: ${marketLow}`
+    )
+
     const existing = existingMap.get(account.id)
     if (existing) {
       await prisma.accountBalanceHistory.update({
@@ -30,6 +55,8 @@ export async function updateAccountBalanceHistory(organizationId: number) {
         data: {
           balance: account.balance,
           fixedIncome: account.totalFixedIncome ?? 0,
+          marketHigh,
+          marketLow,
         },
       })
     } else {
@@ -38,6 +65,8 @@ export async function updateAccountBalanceHistory(organizationId: number) {
           accountId: account.id,
           balance: account.balance,
           fixedIncome: account.totalFixedIncome ?? 0,
+          marketHigh,
+          marketLow,
           date: today,
         },
       })
