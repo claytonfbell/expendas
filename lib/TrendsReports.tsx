@@ -109,6 +109,19 @@ export function TrendsReports() {
         />
         <Tooltip
           formatter={(x) => formatCurrency(parseFloat(x?.toString() ?? "0"))}
+          itemSorter={(item) => {
+            if (item.dataKey === "totalNetWorth") {
+              return 0
+            } else if (item.dataKey === "marketHigh") {
+              return 1
+            } else if (item.dataKey === "balance") {
+              return 2
+            } else if (item.dataKey === "marketLow") {
+              return 3
+            } else {
+              return 4
+            }
+          }}
         />
         <Legend />
 
