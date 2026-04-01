@@ -42,7 +42,7 @@
     "react-plaid-link": "^3.5.1",
     "react-storage-hooks": "^4.0.1",
     "react-use": "^17.5.0",
-    "recharts": "^2.12.2",
+    "recharts": "^3.8.1",
     "sentence-case": "^3.0.4",
     "uuid": "^9.0.1",
     "validator": "^13.11.0",

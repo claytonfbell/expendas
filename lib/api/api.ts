@@ -8,7 +8,10 @@ import {
 } from "@prisma/client"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { TickerPriceResponse } from "../../pages/api/tickerPrices"
-import { AccountWithIncludes } from "../AccountWithIncludes"
+import {
+  AccountWithBalanceHistory,
+  AccountWithIncludes,
+} from "../AccountWithIncludes"
 import { useGlobalState } from "../GlobalStateProvider"
 import { ItemWithIncludes } from "../ItemWithIncludes"
 import { PaymentWithIncludes } from "../PaymentWithIncludes"
@@ -337,6 +340,17 @@ export function useRemoveAccount() {
     onSuccess: () => {
       queryClient.refetchQueries({ queryKey: ["accounts"] })
     },
+  })
+}
+
+export function useFetchAccountsWithBalanceHistory(
+  organizationId: number | null
+) {
+  return useQuery<AccountWithBalanceHistory[], RestError>({
+    queryKey: ["accounts-balance-history", organizationId],
+    queryFn: () =>
+      rest.get(`/organizations/${organizationId}/accounts/balanceHistory`),
+    enabled: organizationId !== null,
   })
 }
 

@@ -119,11 +119,12 @@ model TickerPrice {
 }
 
 model AccountBalanceHistory {
-    id        Int     @id @default(autoincrement())
-    accountId Int
-    balance   Int
-    date      String
-    account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+    id          Int     @id @default(autoincrement())
+    accountId   Int
+    balance     Int
+    fixedIncome Int     @default(0)
+    date        String
+    account     Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
     @@unique([accountId, date], map: "AccountBalanceHistory.accountId_date_unique")
 }

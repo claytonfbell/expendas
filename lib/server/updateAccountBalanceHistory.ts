@@ -29,6 +29,7 @@ export async function updateAccountBalanceHistory(organizationId: number) {
         },
         data: {
           balance: account.balance,
+          fixedIncome: account.totalFixedIncome ?? 0,
         },
       })
     } else {
@@ -36,6 +37,7 @@ export async function updateAccountBalanceHistory(organizationId: number) {
         data: {
           accountId: account.id,
           balance: account.balance,
+          fixedIncome: account.totalFixedIncome ?? 0,
           date: today,
         },
       })

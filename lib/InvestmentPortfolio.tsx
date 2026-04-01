@@ -35,7 +35,6 @@ import {
   useUpdateAccount,
 } from "./api/api"
 import { Currency } from "./Currency"
-import { formatMoney } from "./formatMoney"
 import { HorizontalRangeBar } from "./HorizontalRangeBar"
 import { Link } from "./Link"
 import { Percentage } from "./Percentage"
@@ -142,8 +141,8 @@ export function InvestmentPortfolio() {
               <Tooltip
                 content={<CustomTooltip />}
                 isAnimationActive={false}
-                label="name"
-                formatter={(x: number) => formatMoney(x * 100)}
+                // label="name"
+                // formatter={(x: number) => formatMoney(x * 100)}
               />
               <Bar
                 dataKey="equity"
