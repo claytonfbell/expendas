@@ -1,5 +1,6 @@
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance"
 import AddIcon from "@mui/icons-material/Add"
+import AssessmentIcon from "@mui/icons-material/Assessment"
 import CheckIcon from "@mui/icons-material/Check"
 import ExitToAppIcon from "@mui/icons-material/ExitToApp"
 import ReceiptIcon from "@mui/icons-material/Receipt"
@@ -98,9 +99,16 @@ export function UserMenu() {
 
         <MenuItem onClick={menuClick(() => router.push(`/investments`))}>
           <ListItemIcon>
-            <ShowChartIcon />
+            <AssessmentIcon />
           </ListItemIcon>
           Investments
+        </MenuItem>
+
+        <MenuItem onClick={menuClick(() => router.push(`/trends`))}>
+          <ListItemIcon>
+            <ShowChartIcon />
+          </ListItemIcon>
+          Trends
         </MenuItem>
 
         <MenuItem onClick={menuClick(() => logout())}>
