@@ -1,4 +1,4 @@
-import { useTheme } from "@mui/material"
+import { useMediaQuery, useTheme } from "@mui/material"
 import moment from "moment"
 import {
   CartesianGrid,
@@ -80,20 +80,23 @@ export function TrendsReports() {
     Math.min(...investmentData.map((d) => d.marketLow ?? Infinity), Infinity) -
     50_000
 
+  const isXs = useMediaQuery(theme.breakpoints.down("sm"))
+  const strokeWidth = isXs ? 3 : 6
+
   return (
     <>
       <LineChart
         style={{
           width: "100%",
           maxHeight: "80vh",
-          aspectRatio: 1.618,
+          aspectRatio: 1,
         }}
         responsive
         data={investmentData}
         margin={{
           top: 5,
-          right: 30,
-          left: 20,
+          right: isXs ? 0 : 30,
+          left: isXs ? 0 : 20,
           bottom: 5,
         }}
       >
@@ -106,6 +109,7 @@ export function TrendsReports() {
           width="auto"
           tickFormatter={formatCurrency}
           domain={[lowestMarketLow, highestNetWorth]}
+          hide={isXs}
         />
         <Tooltip
           formatter={(x) => formatCurrency(parseFloat(x?.toString() ?? "0"))}
@@ -129,7 +133,7 @@ export function TrendsReports() {
           type="monotone"
           dataKey="totalNetWorth"
           stroke={theme.palette.secondary.main}
-          strokeWidth={6}
+          strokeWidth={strokeWidth}
           isAnimationActive={true}
           name="Total Net Worth"
         />
@@ -138,7 +142,7 @@ export function TrendsReports() {
           type="monotone"
           dataKey="marketHigh"
           stroke={theme.palette.success.main}
-          strokeWidth={6}
+          strokeWidth={strokeWidth}
           isAnimationActive={true}
           name="Market High"
         />
@@ -147,7 +151,7 @@ export function TrendsReports() {
           type="monotone"
           dataKey="balance"
           stroke={theme.palette.primary.main}
-          strokeWidth={6}
+          strokeWidth={strokeWidth}
           isAnimationActive={true}
           name="Investment Balance"
         />
@@ -156,7 +160,7 @@ export function TrendsReports() {
           type="monotone"
           dataKey="marketLow"
           stroke={theme.palette.error.main}
-          strokeWidth={6}
+          strokeWidth={strokeWidth}
           isAnimationActive={true}
           name="Market Low"
         />
