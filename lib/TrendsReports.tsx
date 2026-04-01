@@ -73,12 +73,19 @@ export function TrendsReports() {
 
   const theme = useTheme()
 
+  const highestNetWorth =
+    Math.max(...investmentData.map((d) => d.totalNetWorth), 0) + 50_000
+
+  const lowestMarketLow =
+    Math.min(...investmentData.map((d) => d.marketLow ?? Infinity), Infinity) -
+    50_000
+
   return (
     <>
       <LineChart
         style={{
           width: "100%",
-          maxHeight: "400px",
+          maxHeight: "80vh",
           aspectRatio: 1.618,
         }}
         responsive
@@ -95,7 +102,11 @@ export function TrendsReports() {
           dataKey="date"
           tickFormatter={(x) => moment(`${x} 00:00:00`).format("M/D/YYYY")}
         />
-        <YAxis width="auto" tickFormatter={formatCurrency} />
+        <YAxis
+          width="auto"
+          tickFormatter={formatCurrency}
+          domain={[lowestMarketLow, highestNetWorth]}
+        />
         <Tooltip
           formatter={(x) => formatCurrency(parseFloat(x?.toString() ?? "0"))}
         />
