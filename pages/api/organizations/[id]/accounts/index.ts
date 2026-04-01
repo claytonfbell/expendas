@@ -1,5 +1,4 @@
 import { Account } from "@prisma/client"
-import moment from "moment"
 import { NextApiResponse } from "next"
 import { requireOrganizationAuthentication } from "../../../../../lib/requireAuthentication"
 import { BadRequestException } from "../../../../../lib/server/HttpException"
@@ -7,6 +6,7 @@ import { autoUpdateInvestmentAccountBalances } from "../../../../../lib/server/a
 import { buildResponse } from "../../../../../lib/server/buildResponse"
 import prisma from "../../../../../lib/server/prisma"
 import withSession, { NextIronRequest } from "../../../../../lib/server/session"
+import { updateAccountBalanceHistory } from "../../../../../lib/server/updateAccountBalanceHistory"
 import validate from "../../../../../lib/server/validate"
 
 async function handler(
@@ -87,31 +87,3 @@ async function handler(
 }
 
 export default withSession(handler)
-
-async function updateAccountBalanceHistory(organizationId: number) {
-  const accounts = await prisma.account.findMany({
-    where: {
-      organizationId,
-    },
-  })
-
-  const today = moment().tz("America/Los_Angeles").format("YYYY-MM-DD")
-  for (const account of accounts) {
-    await prisma.accountBalanceHistory.upsert({
-      where: {
-        accountId_date: {
-          accountId: account.id,
-          date: today,
-        },
-      },
-      update: {
-        balance: account.balance,
-      },
-      create: {
-        accountId: account.id,
-        balance: account.balance,
-        date: today,
-      },
-    })
-  }
-}

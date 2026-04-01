@@ -82,24 +82,34 @@ export async function populateMissingTickerPrices() {
       massiveResponse.status === "NOT_FOUND"
     ) {
       // insert or update the price in the database
-      await prisma.tickerPrice.upsert({
+      const existing = await prisma.tickerPrice.findUnique({
         where: {
           ticker_date: {
             ticker: "VOO",
             date: dateToFetch,
           },
         },
-        update: {
-          price: (massiveResponse.close ?? 0) * 100, // convert to cents, 0 if market was closed that day and no price is available
-          closed: true,
-        },
-        create: {
-          ticker: "VOO",
-          price: (massiveResponse.close ?? 0) * 100, // convert to cents, 0 if market was closed that day and no price is available
-          date: dateToFetch,
-          closed: true,
-        },
       })
+      if (existing) {
+        await prisma.tickerPrice.update({
+          where: {
+            id: existing.id,
+          },
+          data: {
+            price: (massiveResponse.close ?? 0) * 100, // convert to cents, 0 if market was closed that day and no price is available
+            closed: true,
+          },
+        })
+      } else {
+        await prisma.tickerPrice.create({
+          data: {
+            ticker: "VOO",
+            price: (massiveResponse.close ?? 0) * 100, // convert to cents, 0 if market was closed that day and no price is available
+            date: dateToFetch,
+            closed: true,
+          },
+        })
+      }
     }
   }
 
@@ -125,25 +135,35 @@ export async function populateMissingTickerPrices() {
     const scrapedPrice = await scrapeCurrentVOOPrice()
     if (scrapedPrice !== null) {
       console.log("scrapedPrice", scrapedPrice)
-
-      await prisma.tickerPrice.upsert({
+      // insert or update the price in the database
+      const existing = await prisma.tickerPrice.findUnique({
         where: {
           ticker_date: {
             ticker: "VOO",
             date: today,
           },
         },
-        update: {
-          price: scrapedPrice,
-          closed: false,
-        },
-        create: {
-          ticker: "VOO",
-          price: scrapedPrice,
-          date: today,
-          closed: false,
-        },
       })
+      if (existing) {
+        await prisma.tickerPrice.update({
+          where: {
+            id: existing.id,
+          },
+          data: {
+            price: scrapedPrice,
+            closed: false,
+          },
+        })
+      } else {
+        await prisma.tickerPrice.create({
+          data: {
+            ticker: "VOO",
+            price: scrapedPrice,
+            date: today,
+            closed: false,
+          },
+        })
+      }
     } else {
       console.log("failed to scrape today's price from the web")
     }
