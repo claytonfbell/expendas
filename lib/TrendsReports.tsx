@@ -1,4 +1,5 @@
 import { useTheme } from "@mui/material"
+import moment from "moment"
 import {
   CartesianGrid,
   Legend,
@@ -41,9 +42,30 @@ export function TrendsReports() {
             )
           }, 0)
 
+          const marketLowSum = investmentAccounts.reduce((acc, account) => {
+            const bhForAccount = account.balanceHistory.find(
+              (b) => b.date === bh.date
+            )
+            return (
+              acc +
+              (bhForAccount && bhForAccount.marketLow
+                ? bhForAccount.marketLow
+                : 0)
+            )
+          }, 0)
+
+          const totalNetWorth = accounts.reduce((acc, account) => {
+            const bhForAccount = account.balanceHistory.find(
+              (b) => b.date === bh.date
+            )
+            return acc + (bhForAccount ? bhForAccount.balance : 0)
+          }, 0)
+
           return {
             balance: Math.round(balanceSum / 100),
             marketHigh: Math.round(marketHighSum / 100),
+            marketLow: Math.round(marketLowSum / 100),
+            totalNetWorth: Math.round(totalNetWorth / 100),
             date: bh.date,
           }
         })
@@ -69,10 +91,13 @@ export function TrendsReports() {
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
+        <XAxis
+          dataKey="date"
+          tickFormatter={(x) => moment(`${x} 00:00:00`).format("M/D/YYYY")}
+        />
         <YAxis width="auto" tickFormatter={formatCurrency} />
         <Tooltip
-        //formatter={formatCurrency}
+          formatter={(x) => formatCurrency(parseFloat(x?.toString() ?? "0"))}
         />
         <Legend />
         <Line
@@ -81,6 +106,7 @@ export function TrendsReports() {
           stroke={theme.palette.primary.main}
           strokeWidth={6}
           isAnimationActive={true}
+          name="Investment Balance"
         />
         <Line
           type="monotone"
@@ -88,10 +114,26 @@ export function TrendsReports() {
           stroke={theme.palette.success.main}
           strokeWidth={6}
           isAnimationActive={true}
+          name="Market High"
+        />
+        <Line
+          type="monotone"
+          dataKey="marketLow"
+          stroke={theme.palette.error.main}
+          strokeWidth={6}
+          isAnimationActive={true}
+          name="Market Low"
+        />
+
+        <Line
+          type="monotone"
+          dataKey="totalNetWorth"
+          stroke={theme.palette.secondary.main}
+          strokeWidth={6}
+          isAnimationActive={true}
+          name="Total Net Worth"
         />
       </LineChart>
-
-      <pre>{JSON.stringify(accounts, null, 2)}</pre>
     </>
   )
 }
