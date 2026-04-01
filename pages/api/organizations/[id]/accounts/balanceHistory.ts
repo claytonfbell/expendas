@@ -99,9 +99,15 @@ async function handler(
                     },
                     data: {
                       marketHigh:
-                        marketHigh !== null ? Math.round(marketHigh) : null,
+                        account.accountType === "Investment" &&
+                        marketHigh !== null
+                          ? Math.round(marketHigh)
+                          : null,
                       marketLow:
-                        marketLow !== null ? Math.round(marketLow) : null,
+                        account.accountType === "Investment" &&
+                        marketLow !== null
+                          ? Math.round(marketLow)
+                          : null,
                     },
                   })
                   resolve(null)
