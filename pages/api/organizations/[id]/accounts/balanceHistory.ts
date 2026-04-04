@@ -29,6 +29,9 @@ async function handler(
               marketLow: true,
               date: true,
             },
+            orderBy: {
+              date: "asc",
+            },
             where: {
               date: {
                 gte: (() => {
