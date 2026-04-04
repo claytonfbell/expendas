@@ -51,10 +51,6 @@ async function handler(
                       return now.subtract(1, "year").format("YYYY-MM-DD")
                     case "2Y":
                       return now.subtract(2, "year").format("YYYY-MM-DD")
-                    case "5Y":
-                      return now.subtract(5, "year").format("YYYY-MM-DD")
-                    case "10Y":
-                      return now.subtract(10, "year").format("YYYY-MM-DD")
                     case "ALL":
                       return now.subtract(50, "year").format("YYYY-MM-DD")
                   }

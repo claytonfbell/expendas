@@ -8,22 +8,9 @@ export type ReportRange =
   | "YTD"
   | "1Y"
   | "2Y"
-  | "5Y"
-  | "10Y"
   | "ALL"
 
-const ranges: ReportRange[] = [
-  "1W",
-  "1M",
-  "3M",
-  "6M",
-  "YTD",
-  "1Y",
-  "2Y",
-  "5Y",
-  "10Y",
-  "ALL",
-]
+const ranges: ReportRange[] = ["1W", "1M", "3M", "6M", "YTD", "1Y", "2Y", "ALL"]
 
 interface Props {
   value: ReportRange
