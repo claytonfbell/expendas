@@ -1,7 +1,9 @@
+import moment from "moment"
 import { NextApiResponse } from "next"
 import { buildResponse } from "../../../../../lib/server/buildResponse"
 import prisma from "../../../../../lib/server/prisma"
 import withSession, { NextIronRequest } from "../../../../../lib/server/session"
+import { ReportRange } from "../../../../../lib/TrendsReportsTimeRangeSelect"
 
 async function handler(
   req: NextIronRequest,
@@ -10,6 +12,8 @@ async function handler(
   buildResponse(res, async () => {
     if (req.method === "GET") {
       const organizationId = Number(req.query.id)
+      const range: ReportRange = String(req.query.range) as ReportRange
+      console.log("range", range)
 
       const balanceHistory = await prisma.account.findMany({
         where: {
@@ -25,8 +29,34 @@ async function handler(
               marketLow: true,
               date: true,
             },
-            orderBy: {
-              date: "asc",
+            where: {
+              date: {
+                gte: (() => {
+                  const now = moment()
+                  switch (range) {
+                    case "1W":
+                      return now.subtract(1, "week").format("YYYY-MM-DD")
+                    case "1M":
+                      return now.subtract(1, "month").format("YYYY-MM-DD")
+                    case "3M":
+                      return now.subtract(3, "month").format("YYYY-MM-DD")
+                    case "6M":
+                      return now.subtract(6, "month").format("YYYY-MM-DD")
+                    case "YTD":
+                      return now.startOf("year").format("YYYY-MM-DD")
+                    case "1Y":
+                      return now.subtract(1, "year").format("YYYY-MM-DD")
+                    case "2Y":
+                      return now.subtract(2, "year").format("YYYY-MM-DD")
+                    case "5Y":
+                      return now.subtract(5, "year").format("YYYY-MM-DD")
+                    case "10Y":
+                      return now.subtract(10, "year").format("YYYY-MM-DD")
+                    case "ALL":
+                      return now.subtract(50, "year").format("YYYY-MM-DD")
+                  }
+                })(),
+              },
             },
           },
         },

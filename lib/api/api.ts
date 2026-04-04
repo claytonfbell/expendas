@@ -15,6 +15,7 @@ import {
 import { useGlobalState } from "../GlobalStateProvider"
 import { ItemWithIncludes } from "../ItemWithIncludes"
 import { PaymentWithIncludes } from "../PaymentWithIncludes"
+import { ReportRange } from "../TrendsReportsTimeRangeSelect"
 import { AddOrganizationRequest } from "./AddOrganizationRequest"
 import { AddUserRequest } from "./AddUserRequest"
 import { ForgotPasswordRequest } from "./ForgotPasswordRequest"
@@ -344,12 +345,15 @@ export function useRemoveAccount() {
 }
 
 export function useFetchAccountsWithBalanceHistory(
-  organizationId: number | null
+  organizationId: number | null,
+  range: ReportRange
 ) {
   return useQuery<AccountWithBalanceHistory[], RestError>({
-    queryKey: ["accounts-balance-history", organizationId],
+    queryKey: ["accounts-balance-history", organizationId, range],
     queryFn: () =>
-      rest.get(`/organizations/${organizationId}/accounts/balanceHistory`),
+      rest.get(`/organizations/${organizationId}/accounts/balanceHistory`, {
+        range,
+      }),
     enabled: organizationId !== null,
   })
 }
