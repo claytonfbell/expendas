@@ -154,7 +154,7 @@ export function TrendsReports() {
             stroke={theme.palette.secondary.main}
             strokeWidth={strokeWidth}
             isAnimationActive={true}
-            name="Total Net Worth"
+            name="Net Worth"
           />
 
           <Line
@@ -172,7 +172,7 @@ export function TrendsReports() {
             stroke={theme.palette.primary.main}
             strokeWidth={strokeWidth}
             isAnimationActive={true}
-            name="Investment Balance"
+            name="Market Value"
           />
 
           <Line
