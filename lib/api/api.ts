@@ -3,6 +3,7 @@ import {
   Item,
   Organization,
   Payment,
+  RetirementPlan,
   User,
   UsersOnOrganizations,
 } from "@prisma/client"
@@ -499,6 +500,62 @@ export function useUpdateItem() {
     onSuccess: (data) => {
       queryClient.setQueryData(["items", organizationId, data.id], data)
       queryClient.refetchQueries({ queryKey: ["items"] })
+    },
+  })
+}
+
+export function useAddRetirementPlan() {
+  const { organizationId } = useGlobalState()
+  const queryClient = useQueryClient()
+  return useMutation<RetirementPlan, RestError, { name: string }>({
+    mutationFn: (params) =>
+      rest.post(`/organizations/${organizationId}/retirementPlans`, params),
+    onSuccess: (data) => {
+      queryClient.refetchQueries({
+        queryKey: ["retirementPlans", organizationId],
+      })
+    },
+  })
+}
+
+export function useFetchRetirementPlans() {
+  const { organizationId } = useGlobalState()
+  return useQuery<RetirementPlan[], RestError>({
+    queryKey: ["retirementPlans", organizationId],
+    queryFn: () => rest.get(`/organizations/${organizationId}/retirementPlans`),
+    enabled: organizationId !== null,
+  })
+}
+
+export function useDeleteRetirementPlan() {
+  const { organizationId } = useGlobalState()
+  const queryClient = useQueryClient()
+  return useMutation<void, RestError, number>({
+    mutationFn: (retirementPlanId) =>
+      rest.delete(
+        `/organizations/${organizationId}/retirementPlans/${retirementPlanId}`
+      ),
+    onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: ["retirementPlans", organizationId],
+      })
+    },
+  })
+}
+
+export function useUpdateRetirementPlan() {
+  const { organizationId } = useGlobalState()
+  const queryClient = useQueryClient()
+  return useMutation<RetirementPlan, RestError, RetirementPlan>({
+    mutationFn: (retirementPlan) =>
+      rest.put(
+        `/organizations/${organizationId}/retirementPlans/${retirementPlan.id}`,
+        retirementPlan
+      ),
+    onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: ["retirementPlans", organizationId],
+      })
     },
   })
 }

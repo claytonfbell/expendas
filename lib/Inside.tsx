@@ -87,6 +87,10 @@ export function Inside(props: Props) {
                       Trends
                     </Button>
 
+                    <Button LinkComponent={NextLink} href="/retirement">
+                      Retirement
+                    </Button>
+
                     <Button LinkComponent={NextLink} href="/accounts">
                       Accounts
                     </Button>
