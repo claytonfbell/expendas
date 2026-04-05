@@ -4,6 +4,7 @@ import { RetirementPlan } from "@prisma/client"
 import { Tabs } from "material-ui-bootstrap"
 import { useState } from "react"
 import { useFetchRetirementPlans } from "./api/api"
+import { RetirementPlanContributions } from "./RetirementPlanContributions"
 import { RetirementPlansCreateDialog } from "./RetirementPlansCreateDialog"
 import { RetirementPlanSettingsDialog } from "./RetirementPlanSettingsDialog"
 
@@ -33,13 +34,14 @@ export function RetirementPlans() {
           selectedIndex={selectedTab}
         >
           {selectedPlan !== null && (
-            <Stack>
+            <Stack spacing={4}>
               <Stack direction={"row"} justifyContent={"space-between"}>
-                <div>{selectedPlan.name}</div>
+                <div>&nbsp;</div>
                 <IconButton onClick={() => setEditPlan(selectedPlan)}>
                   <SettingsIcon />
                 </IconButton>
               </Stack>
+              <RetirementPlanContributions retirementPlan={selectedPlan} />
             </Stack>
           )}
         </Tabs>

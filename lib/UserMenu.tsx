@@ -4,6 +4,7 @@ import AssessmentIcon from "@mui/icons-material/Assessment"
 import CheckIcon from "@mui/icons-material/Check"
 import ExitToAppIcon from "@mui/icons-material/ExitToApp"
 import ReceiptIcon from "@mui/icons-material/Receipt"
+import SavingsIcon from "@mui/icons-material/Savings"
 import SettingsIcon from "@mui/icons-material/Settings"
 import ShowChartIcon from "@mui/icons-material/ShowChart"
 import { Button, ListItemIcon } from "@mui/material"
@@ -83,20 +84,6 @@ export function UserMenu() {
           Add Organization
         </MenuItem>
 
-        <MenuItem onClick={menuClick(() => router.push(`/accounts`))}>
-          <ListItemIcon>
-            <AccountBalanceIcon />
-          </ListItemIcon>
-          Accounts
-        </MenuItem>
-
-        <MenuItem onClick={menuClick(() => router.push(`/payments`))}>
-          <ListItemIcon>
-            <ReceiptIcon />
-          </ListItemIcon>
-          Payments
-        </MenuItem>
-
         <MenuItem onClick={menuClick(() => router.push(`/investments`))}>
           <ListItemIcon>
             <AssessmentIcon />
@@ -109,6 +96,27 @@ export function UserMenu() {
             <ShowChartIcon />
           </ListItemIcon>
           Trends
+        </MenuItem>
+
+        <MenuItem onClick={menuClick(() => router.push(`/retirement`))}>
+          <ListItemIcon>
+            <SavingsIcon />
+          </ListItemIcon>
+          Retirement
+        </MenuItem>
+
+        <MenuItem onClick={menuClick(() => router.push(`/accounts`))}>
+          <ListItemIcon>
+            <AccountBalanceIcon />
+          </ListItemIcon>
+          Accounts
+        </MenuItem>
+
+        <MenuItem onClick={menuClick(() => router.push(`/payments`))}>
+          <ListItemIcon>
+            <ReceiptIcon />
+          </ListItemIcon>
+          Payments
         </MenuItem>
 
         <MenuItem onClick={menuClick(() => logout())}>

@@ -1,10 +1,12 @@
 import { NextApiResponse } from "next"
-import { requireOrganizationAuthentication } from "../../../../../lib/requireAuthentication"
-import { BadRequestException } from "../../../../../lib/server/HttpException"
-import { buildResponse } from "../../../../../lib/server/buildResponse"
-import prisma from "../../../../../lib/server/prisma"
-import withSession, { NextIronRequest } from "../../../../../lib/server/session"
-import validate from "../../../../../lib/server/validate"
+import { requireOrganizationAuthentication } from "../../../../../../lib/requireAuthentication"
+import { BadRequestException } from "../../../../../../lib/server/HttpException"
+import { buildResponse } from "../../../../../../lib/server/buildResponse"
+import prisma from "../../../../../../lib/server/prisma"
+import withSession, {
+  NextIronRequest,
+} from "../../../../../../lib/server/session"
+import validate from "../../../../../../lib/server/validate"
 
 async function handler(
   req: NextIronRequest,

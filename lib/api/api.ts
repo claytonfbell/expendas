@@ -4,6 +4,7 @@ import {
   Organization,
   Payment,
   RetirementPlan,
+  RetirementPlanContribution,
   User,
   UsersOnOrganizations,
 } from "@prisma/client"
@@ -555,6 +556,48 @@ export function useUpdateRetirementPlan() {
     onSuccess: () => {
       queryClient.refetchQueries({
         queryKey: ["retirementPlans", organizationId],
+      })
+    },
+  })
+}
+
+export function useFetchRetirementPlanContributions(
+  retirementPlanId: number | null
+) {
+  const { organizationId } = useGlobalState()
+  return useQuery<RetirementPlanContribution[], RestError>({
+    queryKey: ["retirementPlanContributions", organizationId, retirementPlanId],
+    queryFn: () =>
+      rest.get(
+        `/organizations/${organizationId}/retirementPlans/${retirementPlanId}/contributions`
+      ),
+    enabled: organizationId !== null && retirementPlanId !== null,
+  })
+}
+
+export function useUpdateRetirementPlanContributions() {
+  const { organizationId } = useGlobalState()
+  const queryClient = useQueryClient()
+  return useMutation<
+    void,
+    RestError,
+    {
+      retirementPlanId: number
+      contributions: { accountId: number; amount: number }[]
+    }
+  >({
+    mutationFn: ({ retirementPlanId, contributions }) =>
+      rest.put(
+        `/organizations/${organizationId}/retirementPlans/${retirementPlanId}/contributions`,
+        { contributions }
+      ),
+    onSuccess: (_, { retirementPlanId }) => {
+      queryClient.refetchQueries({
+        queryKey: [
+          "retirementPlanContributions",
+          organizationId,
+          retirementPlanId,
+        ],
       })
     },
   })
