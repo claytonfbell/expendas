@@ -13,6 +13,7 @@ model Organization {
     accounts        Account[]
     users           UsersOnOrganizations[]
     PlaidCredential PlaidCredential[]
+    retirementPlans RetirementPlan[]
 }
 
 model User {
@@ -24,6 +25,9 @@ model User {
     authCode          String?                @db.VarChar(255)
     authCodeExpiresAt DateTime?
     organizations     UsersOnOrganizations[]
+    dateOfBirth       String?                @db.VarChar(255)
+    socialSecurityEstimates Int[]            @default([0, 0, 0, 0, 0, 0, 0, 0, 0]) // estimates for ages 62-70
+    retirementPlans    RetirementPlanUser[]
 
     @@index([authCode], map: "User.authCode_index")
 }
@@ -68,6 +72,7 @@ model Account {
     plaidAccountId    String?          @db.VarChar(255)
     tickerPrice       Int?
     balanceHistory    AccountBalanceHistory[]
+    retirementPlanContributions RetirementPlanContribution[]
 
 }
 
@@ -131,6 +136,39 @@ model AccountBalanceHistory {
     @@unique([accountId, date], map: "AccountBalanceHistory.accountId_date_unique")
 }
 
+model RetirementPlan {
+    id                          Int             @id @default(autoincrement())
+    organizationId              Int
+    organization                Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    name                        String          @db.VarChar(255)
+    desiredIncome               Int
+    healthInsuranceEstimate     Int
+    stockAppreciationEstimate   Int
+    dividendYieldEstimate       Int
+    inflationRateEstimate       Int
+    withdrawalRateEstimate      Int
+    retirementPlanUsers         RetirementPlanUser[]
+    retirementPlanContributions RetirementPlanContribution[]
+}
+
+model RetirementPlanUser {
+    id                          Int                 @id @default(autoincrement())
+    retirementPlanId            Int
+    userId                      Int
+    retirementPlan              RetirementPlan      @relation(fields: [retirementPlanId], references: [id], onDelete: Cascade)
+    user                        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+    collectSocialSecurityAge    Int                 @default(62)
+}
+
+model RetirementPlanContribution {
+    id                  Int                 @id @default(autoincrement())
+    retirementPlanId    Int
+    accountId           Int
+    amount              Int
+    retirementPlan      RetirementPlan      @relation(fields: [retirementPlanId], references: [id], onDelete: Cascade)
+    account             Account             @relation(fields: [accountId], references: [id], onDelete: Cascade)
+}
+
 enum AccountType {
     Cash
     Credit_Card
@@ -162,6 +200,8 @@ enum PlaidEnvironment {
     Sandbox
     Production
 }
+
+
 
 // run in development
 // npx prisma migrate dev --name init
