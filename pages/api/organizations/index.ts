@@ -18,6 +18,8 @@ export const organizationInclude = {
           firstName: true,
           lastName: true,
           email: true,
+          dateOfBirth: true,
+          socialSecurityEstimates: true,
         },
       },
     },

@@ -263,6 +263,19 @@ export function useRemoveUser() {
   })
 }
 
+export function useUpdateUser() {
+  const queryClient = useQueryClient()
+  return useMutation<void, RestError, { user: User; organizationId: number }>({
+    mutationFn: ({ user, organizationId }) =>
+      rest.put(`/organizations/${organizationId}/users/${user.id}`, user),
+    onSuccess: (_, { user, organizationId }) => {
+      queryClient.refetchQueries({
+        queryKey: ["organizations", organizationId],
+      })
+    },
+  })
+}
+
 // accounts
 export function useFetchAccounts() {
   const { organizationId } = useGlobalState()

@@ -1,12 +1,14 @@
 import { User } from ".prisma/client"
 import AddIcon from "@mui/icons-material/Add"
 import DeleteIcon from "@mui/icons-material/Delete"
+import EditIcon from "@mui/icons-material/Edit"
 import {
   Button,
   Dialog,
   DialogContent,
   Grid,
   IconButton,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -25,6 +27,7 @@ import {
 import ConfirmDialog from "./ConfirmDialog"
 import DisplayError from "./DisplayError"
 import { Title } from "./Title"
+import { UserDialog } from "./UserDialog"
 
 interface Props {
   state: OrganizationWithIncludes
@@ -72,11 +75,14 @@ export function UserManage(props: Props) {
 
   const { data: checkLogin } = useCheckLogin()
 
+  const [editUser, setEditUser] = useState<User | null>(null)
+
   return (
     <>
       <Table size="small">
         <TableHead>
-          <TableCell>User</TableCell>
+          <TableCell>Email</TableCell>
+          <TableCell>Name</TableCell>
           <TableCell>Admin</TableCell>
           <TableCell></TableCell>
         </TableHead>
@@ -84,6 +90,9 @@ export function UserManage(props: Props) {
           {props.state.users.map((user) => (
             <TableRow key={user.userId}>
               <TableCell>{user.user.email}</TableCell>
+              <TableCell>
+                {user.user.firstName} {user.user.lastName}
+              </TableCell>
               <TableCell>
                 {checkLogin?.user.id !== user.userId ? (
                   <CheckboxBase
@@ -109,20 +118,35 @@ export function UserManage(props: Props) {
                 ) : null}
               </TableCell>
               <TableCell>
-                {checkLogin?.user.id !== user.userId &&
-                props.state.users.length > 1 ? (
+                <Stack direction="row" spacing={1} justifyContent={"end"}>
+                  {checkLogin?.user.id !== user.userId &&
+                  props.state.users.length > 1 ? (
+                    <IconButton
+                      size="small"
+                      onClick={() => setRemoveThisUser(user.user)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  ) : null}
+
                   <IconButton
                     size="small"
-                    onClick={() => setRemoveThisUser(user.user)}
+                    onClick={() => setEditUser(user.user)}
                   >
-                    <DeleteIcon />
+                    <EditIcon />
                   </IconButton>
-                ) : null}
+                </Stack>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      <UserDialog
+        organizationId={organizationId}
+        user={editUser}
+        onClose={() => setEditUser(null)}
+      />
 
       <ConfirmDialog
         open={removeThisUser !== undefined}
