@@ -37,15 +37,18 @@ export function RetirementPlans() {
         >
           {selectedPlan !== null && (
             <Stack spacing={4}>
-              <Stack direction={"row"} justifyContent={"space-between"}>
-                <div>&nbsp;</div>
-                <IconButton onClick={() => setEditPlan(selectedPlan)}>
-                  <SettingsIcon />
-                </IconButton>
+              <Stack width={"100%"} spacing={6}>
+                <RetirementPlanUsers
+                  retirementPlan={selectedPlan}
+                  actions={
+                    <IconButton onClick={() => setEditPlan(selectedPlan)}>
+                      <SettingsIcon />
+                    </IconButton>
+                  }
+                />
+                <RetirementPlanContributions retirementPlan={selectedPlan} />
+                <RetirementPlanReport retirementPlan={selectedPlan} />
               </Stack>
-              <RetirementPlanContributions retirementPlan={selectedPlan} />
-              <RetirementPlanUsers retirementPlan={selectedPlan} />
-              <RetirementPlanReport retirementPlan={selectedPlan} />
             </Stack>
           )}
         </Tabs>

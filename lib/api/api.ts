@@ -10,6 +10,7 @@ import {
   UsersOnOrganizations,
 } from "@prisma/client"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { RetirementPlanReportResponse } from "../../pages/api/organizations/[id]/retirementPlans/[retirementPlanId]/report"
 import { TickerPriceResponse } from "../../pages/api/tickerPrices"
 import {
   AccountWithBalanceHistory,
@@ -18,7 +19,6 @@ import {
 import { useGlobalState } from "../GlobalStateProvider"
 import { ItemWithIncludes } from "../ItemWithIncludes"
 import { PaymentWithIncludes } from "../PaymentWithIncludes"
-import { ProjectionRow } from "../server/getRetirementPlanProjection"
 import { ReportRange } from "../TrendsReportsTimeRangeSelect"
 import { AddOrganizationRequest } from "./AddOrganizationRequest"
 import { AddUserRequest } from "./AddUserRequest"
@@ -556,9 +556,12 @@ export function useUpdateRetirementPlan() {
         `/organizations/${organizationId}/retirementPlans/${retirementPlan.id}`,
         retirementPlan
       ),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.refetchQueries({
         queryKey: ["retirementPlans", organizationId],
+      })
+      queryClient.refetchQueries({
+        queryKey: ["retirementPlanReport", organizationId, data.id],
       })
     },
   })
@@ -602,6 +605,9 @@ export function useUpdateRetirementPlanContributions() {
           retirementPlanId,
         ],
       })
+      queryClient.refetchQueries({
+        queryKey: ["retirementPlanReport", organizationId, retirementPlanId],
+      })
     },
   })
 }
@@ -643,13 +649,16 @@ export function useUpdateRetirementPlanUsers() {
       queryClient.refetchQueries({
         queryKey: ["retirementPlanUsers", organizationId, retirementPlanId],
       })
+      queryClient.refetchQueries({
+        queryKey: ["retirementPlanReport", organizationId, retirementPlanId],
+      })
     },
   })
 }
 
 export function useFetchRetirementPlanReport(retirementPlanId: number) {
   const { organizationId } = useGlobalState()
-  return useQuery<ProjectionRow[], RestError>({
+  return useQuery<RetirementPlanReportResponse, RestError>({
     queryKey: ["retirementPlanReport", organizationId, retirementPlanId],
     queryFn: () =>
       rest.get(

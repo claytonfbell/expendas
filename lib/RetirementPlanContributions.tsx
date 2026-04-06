@@ -75,60 +75,72 @@ export function RetirementPlanContributions({ retirementPlan }: Props) {
     return () => clearTimeout(timeout)
   }, [state, retirementPlan.id])
 
+  const totalSavedPerMonth =
+    state.length > 0 ? state.reduce((a, b) => a + b.amount, 0) : 0
+  const totalSavedPerYear = totalSavedPerMonth * 12
+
+  const savedSoFar = useMemo(() => {
+    return retirementAccounts.reduce((sum, account) => {
+      return sum + account.balance
+    }, 0)
+  }, [retirementAccounts])
+
   return (
-    <Stack spacing={1} alignItems={"start"}>
-      <Typography variant="h4">Monthly Contributions</Typography>
+    <Stack spacing={4} alignItems={"start"} paddingLeft={2}>
+      <Stack direction={"row"} alignItems={"baseline"} spacing={2}>
+        <Typography variant="h4">Savings</Typography>
+        <Stack>
+          {formatMoney(totalSavedPerMonth, true)} mo /{" "}
+          {formatMoney(totalSavedPerYear, true)} yr
+        </Stack>
+        <Stack>{formatMoney(savedSoFar, true)} current</Stack>
+      </Stack>
       <DisplayError error={error} />
-      {retirementAccounts.map((account) => {
-        return (
-          <Stack
-            key={account.id}
-            direction={"row"}
-            spacing={2}
-            alignItems={"center"}
-          >
-            <CurrencyFieldBase
-              label={
-                account.accountBucket
-                  ? displayAccountBucket(account.accountBucket)
-                  : undefined
-              }
-              size="small"
-              value={
-                (state.find((item) => item.accountId === account.id)?.amount ??
-                  0) / 100
-              }
-              onChange={(x) => {
-                setState((prev) => {
-                  const newState = [...prev]
-                  const index = newState.findIndex(
-                    (item) => item.accountId === account.id
-                  )
-                  if (index !== -1) {
-                    newState[index] = {
-                      accountId: account.id,
-                      amount: Math.round(x * 100),
+      <Stack spacing={2} alignItems={"start"}>
+        {retirementAccounts.map((account) => {
+          return (
+            <Stack
+              key={account.id}
+              direction={"row"}
+              spacing={4}
+              alignItems={"center"}
+            >
+              <CurrencyFieldBase
+                label={
+                  account.accountBucket
+                    ? displayAccountBucket(account.accountBucket)
+                    : undefined
+                }
+                size="small"
+                value={
+                  (state.find((item) => item.accountId === account.id)
+                    ?.amount ?? 0) / 100
+                }
+                onChange={(x) => {
+                  setState((prev) => {
+                    const newState = [...prev]
+                    const index = newState.findIndex(
+                      (item) => item.accountId === account.id
+                    )
+                    if (index !== -1) {
+                      newState[index] = {
+                        accountId: account.id,
+                        amount: Math.round(x * 100),
+                      }
+                    } else {
+                      newState.push({
+                        accountId: account.id,
+                        amount: Math.round(x * 100),
+                      })
                     }
-                  } else {
-                    newState.push({
-                      accountId: account.id,
-                      amount: Math.round(x * 100),
-                    })
-                  }
-                  return newState
-                })
-              }}
-            />
-            <div>{account.name}</div>
-          </Stack>
-        )
-      })}
-      <Stack>
-        Total Contributions:{" "}
-        {formatMoney(
-          state.length > 0 ? state.reduce((a, b) => a + b.amount, 0) : 0
-        )}{" "}
-        per month
+                    return newState
+                  })
+                }}
+              />
+              <div>{account.name}</div>
+            </Stack>
+          )
+        })}
       </Stack>
     </Stack>
   )

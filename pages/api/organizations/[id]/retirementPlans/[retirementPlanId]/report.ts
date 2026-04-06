@@ -247,7 +247,11 @@ async function handler(
           return row
         })
 
-        return projectionRows
+        const resp: RetirementPlanReportResponse = {
+          projectionRows,
+          fiDate: fiRow!,
+        }
+        return resp
       } else {
         throw new Error("Retirement plan not found")
       }
@@ -256,6 +260,11 @@ async function handler(
 }
 
 export default withSession(handler)
+
+export type RetirementPlanReportResponse = {
+  projectionRows: ProjectionRow[]
+  fiDate: ProjectionRow
+}
 
 function getSocialSecurityForMonth(
   retirementPlan: RetirementPlan & {
