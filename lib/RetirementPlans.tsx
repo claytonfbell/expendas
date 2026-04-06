@@ -1,7 +1,7 @@
 import { Button, Stack } from "@mui/material"
-import { RetirementPlan } from "@prisma/client"
 import { SelectBase } from "material-ui-pack"
-import { useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useEffect, useMemo, useState } from "react"
 import { useFetchRetirementPlans } from "./api/api"
 import { RetirementPlanContributions } from "./RetirementPlanContributions"
 import { RetirementPlanReport } from "./RetirementPlanReport"
@@ -12,10 +12,29 @@ import { RetirementPlanUsers } from "./RetirementPlanUsers"
 export function RetirementPlans() {
   const { data: retirementPlans } = useFetchRetirementPlans()
   const [showAddDialog, setShowAddDialog] = useState(false)
-  const [selectedId, setSelectedId] = useState<number | null>(null)
-  const [editPlan, setEditPlan] = useState<RetirementPlan | null>(null)
+
+  // sync selectedId with url
+  const searchParams = useSearchParams()
+  const retirementPlanIdFromUrl = searchParams.get("retirementPlanId")
+  const selectedId = useMemo(() => {
+    if (retirementPlanIdFromUrl) {
+      return parseInt(retirementPlanIdFromUrl)
+    }
+    return null
+  }, [retirementPlanIdFromUrl, retirementPlans])
+
+  const { replace } = useRouter()
+
   const selectedPlan =
     retirementPlans?.find((plan) => plan.id === selectedId) ?? null
+
+  useEffect(() => {
+    if (selectedId === null) {
+      if (retirementPlans && retirementPlans.length > 0) {
+        replace(`?retirementPlanId=${retirementPlans[0].id}`)
+      }
+    }
+  }, [retirementPlans, selectedId, replace])
 
   return (
     <>
@@ -28,7 +47,7 @@ export function RetirementPlans() {
                 label: x.name,
                 value: x.id,
               }))}
-              onChange={(x) => setSelectedId(x as number)}
+              onChange={(x) => replace(`?retirementPlanId=${x}`)}
               value={selectedId}
               fullWidth={false}
             />

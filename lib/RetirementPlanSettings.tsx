@@ -12,7 +12,8 @@ import {
 } from "@mui/material"
 import { RetirementPlan } from "@prisma/client"
 import { CurrencyFieldBase, PercentageFieldBase } from "material-ui-pack"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
+import { useDebounce } from "react-use"
 import { useDeleteRetirementPlan, useUpdateRetirementPlan } from "./api/api"
 import ConfirmDialog from "./ConfirmDialog"
 import DisplayError from "./DisplayError"
@@ -70,24 +71,28 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
-  const loaded = useRef(false)
+  const [ready, setReady] = useState(false)
   useEffect(() => {
-    const to = setTimeout(() => {
-      loaded.current = true
-    }, 1000)
-    return () => clearTimeout(to)
-  }, [])
-
-  useEffect(() => {
-    if (!loaded.current) return
+    setReady(false)
     const timeout = setTimeout(() => {
+      setReady(true)
+    }, 1000)
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [retirementPlan.id])
+
+  useDebounce(
+    () => {
+      if (!ready) return
       updateRetirementPlan({
         ...retirementPlan,
         ...state,
       })
-    }, 1000)
-    return () => clearTimeout(timeout)
-  }, [state, retirementPlan, updateRetirementPlan])
+    },
+    1000,
+    [updateRetirementPlan, retirementPlan, state]
+  )
 
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
