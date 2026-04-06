@@ -12,9 +12,10 @@ import { RetirementPlanUsers } from "./RetirementPlanUsers"
 export function RetirementPlans() {
   const { data: retirementPlans } = useFetchRetirementPlans()
   const [showAddDialog, setShowAddDialog] = useState(false)
-  const [selectedTab, setSelectedTab] = useState(0)
+  const [selectedId, setSelectedId] = useState<number | null>(null)
   const [editPlan, setEditPlan] = useState<RetirementPlan | null>(null)
-  const selectedPlan = retirementPlans?.[selectedTab] ?? null
+  const selectedPlan =
+    retirementPlans?.find((plan) => plan.id === selectedId) ?? null
 
   return (
     <>
@@ -27,8 +28,8 @@ export function RetirementPlans() {
                 label: x.name,
                 value: x.id,
               }))}
-              onChange={(x) => setSelectedTab(x as number)}
-              value={selectedTab}
+              onChange={(x) => setSelectedId(x as number)}
+              value={selectedId}
               fullWidth={false}
             />
           </Stack>
