@@ -5,6 +5,7 @@ import {
   Payment,
   RetirementPlan,
   RetirementPlanContribution,
+  RetirementPlanUser,
   User,
   UsersOnOrganizations,
 } from "@prisma/client"
@@ -50,7 +51,7 @@ const api = {
   logout: () => rest.delete(`/login`),
   register: (req: RegisterRequest) => rest.post(`/register`, req),
   fetchOrganizations: () => rest.get(`/organizations`),
-  fetchOrganization: (organizationId: number) =>
+  fetchOrganization: (organizationId: number | null) =>
     rest.get(`/organizations/${organizationId}`),
   updateOrganization: (organization: OrganizationWithIncludes) =>
     rest.put(`/organizations/${organization.id}`, organization),
@@ -163,10 +164,11 @@ export function useFetchOrganizations() {
   })
 }
 
-export function useFetchOrganization(organizationId: number) {
+export function useFetchOrganization(organizationId: number | null) {
   return useQuery<OrganizationWithIncludes, RestError>({
     queryKey: ["organizations", organizationId],
     queryFn: () => api.fetchOrganization(organizationId),
+    enabled: organizationId !== null,
   })
 }
 
@@ -600,5 +602,58 @@ export function useUpdateRetirementPlanContributions() {
         ],
       })
     },
+  })
+}
+
+export function useFetchRetirementPlanUsers(retirementPlanId: number | null) {
+  const { organizationId } = useGlobalState()
+  return useQuery<
+    (RetirementPlanUser & {
+      user: User
+    })[],
+    RestError
+  >({
+    queryKey: ["retirementPlanUsers", organizationId, retirementPlanId],
+    queryFn: () =>
+      rest.get(
+        `/organizations/${organizationId}/retirementPlans/${retirementPlanId}/users`
+      ),
+    enabled: organizationId !== null && retirementPlanId !== null,
+  })
+}
+
+export function useUpdateRetirementPlanUsers() {
+  const { organizationId } = useGlobalState()
+  const queryClient = useQueryClient()
+  return useMutation<
+    void,
+    RestError,
+    {
+      retirementPlanId: number
+      users: { userId: number; collectSocialSecurityAge: number }[]
+    }
+  >({
+    mutationFn: ({ retirementPlanId, users }) =>
+      rest.put(
+        `/organizations/${organizationId}/retirementPlans/${retirementPlanId}/users`,
+        { users }
+      ),
+    onSuccess: (_, { retirementPlanId }) => {
+      queryClient.refetchQueries({
+        queryKey: ["retirementPlanUsers", organizationId, retirementPlanId],
+      })
+    },
+  })
+}
+
+export function useFetchRetirementPlanReport(retirementPlanId: number) {
+  const { organizationId } = useGlobalState()
+  return useQuery<any, RestError>({
+    queryKey: ["retirementPlanReport", organizationId, retirementPlanId],
+    queryFn: () =>
+      rest.get(
+        `/organizations/${organizationId}/retirementPlans/${retirementPlanId}/report`
+      ),
+    enabled: organizationId !== null && retirementPlanId !== null,
   })
 }

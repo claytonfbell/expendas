@@ -5,8 +5,10 @@ import { Tabs } from "material-ui-bootstrap"
 import { useState } from "react"
 import { useFetchRetirementPlans } from "./api/api"
 import { RetirementPlanContributions } from "./RetirementPlanContributions"
+import { RetirementPlanReport } from "./RetirementPlanReport"
 import { RetirementPlansCreateDialog } from "./RetirementPlansCreateDialog"
 import { RetirementPlanSettingsDialog } from "./RetirementPlanSettingsDialog"
+import { RetirementPlanUsers } from "./RetirementPlanUsers"
 
 export function RetirementPlans() {
   const { data: retirementPlans } = useFetchRetirementPlans()
@@ -42,6 +44,8 @@ export function RetirementPlans() {
                 </IconButton>
               </Stack>
               <RetirementPlanContributions retirementPlan={selectedPlan} />
+              <RetirementPlanUsers retirementPlan={selectedPlan} />
+              <RetirementPlanReport retirementPlan={selectedPlan} />
             </Stack>
           )}
         </Tabs>

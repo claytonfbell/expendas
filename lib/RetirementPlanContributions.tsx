@@ -2,6 +2,7 @@ import { Stack, Typography } from "@mui/material"
 import { RetirementPlan } from "@prisma/client"
 import { CurrencyFieldBase } from "material-ui-pack"
 import { useEffect, useMemo, useState } from "react"
+import { displayAccountBucket } from "./accountBuckets"
 import {
   useFetchAccounts,
   useFetchRetirementPlanContributions,
@@ -23,16 +24,16 @@ export function RetirementPlanContributions({ retirementPlan }: Props) {
   const { data: contributions } = useFetchRetirementPlanContributions(
     retirementPlan.id
   )
-  const { data: accounts = [] } = useFetchAccounts()
+  const { data: accounts } = useFetchAccounts()
   const retirementAccounts = useMemo(
     () =>
       accounts
-        .filter((x) => x.accountType === "Investment")
+        ?.filter((x) => x.accountType === "Investment")
         .sort((a, b) =>
           a.accountBucket && b.accountBucket
             ? a.accountBucket.localeCompare(b.accountBucket)
             : 0
-        ),
+        ) ?? [],
     [accounts]
   )
 
@@ -62,7 +63,6 @@ export function RetirementPlanContributions({ retirementPlan }: Props) {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      debugger
       updateRetirementContributions({
         retirementPlanId: retirementPlan.id,
         contributions: state.map((item) => ({
@@ -88,6 +88,11 @@ export function RetirementPlanContributions({ retirementPlan }: Props) {
             alignItems={"center"}
           >
             <CurrencyFieldBase
+              label={
+                account.accountBucket
+                  ? displayAccountBucket(account.accountBucket)
+                  : undefined
+              }
               size="small"
               value={
                 (state.find((item) => item.accountId === account.id)?.amount ??
