@@ -1,5 +1,9 @@
+import ExpandLessIcon from "@mui/icons-material/ExpandLess"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import {
   Box,
+  Collapse,
+  IconButton,
   LinearProgress,
   Stack,
   Table,
@@ -9,10 +13,12 @@ import {
   TableHead,
   TableRow,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material"
 import { RetirementPlan } from "@prisma/client"
 import moment from "moment"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import {
   useFetchAccounts,
   useFetchRetirementPlanReport,
@@ -68,6 +74,10 @@ export function RetirementPlanReport({ retirementPlan }: Props) {
     }, 0)
   }, [retirementAccounts])
 
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+  const [collapsed, setCollapsed] = useState(!isMobile)
+
   return (
     <Stack spacing={2} alignItems={"start"}>
       <Stack
@@ -82,6 +92,14 @@ export function RetirementPlanReport({ retirementPlan }: Props) {
           {fiDate.format("MMMM, YYYY")} ({fromNowString})
         </Stack>
         <Stack>Ages: {agesString}</Stack>
+        <IconButton
+          onClick={() => setCollapsed(!collapsed)}
+          sx={{
+            display: { xs: "none", sm: "block" },
+          }}
+        >
+          {collapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+        </IconButton>
       </Stack>
       <Stack width={"100%"}>
         <Box position={"relative"}>
@@ -112,69 +130,74 @@ export function RetirementPlanReport({ retirementPlan }: Props) {
 
       {report !== undefined && (
         <>
-          {/* horizontal scroll on small screens */}
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Year</TableCell>
-                  <TableCell align="center">Ages</TableCell>
-                  <TableCell align="right">Starting Balance</TableCell>
-                  <TableCell align="right">Appreciation</TableCell>
-                  <TableCell align="right">Dividend</TableCell>
-                  <TableCell align="right">+ / -</TableCell>
-                  <TableCell align="right">Ending Balance</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {report.projectionRows.map((row) => (
-                  <TableRow key={row.date}>
-                    <TableCell>
-                      {moment(`${row.date} 00:00:00`).year()}
-                    </TableCell>
-                    <TableCell align="center">
-                      <NoBr>
-                        {users
-                          ? users
-                              .map((user) => {
-                                return moment(`${row.date} 00:00:00`).diff(
-                                  moment(`${user.user.dateOfBirth} 00:00:00`),
-                                  "years"
-                                )
-                              })
-                              .join(" / ")
-                          : ""}
-                      </NoBr>
-                    </TableCell>
-                    <TableCell align="right">
-                      {formatMoney(row.startingBalance, true)}
-                    </TableCell>
-                    <TableCell align="right">
-                      {formatMoney(row.appreciation, true)}
-                    </TableCell>
-                    <TableCell align="right">
-                      {formatMoney(row.dividend, true)}
-                    </TableCell>
-                    <TableCell align="right">
-                      <Box
-                        sx={{
-                          color: (theme) =>
-                            row.contribution < 0
-                              ? theme.palette.error.main
-                              : theme.palette.success.main,
-                        }}
-                      >
-                        {formatMoney(row.contribution, true)}
-                      </Box>
-                    </TableCell>
-                    <TableCell align="right">
-                      {formatMoney(row.endingBalance, true)}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <Box sx={{ width: "100%" }}>
+            <Collapse in={!collapsed} unmountOnExit>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Year</TableCell>
+                      <TableCell align="center">Ages</TableCell>
+                      <TableCell align="right">Starting Balance</TableCell>
+                      <TableCell align="right">Appreciation</TableCell>
+                      <TableCell align="right">Dividend</TableCell>
+                      <TableCell align="right">+ / -</TableCell>
+                      <TableCell align="right">Ending Balance</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {report.projectionRows.map((row) => (
+                      <TableRow key={row.date}>
+                        <TableCell>
+                          {moment(`${row.date} 00:00:00`).year()}
+                        </TableCell>
+                        <TableCell align="center">
+                          <NoBr>
+                            {users
+                              ? users
+                                  .map((user) => {
+                                    return moment(`${row.date} 00:00:00`).diff(
+                                      moment(
+                                        `${user.user.dateOfBirth} 00:00:00`
+                                      ),
+                                      "years"
+                                    )
+                                  })
+                                  .join(" / ")
+                              : ""}
+                          </NoBr>
+                        </TableCell>
+                        <TableCell align="right">
+                          {formatMoney(row.startingBalance, true)}
+                        </TableCell>
+                        <TableCell align="right">
+                          {formatMoney(row.appreciation, true)}
+                        </TableCell>
+                        <TableCell align="right">
+                          {formatMoney(row.dividend, true)}
+                        </TableCell>
+                        <TableCell align="right">
+                          <Box
+                            sx={{
+                              color: (theme) =>
+                                row.contribution < 0
+                                  ? theme.palette.error.main
+                                  : theme.palette.success.main,
+                            }}
+                          >
+                            {formatMoney(row.contribution, true)}
+                          </Box>
+                        </TableCell>
+                        <TableCell align="right">
+                          {formatMoney(row.endingBalance, true)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Collapse>
+          </Box>
         </>
       )}
     </Stack>

@@ -133,7 +133,12 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
 
       <DisplayError error={updateError ?? deleteError} />
       <Collapse in={!collapsed} unmountOnExit>
-        <Grid2 container spacing={2}>
+        <Grid2
+          container
+          spacing={2}
+          columns={{ xs: 12, sm: 16 }}
+          alignItems={"center"}
+        >
           <CustomGridItem>
             <TextField
               fullWidth
@@ -234,6 +239,7 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
 
           <CustomGridItem>
             <Button
+              size="large"
               fullWidth
               variant="outlined"
               color="error"
@@ -269,7 +275,7 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
 
 function CustomGridItem(props: { children: React.ReactNode }) {
   return (
-    <Grid2 xs={4} sm={3} md={2} lg={2}>
+    <Grid2 xs={4} sm={4} md={3} lg={2}>
       {props.children}
     </Grid2>
   )

@@ -118,11 +118,7 @@ export function RetirementPlanContributions({ retirementPlan }: Props) {
   }, [state, accounts])
 
   return (
-    <Stack
-      spacing={3}
-      paddingLeft={2}
-      alignItems={{ xs: "stretch", sm: "start" }}
-    >
+    <Stack spacing={3} paddingLeft={2} alignItems={{ xs: "stretch" }}>
       <Stack
         direction={{ xs: "column", sm: "row" }}
         alignItems={"baseline"}
@@ -146,50 +142,62 @@ export function RetirementPlanContributions({ retirementPlan }: Props) {
 
       <DisplayError error={error} />
       <Collapse in={!collapsed} unmountOnExit>
-        <Grid2 container spacing={2} width={"100%"}>
+        <Stack spacing={2}>
           {Object.entries(accountsGroupedByBucket).map(([bucket, accounts]) => {
             return (
-              <Grid2 xs={4} sm={4} md={3} key={bucket}>
-                <Stack spacing={2}>
-                  <Stack>{displayAccountBucket(bucket as AccountBucket)}</Stack>
-                  {accounts.map((account) => {
-                    return (
-                      <CurrencyFieldBase
-                        key={account.id}
-                        fullWidth
-                        label={account.name}
-                        value={
-                          (state.find((item) => item.accountId === account.id)
-                            ?.amount ?? 0) / 100
-                        }
-                        onChange={(x) => {
-                          setState((prev) => {
-                            const newState = [...prev]
-                            const index = newState.findIndex(
-                              (item) => item.accountId === account.id
-                            )
-                            if (index !== -1) {
-                              newState[index] = {
-                                accountId: account.id,
-                                amount: Math.round(x * 100),
-                              }
-                            } else {
-                              newState.push({
-                                accountId: account.id,
-                                amount: Math.round(x * 100),
-                              })
+              <Grid2
+                container
+                spacing={2}
+                width={"100%"}
+                columns={16}
+                alignItems={{ sm: "start", md: "center" }}
+              >
+                <Grid2 xs={4} sm={3} md={2} key={bucket}>
+                  {displayAccountBucket(bucket as AccountBucket)}
+                </Grid2>
+                <Grid2 xs={12}>
+                  <Grid2 container spacing={2} columns={12}>
+                    {accounts.map((account) => {
+                      return (
+                        <Grid2 key={account.id} xs={6} sm={4} md={3} lg={2}>
+                          <CurrencyFieldBase
+                            fullWidth
+                            label={account.name}
+                            value={
+                              (state.find(
+                                (item) => item.accountId === account.id
+                              )?.amount ?? 0) / 100
                             }
-                            return newState
-                          })
-                        }}
-                      />
-                    )
-                  })}
-                </Stack>
+                            onChange={(x) => {
+                              setState((prev) => {
+                                const newState = [...prev]
+                                const index = newState.findIndex(
+                                  (item) => item.accountId === account.id
+                                )
+                                if (index !== -1) {
+                                  newState[index] = {
+                                    accountId: account.id,
+                                    amount: Math.round(x * 100),
+                                  }
+                                } else {
+                                  newState.push({
+                                    accountId: account.id,
+                                    amount: Math.round(x * 100),
+                                  })
+                                }
+                                return newState
+                              })
+                            }}
+                          />
+                        </Grid2>
+                      )
+                    })}
+                  </Grid2>
+                </Grid2>
               </Grid2>
             )
           })}
-        </Grid2>
+        </Stack>
       </Collapse>
     </Stack>
   )
