@@ -63,6 +63,8 @@ async function getFiAmountForRetirementPlanOnDate(
   },
   date: Moment
 ) {
+  // TODO - need to estimate taxes also
+
   // get total social security income (when both collecting)
   let annualSocialSecurityIncome = 0
   for (const rpu of retirementPlan.retirementPlanUsers) {

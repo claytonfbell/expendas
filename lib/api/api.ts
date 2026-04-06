@@ -18,6 +18,7 @@ import {
 import { useGlobalState } from "../GlobalStateProvider"
 import { ItemWithIncludes } from "../ItemWithIncludes"
 import { PaymentWithIncludes } from "../PaymentWithIncludes"
+import { ProjectionRow } from "../server/getRetirementPlanProjection"
 import { ReportRange } from "../TrendsReportsTimeRangeSelect"
 import { AddOrganizationRequest } from "./AddOrganizationRequest"
 import { AddUserRequest } from "./AddUserRequest"
@@ -648,7 +649,7 @@ export function useUpdateRetirementPlanUsers() {
 
 export function useFetchRetirementPlanReport(retirementPlanId: number) {
   const { organizationId } = useGlobalState()
-  return useQuery<any, RestError>({
+  return useQuery<ProjectionRow[], RestError>({
     queryKey: ["retirementPlanReport", organizationId, retirementPlanId],
     queryFn: () =>
       rest.get(
