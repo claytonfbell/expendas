@@ -8,10 +8,12 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material"
-import { RetirementPlan } from "@prisma/client"
+import Grid2 from "@mui/material/Unstable_Grid2"
+import { AccountBucket, RetirementPlan } from "@prisma/client"
 import { CurrencyFieldBase } from "material-ui-pack"
 import { useEffect, useMemo, useState } from "react"
 import { displayAccountBucket } from "./accountBuckets"
+import { AccountWithIncludes } from "./AccountWithIncludes"
 import {
   useFetchAccounts,
   useFetchRetirementPlanContributions,
@@ -98,6 +100,23 @@ export function RetirementPlanContributions({ retirementPlan }: Props) {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
   const [collapsed, setCollapsed] = useState(!isMobile)
 
+  const accountsGroupedByBucket = useMemo(() => {
+    const groups: {
+      [bucket: string]: AccountWithIncludes[]
+    } = {}
+    state.forEach((item) => {
+      const account = accounts?.find((a) => a.id === item.accountId)
+      if (account) {
+        const bucket = account.accountBucket ?? "Other"
+        if (!groups[bucket]) {
+          groups[bucket] = []
+        }
+        groups[bucket].push(account)
+      }
+    })
+    return groups
+  }, [state, accounts])
+
   return (
     <Stack
       spacing={3}
@@ -127,62 +146,50 @@ export function RetirementPlanContributions({ retirementPlan }: Props) {
 
       <DisplayError error={error} />
       <Collapse in={!collapsed} unmountOnExit>
-        <Stack spacing={2}>
-          {retirementAccounts.map((account) => {
+        <Grid2 container spacing={2} width={"100%"}>
+          {Object.entries(accountsGroupedByBucket).map(([bucket, accounts]) => {
             return (
-              <Stack
-                key={account.id}
-                direction={"row"}
-                spacing={4}
-                alignItems={"center"}
-              >
-                <CurrencyFieldBase
-                  sx={{ maxWidth: { xs: undefined, sm: 120 } }}
-                  fullWidth
-                  label={
-                    isMobile
-                      ? account.name
-                      : account.accountBucket
-                        ? displayAccountBucket(account.accountBucket)
-                        : undefined
-                  }
-                  size="small"
-                  value={
-                    (state.find((item) => item.accountId === account.id)
-                      ?.amount ?? 0) / 100
-                  }
-                  onChange={(x) => {
-                    setState((prev) => {
-                      const newState = [...prev]
-                      const index = newState.findIndex(
-                        (item) => item.accountId === account.id
-                      )
-                      if (index !== -1) {
-                        newState[index] = {
-                          accountId: account.id,
-                          amount: Math.round(x * 100),
+              <Grid2 xs={4} sm={4} md={3} key={bucket}>
+                <Stack spacing={2}>
+                  <Stack>{displayAccountBucket(bucket as AccountBucket)}</Stack>
+                  {accounts.map((account) => {
+                    return (
+                      <CurrencyFieldBase
+                        key={account.id}
+                        fullWidth
+                        label={account.name}
+                        value={
+                          (state.find((item) => item.accountId === account.id)
+                            ?.amount ?? 0) / 100
                         }
-                      } else {
-                        newState.push({
-                          accountId: account.id,
-                          amount: Math.round(x * 100),
-                        })
-                      }
-                      return newState
-                    })
-                  }}
-                />
-                <Stack
-                  sx={{
-                    display: { xs: "none", sm: "block" },
-                  }}
-                >
-                  {account.name}
+                        onChange={(x) => {
+                          setState((prev) => {
+                            const newState = [...prev]
+                            const index = newState.findIndex(
+                              (item) => item.accountId === account.id
+                            )
+                            if (index !== -1) {
+                              newState[index] = {
+                                accountId: account.id,
+                                amount: Math.round(x * 100),
+                              }
+                            } else {
+                              newState.push({
+                                accountId: account.id,
+                                amount: Math.round(x * 100),
+                              })
+                            }
+                            return newState
+                          })
+                        }}
+                      />
+                    )
+                  })}
                 </Stack>
-              </Stack>
+              </Grid2>
             )
           })}
-        </Stack>
+        </Grid2>
       </Collapse>
     </Stack>
   )

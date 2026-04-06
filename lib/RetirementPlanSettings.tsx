@@ -10,6 +10,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material"
+import Grid2 from "@mui/material/Unstable_Grid2"
 import { RetirementPlan } from "@prisma/client"
 import { CurrencyFieldBase, PercentageFieldBase } from "material-ui-pack"
 import { useEffect, useState } from "react"
@@ -132,16 +133,20 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
 
       <DisplayError error={updateError ?? deleteError} />
       <Collapse in={!collapsed} unmountOnExit>
-        <Stack spacing={2}>
-          <Stack spacing={2}>
+        <Grid2 container spacing={2}>
+          <CustomGridItem>
             <TextField
+              fullWidth
               label="Retirement Plan Name"
               value={state.name}
               onChange={(e) =>
                 setState((prev) => ({ ...prev, name: e.target.value }))
               }
             />
+          </CustomGridItem>
+          <CustomGridItem>
             <CurrencyFieldBase
+              fullWidth
               label="Desired Income"
               value={state.desiredIncome / 100}
               onChange={(value) =>
@@ -151,7 +156,11 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
                 }))
               }
             />
+          </CustomGridItem>
+
+          <CustomGridItem>
             <CurrencyFieldBase
+              fullWidth
               label="Health Insurance"
               value={state.healthInsuranceEstimate / 100}
               onChange={(value) =>
@@ -161,7 +170,11 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
                 }))
               }
             />
+          </CustomGridItem>
+
+          <CustomGridItem>
             <PercentageFieldBase
+              fullWidth
               label="Stock Appreciation"
               decimals={5}
               value={state.stockAppreciationEstimate / 100000}
@@ -172,7 +185,11 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
                 }))
               }
             />
+          </CustomGridItem>
+
+          <CustomGridItem>
             <PercentageFieldBase
+              fullWidth
               label="Dividend Yield"
               decimals={5}
               value={state.dividendYieldEstimate / 100000}
@@ -183,7 +200,11 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
                 }))
               }
             />
+          </CustomGridItem>
+
+          <CustomGridItem>
             <PercentageFieldBase
+              fullWidth
               label="Inflation Rate"
               decimals={5}
               value={state.inflationRateEstimate / 100000}
@@ -194,7 +215,11 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
                 }))
               }
             />
+          </CustomGridItem>
+
+          <CustomGridItem>
             <PercentageFieldBase
+              fullWidth
               label="Withdrawal Rate"
               decimals={5}
               value={state.withdrawalRateEstimate / 100000}
@@ -205,7 +230,11 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
                 }))
               }
             />
+          </CustomGridItem>
+
+          <CustomGridItem>
             <Button
+              fullWidth
               variant="outlined"
               color="error"
               disabled={deleteStatus === "pending"}
@@ -215,7 +244,11 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
             >
               Delete
             </Button>
+          </CustomGridItem>
+        </Grid2>
 
+        <Stack spacing={2}>
+          <Stack spacing={2}>
             <ConfirmDialog
               open={showDeleteConfirm}
               onClose={() => setShowDeleteConfirm(false)}
@@ -231,5 +264,13 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
         </Stack>
       </Collapse>
     </Stack>
+  )
+}
+
+function CustomGridItem(props: { children: React.ReactNode }) {
+  return (
+    <Grid2 xs={4} sm={3} md={2} lg={2}>
+      {props.children}
+    </Grid2>
   )
 }
