@@ -58,8 +58,6 @@ async function handler(
           )!
           return row.endingBalance > dateAndAmount.amount
         })
-        console.log("--------------------------------")
-        console.log("fiRow", fiRow)
 
         // now do decumulation projection starting at fi date
         let prevRow: ProjectionRow | null = null

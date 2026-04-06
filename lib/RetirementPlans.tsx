@@ -1,13 +1,12 @@
-import SettingsIcon from "@mui/icons-material/Settings"
-import { Button, IconButton, Stack } from "@mui/material"
+import { Button, Stack } from "@mui/material"
 import { RetirementPlan } from "@prisma/client"
-import { Tabs } from "material-ui-bootstrap"
+import { SelectBase } from "material-ui-pack"
 import { useState } from "react"
 import { useFetchRetirementPlans } from "./api/api"
 import { RetirementPlanContributions } from "./RetirementPlanContributions"
 import { RetirementPlanReport } from "./RetirementPlanReport"
 import { RetirementPlansCreateDialog } from "./RetirementPlansCreateDialog"
-import { RetirementPlanSettingsDialog } from "./RetirementPlanSettingsDialog"
+import { RetirementPlanSettings } from "./RetirementPlanSettings"
 import { RetirementPlanUsers } from "./RetirementPlanUsers"
 
 export function RetirementPlans() {
@@ -19,51 +18,39 @@ export function RetirementPlans() {
 
   return (
     <>
-      <Stack>
-        <Stack direction={"row"} justifyContent={"space-between"}>
-          <div>Retirement Plans</div>
+      <Stack spacing={4}>
+        <Stack direction={"row"} justifyContent={"space-between"} spacing={2}>
+          <Stack>
+            <SelectBase
+              size="small"
+              options={(retirementPlans ?? []).map((x) => ({
+                label: x.name,
+                value: x.id,
+              }))}
+              onChange={(x) => setSelectedTab(x as number)}
+              value={selectedTab}
+              fullWidth={false}
+            />
+          </Stack>
           <Button variant="contained" onClick={() => setShowAddDialog(true)}>
             Add Retirement Plan
           </Button>
         </Stack>
-        <Tabs
-          tabs={
-            retirementPlans !== undefined
-              ? retirementPlans.map((x) => x.name)
-              : []
-          }
-          onSelect={(x) => setSelectedTab(x)}
-          selectedIndex={selectedTab}
-        >
-          {selectedPlan !== null && (
-            <Stack spacing={4}>
-              <Stack width={"100%"} spacing={6}>
-                <RetirementPlanUsers
-                  retirementPlan={selectedPlan}
-                  actions={
-                    <IconButton onClick={() => setEditPlan(selectedPlan)}>
-                      <SettingsIcon />
-                    </IconButton>
-                  }
-                />
-                <RetirementPlanContributions retirementPlan={selectedPlan} />
-                <RetirementPlanReport retirementPlan={selectedPlan} />
-              </Stack>
-            </Stack>
-          )}
-        </Tabs>
+
+        {selectedPlan !== null && (
+          <Stack width={"100%"} spacing={3}>
+            <RetirementPlanSettings retirementPlan={selectedPlan} />
+            <RetirementPlanUsers retirementPlan={selectedPlan} />
+            <RetirementPlanContributions retirementPlan={selectedPlan} />
+            <RetirementPlanReport retirementPlan={selectedPlan} />
+          </Stack>
+        )}
       </Stack>
 
       {/* create retirement dialog  */}
       <RetirementPlansCreateDialog
         open={showAddDialog}
         onClose={() => setShowAddDialog(false)}
-      />
-
-      {/* update / delete retirement plan dialog */}
-      <RetirementPlanSettingsDialog
-        retirementPlan={editPlan}
-        onClose={() => setEditPlan(null)}
       />
     </>
   )

@@ -36,7 +36,6 @@ export async function getRetirementPlanProjection(
 ) {
   // get date of when youngest user turns 100
   const users = retirementPlan.retirementPlanUsers.map((rpu) => rpu.user)
-  console.log("users", users)
   const youngestUser = users.reduce(
     (youngest, user) => {
       if (
@@ -98,7 +97,6 @@ export async function getRetirementPlanProjection(
 
     while (month.isBefore(endMonth)) {
       month.add(1, "month")
-      console.log("checking month", month.format("YYYY-MM-DD"))
 
       const accounts: ProjectionRowAccount[] = retirementAccounts.map(
         (account) => {

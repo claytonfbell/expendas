@@ -19,6 +19,7 @@ import {
   useFetchRetirementPlanUsers,
 } from "./api/api"
 import { formatMoney } from "./formatMoney"
+import { NoBr } from "./NoBr"
 
 interface Props {
   retirementPlan: RetirementPlan
@@ -70,9 +71,9 @@ export function RetirementPlanReport({ retirementPlan }: Props) {
   return (
     <Stack spacing={2} alignItems={"start"}>
       <Stack
-        direction={"row"}
+        direction={{ xs: "column", sm: "row" }}
         alignItems={"baseline"}
-        spacing={3}
+        spacing={{ xs: 1, sm: 3 }}
         paddingLeft={2}
       >
         <Typography variant="h4">Projection</Typography>
@@ -111,6 +112,7 @@ export function RetirementPlanReport({ retirementPlan }: Props) {
 
       {report !== undefined && (
         <>
+          {/* horizontal scroll on small screens */}
           <TableContainer>
             <Table>
               <TableHead>
@@ -131,16 +133,18 @@ export function RetirementPlanReport({ retirementPlan }: Props) {
                       {moment(`${row.date} 00:00:00`).year()}
                     </TableCell>
                     <TableCell align="center">
-                      {users
-                        ? users
-                            .map((user) => {
-                              return moment(`${row.date} 00:00:00`).diff(
-                                moment(`${user.user.dateOfBirth} 00:00:00`),
-                                "years"
-                              )
-                            })
-                            .join(" / ")
-                        : ""}
+                      <NoBr>
+                        {users
+                          ? users
+                              .map((user) => {
+                                return moment(`${row.date} 00:00:00`).diff(
+                                  moment(`${user.user.dateOfBirth} 00:00:00`),
+                                  "years"
+                                )
+                              })
+                              .join(" / ")
+                          : ""}
+                      </NoBr>
                     </TableCell>
                     <TableCell align="right">
                       {formatMoney(row.startingBalance, true)}

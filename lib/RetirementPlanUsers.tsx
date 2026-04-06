@@ -1,4 +1,8 @@
+import ExpandLessIcon from "@mui/icons-material/ExpandLess"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import {
+  Collapse,
+  IconButton,
   Stack,
   Table,
   TableBody,
@@ -7,6 +11,8 @@ import {
   TableHead,
   TableRow,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material"
 import { RetirementPlan } from "@prisma/client"
 import { SelectBase } from "material-ui-pack"
@@ -28,10 +34,9 @@ type StateItem = {
 
 interface Props {
   retirementPlan: RetirementPlan
-  actions: React.ReactNode
 }
 
-export function RetirementPlanUsers({ retirementPlan, actions }: Props) {
+export function RetirementPlanUsers({ retirementPlan }: Props) {
   const { data: planUsers } = useFetchRetirementPlanUsers(retirementPlan.id)
   const { organizationId } = useGlobalState()
   const { data: organization } = useFetchOrganization(organizationId)
@@ -89,104 +94,142 @@ export function RetirementPlanUsers({ retirementPlan, actions }: Props) {
 
   const totalSocialSecurityPerYear = totalSocialSecurityPerMonth * 12
 
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+  const [collapsed, setCollapsed] = useState(!isMobile)
+
   return (
     <Stack spacing={1}>
       <Stack
-        direction={"row"}
-        justifyContent={"space-between"}
-        alignItems={"start"}
+        paddingLeft={2}
+        direction={{ xs: "column", sm: "row" }}
+        alignItems={"baseline"}
+        spacing={2}
       >
-        <Stack
-          paddingLeft={2}
-          direction={"row"}
-          alignItems={"baseline"}
-          spacing={2}
-        >
-          <Typography variant="h4">Social Security</Typography>
-          <Stack>
-            {formatMoney(totalSocialSecurityPerMonth, true)} mo /{" "}
-            {formatMoney(totalSocialSecurityPerYear, true)} yr
-          </Stack>
+        <Typography variant="h4">Social Security</Typography>
+        <Stack>
+          {formatMoney(totalSocialSecurityPerMonth, true)} mo /{" "}
+          {formatMoney(totalSocialSecurityPerYear, true)} yr
         </Stack>
-        <Stack>{actions}</Stack>
+        <IconButton
+          onClick={() => setCollapsed(!collapsed)}
+          sx={{
+            display: { xs: "none", sm: "block" },
+          }}
+        >
+          {collapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+        </IconButton>
       </Stack>
       <DisplayError error={error} />
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Current Age</TableCell>
-              <TableCell>Age to Collect Social Security</TableCell>
-              <TableCell align="right">Social Security</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {allUsers.map((user) => {
-              const ssMonthly =
-                user.socialSecurityEstimates[
-                  (state.find((item) => item.userId === user.id)
-                    ?.collectSocialSecurityAge ?? 0) - 62
-                ]
-              const ssYearly = ssMonthly * 12
+      <Collapse in={!collapsed} unmountOnExit>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell
+                  sx={{
+                    display: { xs: "none", sm: "table-cell" },
+                  }}
+                >
+                  Current Age
+                </TableCell>
+                <TableCell>Age</TableCell>
+                <TableCell align="right">Social Security</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {allUsers.map((user) => {
+                const ssMonthly =
+                  user.socialSecurityEstimates[
+                    (state.find((item) => item.userId === user.id)
+                      ?.collectSocialSecurityAge ?? 0) - 62
+                  ]
+                const ssYearly = ssMonthly * 12
 
-              return (
-                <TableRow key={user.id}>
-                  <TableCell>
-                    {user.firstName} {user.lastName}
-                  </TableCell>
-                  <TableCell>
-                    {moment().diff(
-                      moment(`${user.dateOfBirth} 00:00:00`),
-                      "years"
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <SelectBase
-                      fullWidth
-                      options={[62, 63, 64, 65, 66, 67, 68, 69, 70].map(
-                        (age) => ({
-                          label: age.toString(),
-                          value: age,
-                        })
-                      )}
-                      size="small"
-                      value={
-                        state.find((item) => item.userId === user.id)
-                          ?.collectSocialSecurityAge ?? 0
-                      }
-                      onChange={(x) => {
-                        setState((prev) => {
-                          const newState = [...prev]
-                          const index = newState.findIndex(
-                            (item) => item.userId === user.id
-                          )
-                          if (index !== -1) {
-                            newState[index] = {
-                              userId: user.id,
-                              collectSocialSecurityAge: x as number,
-                            }
-                          } else {
-                            newState.push({
-                              userId: user.id,
-                              collectSocialSecurityAge: x as number,
-                            })
-                          }
-                          return newState
-                        })
+                return (
+                  <TableRow key={user.id}>
+                    <TableCell>
+                      <Stack
+                        direction={"row"}
+                        spacing={0.5}
+                        alignItems={"center"}
+                      >
+                        <Stack>{user.firstName}</Stack>
+                        <Stack
+                          sx={{
+                            display: { xs: "none", sm: "block" },
+                          }}
+                        >
+                          {user.lastName}
+                        </Stack>
+                      </Stack>
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        display: { xs: "none", sm: "table-cell" },
                       }}
-                    />
-                  </TableCell>
-                  <TableCell align="right">
-                    {formatMoney(ssMonthly, true)} mo /{" "}
-                    {formatMoney(ssYearly, true)} yr
-                  </TableCell>
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                    >
+                      {moment().diff(
+                        moment(`${user.dateOfBirth} 00:00:00`),
+                        "years"
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <SelectBase
+                        fullWidth
+                        options={[62, 63, 64, 65, 66, 67, 68, 69, 70].map(
+                          (age) => ({
+                            label: age.toString(),
+                            value: age,
+                          })
+                        )}
+                        size="small"
+                        value={
+                          state.find((item) => item.userId === user.id)
+                            ?.collectSocialSecurityAge ?? 0
+                        }
+                        onChange={(x) => {
+                          setState((prev) => {
+                            const newState = [...prev]
+                            const index = newState.findIndex(
+                              (item) => item.userId === user.id
+                            )
+                            if (index !== -1) {
+                              newState[index] = {
+                                userId: user.id,
+                                collectSocialSecurityAge: x as number,
+                              }
+                            } else {
+                              newState.push({
+                                userId: user.id,
+                                collectSocialSecurityAge: x as number,
+                              })
+                            }
+                            return newState
+                          })
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Stack
+                        direction={{ xs: "column", sm: "row" }}
+                        spacing={0.5}
+                        alignItems={{ xs: "end", sm: "center" }}
+                        justifyContent={"end"}
+                        divider={isMobile ? undefined : <span>/</span>}
+                      >
+                        <Stack>{formatMoney(ssMonthly, true)} mo</Stack>
+                        <Stack>{formatMoney(ssYearly, true)} yr</Stack>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Collapse>
     </Stack>
   )
 }

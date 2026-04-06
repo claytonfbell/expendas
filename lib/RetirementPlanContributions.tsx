@@ -1,4 +1,13 @@
-import { Stack, Typography } from "@mui/material"
+import ExpandLessIcon from "@mui/icons-material/ExpandLess"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
+import {
+  Collapse,
+  IconButton,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material"
 import { RetirementPlan } from "@prisma/client"
 import { CurrencyFieldBase } from "material-ui-pack"
 import { useEffect, useMemo, useState } from "react"
@@ -85,63 +94,96 @@ export function RetirementPlanContributions({ retirementPlan }: Props) {
     }, 0)
   }, [retirementAccounts])
 
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+  const [collapsed, setCollapsed] = useState(!isMobile)
+
   return (
-    <Stack spacing={4} alignItems={"start"} paddingLeft={2}>
-      <Stack direction={"row"} alignItems={"baseline"} spacing={2}>
+    <Stack
+      spacing={3}
+      paddingLeft={2}
+      alignItems={{ xs: "stretch", sm: "start" }}
+    >
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        alignItems={"baseline"}
+        spacing={2}
+      >
         <Typography variant="h4">Savings</Typography>
         <Stack>
           {formatMoney(totalSavedPerMonth, true)} mo /{" "}
           {formatMoney(totalSavedPerYear, true)} yr
         </Stack>
         <Stack>{formatMoney(savedSoFar, true)} current</Stack>
+        <IconButton
+          sx={{
+            display: { xs: "none", sm: "block" },
+          }}
+          onClick={() => setCollapsed(!collapsed)}
+        >
+          {collapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+        </IconButton>
       </Stack>
+
       <DisplayError error={error} />
-      <Stack spacing={2} alignItems={"start"}>
-        {retirementAccounts.map((account) => {
-          return (
-            <Stack
-              key={account.id}
-              direction={"row"}
-              spacing={4}
-              alignItems={"center"}
-            >
-              <CurrencyFieldBase
-                label={
-                  account.accountBucket
-                    ? displayAccountBucket(account.accountBucket)
-                    : undefined
-                }
-                size="small"
-                value={
-                  (state.find((item) => item.accountId === account.id)
-                    ?.amount ?? 0) / 100
-                }
-                onChange={(x) => {
-                  setState((prev) => {
-                    const newState = [...prev]
-                    const index = newState.findIndex(
-                      (item) => item.accountId === account.id
-                    )
-                    if (index !== -1) {
-                      newState[index] = {
-                        accountId: account.id,
-                        amount: Math.round(x * 100),
+      <Collapse in={!collapsed} unmountOnExit>
+        <Stack spacing={2}>
+          {retirementAccounts.map((account) => {
+            return (
+              <Stack
+                key={account.id}
+                direction={"row"}
+                spacing={4}
+                alignItems={"center"}
+              >
+                <CurrencyFieldBase
+                  sx={{ maxWidth: { xs: undefined, sm: 120 } }}
+                  fullWidth
+                  label={
+                    isMobile
+                      ? account.name
+                      : account.accountBucket
+                        ? displayAccountBucket(account.accountBucket)
+                        : undefined
+                  }
+                  size="small"
+                  value={
+                    (state.find((item) => item.accountId === account.id)
+                      ?.amount ?? 0) / 100
+                  }
+                  onChange={(x) => {
+                    setState((prev) => {
+                      const newState = [...prev]
+                      const index = newState.findIndex(
+                        (item) => item.accountId === account.id
+                      )
+                      if (index !== -1) {
+                        newState[index] = {
+                          accountId: account.id,
+                          amount: Math.round(x * 100),
+                        }
+                      } else {
+                        newState.push({
+                          accountId: account.id,
+                          amount: Math.round(x * 100),
+                        })
                       }
-                    } else {
-                      newState.push({
-                        accountId: account.id,
-                        amount: Math.round(x * 100),
-                      })
-                    }
-                    return newState
-                  })
-                }}
-              />
-              <div>{account.name}</div>
-            </Stack>
-          )
-        })}
-      </Stack>
+                      return newState
+                    })
+                  }}
+                />
+                <Stack
+                  sx={{
+                    display: { xs: "none", sm: "block" },
+                  }}
+                >
+                  {account.name}
+                </Stack>
+              </Stack>
+            )
+          })}
+        </Stack>
+      </Collapse>
     </Stack>
   )
 }

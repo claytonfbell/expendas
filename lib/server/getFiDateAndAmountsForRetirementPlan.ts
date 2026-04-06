@@ -13,7 +13,6 @@ export async function getFiDateAndAmountsForRetirementPlan(
 
   // get date of when youngest user turns 70
   const users = retirementPlan.retirementPlanUsers.map((rpu) => rpu.user)
-  console.log("users", users)
   const youngestUser = users.reduce(
     (youngest, user) => {
       if (
@@ -36,13 +35,10 @@ export async function getFiDateAndAmountsForRetirementPlan(
 
     const currentMonth = moment().startOf("month")
     while (month.isAfter(currentMonth)) {
-      console.log("checking month", month.format("YYYY-MM-DD"))
-
       const amount = await getFiAmountForRetirementPlanOnDate(
         retirementPlan,
         month
       )
-      console.log("amount", amount)
       month.subtract(1, "month")
 
       dateAndAmounts.push({
@@ -68,8 +64,6 @@ async function getFiAmountForRetirementPlanOnDate(
   // get total social security income (when both collecting)
   let annualSocialSecurityIncome = 0
   for (const rpu of retirementPlan.retirementPlanUsers) {
-    console.log("socialSecurityEstimates", rpu.user.socialSecurityEstimates)
-    console.log("collectSocialSecurityAge", rpu.collectSocialSecurityAge)
     const user = rpu.user
     if (user.socialSecurityEstimates) {
       const sse = adjustForInflation(
@@ -80,7 +74,6 @@ async function getFiAmountForRetirementPlanOnDate(
       annualSocialSecurityIncome += sse * 12
     }
   }
-  console.log("annualSocialSecurityIncome", annualSocialSecurityIncome)
 
   const requiredPortfolioIncome =
     adjustForInflation(
@@ -88,7 +81,6 @@ async function getFiAmountForRetirementPlanOnDate(
       date,
       retirementPlan.inflationRateEstimate
     ) - annualSocialSecurityIncome
-  console.log("requiredPortfolioIncome", requiredPortfolioIncome)
   const withdrawalRate = retirementPlan.withdrawalRateEstimate / 100000
   const amount = requiredPortfolioIncome / withdrawalRate
 
@@ -99,18 +91,10 @@ async function getFiAmountForRetirementPlanOnDate(
     const socialSecurityStartDate = moment(
       `${rpu.user.dateOfBirth} 00:00:00`
     ).add(socialSecurityStartAge, "years")
-    console.log(
-      "socialSecurityStartDate",
-      socialSecurityStartDate.format("YYYY-MM-DD")
-    )
 
     if (socialSecurityStartDate.isAfter(date)) {
       const loopDate = date.clone()
       while (loopDate.isBefore(socialSecurityStartDate)) {
-        console.log(
-          "checking month (social security)",
-          loopDate.format("YYYY-MM-DD")
-        )
         const sse = adjustForInflation(
           rpu.user.socialSecurityEstimates[rpu.collectSocialSecurityAge - 62],
           loopDate,
@@ -121,7 +105,6 @@ async function getFiAmountForRetirementPlanOnDate(
       }
     }
   }
-  console.log("totalSocialSecurityGap", totalSocialSecurityGap)
 
   // health insurance gap
   let totalHealthInsuranceGap = 0
@@ -130,14 +113,9 @@ async function getFiAmountForRetirementPlanOnDate(
       65,
       "years"
     )
-    console.log("medicareStartDate", medicareStartDate.format("YYYY-MM-DD"))
     if (medicareStartDate.isAfter(date)) {
       const loopDate = date.clone()
       while (loopDate.isBefore(medicareStartDate)) {
-        console.log(
-          "checking month (health insurance)",
-          loopDate.format("YYYY-MM-DD")
-        )
         totalHealthInsuranceGap += adjustForInflation(
           retirementPlan.healthInsuranceEstimate,
           loopDate,
@@ -147,7 +125,5 @@ async function getFiAmountForRetirementPlanOnDate(
       }
     }
   }
-  console.log("totalHealthInsuranceGap", totalHealthInsuranceGap)
-
   return amount + totalSocialSecurityGap + totalHealthInsuranceGap
 }
