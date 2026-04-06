@@ -1,4 +1,5 @@
 import {
+  Box,
   Stack,
   Table,
   TableBody,
@@ -8,7 +9,11 @@ import {
   TableRow,
 } from "@mui/material"
 import { RetirementPlan } from "@prisma/client"
-import { useFetchRetirementPlanReport } from "./api/api"
+import moment from "moment"
+import {
+  useFetchRetirementPlanReport,
+  useFetchRetirementPlanUsers,
+} from "./api/api"
 import { formatMoney } from "./formatMoney"
 
 interface Props {
@@ -20,6 +25,8 @@ export function RetirementPlanReport({ retirementPlan }: Props) {
     retirementPlan.id
   )
 
+  const { data: users } = useFetchRetirementPlanUsers(retirementPlan.id)
+
   return (
     <Stack spacing={1} alignItems={"start"}>
       {projectionRows !== undefined && (
@@ -28,7 +35,8 @@ export function RetirementPlanReport({ retirementPlan }: Props) {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Date</TableCell>
+                  <TableCell>Year</TableCell>
+                  <TableCell>Ages</TableCell>
                   <TableCell>Starting Balance</TableCell>
                   <TableCell>Appreciation</TableCell>
                   <TableCell>Dividend</TableCell>
@@ -39,13 +47,38 @@ export function RetirementPlanReport({ retirementPlan }: Props) {
               <TableBody>
                 {projectionRows.map((row) => (
                   <TableRow key={row.date}>
-                    <TableCell>{row.date}</TableCell>
+                    <TableCell>
+                      {moment(`${row.date} 00:00:00`).year()}
+                    </TableCell>
+                    <TableCell>
+                      {users
+                        ? users
+                            .map((user) => {
+                              return moment(`${row.date} 00:00:00`).diff(
+                                moment(`${user.user.dateOfBirth} 00:00:00`),
+                                "years"
+                              )
+                            })
+                            .join(" / ")
+                        : ""}
+                    </TableCell>
                     <TableCell>
                       {formatMoney(row.startingBalance, true)}
                     </TableCell>
                     <TableCell>{formatMoney(row.appreciation, true)}</TableCell>
                     <TableCell>{formatMoney(row.dividend, true)}</TableCell>
-                    <TableCell>{formatMoney(row.contribution, true)}</TableCell>
+                    <TableCell>
+                      <Box
+                        sx={{
+                          color: (theme) =>
+                            row.contribution < 0
+                              ? theme.palette.error.main
+                              : theme.palette.success.main,
+                        }}
+                      >
+                        {formatMoney(row.contribution, true)}
+                      </Box>
+                    </TableCell>
                     <TableCell>
                       {formatMoney(row.endingBalance, true)}
                     </TableCell>
