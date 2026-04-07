@@ -13,7 +13,11 @@ const theme: ThemeOptions = {
     },
   },
   typography: {
-    fontSize: 12,
+    body1: {
+      "@media (max-width:600px)": {
+        fontSize: 12,
+      },
+    },
   },
   components: {
     MuiButton: {

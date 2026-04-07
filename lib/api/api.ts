@@ -144,6 +144,8 @@ export function useLogout() {
     mutationFn: api.logout,
     onSuccess: () => {
       queryClient.setQueryData(["login"], undefined)
+      // refresh the whole page to reset state
+      window.location.href = "/"
     },
   })
 }
