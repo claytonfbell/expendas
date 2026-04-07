@@ -122,6 +122,7 @@ export function UserDialog({ organizationId, user, onClose }: Props) {
               {state.socialSecurityEstimates.map((estimate, index) => (
                 <Stack key={index} alignItems={"start"}>
                   <CurrencyFieldBase
+                    allowCents={false}
                     currency="USD"
                     fullWidth={false}
                     label={`Age ${62 + index}`}

@@ -28,7 +28,7 @@
     "imap": "^0.8.19",
     "marked": "^2.1.3",
     "material-ui-bootstrap": "^5.4.4",
-    "material-ui-pack": "^6.0.0",
+    "material-ui-pack": "^6.0.1",
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.45",
     "next": "^16.2.1",

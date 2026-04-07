@@ -142,7 +142,7 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
           <CustomGridItem>
             <TextField
               fullWidth
-              label="Retirement Plan Name"
+              label="Title"
               value={state.name}
               onChange={(e) =>
                 setState((prev) => ({ ...prev, name: e.target.value }))
@@ -152,6 +152,8 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
           <CustomGridItem>
             <CurrencyFieldBase
               fullWidth
+              currency="USD"
+              allowCents={false}
               label="Desired Income"
               value={state.desiredIncome / 100}
               onChange={(value) =>
@@ -166,6 +168,8 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
           <CustomGridItem>
             <CurrencyFieldBase
               fullWidth
+              currency="USD"
+              allowCents={false}
               label="Health Insurance"
               value={state.healthInsuranceEstimate / 100}
               onChange={(value) =>

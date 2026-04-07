@@ -166,6 +166,8 @@ export function RetirementPlanContributions({ retirementPlan }: Props) {
                         >
                           <CurrencyFieldBase
                             fullWidth
+                            currency="USD"
+                            allowCents={false}
                             label={account.name}
                             value={
                               (state.find(
