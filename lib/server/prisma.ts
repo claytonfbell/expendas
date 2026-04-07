@@ -9,21 +9,19 @@ declare global {
   var prisma: PrismaClient | undefined
 }
 
+const connectionString = `${process.env.DATABASE_URL}`
+const pool = new Pool({ connectionString })
+
+// 2. Initialize the adapter
+const adapter = new PrismaPg(pool)
+
 if (process.env.NODE_ENV === "production") {
-  prisma = new PrismaClient()
+  prisma = new PrismaClient({ adapter })
 } else {
   if (!global.prisma) {
-    const connectionString = `${process.env.DATABASE_URL}`
-    const pool = new Pool({ connectionString })
-
-    // 2. Initialize the adapter
-    const adapter = new PrismaPg(pool)
-
     // 3. Pass the adapter to PrismaClient
     global.prisma = new PrismaClient({ adapter })
   }
-
-  // @ts-ignore
   prisma = global.prisma
 }
 
