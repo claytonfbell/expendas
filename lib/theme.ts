@@ -15,7 +15,19 @@ const theme: ThemeOptions = {
   typography: {
     body1: {
       "@media (max-width:600px)": {
-        fontSize: 12,
+        fontSize: "0.875rem",
+      },
+    },
+    body2: {
+      "@media (max-width:600px)": {
+        fontSize: "0.875rem",
+      },
+    },
+    h1: {
+      fontSize: 32,
+      fontWeight: 350,
+      "@media (max-width:600px)": {
+        fontSize: 26,
       },
     },
   },

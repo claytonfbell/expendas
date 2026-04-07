@@ -124,7 +124,7 @@ export function RetirementPlanContributions({ retirementPlan }: Props) {
         alignItems={"baseline"}
         spacing={2}
       >
-        <Typography variant="h4">Savings</Typography>
+        <Typography variant="h1">Savings</Typography>
         <Stack>
           {formatMoney(totalSavedPerMonth, true)} mo /{" "}
           {formatMoney(totalSavedPerYear, true)} yr

@@ -86,7 +86,7 @@ export function RetirementPlanReport({ retirementPlan }: Props) {
         spacing={{ xs: 1, sm: 3 }}
         paddingLeft={2}
       >
-        <Typography variant="h4">Projection</Typography>
+        <Typography variant="h1">Projection</Typography>
         <Stack>{formatMoney(report?.fiDate.endingBalance ?? 0, true)}</Stack>
         <Stack>
           {fiDate.format("MMMM, YYYY")} ({fromNowString})

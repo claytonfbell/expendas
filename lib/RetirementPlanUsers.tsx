@@ -106,7 +106,7 @@ export function RetirementPlanUsers({ retirementPlan }: Props) {
         alignItems={"baseline"}
         spacing={2}
       >
-        <Typography variant="h4">Social Security</Typography>
+        <Typography variant="h1">Social Security</Typography>
         <Stack>
           {formatMoney(totalSocialSecurityPerMonth, true)} mo /{" "}
           {formatMoney(totalSocialSecurityPerYear, true)} yr

@@ -117,7 +117,7 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
         alignItems={"baseline"}
         spacing={2}
       >
-        <Typography variant="h4">Retirement Plan</Typography>
+        <Typography variant="h1">Retirement Plan</Typography>
         <Stack>{state.name}</Stack>
         <Stack>{formatMoney(state.desiredIncome, true)} yr spending</Stack>
         <Stack>{withdrawalRateDisplay} withdrawal rate</Stack>
