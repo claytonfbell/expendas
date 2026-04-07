@@ -2,13 +2,13 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import {
   Collapse,
+  Grid2,
   IconButton,
   Stack,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material"
-import Grid2 from "@mui/material/Unstable_Grid2"
 import { AccountBucket, RetirementPlan } from "@prisma/client"
 import { CurrencyFieldBase } from "material-ui-pack"
 import { useEffect, useMemo, useState } from "react"
@@ -146,20 +146,24 @@ export function RetirementPlanContributions({ retirementPlan }: Props) {
           {Object.entries(accountsGroupedByBucket).map(([bucket, accounts]) => {
             return (
               <Grid2
+                key={bucket}
                 container
                 spacing={2}
                 width={"100%"}
                 columns={16}
                 alignItems={{ sm: "start", md: "center" }}
               >
-                <Grid2 xs={4} sm={3} md={2} key={bucket}>
+                <Grid2 size={{ xs: 4, sm: 3, md: 2 }} key={bucket}>
                   {displayAccountBucket(bucket as AccountBucket)}
                 </Grid2>
-                <Grid2 xs={12}>
+                <Grid2 size={12}>
                   <Grid2 container spacing={2} columns={12}>
                     {accounts.map((account) => {
                       return (
-                        <Grid2 key={account.id} xs={6} sm={4} md={3} lg={2}>
+                        <Grid2
+                          key={account.id}
+                          size={{ xs: 6, sm: 4, md: 3, lg: 2 }}
+                        >
                           <CurrencyFieldBase
                             fullWidth
                             label={account.name}

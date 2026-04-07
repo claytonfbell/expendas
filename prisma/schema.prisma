@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
     provider = "postgresql"
-    url      = env("DATABASE_URL")
 }
 
 model Organization {
@@ -208,3 +207,6 @@ enum PlaidEnvironment {
 
 // run in production
 // npx prisma migrate deploy
+
+// generate client
+// npx prisma generate

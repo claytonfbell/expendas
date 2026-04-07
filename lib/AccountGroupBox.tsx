@@ -7,15 +7,14 @@ import {
   Fade,
   List,
   ListItem,
+  ListItemButton,
   ListItemIcon,
-  ListItemSecondaryAction,
   ListItemText,
   Paper,
   useTheme,
 } from "@mui/material"
 import { Account, Payment } from "@prisma/client"
 import { MD5 } from "crypto-js"
-import React from "react"
 import { useStorageState } from "react-storage-hooks"
 import { AccountBox } from "./AccountBox"
 import { AccountGroup } from "./AccountGroup"
@@ -80,7 +79,7 @@ export function AccountGroupBox(props: Props) {
       >
         <Box>
           <List>
-            <ListItem button onClick={() => setIsExpanded(!isExpanded)}>
+            <ListItemButton onClick={() => setIsExpanded(!isExpanded)}>
               <ListItemIcon>
                 {!isExpanded ? (
                   <ExpandMoreIcon style={{ color: "#fff" }} />
@@ -90,11 +89,11 @@ export function AccountGroupBox(props: Props) {
               </ListItemIcon>
               <ListItemText>{accountGroup.label}</ListItemText>
               {!isExpanded ? (
-                <ListItemSecondaryAction>
+                <ListItem secondaryAction>
                   <Currency animate value={endingBalance} />
-                </ListItemSecondaryAction>
+                </ListItem>
               ) : null}
-            </ListItem>
+            </ListItemButton>
           </List>
           <Collapse in={isExpanded}>
             <Divider />
@@ -119,11 +118,11 @@ export function AccountGroupBox(props: Props) {
           </Collapse>
           {isExpanded && accounts.length > 1 ? (
             <List>
-              <ListItem button onClick={() => setIsExpanded(!isExpanded)}>
-                <ListItemSecondaryAction>
+              <ListItemButton onClick={() => setIsExpanded(!isExpanded)}>
+                <ListItem secondaryAction>
                   <Currency animate value={endingBalance} />
-                </ListItemSecondaryAction>
-              </ListItem>
+                </ListItem>
+              </ListItemButton>
             </List>
           ) : null}
         </Box>

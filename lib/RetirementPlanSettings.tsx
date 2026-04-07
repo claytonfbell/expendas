@@ -3,6 +3,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import {
   Button,
   Collapse,
+  Grid2,
   IconButton,
   Stack,
   TextField,
@@ -10,7 +11,6 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material"
-import Grid2 from "@mui/material/Unstable_Grid2"
 import { RetirementPlan } from "@prisma/client"
 import { CurrencyFieldBase, PercentageFieldBase } from "material-ui-pack"
 import { useEffect, useState } from "react"
@@ -274,9 +274,5 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
 }
 
 function CustomGridItem(props: { children: React.ReactNode }) {
-  return (
-    <Grid2 xs={4} sm={4} md={3} lg={2}>
-      {props.children}
-    </Grid2>
-  )
+  return <Grid2 size={{ xs: 4, sm: 4, md: 3, lg: 2 }}>{props.children}</Grid2>
 }
