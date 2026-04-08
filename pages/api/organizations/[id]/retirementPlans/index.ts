@@ -19,6 +19,9 @@ async function handler(
         where: {
           organizationId,
         },
+        orderBy: {
+          id: "asc",
+        },
         include: {
           retirementPlanUsers: {
             include: {

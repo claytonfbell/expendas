@@ -86,13 +86,26 @@ export function RetirementPlansCreateDialog({ open, onClose }: Props) {
                   }
                 />
 
-                <Button
-                  type="submit"
-                  variant="contained"
-                  disabled={status === "pending"}
+                <Stack
+                  direction={"row"}
+                  spacing={2}
+                  justifyContent={"flex-end"}
                 >
-                  {state.copyPlanId ? "Copy & Create" : "Create"}
-                </Button>
+                  <Button
+                    variant="outlined"
+                    onClick={onClose}
+                    disabled={status === "pending"}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    disabled={status === "pending"}
+                  >
+                    {state.copyPlanId ? "Copy & Create" : "Create"}
+                  </Button>
+                </Stack>
               </Stack>
             </Stack>
           </form>

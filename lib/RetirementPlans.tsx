@@ -1,13 +1,16 @@
-import { Button, Stack } from "@mui/material"
+import AddIcon from "@mui/icons-material/Add"
+import { Fab, Stack, useMediaQuery, useTheme } from "@mui/material"
 import { SelectBase } from "material-ui-pack"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
 import { useFetchRetirementPlans } from "./api/api"
-import { RetirementPlanContributions } from "./RetirementPlanContributions"
-import { RetirementPlanReport } from "./RetirementPlanReport"
+import { RetirementPlanProjection } from "./RetirementPlanProjection"
+import { RetirementPlanSavings } from "./RetirementPlanSavings"
 import { RetirementPlansCreateDialog } from "./RetirementPlansCreateDialog"
 import { RetirementPlanSettings } from "./RetirementPlanSettings"
-import { RetirementPlanUsers } from "./RetirementPlanUsers"
+import { RetirementPlanSocialSecurity } from "./RetirementPlanSocialSecurity"
+
+const LOCAL_STORAGE_KEY = "RetirementPlans.lastRetirementPlanId"
 
 export function RetirementPlans() {
   const { data: retirementPlans } = useFetchRetirementPlans()
@@ -30,17 +33,25 @@ export function RetirementPlans() {
 
   useEffect(() => {
     if (selectedId === null) {
-      if (retirementPlans && retirementPlans.length > 0) {
+      const lastId = sessionStorage.getItem(LOCAL_STORAGE_KEY)
+      if (lastId) {
+        replace(`?retirementPlanId=${lastId}`)
+      } else if (retirementPlans !== undefined && retirementPlans.length > 0) {
         replace(`?retirementPlanId=${retirementPlans[0].id}`)
       }
+    } else {
+      sessionStorage.setItem(LOCAL_STORAGE_KEY, selectedId.toString())
     }
   }, [retirementPlans, selectedId, replace])
+
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
 
   return (
     <>
       <Stack spacing={4}>
         <Stack direction={"row"} justifyContent={"space-between"} spacing={2}>
-          <Stack>
+          <Stack width={isMobile ? "100%" : undefined}>
             <SelectBase
               size="small"
               options={(retirementPlans ?? []).map((x) => ({
@@ -49,20 +60,24 @@ export function RetirementPlans() {
               }))}
               onChange={(x) => replace(`?retirementPlanId=${x}`)}
               value={selectedId}
-              fullWidth={false}
+              fullWidth={isMobile}
             />
           </Stack>
-          <Button variant="contained" onClick={() => setShowAddDialog(true)}>
-            Add Retirement Plan
-          </Button>
+          <Fab
+            size="small"
+            variant="circular"
+            onClick={() => setShowAddDialog(true)}
+          >
+            <AddIcon />
+          </Fab>
         </Stack>
 
         {selectedPlan !== null && (
           <Stack width={"100%"} spacing={3}>
             <RetirementPlanSettings retirementPlan={selectedPlan} />
-            <RetirementPlanUsers retirementPlan={selectedPlan} />
-            <RetirementPlanContributions retirementPlan={selectedPlan} />
-            <RetirementPlanReport retirementPlan={selectedPlan} />
+            <RetirementPlanSavings retirementPlan={selectedPlan} />
+            <RetirementPlanSocialSecurity retirementPlan={selectedPlan} />
+            <RetirementPlanProjection retirementPlan={selectedPlan} />
           </Stack>
         )}
       </Stack>

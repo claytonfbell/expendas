@@ -1,16 +1,4 @@
-import ExpandLessIcon from "@mui/icons-material/ExpandLess"
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
-import {
-  Button,
-  Collapse,
-  Grid2,
-  IconButton,
-  Stack,
-  TextField,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material"
+import { Button, Grid2, Stack, TextField } from "@mui/material"
 import { RetirementPlan } from "@prisma/client"
 import { CurrencyFieldBase, PercentageFieldBase } from "material-ui-pack"
 import { useEffect, useState } from "react"
@@ -19,6 +7,7 @@ import { useDeleteRetirementPlan, useUpdateRetirementPlan } from "./api/api"
 import ConfirmDialog from "./ConfirmDialog"
 import DisplayError from "./DisplayError"
 import { formatMoney } from "./formatMoney"
+import { RetirementPlanSection } from "./RetirementPlanSection"
 
 type FormState = {
   name: string
@@ -95,10 +84,6 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
     [updateRetirementPlan, retirementPlan, state]
   )
 
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
-  const [collapsed, setCollapsed] = useState(!isMobile)
-
   // up to 1 decimal place if needed, otherwise no decimals
   const withdrawalRatePercent = state.withdrawalRateEstimate / 1000
   const withdrawalRateDisplay =
@@ -107,173 +92,158 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
       : `${withdrawalRatePercent.toFixed(1)}%`
 
   return (
-    <Stack
-      spacing={3}
-      paddingLeft={2}
-      alignItems={{ xs: "stretch", sm: "start" }}
+    <RetirementPlanSection
+      title="Retirement Plan"
+      summary={
+        <>
+          <Stack>{formatMoney(state.desiredIncome, true)} yr spending</Stack>
+          <Stack>{withdrawalRateDisplay} withdrawal rate</Stack>
+        </>
+      }
+      collapsible
     >
-      <Stack
-        direction={{ xs: "column", sm: "row" }}
-        alignItems={"baseline"}
-        spacing={2}
-      >
-        <Typography variant="h1">Retirement Plan</Typography>
-        <Stack>{state.name}</Stack>
-        <Stack>{formatMoney(state.desiredIncome, true)} yr spending</Stack>
-        <Stack>{withdrawalRateDisplay} withdrawal rate</Stack>
-        <IconButton
-          sx={{
-            display: { xs: "none", sm: "block" },
-          }}
-          onClick={() => setCollapsed(!collapsed)}
-        >
-          {collapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-        </IconButton>
-      </Stack>
-
       <DisplayError error={updateError ?? deleteError} />
-      <Collapse in={!collapsed} unmountOnExit>
-        <Grid2
-          container
-          spacing={2}
-          columns={{ xs: 12, sm: 16 }}
-          alignItems={"center"}
-        >
-          <CustomGridItem>
-            <TextField
-              fullWidth
-              label="Title"
-              value={state.name}
-              onChange={(e) =>
-                setState((prev) => ({ ...prev, name: e.target.value }))
-              }
-            />
-          </CustomGridItem>
-          <CustomGridItem>
-            <CurrencyFieldBase
-              fullWidth
-              currency="USD"
-              allowCents={false}
-              label="Desired Income"
-              value={state.desiredIncome / 100}
-              onChange={(value) =>
-                setState((prev) => ({
-                  ...prev,
-                  desiredIncome: Math.round(value * 100),
-                }))
-              }
-            />
-          </CustomGridItem>
 
-          <CustomGridItem>
-            <CurrencyFieldBase
-              fullWidth
-              currency="USD"
-              allowCents={false}
-              label="Health Insurance"
-              value={state.healthInsuranceEstimate / 100}
-              onChange={(value) =>
-                setState((prev) => ({
-                  ...prev,
-                  healthInsuranceEstimate: Math.round(value * 100),
-                }))
-              }
-            />
-          </CustomGridItem>
+      <Grid2
+        container
+        spacing={2}
+        columns={{ xs: 12, sm: 16 }}
+        alignItems={"center"}
+      >
+        <CustomGridItem>
+          <TextField
+            fullWidth
+            label="Title"
+            value={state.name}
+            onChange={(e) =>
+              setState((prev) => ({ ...prev, name: e.target.value }))
+            }
+          />
+        </CustomGridItem>
+        <CustomGridItem>
+          <CurrencyFieldBase
+            fullWidth
+            currency="USD"
+            allowCents={false}
+            label="Desired Income"
+            value={state.desiredIncome / 100}
+            onChange={(value) =>
+              setState((prev) => ({
+                ...prev,
+                desiredIncome: Math.round(value * 100),
+              }))
+            }
+          />
+        </CustomGridItem>
 
-          <CustomGridItem>
-            <PercentageFieldBase
-              fullWidth
-              label="Stock Appreciation"
-              decimals={5}
-              value={state.stockAppreciationEstimate / 100000}
-              onChange={(value) =>
-                setState((prev) => ({
-                  ...prev,
-                  stockAppreciationEstimate: Math.round(value * 100000),
-                }))
-              }
-            />
-          </CustomGridItem>
+        <CustomGridItem>
+          <CurrencyFieldBase
+            fullWidth
+            currency="USD"
+            allowCents={false}
+            label="Health Insurance"
+            value={state.healthInsuranceEstimate / 100}
+            onChange={(value) =>
+              setState((prev) => ({
+                ...prev,
+                healthInsuranceEstimate: Math.round(value * 100),
+              }))
+            }
+          />
+        </CustomGridItem>
 
-          <CustomGridItem>
-            <PercentageFieldBase
-              fullWidth
-              label="Dividend Yield"
-              decimals={5}
-              value={state.dividendYieldEstimate / 100000}
-              onChange={(value) =>
-                setState((prev) => ({
-                  ...prev,
-                  dividendYieldEstimate: Math.round(value * 100000),
-                }))
-              }
-            />
-          </CustomGridItem>
+        <CustomGridItem>
+          <PercentageFieldBase
+            fullWidth
+            label="Stock Appreciation"
+            decimals={5}
+            value={state.stockAppreciationEstimate / 100000}
+            onChange={(value) =>
+              setState((prev) => ({
+                ...prev,
+                stockAppreciationEstimate: Math.round(value * 100000),
+              }))
+            }
+          />
+        </CustomGridItem>
 
-          <CustomGridItem>
-            <PercentageFieldBase
-              fullWidth
-              label="Inflation Rate"
-              decimals={5}
-              value={state.inflationRateEstimate / 100000}
-              onChange={(value) =>
-                setState((prev) => ({
-                  ...prev,
-                  inflationRateEstimate: Math.round(value * 100000),
-                }))
-              }
-            />
-          </CustomGridItem>
+        <CustomGridItem>
+          <PercentageFieldBase
+            fullWidth
+            label="Dividend Yield"
+            decimals={5}
+            value={state.dividendYieldEstimate / 100000}
+            onChange={(value) =>
+              setState((prev) => ({
+                ...prev,
+                dividendYieldEstimate: Math.round(value * 100000),
+              }))
+            }
+          />
+        </CustomGridItem>
 
-          <CustomGridItem>
-            <PercentageFieldBase
-              fullWidth
-              label="Withdrawal Rate"
-              decimals={5}
-              value={state.withdrawalRateEstimate / 100000}
-              onChange={(value) =>
-                setState((prev) => ({
-                  ...prev,
-                  withdrawalRateEstimate: Math.round(value * 100000),
-                }))
-              }
-            />
-          </CustomGridItem>
+        <CustomGridItem>
+          <PercentageFieldBase
+            fullWidth
+            label="Inflation Rate"
+            decimals={5}
+            value={state.inflationRateEstimate / 100000}
+            onChange={(value) =>
+              setState((prev) => ({
+                ...prev,
+                inflationRateEstimate: Math.round(value * 100000),
+              }))
+            }
+          />
+        </CustomGridItem>
 
-          <CustomGridItem>
-            <Button
-              size="large"
-              fullWidth
-              variant="outlined"
-              color="error"
-              disabled={deleteStatus === "pending"}
-              onClick={() => {
-                setShowDeleteConfirm(true)
-              }}
-            >
-              Delete
-            </Button>
-          </CustomGridItem>
-        </Grid2>
+        <CustomGridItem>
+          <PercentageFieldBase
+            fullWidth
+            label="Withdrawal Rate"
+            decimals={5}
+            value={state.withdrawalRateEstimate / 100000}
+            onChange={(value) =>
+              setState((prev) => ({
+                ...prev,
+                withdrawalRateEstimate: Math.round(value * 100000),
+              }))
+            }
+          />
+        </CustomGridItem>
 
+        <CustomGridItem>
+          <Button
+            size="large"
+            fullWidth
+            variant="outlined"
+            color="error"
+            disabled={deleteStatus === "pending"}
+            onClick={() => {
+              setShowDeleteConfirm(true)
+            }}
+          >
+            Delete
+          </Button>
+        </CustomGridItem>
+      </Grid2>
+
+      <Stack spacing={2}>
         <Stack spacing={2}>
-          <Stack spacing={2}>
-            <ConfirmDialog
-              open={showDeleteConfirm}
-              onClose={() => setShowDeleteConfirm(false)}
-              onAccept={() => {
-                setShowDeleteConfirm(false)
-                if (retirementPlan !== null) {
-                  deleteRetirementPlan(retirementPlan.id)
-                }
-              }}
-              message="Are you sure you want to delete this retirement plan?"
-            />
-          </Stack>
+          <ConfirmDialog
+            open={showDeleteConfirm}
+            onClose={() => setShowDeleteConfirm(false)}
+            onAccept={() => {
+              setShowDeleteConfirm(false)
+              if (retirementPlan !== null) {
+                deleteRetirementPlan(retirementPlan.id)
+              }
+            }}
+            message="Are you sure you want to delete this retirement plan?"
+          />
         </Stack>
-      </Collapse>
-    </Stack>
+      </Stack>
+    </RetirementPlanSection>
   )
 }
 
