@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@mui/material"
 import { RetirementPlan } from "@prisma/client"
-import moment from "moment"
+import moment, { Moment } from "moment"
 import { useMemo } from "react"
 import {
   useFetchAccounts,
@@ -31,10 +31,7 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
   const { data: users } = useFetchRetirementPlanUsers(retirementPlan.id)
 
   const fiDate = moment(report?.fiDate?.date)
-  // fromNow in years and months
-  const fiFromNowYears = fiDate.diff(moment(), "years")
-  const fiFromNowMonths = fiDate.diff(moment(), "months") % 12
-  const fromNowString = `${fiFromNowYears} years, ${fiFromNowMonths} months`
+  const fiFromNowString = fromNow(fiDate)
   const agesString = useMemo(
     () =>
       users
@@ -68,6 +65,9 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
     }, 0)
   }, [retirementAccounts])
 
+  const millionaireDate = moment(report?.millionaireDate?.date)
+  const millionaireFromNowString = fromNow(millionaireDate)
+
   return (
     <RetirementPlanSection
       title="Projection"
@@ -75,8 +75,9 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
         <>
           <Stack>{formatMoney(report?.fiDate.endingBalance ?? 0, true)}</Stack>
           <Stack>{fiDate.format("MMMM, YYYY")}</Stack>
-          <Stack>{fromNowString}</Stack>
+          <Stack>{fiFromNowString}</Stack>
           <Stack>Ages: {agesString}</Stack>
+          <Stack>Millionaire : {millionaireFromNowString}</Stack>
         </>
       }
     >
@@ -177,4 +178,16 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
       )}
     </RetirementPlanSection>
   )
+}
+
+function fromNow(target: Moment) {
+  const now = moment()
+  const years = target.diff(now, "years")
+  const months = target.diff(now, "months") % 12
+  if (years >= 1) {
+    return `${years} years, ${months} months`
+  } else if (months >= 1) {
+    return `${months} months`
+  }
+  return ""
 }
