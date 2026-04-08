@@ -139,45 +139,54 @@ export function RetirementPlanSavings({ retirementPlan }: Props) {
               </Grid2>
               <Grid2 size={12}>
                 <Grid2 container spacing={2} columns={12}>
-                  {accounts.map((account) => {
-                    return (
-                      <Grid2
-                        key={account.id}
-                        size={{ xs: 6, sm: 4, md: 3, lg: 2 }}
-                      >
-                        <CurrencyFieldBase
-                          fullWidth
-                          currency="USD"
-                          allowCents={false}
-                          label={account.name}
-                          value={
-                            (state.find((item) => item.accountId === account.id)
-                              ?.amount ?? 0) / 100
-                          }
-                          onChange={(x) => {
-                            setState((prev) => {
-                              const newState = [...prev]
-                              const index = newState.findIndex(
+                  {accounts
+                    // sort by account balance descending, then by name ascending
+                    .sort((a, b) => {
+                      if (b.balance !== a.balance) {
+                        return b.balance - a.balance
+                      }
+                      return a.name.localeCompare(b.name)
+                    })
+                    .map((account) => {
+                      return (
+                        <Grid2
+                          key={account.id}
+                          size={{ xs: 6, sm: 4, md: 3, lg: 2 }}
+                        >
+                          <CurrencyFieldBase
+                            fullWidth
+                            currency="USD"
+                            allowCents={false}
+                            label={account.name}
+                            value={
+                              (state.find(
                                 (item) => item.accountId === account.id
-                              )
-                              if (index !== -1) {
-                                newState[index] = {
-                                  accountId: account.id,
-                                  amount: Math.round(x * 100),
+                              )?.amount ?? 0) / 100
+                            }
+                            onChange={(x) => {
+                              setState((prev) => {
+                                const newState = [...prev]
+                                const index = newState.findIndex(
+                                  (item) => item.accountId === account.id
+                                )
+                                if (index !== -1) {
+                                  newState[index] = {
+                                    accountId: account.id,
+                                    amount: Math.round(x * 100),
+                                  }
+                                } else {
+                                  newState.push({
+                                    accountId: account.id,
+                                    amount: Math.round(x * 100),
+                                  })
                                 }
-                              } else {
-                                newState.push({
-                                  accountId: account.id,
-                                  amount: Math.round(x * 100),
-                                })
-                              }
-                              return newState
-                            })
-                          }}
-                        />
-                      </Grid2>
-                    )
-                  })}
+                                return newState
+                              })
+                            }}
+                          />
+                        </Grid2>
+                      )
+                    })}
                 </Grid2>
               </Grid2>
             </Grid2>
