@@ -21,7 +21,7 @@ export function RetirementPlans() {
       return parseInt(retirementPlanIdFromUrl)
     }
     return null
-  }, [retirementPlanIdFromUrl, retirementPlans])
+  }, [retirementPlanIdFromUrl])
 
   const { replace } = useRouter()
 

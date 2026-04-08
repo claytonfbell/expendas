@@ -513,7 +513,11 @@ export function useUpdateItem() {
 export function useAddRetirementPlan() {
   const { organizationId } = useGlobalState()
   const queryClient = useQueryClient()
-  return useMutation<RetirementPlan, RestError, { name: string }>({
+  return useMutation<
+    RetirementPlan,
+    RestError,
+    { name: string; copyPlanId: number | null }
+  >({
     mutationFn: (params) =>
       rest.post(`/organizations/${organizationId}/retirementPlans`, params),
     onSuccess: (data) => {

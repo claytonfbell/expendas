@@ -6,8 +6,10 @@ import {
   Stack,
   TextField,
 } from "@mui/material"
+import { SelectBase } from "material-ui-pack"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { useAddRetirementPlan } from "./api/api"
+import { useAddRetirementPlan, useFetchRetirementPlans } from "./api/api"
 import DisplayError from "./DisplayError"
 
 interface Props {
@@ -17,6 +19,7 @@ interface Props {
 
 type FormState = {
   name: string
+  copyPlanId: number | null
 }
 
 export function RetirementPlansCreateDialog({ open, onClose }: Props) {
@@ -28,41 +31,67 @@ export function RetirementPlansCreateDialog({ open, onClose }: Props) {
 
   useEffect(() => {
     if (!open) {
-      setState({ name: "" })
+      setState({ name: "", copyPlanId: null })
     }
   }, [open])
 
-  const [state, setState] = useState<FormState>({ name: "" })
+  const [state, setState] = useState<FormState>({ name: "", copyPlanId: null })
+
+  const { data: retirementPlans } = useFetchRetirementPlans()
+
+  const { replace } = useRouter()
 
   return (
     <>
       {/* create retirement dialog  */}
-      <Dialog open={open} onClose={onClose}>
+      <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
         <DialogTitle>Add Retirement Plan</DialogTitle>
         <DialogContent>
           <form
             onSubmit={(e) => {
               e.preventDefault()
-              addRetirementPlan({ name: state.name }).then(() => {
+              addRetirementPlan(state).then((newPlan) => {
                 onClose()
+                replace(`?retirementPlanId=${newPlan.id}`)
+                return newPlan
               })
             }}
           >
             <Stack spacing={2} marginTop={2}>
               <DisplayError error={error} />
-              <Stack spacing={2} direction={"row"}>
+              <Stack spacing={2}>
                 <TextField
-                  label="Retirement Plan Name"
+                  label="New Plan Name"
                   disabled={status === "pending"}
                   value={state.name}
-                  onChange={(e) => setState({ name: e.target.value })}
+                  onChange={(e) =>
+                    setState((prev) => ({ ...prev, name: e.target.value }))
+                  }
                 />
+                <SelectBase
+                  label="Copy Existing Plan (optional)"
+                  allowNull
+                  value={state.copyPlanId}
+                  onChange={(copyPlanId) =>
+                    setState((prev) => ({
+                      ...prev,
+                      copyPlanId: copyPlanId as number | null,
+                    }))
+                  }
+                  options={
+                    retirementPlans?.map((plan) => ({
+                      label: plan.name,
+                      value: plan.id,
+                    })) || []
+                  }
+                />
+
                 <Button
                   type="submit"
                   variant="contained"
                   disabled={status === "pending"}
                 >
-                  Add
+                  {state.copyPlanId ? "Copy & Create" : "Create"}
                 </Button>
               </Stack>
             </Stack>
