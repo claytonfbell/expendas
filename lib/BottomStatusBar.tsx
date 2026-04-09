@@ -1,5 +1,6 @@
 import { Box, Container, useTheme } from "@mui/material"
 import React from "react"
+import { BottomMobileNavigation } from "./BottomMobileNavigation"
 
 interface Props {
   children: React.ReactNode
@@ -16,14 +17,10 @@ export function BottomStatusBar({ children }: Props) {
           bottom: 0,
           left: 0,
           width: `100vw`,
-          paddingLeft: 0,
-          paddingRight: theme.spacing(2),
+
           fontSize: 20,
-          [theme.breakpoints.up("lg")]: {
-            paddingRight: 0,
-          },
-          paddingTop: theme.spacing(2),
-          paddingBottom: theme.spacing(2),
+
+          paddingTop: 1,
           color: theme.palette.primary.contrastText,
           [theme.breakpoints.up("sm")]: {
             fontSize: 24,
@@ -34,7 +31,23 @@ export function BottomStatusBar({ children }: Props) {
           zIndex: theme.zIndex.appBar - 1,
         }}
       >
-        <Container>{children}</Container>
+        <Container
+          sx={{
+            paddingBottom: 1,
+          }}
+        >
+          <Box
+            sx={{
+              paddingRight: {
+                xs: 0,
+                sm: 1,
+              },
+            }}
+          >
+            {children}
+          </Box>
+        </Container>
+        <BottomMobileNavigation />
       </Box>
     </>
   )

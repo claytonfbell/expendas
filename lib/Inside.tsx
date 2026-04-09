@@ -2,7 +2,6 @@ import GitHubIcon from "@mui/icons-material/GitHub"
 import {
   AppBar,
   Box,
-  Button,
   ButtonBase,
   Container,
   CssBaseline,
@@ -11,7 +10,7 @@ import {
   Toolbar,
   Tooltip,
 } from "@mui/material"
-import { DarkModeToggle, useDarkMode } from "material-ui-pack"
+import { DarkModeToggle } from "material-ui-pack"
 import { useRouter } from "next/dist/client/router"
 import NextLink from "next/link"
 import React, { useEffect, useState } from "react"
@@ -22,6 +21,7 @@ import { GlobalStateProvider } from "./GlobalStateProvider"
 import { Login } from "./Login"
 import { LogoComponent } from "./LogoComponent"
 import { Outside } from "./Outside"
+import { TopNavigation } from "./TopNavigation"
 import { UserMenu } from "./UserMenu"
 
 interface Props {
@@ -32,7 +32,6 @@ interface Props {
 
 export function Inside(props: Props) {
   const { data: loginResponse } = useCheckLogin()
-  const { toggleDarkMode, darkMode } = useDarkMode()
 
   // timer
   const [timer, setTimer] = useState(0)
@@ -72,40 +71,7 @@ export function Inside(props: Props) {
                   <LogoComponent height={28} />
                 </ButtonBase>
 
-                <Stack
-                  direction="row"
-                  alignItems={"center"}
-                  spacing={1}
-                  display={{ xs: "none", lg: "flex" }}
-                >
-                  <Button LinkComponent={NextLink} href="/" color="inherit">
-                    Main
-                  </Button>
-
-                  <Button
-                    LinkComponent={NextLink}
-                    href="/investments"
-                    color="inherit"
-                  >
-                    Investments
-                  </Button>
-
-                  <Button
-                    LinkComponent={NextLink}
-                    href="/trends"
-                    color="inherit"
-                  >
-                    Trends
-                  </Button>
-
-                  <Button
-                    LinkComponent={NextLink}
-                    href="/retirement"
-                    color="inherit"
-                  >
-                    Retirement
-                  </Button>
-                </Stack>
+                <TopNavigation />
 
                 <Stack direction="row" alignItems={"center"}>
                   <DarkModeToggle variant="icon" />

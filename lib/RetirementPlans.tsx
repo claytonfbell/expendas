@@ -1,8 +1,7 @@
 import AddIcon from "@mui/icons-material/Add"
 import { Fab, Stack, useMediaQuery, useTheme } from "@mui/material"
 import { SelectBase } from "material-ui-pack"
-import { useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { useFetchRetirementPlans } from "./api/api"
 import { RetirementPlanProjection } from "./RetirementPlanProjection"
 import { RetirementPlanSavings } from "./RetirementPlanSavings"
@@ -17,32 +16,35 @@ export function RetirementPlans() {
   const [showAddDialog, setShowAddDialog] = useState(false)
 
   // sync selectedId with url
-  const searchParams = useSearchParams()
-  const retirementPlanIdFromUrl = searchParams.get("retirementPlanId")
-  const selectedId = useMemo(() => {
-    if (retirementPlanIdFromUrl) {
-      return parseInt(retirementPlanIdFromUrl)
+  const [selectedId, setSelectedId] = useState<number | null>(() => {
+    const fromStorage = localStorage.getItem(LOCAL_STORAGE_KEY)
+    if (fromStorage && !isNaN(parseInt(fromStorage))) {
+      return parseInt(fromStorage)
     }
     return null
-  }, [retirementPlanIdFromUrl])
+  })
 
-  const { replace } = useRouter()
+  useEffect(() => {
+    if (selectedId !== null) {
+      localStorage.setItem(LOCAL_STORAGE_KEY, selectedId.toString())
+    } else {
+      localStorage.removeItem(LOCAL_STORAGE_KEY)
+    }
+  }, [selectedId])
+
+  useEffect(() => {
+    if (
+      retirementPlans &&
+      retirementPlans.length > 0 &&
+      retirementPlans.find((plan) => plan.id === selectedId) === undefined
+    ) {
+      // if selectedId is not in retirementPlans, set it to the first one
+      setSelectedId(retirementPlans[0].id)
+    }
+  }, [retirementPlans])
 
   const selectedPlan =
     retirementPlans?.find((plan) => plan.id === selectedId) ?? null
-
-  useEffect(() => {
-    if (selectedId === null) {
-      const lastId = localStorage.getItem(LOCAL_STORAGE_KEY)
-      if (lastId) {
-        replace(`?retirementPlanId=${lastId}`)
-      } else if (retirementPlans !== undefined && retirementPlans.length > 0) {
-        replace(`?retirementPlanId=${retirementPlans[0].id}`)
-      }
-    } else {
-      localStorage.setItem(LOCAL_STORAGE_KEY, selectedId.toString())
-    }
-  }, [retirementPlans, selectedId, replace])
 
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
@@ -58,7 +60,7 @@ export function RetirementPlans() {
                 label: x.name,
                 value: x.id,
               }))}
-              onChange={(x) => replace(`?retirementPlanId=${x}`)}
+              onChange={(x) => setSelectedId(x as number)}
               value={selectedId}
               fullWidth={isMobile}
             />
