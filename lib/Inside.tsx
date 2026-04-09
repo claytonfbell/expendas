@@ -15,6 +15,7 @@ import { DarkModeToggle, useDarkMode } from "material-ui-pack"
 import { useRouter } from "next/dist/client/router"
 import NextLink from "next/link"
 import React, { useEffect, useState } from "react"
+import { useCheckLogin } from "./api/api"
 import { BreadcrumbLink, ExpendasBreadcrumbs } from "./ExpendasBreadcrumbs"
 import { ExpendasErrorBoundary } from "./ExpendasErrorBoundary"
 import { GlobalStateProvider } from "./GlobalStateProvider"
@@ -22,7 +23,6 @@ import { Login } from "./Login"
 import { LogoComponent } from "./LogoComponent"
 import { Outside } from "./Outside"
 import { UserMenu } from "./UserMenu"
-import { useCheckLogin } from "./api/api"
 
 interface Props {
   title: string
@@ -69,7 +69,7 @@ export function Inside(props: Props) {
                 width="100%"
               >
                 <ButtonBase focusRipple component={NextLink} href="/">
-                  <LogoComponent scale={0.3} />
+                  <LogoComponent height={28} />
                 </ButtonBase>
 
                 <Stack
