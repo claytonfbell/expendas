@@ -223,7 +223,10 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
           </Stack>
           <Stack alignItems={"end"}>
             <Typography>Financial Independence</Typography>
-            <AnimatedCounter value={report?.fiDate.endingBalance ?? 0} />
+            <AnimatedCounter
+              value={report?.fiDate.endingBalance ?? 0}
+              roundNearestDollar
+            />
           </Stack>
         </Stack>
       </BottomStatusBar>

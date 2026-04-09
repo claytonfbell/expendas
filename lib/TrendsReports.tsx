@@ -206,11 +206,17 @@ export function TrendsReports() {
           <Stack direction="row" spacing={4} justifyContent="end">
             <Stack alignItems={"end"}>
               <Typography>Savings</Typography>
-              <AnimatedCounter value={latestDataPoint.balance * 100} />
+              <AnimatedCounter
+                value={latestDataPoint.balance * 100}
+                roundNearestDollar
+              />
             </Stack>
             <Stack alignItems={"end"}>
               <Typography>Net Worth</Typography>
-              <AnimatedCounter value={latestDataPoint.totalNetWorth * 100} />
+              <AnimatedCounter
+                value={latestDataPoint.totalNetWorth * 100}
+                roundNearestDollar
+              />
             </Stack>
           </Stack>
         </BottomStatusBar>

@@ -341,7 +341,7 @@ export function InvestmentPortfolio() {
         <Stack direction="row" spacing={4} justifyContent="end">
           <Stack alignItems={"end"}>
             <Typography>Savings</Typography>
-            <AnimatedCounter value={total} />
+            <AnimatedCounter value={total} roundNearestDollar />
           </Stack>
         </Stack>
       </BottomStatusBar>

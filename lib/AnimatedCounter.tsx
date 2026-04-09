@@ -4,6 +4,7 @@ import { formatMoney } from "./formatMoney"
 
 interface Props {
   value: number
+  roundNearestDollar?: boolean
 }
 
 export default function AnimatedCounter(props: Props) {
@@ -18,5 +19,5 @@ export default function AnimatedCounter(props: Props) {
     update(props.value)
   }, [props.value, update])
 
-  return <>{formatMoney(countUp as number)}</>
+  return <>{formatMoney(countUp as number, props.roundNearestDollar)}</>
 }

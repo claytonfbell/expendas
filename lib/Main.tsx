@@ -246,7 +246,7 @@ export function Main() {
         <Stack direction="row" spacing={4} justifyContent="end">
           <Stack alignItems={"end"}>
             <Typography>Balance</Typography>
-            <AnimatedCounter value={endingBalance} />
+            <AnimatedCounter value={endingBalance} roundNearestDollar />
           </Stack>
         </Stack>
       </BottomStatusBar>
