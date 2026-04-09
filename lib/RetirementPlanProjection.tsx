@@ -17,6 +17,8 @@ import {
   useFetchRetirementPlanReport,
   useFetchRetirementPlanUsers,
 } from "./api/api"
+import { BottomStatusBar } from "./BottomStatusBar"
+import { Currency } from "./Currency"
 import { formatMoney } from "./formatMoney"
 import { NoBr } from "./NoBr"
 import { RetirementPlanSection } from "./RetirementPlanSection"
@@ -69,114 +71,126 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
   const millionaireFromNowString = fromNow(millionaireDate)
 
   return (
-    <RetirementPlanSection
-      title="Projection"
-      summary={
-        <>
-          <Stack>{formatMoney(report?.fiDate.endingBalance ?? 0, true)}</Stack>
-          <Stack>{fiDate.format("MMMM, YYYY")}</Stack>
-          <Stack>{fiFromNowString}</Stack>
-          <Stack>Ages: {agesString}</Stack>
-          <Stack>Millionaire : {millionaireFromNowString}</Stack>
-        </>
-      }
-    >
-      <Stack width={"100%"}>
-        <Box position={"relative"}>
-          <LinearProgress
-            value={(savedSoFar / (report?.fiDate.endingBalance ?? 1)) * 100}
-            variant="determinate"
-            sx={{
-              height: 24,
-              borderRadius: 20,
-            }}
-          />
-          <Box
-            position="absolute"
-            left="50%"
-            top={0}
-            sx={{
-              fontWeight: "bold",
-              fontSize: "1.1rem",
-            }}
-          >
-            {Math.round(
-              (savedSoFar / (report?.fiDate.endingBalance ?? 1)) * 100
-            )}
-            %
-          </Box>
-        </Box>
-      </Stack>
+    <>
+      <RetirementPlanSection
+        title="Projection"
+        summary={
+          <>
+            <Stack>
+              {formatMoney(report?.fiDate.endingBalance ?? 0, true)}
+            </Stack>
+            <Stack>{fiDate.format("MMMM, YYYY")}</Stack>
+            <Stack>{fiFromNowString}</Stack>
+            <Stack>Ages: {agesString}</Stack>
+            <Stack>Millionaire : {millionaireFromNowString}</Stack>
+          </>
+        }
+      >
+        {report !== undefined && (
+          <>
+            <Box position={"relative"}>
+              <LinearProgress
+                color="primary"
+                value={(savedSoFar / (report?.fiDate.endingBalance ?? 1)) * 100}
+                variant="determinate"
+                sx={{
+                  height: 24,
+                  borderRadius: 20,
+                }}
+              />
+              <Box
+                position="absolute"
+                left="50%"
+                top={0}
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "1.1rem",
+                  color: (theme) => theme.palette.primary.main,
+                }}
+              >
+                {Math.round(
+                  (savedSoFar / (report?.fiDate.endingBalance ?? 1)) * 100
+                )}
+                %
+              </Box>
+            </Box>
 
-      {report !== undefined && (
-        <>
-          <Box sx={{ width: "100%" }}>
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Year</TableCell>
-                    <TableCell align="center">Ages</TableCell>
-                    <TableCell align="right">Starting Balance</TableCell>
-                    <TableCell align="right">Appreciation</TableCell>
-                    <TableCell align="right">Dividend</TableCell>
-                    <TableCell align="right">+ / -</TableCell>
-                    <TableCell align="right">Ending Balance</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {report.projectionRows.map((row) => (
-                    <TableRow key={row.date}>
-                      <TableCell>
-                        {moment(`${row.date} 00:00:00`).year()}
-                      </TableCell>
-                      <TableCell align="center">
-                        <NoBr>
-                          {users
-                            ? users
-                                .map((user) => {
-                                  return moment(`${row.date} 00:00:00`).diff(
-                                    moment(`${user.user.dateOfBirth} 00:00:00`),
-                                    "years"
-                                  )
-                                })
-                                .join(" / ")
-                            : ""}
-                        </NoBr>
-                      </TableCell>
-                      <TableCell align="right">
-                        {formatMoney(row.startingBalance, true)}
-                      </TableCell>
-                      <TableCell align="right">
-                        {formatMoney(row.appreciation, true)}
-                      </TableCell>
-                      <TableCell align="right">
-                        {formatMoney(row.dividend, true)}
-                      </TableCell>
-                      <TableCell align="right">
-                        <Box
-                          sx={{
-                            color: (theme) =>
-                              row.contribution < 0
-                                ? theme.palette.error.main
-                                : theme.palette.success.main,
-                          }}
-                        >
-                          {formatMoney(row.contribution, true)}
-                        </Box>
-                      </TableCell>
-                      <TableCell align="right">
-                        {formatMoney(row.endingBalance, true)}
-                      </TableCell>
+            <Box sx={{ width: "100%" }}>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Year</TableCell>
+                      <TableCell align="center">Ages</TableCell>
+                      <TableCell align="right">Starting Balance</TableCell>
+                      <TableCell align="right">Appreciation</TableCell>
+                      <TableCell align="right">Dividend</TableCell>
+                      <TableCell align="right">+ / -</TableCell>
+                      <TableCell align="right">Ending Balance</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
-        </>
-      )}
-    </RetirementPlanSection>
+                  </TableHead>
+                  <TableBody>
+                    {report.projectionRows.map((row) => (
+                      <TableRow key={row.date}>
+                        <TableCell>
+                          {moment(`${row.date} 00:00:00`).year()}
+                        </TableCell>
+                        <TableCell align="center">
+                          <NoBr>
+                            {users
+                              ? users
+                                  .map((user) => {
+                                    return moment(`${row.date} 00:00:00`).diff(
+                                      moment(
+                                        `${user.user.dateOfBirth} 00:00:00`
+                                      ),
+                                      "years"
+                                    )
+                                  })
+                                  .join(" / ")
+                              : ""}
+                          </NoBr>
+                        </TableCell>
+                        <TableCell align="right">
+                          {formatMoney(row.startingBalance, true)}
+                        </TableCell>
+                        <TableCell align="right">
+                          {formatMoney(row.appreciation, true)}
+                        </TableCell>
+                        <TableCell align="right">
+                          {formatMoney(row.dividend, true)}
+                        </TableCell>
+                        <TableCell align="right">
+                          <Box
+                            sx={{
+                              color: (theme) =>
+                                row.contribution < 0
+                                  ? theme.palette.error.main
+                                  : theme.palette.success.main,
+                            }}
+                          >
+                            {formatMoney(row.contribution, true)}
+                          </Box>
+                        </TableCell>
+                        <TableCell align="right">
+                          {formatMoney(row.endingBalance, true)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+          </>
+        )}
+      </RetirementPlanSection>
+
+      <BottomStatusBar>
+        <Stack alignItems="end" paddingRight={{ xs: 0, lg: 2 }}>
+          <Currency animate value={report?.fiDate.endingBalance ?? 0} />
+        </Stack>
+      </BottomStatusBar>
+    </>
   )
 }
 

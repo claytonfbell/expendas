@@ -1,8 +1,7 @@
 import {
-  Box,
-  Container,
   FormControlLabel,
   Grid,
+  Stack,
   Switch,
   useMediaQuery,
   useTheme,
@@ -23,6 +22,7 @@ import {
 } from "./AccountGroup"
 import { AccountGroupBox } from "./AccountGroupBox"
 import { useFetchAccounts, useFetchDates, useFetchItems } from "./api/api"
+import { BottomStatusBar } from "./BottomStatusBar"
 import { CarryOverComponent } from "./CarryOverComponent"
 import { Currency } from "./Currency"
 import { CycleNavigation } from "./CycleNavigation"
@@ -232,37 +232,11 @@ export function Main() {
           </Grid>
         </Grid>
       </Grid>
-      <Box
-        sx={{
-          backgroundColor: theme.palette.primary.main,
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          width: `100vw`,
-          paddingLeft: 0,
-          paddingRight: theme.spacing(2),
-          [theme.breakpoints.up("lg")]: {
-            paddingRight: 0,
-          },
-          paddingTop: theme.spacing(2),
-          paddingBottom: theme.spacing(2),
-          color: theme.palette.primary.contrastText,
-          [theme.breakpoints.up("sm")]: {
-            fontSize: 24,
-          },
-          "& .right": {
-            textAlign: "right",
-          },
-        }}
-      >
-        <Container>
-          <Grid container>
-            <Grid item className="right" xs={12}>
-              <Currency animate value={endingBalance} />
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
+      <BottomStatusBar>
+        <Stack alignItems="end">
+          <Currency animate value={endingBalance} />
+        </Stack>
+      </BottomStatusBar>
 
       <AccountDialog
         account={editAccount}

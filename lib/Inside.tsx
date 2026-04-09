@@ -8,11 +8,10 @@ import {
   Grid,
   Hidden,
   IconButton,
-  Link as MUILink,
   Toolbar,
   Tooltip,
 } from "@mui/material"
-import { useDarkMode } from "material-ui-pack"
+import { DarkModeToggle, useDarkMode } from "material-ui-pack"
 import { useRouter } from "next/dist/client/router"
 import NextLink from "next/link"
 import React, { useEffect, useState } from "react"
@@ -75,38 +74,56 @@ export function Inside(props: Props) {
                 </Grid>
                 <Hidden lgDown>
                   <Grid item>
-                    <Button LinkComponent={NextLink} href="/">
+                    <Button LinkComponent={NextLink} href="/" color="inherit">
                       Main
                     </Button>
 
-                    <Button LinkComponent={NextLink} href="/investments">
+                    <Button
+                      LinkComponent={NextLink}
+                      href="/investments"
+                      color="inherit"
+                    >
                       Investments
                     </Button>
 
-                    <Button LinkComponent={NextLink} href="/trends">
+                    <Button
+                      LinkComponent={NextLink}
+                      href="/trends"
+                      color="inherit"
+                    >
                       Trends
                     </Button>
 
-                    <Button LinkComponent={NextLink} href="/retirement">
+                    <Button
+                      LinkComponent={NextLink}
+                      href="/retirement"
+                      color="inherit"
+                    >
                       Retirement
                     </Button>
 
-                    <Button LinkComponent={NextLink} href="/accounts">
+                    <Button
+                      LinkComponent={NextLink}
+                      href="/accounts"
+                      color="inherit"
+                    >
                       Accounts
                     </Button>
 
-                    <Button LinkComponent={NextLink} href="/payments">
+                    <Button
+                      LinkComponent={NextLink}
+                      href="/payments"
+                      color="inherit"
+                    >
                       Payments
                     </Button>
                   </Grid>
                 </Hidden>
                 <Grid item>
+                  <DarkModeToggle variant="icon" />
                   <Hidden smDown>
                     <Tooltip title="github.com/claytonfbell/expendas">
-                      <IconButton
-                        color="primary"
-                        href="https://github.com/claytonfbell/expendas"
-                      >
+                      <IconButton href="https://github.com/claytonfbell/expendas">
                         <GitHubIcon />
                       </IconButton>
                     </Tooltip>
@@ -143,14 +160,7 @@ export function Inside(props: Props) {
                       marginBottom: 148,
                     }
               }
-            >
-              <MUILink
-                style={{ cursor: "pointer" }}
-                onClick={() => toggleDarkMode(!darkMode)}
-              >
-                {darkMode ? `Light` : `Dark`}
-              </MUILink>
-            </footer>
+            ></footer>
           </Container>
         </GlobalStateProvider>
       )}

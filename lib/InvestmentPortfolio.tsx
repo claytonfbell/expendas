@@ -34,6 +34,7 @@ import {
   useFetchTickerPrices,
   useUpdateAccount,
 } from "./api/api"
+import { BottomStatusBar } from "./BottomStatusBar"
 import { Currency } from "./Currency"
 import { HorizontalRangeBar } from "./HorizontalRangeBar"
 import { Link } from "./Link"
@@ -347,6 +348,13 @@ export function InvestmentPortfolio() {
           />
         </Grid>
       </Grid>
+
+      <BottomStatusBar>
+        <Stack alignItems="end">
+          <Currency animate value={total} />
+        </Stack>
+      </BottomStatusBar>
+
       <AccountDialog
         account={selectedAccount}
         onClose={() => setSelectedAccount(undefined)}

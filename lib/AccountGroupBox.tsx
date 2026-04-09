@@ -2,15 +2,12 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import {
   Box,
+  ButtonBase,
   Collapse,
   Divider,
   Fade,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   Paper,
+  Stack,
   useTheme,
 } from "@mui/material"
 import { Account, Payment } from "@prisma/client"
@@ -78,23 +75,39 @@ export function AccountGroupBox(props: Props) {
         }}
       >
         <Box>
-          <List>
-            <ListItemButton onClick={() => setIsExpanded(!isExpanded)}>
-              <ListItemIcon>
+          <ButtonBase
+            focusRipple
+            onClick={() => setIsExpanded(!isExpanded)}
+            sx={{
+              width: "100%",
+              padding: 2,
+              fontSize: (theme) => theme.typography.body1.fontSize,
+            }}
+          >
+            <Stack
+              direction={"row"}
+              sx={{ width: "100%" }}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+            >
+              <Stack direction={"row"} spacing={2} alignItems={"center"}>
+                <Stack>
+                  {!isExpanded ? (
+                    <ExpandMoreIcon style={{ color: "#fff" }} />
+                  ) : (
+                    <ExpandLessIcon style={{ color: "#fff" }} />
+                  )}
+                </Stack>
+                <Stack>{accountGroup.label}</Stack>
+              </Stack>
+              <Stack>
                 {!isExpanded ? (
-                  <ExpandMoreIcon style={{ color: "#fff" }} />
-                ) : (
-                  <ExpandLessIcon style={{ color: "#fff" }} />
-                )}
-              </ListItemIcon>
-              <ListItemText>{accountGroup.label}</ListItemText>
-              {!isExpanded ? (
-                <ListItem secondaryAction>
                   <Currency animate value={endingBalance} />
-                </ListItem>
-              ) : null}
-            </ListItemButton>
-          </List>
+                ) : null}
+              </Stack>
+            </Stack>
+          </ButtonBase>
+
           <Collapse in={isExpanded}>
             <Divider />
             <Box
@@ -117,13 +130,19 @@ export function AccountGroupBox(props: Props) {
             </Box>
           </Collapse>
           {isExpanded && accounts.length > 1 ? (
-            <List>
-              <ListItemButton onClick={() => setIsExpanded(!isExpanded)}>
-                <ListItem secondaryAction>
-                  <Currency animate value={endingBalance} />
-                </ListItem>
-              </ListItemButton>
-            </List>
+            <ButtonBase
+              focusRipple
+              onClick={() => setIsExpanded(!isExpanded)}
+              sx={{
+                width: "100%",
+                padding: 2,
+                fontSize: (theme) => theme.typography.body1.fontSize,
+              }}
+            >
+              <Stack alignItems={"end"} sx={{ width: "100%" }}>
+                <Currency animate value={endingBalance} />
+              </Stack>
+            </ButtonBase>
           ) : null}
         </Box>
       </Paper>

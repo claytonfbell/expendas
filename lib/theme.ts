@@ -36,6 +36,7 @@ const theme: ThemeOptions = {
       styleOverrides: {
         root: {
           textTransform: "none",
+          borderRadius: 20,
         },
       },
     },

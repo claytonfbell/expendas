@@ -48,6 +48,7 @@ export function UserMenu() {
         aria-controls="simple-menu"
         aria-haspopup="true"
         onClick={handleClick}
+        color="inherit"
       >
         {organization?.name || "Menu"}
       </Button>
