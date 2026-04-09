@@ -33,14 +33,14 @@ export function RetirementPlans() {
 
   useEffect(() => {
     if (selectedId === null) {
-      const lastId = sessionStorage.getItem(LOCAL_STORAGE_KEY)
+      const lastId = localStorage.getItem(LOCAL_STORAGE_KEY)
       if (lastId) {
         replace(`?retirementPlanId=${lastId}`)
       } else if (retirementPlans !== undefined && retirementPlans.length > 0) {
         replace(`?retirementPlanId=${retirementPlans[0].id}`)
       }
     } else {
-      sessionStorage.setItem(LOCAL_STORAGE_KEY, selectedId.toString())
+      localStorage.setItem(LOCAL_STORAGE_KEY, selectedId.toString())
     }
   }, [retirementPlans, selectedId, replace])
 
