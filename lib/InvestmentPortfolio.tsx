@@ -2,6 +2,7 @@ import {
   alpha,
   Box,
   Grid,
+  lighten,
   Stack,
   TableCell,
   TableRow,
@@ -401,24 +402,24 @@ function CustomTooltip({ payload, label, active }: CustomTooltipProps) {
       </Grid>
       <Grid container spacing={1} justifyContent="space-between">
         <Grid>
-          <Typography style={{ color: payload[0].fill }}>
+          <Typography style={{ color: lighten(payload[0].fill, 0.5) }}>
             {payload[0].name}
           </Typography>
         </Grid>
         <Grid>
-          <Typography style={{ color: payload[0].fill }}>
+          <Typography style={{ color: lighten(payload[0].fill, 0.5) }}>
             <Currency value={payload[0].value} />
           </Typography>
         </Grid>
       </Grid>
       <Grid container spacing={1} justifyContent="space-between">
         <Grid>
-          <Typography style={{ color: payload[1].fill }}>
+          <Typography style={{ color: lighten(payload[1].fill, 0.3) }}>
             {payload[1].name}
           </Typography>
         </Grid>
         <Grid>
-          <Typography style={{ color: payload[1].fill }}>
+          <Typography style={{ color: lighten(payload[1].fill, 0.3) }}>
             <Currency value={payload[1].value} />
           </Typography>
         </Grid>
