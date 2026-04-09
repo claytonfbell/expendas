@@ -3,10 +3,10 @@ import {
   AppBar,
   Box,
   Button,
+  ButtonBase,
   Container,
   CssBaseline,
   IconButton,
-  Link,
   Stack,
   Toolbar,
   Tooltip,
@@ -68,9 +68,9 @@ export function Inside(props: Props) {
                 justifyContent="space-between"
                 width="100%"
               >
-                <Link component={NextLink} href="./">
+                <ButtonBase focusRipple component={NextLink} href="/">
                   <LogoComponent scale={0.3} />
-                </Link>
+                </ButtonBase>
 
                 <Stack
                   direction="row"
