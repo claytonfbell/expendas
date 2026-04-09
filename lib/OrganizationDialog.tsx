@@ -92,27 +92,28 @@ export function OrganizationDialog(props: Props) {
               onSubmit={handleUpdateOrganization}
             >
               <Grid container spacing={1}>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <DisplayError error={updateError} />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <TextField
                     name="name"
                     label="Organization Name"
                     formatter="capitalize"
+                    size="small"
                   />
                 </Grid>
               </Grid>
             </Form>
             <Grid container spacing={1}>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <br />
                 {state !== undefined ? (
                   <UserManage state={state} setState={setState} />
                 ) : null}
                 <br />
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={4}>
                 <Button
                   variant="contained"
                   color="primary"
@@ -123,14 +124,13 @@ export function OrganizationDialog(props: Props) {
                   Save Changes
                 </Button>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={4}>
                 <Button fullWidth onClick={props.onClose} variant="outlined">
                   Cancel
                 </Button>
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={4}>
                 <Button
-                  style={{ marginTop: 12 }}
                   color="error"
                   fullWidth
                   onClick={() => setWarnDelete(true)}

@@ -139,99 +139,108 @@ export function Main() {
 
   return date === null ? null : (
     <>
-      <CycleNavigation dates={dates} date={date} onChange={(x) => setDate(x)} />
-
-      <FormControlLabel
-        control={
-          <Switch
-            checked={includeSavings}
-            onChange={(e, checked) => setIncludeSavings(checked)}
+      <Stack spacing={2}>
+        <CycleNavigation
+          dates={dates}
+          date={date}
+          onChange={(x) => setDate(x)}
+        />
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          justifyContent={"center"}
+          spacing={{ xs: 0, md: 1 }}
+        >
+          <FormControlLabel
+            control={
+              <Switch
+                checked={includeSavings}
+                onChange={(e, checked) => setIncludeSavings(checked)}
+              />
+            }
+            label="Include Savings &amp; Investments"
           />
-        }
-        label="Include Savings &amp; Investments"
-      />
 
-      <FormControlLabel
-        control={
-          <Switch
-            checked={includePropertyLoans}
-            onChange={(e, checked) => setIncludePropertyLoans(checked)}
+          <FormControlLabel
+            control={
+              <Switch
+                checked={includePropertyLoans}
+                onChange={(e, checked) => setIncludePropertyLoans(checked)}
+              />
+            }
+            label="Include Property &amp; Loans"
           />
-        }
-        label="Include Property &amp; Loans"
-      />
 
-      <FormControlLabel
-        control={
-          <Switch
-            checked={includeSettled}
-            onChange={(e, checked) => setIncludeSettled(checked)}
+          <FormControlLabel
+            control={
+              <Switch
+                checked={includeSettled}
+                onChange={(e, checked) => setIncludeSettled(checked)}
+              />
+            }
+            label="Show Settled Payments"
           />
-        }
-        label="Show Settled Payments"
-      />
+        </Stack>
 
-      <br />
-      <br />
-
-      <Grid alignContent="flex-start" container spacing={2}>
-        <Grid item xs={12} md={6} lg={4}>
-          <AccountGroupBox
-            includeSettled={includeSettled}
-            accountGroup={cashGroup}
-            cycleItems={items}
-            accounts={accounts}
-            isCurrentCycle={isCurrentCycle}
-            date={date}
-            onEditAccount={(a) => setEditAccount({ ...a })}
-            onEditPayment={(p) => setEditPayment({ ...p })}
-          />
-        </Grid>
-        <Grid item xs={12} md={6} lg={4}>
-          <AccountGroupBox
-            includeSettled={includeSettled}
-            accountGroup={debtGroup}
-            cycleItems={items}
-            accounts={accounts}
-            isCurrentCycle={isCurrentCycle}
-            date={date}
-            onEditAccount={(a) => setEditAccount({ ...a })}
-            onEditPayment={(p) => setEditPayment({ ...p })}
-          />
-        </Grid>
-        <Grid item xs={12} md={6} lg={4}>
-          <Grid alignContent="flex-start" container spacing={2}>
-            {includeSavings ? (
-              <Grid item xs={12}>
-                <AccountGroupBox
-                  includeSettled={includeSettled}
-                  accountGroup={investmentGroup}
-                  cycleItems={items}
-                  accounts={accounts}
-                  isCurrentCycle={isCurrentCycle}
-                  date={date}
-                  onEditAccount={(a) => setEditAccount({ ...a })}
-                  onEditPayment={(p) => setEditPayment({ ...p })}
-                />
-              </Grid>
-            ) : null}
-            {includePropertyLoans ? (
-              <Grid item xs={12}>
-                <AccountGroupBox
-                  includeSettled={includeSettled}
-                  accountGroup={propertyGroup}
-                  cycleItems={items}
-                  accounts={accounts}
-                  isCurrentCycle={isCurrentCycle}
-                  date={date}
-                  onEditAccount={(a) => setEditAccount({ ...a })}
-                  onEditPayment={(p) => setEditPayment({ ...p })}
-                />
-              </Grid>
-            ) : null}
+        <Grid alignContent="flex-start" container spacing={2}>
+          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+            <AccountGroupBox
+              includeSettled={includeSettled}
+              accountGroup={cashGroup}
+              cycleItems={items}
+              accounts={accounts}
+              isCurrentCycle={isCurrentCycle}
+              date={date}
+              onEditAccount={(a) => setEditAccount({ ...a })}
+              onEditPayment={(p) => setEditPayment({ ...p })}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+            <AccountGroupBox
+              includeSettled={includeSettled}
+              accountGroup={debtGroup}
+              cycleItems={items}
+              accounts={accounts}
+              isCurrentCycle={isCurrentCycle}
+              date={date}
+              onEditAccount={(a) => setEditAccount({ ...a })}
+              onEditPayment={(p) => setEditPayment({ ...p })}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+            <Grid alignContent="flex-start" container spacing={2}>
+              {includeSavings ? (
+                <Grid size={12}>
+                  <AccountGroupBox
+                    includeSettled={includeSettled}
+                    accountGroup={investmentGroup}
+                    cycleItems={items}
+                    accounts={accounts}
+                    isCurrentCycle={isCurrentCycle}
+                    date={date}
+                    onEditAccount={(a) => setEditAccount({ ...a })}
+                    onEditPayment={(p) => setEditPayment({ ...p })}
+                  />
+                </Grid>
+              ) : null}
+              {includePropertyLoans ? (
+                <Grid size={12}>
+                  <AccountGroupBox
+                    includeSettled={includeSettled}
+                    accountGroup={propertyGroup}
+                    cycleItems={items}
+                    accounts={accounts}
+                    isCurrentCycle={isCurrentCycle}
+                    date={date}
+                    onEditAccount={(a) => setEditAccount({ ...a })}
+                    onEditPayment={(p) => setEditPayment({ ...p })}
+                  />
+                </Grid>
+              ) : null}
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
+      </Stack>
+
       <BottomStatusBar>
         <Stack alignItems="end">
           <Currency animate value={endingBalance} />

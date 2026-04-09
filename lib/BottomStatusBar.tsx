@@ -30,6 +30,7 @@ export function BottomStatusBar({ children }: Props) {
           "& .right": {
             textAlign: "right",
           },
+          zIndex: theme.zIndex.appBar - 1,
         }}
       >
         <Container>{children}</Container>

@@ -65,16 +65,16 @@ export function AddOrganizationDialog(props: Props) {
           onSubmit={handleSubmit}
         >
           <Grid container spacing={1}>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <DisplayError error={error} />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <TextField name="name" formatter="capitalize" />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <SubmitButton>Add Organization</SubmitButton>
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <Button fullWidth variant="outlined" onClick={props.onClose}>
                 Cancel
               </Button>

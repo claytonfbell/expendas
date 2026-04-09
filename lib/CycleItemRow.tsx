@@ -1,7 +1,7 @@
 import { Box, Checkbox, Grid, Link, Tooltip, useTheme } from "@mui/material"
 import { Payment } from "@prisma/client"
 import clsx from "clsx"
-import React, { ChangeEvent } from "react"
+import { ChangeEvent } from "react"
 import { accountBoxStylesItem, accountBoxStylesRight } from "./AccountBox"
 import { AmountInputTool } from "./AmountInputTool"
 import { useUpdateItem } from "./api/api"
@@ -30,8 +30,7 @@ export function CycleItemRow(props: Props) {
     >
       <Grid container>
         <Grid
-          item
-          xs={8}
+          size={8}
           sx={{
             paddingTop: theme.spacing(1),
             paddingBottom: theme.spacing(1),
@@ -39,7 +38,7 @@ export function CycleItemRow(props: Props) {
           }}
         >
           <Grid container spacing={2}>
-            <Grid item alignContent="flex-start">
+            <Grid alignContent="flex-start">
               <Tooltip
                 placement="left"
                 title="Check if this item has already been settled and no longer impacts your account balance."
@@ -54,7 +53,7 @@ export function CycleItemRow(props: Props) {
                 />
               </Tooltip>
             </Grid>
-            <Grid item xs={10}>
+            <Grid size={10}>
               <Link
                 color="inherit"
                 sx={{
@@ -67,7 +66,7 @@ export function CycleItemRow(props: Props) {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={4} sx={accountBoxStylesRight(theme)}>
+        <Grid size={4} sx={accountBoxStylesRight(theme)}>
           <AmountInputTool
             green={!item.isPaid}
             enabled

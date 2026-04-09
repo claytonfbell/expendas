@@ -1,4 +1,4 @@
-import { Grid2, Stack, useMediaQuery, useTheme } from "@mui/material"
+import { Grid, Stack, useMediaQuery, useTheme } from "@mui/material"
 import { AccountBucket, RetirementPlan } from "@prisma/client"
 import { CurrencyFieldBase } from "material-ui-pack"
 import { useEffect, useMemo, useState } from "react"
@@ -126,7 +126,7 @@ export function RetirementPlanSavings({ retirementPlan }: Props) {
       <Stack spacing={2}>
         {Object.entries(accountsGroupedByBucket).map(([bucket, accounts]) => {
           return (
-            <Grid2
+            <Grid
               key={bucket}
               container
               spacing={2}
@@ -134,11 +134,11 @@ export function RetirementPlanSavings({ retirementPlan }: Props) {
               columns={16}
               alignItems={{ sm: "start", md: "center" }}
             >
-              <Grid2 size={{ xs: 4, sm: 3, md: 2 }} key={bucket}>
+              <Grid size={{ xs: 4, sm: 3, md: 2 }} key={bucket}>
                 {displayAccountBucket(bucket as AccountBucket)}
-              </Grid2>
-              <Grid2 size={12}>
-                <Grid2 container spacing={2} columns={12}>
+              </Grid>
+              <Grid size={12}>
+                <Grid container spacing={2} columns={12}>
                   {accounts
                     // sort by account balance descending, then by name ascending
                     .sort((a, b) => {
@@ -149,11 +149,12 @@ export function RetirementPlanSavings({ retirementPlan }: Props) {
                     })
                     .map((account) => {
                       return (
-                        <Grid2
+                        <Grid
                           key={account.id}
                           size={{ xs: 6, sm: 4, md: 3, lg: 2 }}
                         >
                           <CurrencyFieldBase
+                            size="small"
                             fullWidth
                             currency="USD"
                             allowCents={false}
@@ -184,12 +185,12 @@ export function RetirementPlanSavings({ retirementPlan }: Props) {
                               })
                             }}
                           />
-                        </Grid2>
+                        </Grid>
                       )
                     })}
-                </Grid2>
-              </Grid2>
-            </Grid2>
+                </Grid>
+              </Grid>
+            </Grid>
           )
         })}
       </Stack>

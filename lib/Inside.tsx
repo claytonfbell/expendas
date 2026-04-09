@@ -5,9 +5,8 @@ import {
   Button,
   Container,
   CssBaseline,
-  Grid,
-  Hidden,
   IconButton,
+  Stack,
   Toolbar,
   Tooltip,
 } from "@mui/material"
@@ -61,76 +60,80 @@ export function Inside(props: Props) {
         <GlobalStateProvider>
           <AppBar position="static" color="default" variant="outlined">
             <Toolbar>
-              <Grid
-                container
-                spacing={1}
-                justifyContent="space-between"
+              <Stack
+                direction="row"
+                spacing={2}
                 alignItems="center"
+                justifyContent="space-between"
+                width="100%"
               >
-                <Grid item>
-                  <NextLink href="/">
-                    <LogoComponent scale={0.3} />
-                  </NextLink>
-                </Grid>
-                <Hidden lgDown>
-                  <Grid item>
-                    <Button LinkComponent={NextLink} href="/" color="inherit">
-                      Main
-                    </Button>
+                <NextLink href="/">
+                  <LogoComponent scale={0.3} />
+                </NextLink>
 
-                    <Button
-                      LinkComponent={NextLink}
-                      href="/investments"
-                      color="inherit"
-                    >
-                      Investments
-                    </Button>
+                <Stack
+                  direction="row"
+                  alignItems={"center"}
+                  spacing={1}
+                  display={{ xs: "none", lg: "flex" }}
+                >
+                  <Button LinkComponent={NextLink} href="/" color="inherit">
+                    Main
+                  </Button>
 
-                    <Button
-                      LinkComponent={NextLink}
-                      href="/trends"
-                      color="inherit"
-                    >
-                      Trends
-                    </Button>
+                  <Button
+                    LinkComponent={NextLink}
+                    href="/investments"
+                    color="inherit"
+                  >
+                    Investments
+                  </Button>
 
-                    <Button
-                      LinkComponent={NextLink}
-                      href="/retirement"
-                      color="inherit"
-                    >
-                      Retirement
-                    </Button>
+                  <Button
+                    LinkComponent={NextLink}
+                    href="/trends"
+                    color="inherit"
+                  >
+                    Trends
+                  </Button>
 
-                    <Button
-                      LinkComponent={NextLink}
-                      href="/accounts"
-                      color="inherit"
-                    >
-                      Accounts
-                    </Button>
+                  <Button
+                    LinkComponent={NextLink}
+                    href="/retirement"
+                    color="inherit"
+                  >
+                    Retirement
+                  </Button>
 
-                    <Button
-                      LinkComponent={NextLink}
-                      href="/payments"
-                      color="inherit"
-                    >
-                      Payments
-                    </Button>
-                  </Grid>
-                </Hidden>
-                <Grid item>
+                  <Button
+                    LinkComponent={NextLink}
+                    href="/accounts"
+                    color="inherit"
+                  >
+                    Accounts
+                  </Button>
+
+                  <Button
+                    LinkComponent={NextLink}
+                    href="/payments"
+                    color="inherit"
+                  >
+                    Payments
+                  </Button>
+                </Stack>
+
+                <Stack direction="row" alignItems={"center"} spacing={1}>
                   <DarkModeToggle variant="icon" />
-                  <Hidden smDown>
-                    <Tooltip title="github.com/claytonfbell/expendas">
-                      <IconButton href="https://github.com/claytonfbell/expendas">
-                        <GitHubIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </Hidden>
+                  {/* <Hidden smDown> */}
+                  <Tooltip title="github.com/claytonfbell/expendas">
+                    <IconButton href="https://github.com/claytonfbell/expendas">
+                      <GitHubIcon />
+                    </IconButton>
+                  </Tooltip>
+                  {/* </Hidden> */}
                   <UserMenu />
-                </Grid>
-              </Grid>
+                </Stack>
+              </Stack>
             </Toolbar>
           </AppBar>
 

@@ -134,7 +134,7 @@ export function InvestmentPortfolio() {
   return (
     <>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <ResponsiveContainer width="100%" height={isXs ? 180 : 300}>
             <BarChart width={500} height={300} data={data}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -162,7 +162,7 @@ export function InvestmentPortfolio() {
           </ResponsiveContainer>
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <HorizontalRangeBar
             low={marketTwoYearLowTotal ?? 0}
             current={total}
@@ -170,7 +170,7 @@ export function InvestmentPortfolio() {
           />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <ResponsiveTable
             size="small"
             striped
@@ -202,7 +202,7 @@ export function InvestmentPortfolio() {
           />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <ResponsiveTable
             size="small"
             striped
@@ -269,28 +269,24 @@ export function InvestmentPortfolio() {
               isXs ? (
                 <Box padding={1}>
                   <Grid container spacing={1} justifyContent="space-between">
-                    <Grid item xs={6}>
-                      TOTAL EQUITY
-                    </Grid>
-                    <Grid item xs={2} style={{ textAlign: "right" }}>
+                    <Grid size={{ xs: 6 }}>TOTAL EQUITY</Grid>
+                    <Grid size={{ xs: 2 }} style={{ textAlign: "right" }}>
                       <Percentage value={(total - fixed) / total} />
                     </Grid>
-                    <Grid item xs={4} style={{ textAlign: "right" }}>
+                    <Grid size={{ xs: 4 }} style={{ textAlign: "right" }}>
                       <Currency value={total - fixed} />
                     </Grid>
-                    <Grid item xs={6}>
-                      TOTAL FIXED INCOME
-                    </Grid>
-                    <Grid item xs={2} style={{ textAlign: "right" }}>
+                    <Grid size={{ xs: 6 }}>TOTAL FIXED INCOME</Grid>
+                    <Grid size={{ xs: 2 }} style={{ textAlign: "right" }}>
                       <Percentage value={fixed / total} />
                     </Grid>
-                    <Grid item xs={4} style={{ textAlign: "right" }}>
+                    <Grid size={{ xs: 4 }} style={{ textAlign: "right" }}>
                       <Currency value={fixed} />
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid size={{ xs: 6 }}>
                       <strong>TOTAL VALUE</strong>
                     </Grid>
-                    <Grid item xs={6} style={{ textAlign: "right" }}>
+                    <Grid size={{ xs: 6 }} style={{ textAlign: "right" }}>
                       <strong>
                         <Currency value={total} />
                       </strong>
@@ -390,34 +386,34 @@ function CustomTooltip({ payload, label, active }: CustomTooltipProps) {
       padding={1}
     >
       <Grid container spacing={3} justifyContent="space-between">
-        <Grid item>
+        <Grid>
           <Typography>{label}</Typography>
         </Grid>
-        <Grid item>
+        <Grid>
           <Typography>
             <Currency value={payload[0].value + payload[1].value} />
           </Typography>
         </Grid>
       </Grid>
       <Grid container spacing={1} justifyContent="space-between">
-        <Grid item>
+        <Grid>
           <Typography style={{ color: payload[0].fill }}>
             {payload[0].name}
           </Typography>
         </Grid>
-        <Grid item>
+        <Grid>
           <Typography style={{ color: payload[0].fill }}>
             <Currency value={payload[0].value} />
           </Typography>
         </Grid>
       </Grid>
       <Grid container spacing={1} justifyContent="space-between">
-        <Grid item>
+        <Grid>
           <Typography style={{ color: payload[1].fill }}>
             {payload[1].name}
           </Typography>
         </Grid>
-        <Grid item>
+        <Grid>
           <Typography style={{ color: payload[1].fill }}>
             <Currency value={payload[1].value} />
           </Typography>

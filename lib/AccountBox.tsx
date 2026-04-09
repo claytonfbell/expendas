@@ -125,7 +125,7 @@ export function AccountBox(props: AccountBoxProps) {
         onMouseOut={() => setIsHoverDebounce(false)}
       >
         <Grid container justifyContent="space-between">
-          <Grid item xs={8}>
+          <Grid size={{ xs: 8 }}>
             <Link
               sx={{ cursor: "pointer" }}
               onClick={() => props.onEditAccount(account)}
@@ -152,8 +152,7 @@ export function AccountBox(props: AccountBoxProps) {
             </Fade>
           </Grid>
           <Grid
-            item
-            xs={4}
+            size={{ xs: 4 }}
             sx={{
               textAlign: "right",
             }}
@@ -179,8 +178,7 @@ export function AccountBox(props: AccountBoxProps) {
             {endingBalance !== startingBalance ? (
               <>
                 <Grid
-                  item
-                  xs={8}
+                  size={{ xs: 8 }}
                   sx={{
                     paddingTop: theme.spacing(1),
                     paddingBottom: theme.spacing(1),
@@ -192,8 +190,7 @@ export function AccountBox(props: AccountBoxProps) {
                   </Link>
                 </Grid>
                 <Grid
-                  item
-                  xs={4}
+                  size={{ xs: 4 }}
                   sx={accountBoxStylesRight(theme)}
                   className={clsx("total")}
                 >
@@ -202,7 +199,7 @@ export function AccountBox(props: AccountBoxProps) {
               </>
             ) : null}
             {isCurrentCycle && account.accountType === "Checking_Account" ? (
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Box padding={2}>
                   <PayCardNow
                     account={account}

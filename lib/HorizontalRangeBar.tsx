@@ -41,7 +41,7 @@ export function HorizontalRangeBar({ low, current, high }: Props) {
           sx={{
             position: "absolute",
             width: containerWidth,
-            top: 3,
+            top: 6,
             borderBottomWidth: 24,
             borderRadius: 6,
           }}

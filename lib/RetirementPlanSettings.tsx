@@ -1,4 +1,4 @@
-import { Button, Grid2, Stack, TextField } from "@mui/material"
+import { Button, Grid, Stack, TextField } from "@mui/material"
 import { RetirementPlan } from "@prisma/client"
 import { CurrencyFieldBase, PercentageFieldBase } from "material-ui-pack"
 import { useEffect, useState } from "react"
@@ -104,7 +104,7 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
     >
       <DisplayError error={updateError ?? deleteError} />
 
-      <Grid2
+      <Grid
         container
         spacing={2}
         columns={{ xs: 12, sm: 16 }}
@@ -112,6 +112,7 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
       >
         <CustomGridItem>
           <TextField
+            size="small"
             fullWidth
             label="Title"
             value={state.name}
@@ -122,6 +123,7 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
         </CustomGridItem>
         <CustomGridItem>
           <CurrencyFieldBase
+            size="small"
             fullWidth
             currency="USD"
             allowCents={false}
@@ -138,6 +140,7 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
 
         <CustomGridItem>
           <CurrencyFieldBase
+            size="small"
             fullWidth
             currency="USD"
             allowCents={false}
@@ -154,6 +157,7 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
 
         <CustomGridItem>
           <PercentageFieldBase
+            size="small"
             fullWidth
             label="Stock Appreciation"
             decimals={5}
@@ -169,6 +173,7 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
 
         <CustomGridItem>
           <PercentageFieldBase
+            size="small"
             fullWidth
             label="Dividend Yield"
             decimals={5}
@@ -184,6 +189,7 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
 
         <CustomGridItem>
           <PercentageFieldBase
+            size="small"
             fullWidth
             label="Inflation Rate"
             decimals={5}
@@ -199,6 +205,7 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
 
         <CustomGridItem>
           <PercentageFieldBase
+            size="small"
             fullWidth
             label="Withdrawal Rate"
             decimals={5}
@@ -226,7 +233,7 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
             Delete
           </Button>
         </CustomGridItem>
-      </Grid2>
+      </Grid>
 
       <Stack spacing={2}>
         <Stack spacing={2}>
@@ -248,5 +255,5 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
 }
 
 function CustomGridItem(props: { children: React.ReactNode }) {
-  return <Grid2 size={{ xs: 4, sm: 4, md: 3, lg: 2 }}>{props.children}</Grid2>
+  return <Grid size={{ xs: 4, sm: 4, md: 3, lg: 2 }}>{props.children}</Grid>
 }

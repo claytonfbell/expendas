@@ -181,16 +181,16 @@ export function UserManage(props: Props) {
             onSubmit={handleAddUser}
           >
             <Grid container spacing={1}>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <DisplayError error={addUserError} />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <TextField name="email" />
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={6}>
                 <SubmitButton>Add User</SubmitButton>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={6}>
                 <Button
                   onClick={() => setShowAddUser(false)}
                   fullWidth

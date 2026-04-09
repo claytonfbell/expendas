@@ -19,7 +19,7 @@ export function Outside(props: Props) {
   return (
     <Container>
       <Grid container style={{ minHeight: "100vh" }} alignItems="center">
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box maxWidth={400} minHeight={800} style={{ margin: "auto" }}>
             <Grid
               container
@@ -27,10 +27,10 @@ export function Outside(props: Props) {
               alignContent="center"
               justifyContent="space-between"
             >
-              <Grid item>
+              <Grid>
                 <LogoComponent scale={0.27} />
               </Grid>
-              <Grid item>
+              <Grid>
                 <IconButton
                   color="primary"
                   href="https://github.com/claytonfbell/expendas"

@@ -13,6 +13,7 @@ import {
   Grid,
   Radio,
   RadioGroup,
+  Stack,
   Typography,
   useMediaQuery,
   useTheme,
@@ -284,33 +285,36 @@ export function PaymentDialog(props: Props) {
               }))}
             />
           </Collapse>
-          <DatePicker name="date" />
 
-          <CheckboxBase
-            value={repeats}
-            onChange={(checked) => {
-              if (!checked) {
-                setState((prev) => ({
-                  ...prev,
-                  repeatsOnDates: [],
-                  repeatsOnDaysOfMonth: [],
-                  repeatsWeekly: null,
-                  repeatsOnMonthsOfYear: [],
-                  repeatsUntilDate: null,
-                }))
-              } else {
-                setState((prev) => ({
-                  ...prev,
-                  repeatsOnDates: [],
-                  repeatsOnDaysOfMonth: [],
-                  repeatsWeekly: 1,
-                  repeatsOnMonthsOfYear: [],
-                  repeatsUntilDate: null,
-                }))
-              }
-            }}
-            label="Repeating Payment"
-          />
+          <Stack>
+            <DatePicker name="date" />
+
+            <CheckboxBase
+              value={repeats}
+              onChange={(checked) => {
+                if (!checked) {
+                  setState((prev) => ({
+                    ...prev,
+                    repeatsOnDates: [],
+                    repeatsOnDaysOfMonth: [],
+                    repeatsWeekly: null,
+                    repeatsOnMonthsOfYear: [],
+                    repeatsUntilDate: null,
+                  }))
+                } else {
+                  setState((prev) => ({
+                    ...prev,
+                    repeatsOnDates: [],
+                    repeatsOnDaysOfMonth: [],
+                    repeatsWeekly: 1,
+                    repeatsOnMonthsOfYear: [],
+                    repeatsUntilDate: null,
+                  }))
+                }
+              }}
+              label="Repeating Payment"
+            />
+          </Stack>
 
           <Collapse in={repeats}>
             <FormControl component="fieldset">
@@ -529,18 +533,18 @@ export function PaymentDialog(props: Props) {
 
           <br />
           <Grid container spacing={1}>
-            <Grid item xs={state.id !== undefined ? 4 : 6}>
+            <Grid size={state.id !== undefined ? 4 : 6}>
               <SubmitButton>
                 {state.id === undefined ? `Create` : `Save`}
               </SubmitButton>
             </Grid>
-            <Grid item xs={state.id !== undefined ? 4 : 6}>
+            <Grid size={state.id !== undefined ? 4 : 6}>
               <Button fullWidth variant="outlined" onClick={props.onClose}>
                 Cancel
               </Button>
             </Grid>
             {state.id !== undefined && (
-              <Grid item xs={4}>
+              <Grid size={4}>
                 <Button
                   fullWidth
                   variant="outlined"

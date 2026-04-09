@@ -127,15 +127,15 @@ export function AccountDialog(props: Props) {
                 : {
                     xs: 12,
                     renderAfter: (
-                      <Grid item xs={12}>
+                      <Grid size={12}>
                         <Box paddingLeft={2} paddingRight={2} paddingBottom={2}>
                           <Grid
                             container
                             justifyContent="space-between"
                             spacing={2}
                           >
-                            <Grid item>Equity</Grid>
-                            <Grid item>
+                            <Grid>Equity</Grid>
+                            <Grid>
                               <Currency
                                 value={
                                   state.balance - (state.totalFixedIncome || 0)

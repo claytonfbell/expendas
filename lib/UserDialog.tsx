@@ -93,6 +93,7 @@ export function UserDialog({ organizationId, user, onClose }: Props) {
             <DisplayError error={error} />
             <Stack direction={"row"} spacing={2}>
               <TextField
+                size="small"
                 label="First Name"
                 value={state.firstName}
                 onChange={(e) =>
@@ -100,6 +101,7 @@ export function UserDialog({ organizationId, user, onClose }: Props) {
                 }
               />
               <TextField
+                size="small"
                 label="Last Name"
                 value={state.lastName}
                 onChange={(e) =>
@@ -109,6 +111,7 @@ export function UserDialog({ organizationId, user, onClose }: Props) {
             </Stack>
             <DatePickerBase
               label="Birthday"
+              size="small"
               value={state.dateOfBirth === "" ? null : state.dateOfBirth}
               onChange={(dateOfBirth) =>
                 setState((prev) => ({
@@ -122,6 +125,7 @@ export function UserDialog({ organizationId, user, onClose }: Props) {
               {state.socialSecurityEstimates.map((estimate, index) => (
                 <Stack key={index} alignItems={"start"}>
                   <CurrencyFieldBase
+                    size="small"
                     allowCents={false}
                     currency="USD"
                     fullWidth={false}

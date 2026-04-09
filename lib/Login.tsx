@@ -22,6 +22,7 @@ export function Login() {
 
   return (
     <Form
+      buttons
       error={error?.message}
       busy={isPending}
       state={state}
