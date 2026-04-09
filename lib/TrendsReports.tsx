@@ -1,4 +1,4 @@
-import { Stack, useMediaQuery, useTheme } from "@mui/material"
+import { Stack, Typography, useMediaQuery, useTheme } from "@mui/material"
 import moment from "moment"
 import { useEffect, useState } from "react"
 import {
@@ -10,7 +10,9 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
+import AnimatedCounter from "./AnimatedCounter"
 import { useFetchAccountsWithBalanceHistory } from "./api/api"
+import { BottomStatusBar } from "./BottomStatusBar"
 import { useGlobalState } from "./GlobalStateProvider"
 import {
   ReportRange,
@@ -100,99 +102,120 @@ export function TrendsReports() {
   const isXs = useMediaQuery(theme.breakpoints.down("sm"))
   const strokeWidth = isXs ? 3 : 6
 
+  const latestDataPoint =
+    investmentData.length > 0 ? investmentData[investmentData.length - 1] : null
+
   return (
-    <Stack spacing={3}>
-      <Stack alignItems={"center"}>
-        <TrendsReportsTimeRangeSelect
-          value={selectedRange}
-          onChange={setSelectedRange}
-        />
-      </Stack>
-      <Stack>
-        <LineChart
-          style={{
-            width: "100%",
-            maxHeight: "60vh",
-            aspectRatio: 1,
-          }}
-          responsive
-          data={investmentData}
-          margin={{
-            top: 5,
-            right: isXs ? 0 : 30,
-            left: isXs ? 0 : 20,
-            bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="date"
-            tickFormatter={(x) => moment(`${x} 00:00:00`).format("M/D/YYYY")}
-            stroke={theme.palette.text.primary}
+    <>
+      <Stack spacing={3}>
+        <Stack alignItems={"center"}>
+          <TrendsReportsTimeRangeSelect
+            value={selectedRange}
+            onChange={setSelectedRange}
           />
-          <YAxis
-            width="auto"
-            tickFormatter={formatCurrency}
-            domain={[lowestMarketLow, highestNetWorth]}
-            hide={isXs}
-            stroke={theme.palette.text.primary}
-          />
-          <Tooltip
-            formatter={(x) => formatCurrency(parseFloat(x?.toString() ?? "0"))}
-            itemSorter={(item) => {
-              if (item.dataKey === "totalNetWorth") {
-                return 0
-              } else if (item.dataKey === "marketHigh") {
-                return 1
-              } else if (item.dataKey === "balance") {
-                return 2
-              } else if (item.dataKey === "marketLow") {
-                return 3
-              } else {
-                return 4
-              }
+        </Stack>
+        <Stack>
+          <LineChart
+            style={{
+              width: "100%",
+              maxHeight: "60vh",
+              aspectRatio: 1,
             }}
-          />
-          <Legend />
+            responsive
+            data={investmentData}
+            margin={{
+              top: 5,
+              right: isXs ? 0 : 30,
+              left: isXs ? 0 : 20,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="date"
+              tickFormatter={(x) => moment(`${x} 00:00:00`).format("M/D/YYYY")}
+              stroke={theme.palette.text.primary}
+            />
+            <YAxis
+              width="auto"
+              tickFormatter={formatCurrency}
+              domain={[lowestMarketLow, highestNetWorth]}
+              hide={isXs}
+              stroke={theme.palette.text.primary}
+            />
+            <Tooltip
+              formatter={(x) =>
+                formatCurrency(parseFloat(x?.toString() ?? "0"))
+              }
+              itemSorter={(item) => {
+                if (item.dataKey === "totalNetWorth") {
+                  return 0
+                } else if (item.dataKey === "marketHigh") {
+                  return 1
+                } else if (item.dataKey === "balance") {
+                  return 2
+                } else if (item.dataKey === "marketLow") {
+                  return 3
+                } else {
+                  return 4
+                }
+              }}
+            />
+            <Legend />
 
-          <Line
-            type="monotone"
-            dataKey="totalNetWorth"
-            stroke={theme.palette.secondary.main}
-            strokeWidth={strokeWidth}
-            isAnimationActive={true}
-            name="Net Worth"
-          />
+            <Line
+              type="monotone"
+              dataKey="totalNetWorth"
+              stroke={theme.palette.secondary.main}
+              strokeWidth={strokeWidth}
+              isAnimationActive={true}
+              name="Net Worth"
+            />
 
-          <Line
-            type="monotone"
-            dataKey="marketHigh"
-            stroke={theme.palette.success.main}
-            strokeWidth={strokeWidth}
-            isAnimationActive={true}
-            name="Market High"
-          />
+            <Line
+              type="monotone"
+              dataKey="marketHigh"
+              stroke={theme.palette.success.main}
+              strokeWidth={strokeWidth}
+              isAnimationActive={true}
+              name="Market High"
+            />
 
-          <Line
-            type="monotone"
-            dataKey="balance"
-            stroke={theme.palette.primary.main}
-            strokeWidth={strokeWidth}
-            isAnimationActive={true}
-            name="Market Value"
-          />
+            <Line
+              type="monotone"
+              dataKey="balance"
+              stroke={theme.palette.primary.main}
+              strokeWidth={strokeWidth}
+              isAnimationActive={true}
+              name="Savings"
+            />
 
-          <Line
-            type="monotone"
-            dataKey="marketLow"
-            stroke={theme.palette.error.main}
-            strokeWidth={strokeWidth}
-            isAnimationActive={true}
-            name="Market Low"
-          />
-        </LineChart>
+            <Line
+              type="monotone"
+              dataKey="marketLow"
+              stroke={theme.palette.error.main}
+              strokeWidth={strokeWidth}
+              isAnimationActive={true}
+              name="Market Low"
+            />
+          </LineChart>
+        </Stack>
       </Stack>
-    </Stack>
+      {latestDataPoint && (
+        <BottomStatusBar>
+          <Stack direction="row" spacing={4} justifyContent="end">
+            <Stack alignItems={"end"}>
+              <Typography>Savings</Typography>
+              <AnimatedCounter value={latestDataPoint.balance * 100} />
+            </Stack>
+            <Stack alignItems={"end"}>
+              <Typography>Net Worth</Typography>
+              <AnimatedCounter value={latestDataPoint.totalNetWorth * 100} />
+            </Stack>
+          </Stack>
+        </BottomStatusBar>
+      )}
+    </>
   )
 }
 

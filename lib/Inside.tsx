@@ -105,22 +105,6 @@ export function Inside(props: Props) {
                   >
                     Retirement
                   </Button>
-
-                  <Button
-                    LinkComponent={NextLink}
-                    href="/accounts"
-                    color="inherit"
-                  >
-                    Accounts
-                  </Button>
-
-                  <Button
-                    LinkComponent={NextLink}
-                    href="/payments"
-                    color="inherit"
-                  >
-                    Payments
-                  </Button>
                 </Stack>
 
                 <Stack direction="row" alignItems={"center"}>

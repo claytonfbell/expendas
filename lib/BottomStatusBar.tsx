@@ -18,6 +18,7 @@ export function BottomStatusBar({ children }: Props) {
           width: `100vw`,
           paddingLeft: 0,
           paddingRight: theme.spacing(2),
+          fontSize: 20,
           [theme.breakpoints.up("lg")]: {
             paddingRight: 0,
           },

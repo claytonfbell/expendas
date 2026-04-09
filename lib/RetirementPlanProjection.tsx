@@ -8,17 +8,18 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material"
 import { RetirementPlan } from "@prisma/client"
 import moment, { Moment } from "moment"
 import { useMemo } from "react"
+import AnimatedCounter from "./AnimatedCounter"
 import {
   useFetchAccounts,
   useFetchRetirementPlanReport,
   useFetchRetirementPlanUsers,
 } from "./api/api"
 import { BottomStatusBar } from "./BottomStatusBar"
-import { Currency } from "./Currency"
 import { formatMoney } from "./formatMoney"
 import { NoBr } from "./NoBr"
 import { RetirementPlanSection } from "./RetirementPlanSection"
@@ -143,53 +144,69 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {report.projectionRows.map((row) => (
-                      <TableRow key={row.date}>
-                        <TableCell>
-                          {moment(`${row.date} 00:00:00`).year()}
-                        </TableCell>
-                        <TableCell align="center">
-                          <NoBr>
-                            {users
-                              ? users
-                                  .map((user) => {
-                                    return moment(`${row.date} 00:00:00`).diff(
-                                      moment(
-                                        `${user.user.dateOfBirth} 00:00:00`
-                                      ),
-                                      "years"
-                                    )
-                                  })
-                                  .join(" / ")
-                              : ""}
-                          </NoBr>
-                        </TableCell>
-                        <TableCell align="right">
-                          {formatMoney(row.startingBalance, true)}
-                        </TableCell>
-                        <TableCell align="right">
-                          {formatMoney(row.appreciation, true)}
-                        </TableCell>
-                        <TableCell align="right">
-                          {formatMoney(row.dividend, true)}
-                        </TableCell>
-                        <TableCell align="right">
-                          <Box
-                            sx={{
-                              color: (theme) =>
-                                row.contribution < 0
-                                  ? theme.palette.error.main
-                                  : theme.palette.success.main,
-                            }}
-                          >
-                            {formatMoney(row.contribution, true)}
-                          </Box>
-                        </TableCell>
-                        <TableCell align="right">
-                          {formatMoney(row.endingBalance, true)}
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {report.projectionRows.map((row) => {
+                      const startDate = moment(`${row.date} 00:00:00`)
+                      const endDate = moment(`${row.date} 00:00:00`).add(
+                        1,
+                        "year"
+                      )
+                      const hilighted = fiDate.isBetween(
+                        startDate,
+                        endDate,
+                        "day",
+                        "[]"
+                      )
+
+                      return (
+                        <TableRow key={row.date} selected={hilighted}>
+                          <TableCell>
+                            {moment(`${row.date} 00:00:00`).year()}
+                          </TableCell>
+                          <TableCell align="center">
+                            <NoBr>
+                              {users
+                                ? users
+                                    .map((user) => {
+                                      return moment(
+                                        `${row.date} 00:00:00`
+                                      ).diff(
+                                        moment(
+                                          `${user.user.dateOfBirth} 00:00:00`
+                                        ),
+                                        "years"
+                                      )
+                                    })
+                                    .join(" / ")
+                                : ""}
+                            </NoBr>
+                          </TableCell>
+                          <TableCell align="right">
+                            {formatMoney(row.startingBalance, true)}
+                          </TableCell>
+                          <TableCell align="right">
+                            {formatMoney(row.appreciation, true)}
+                          </TableCell>
+                          <TableCell align="right">
+                            {formatMoney(row.dividend, true)}
+                          </TableCell>
+                          <TableCell align="right">
+                            <Box
+                              sx={{
+                                color: (theme) =>
+                                  row.contribution < 0
+                                    ? theme.palette.error.main
+                                    : theme.palette.success.main,
+                              }}
+                            >
+                              {formatMoney(row.contribution, true)}
+                            </Box>
+                          </TableCell>
+                          <TableCell align="right">
+                            {formatMoney(row.endingBalance, true)}
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -199,8 +216,15 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
       </RetirementPlanSection>
 
       <BottomStatusBar>
-        <Stack alignItems="end" paddingRight={{ xs: 0, lg: 2 }}>
-          <Currency animate value={report?.fiDate.endingBalance ?? 0} />
+        <Stack direction="row" spacing={4} justifyContent="end">
+          <Stack alignItems={"end"}>
+            <Typography>{fiFromNowString}</Typography>
+            <Stack>{fiDate.format("MMMM, YYYY")}</Stack>
+          </Stack>
+          <Stack alignItems={"end"}>
+            <Typography>Financial Independence</Typography>
+            <AnimatedCounter value={report?.fiDate.endingBalance ?? 0} />
+          </Stack>
         </Stack>
       </BottomStatusBar>
     </>

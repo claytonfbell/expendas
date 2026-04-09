@@ -28,6 +28,7 @@ import { investmentGroup } from "./AccountGroup"
 import { displayAccountType } from "./accountTypes"
 import { AccountWithIncludes } from "./AccountWithIncludes"
 import { AmountInputTool } from "./AmountInputTool"
+import AnimatedCounter from "./AnimatedCounter"
 import {
   useFetchAccounts,
   useFetchTickerPrices,
@@ -337,8 +338,11 @@ export function InvestmentPortfolio() {
       </Grid>
 
       <BottomStatusBar>
-        <Stack alignItems="end">
-          <Currency animate value={total} />
+        <Stack direction="row" spacing={4} justifyContent="end">
+          <Stack alignItems={"end"}>
+            <Typography>Savings</Typography>
+            <AnimatedCounter value={total} />
+          </Stack>
         </Stack>
       </BottomStatusBar>
 

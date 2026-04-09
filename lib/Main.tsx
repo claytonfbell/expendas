@@ -3,6 +3,7 @@ import {
   Grid,
   Stack,
   Switch,
+  Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material"
@@ -21,10 +22,10 @@ import {
   savingsInvestmentsAccountTypes,
 } from "./AccountGroup"
 import { AccountGroupBox } from "./AccountGroupBox"
+import AnimatedCounter from "./AnimatedCounter"
 import { useFetchAccounts, useFetchDates, useFetchItems } from "./api/api"
 import { BottomStatusBar } from "./BottomStatusBar"
 import { CarryOverComponent } from "./CarryOverComponent"
-import { Currency } from "./Currency"
 import { CycleNavigation } from "./CycleNavigation"
 import { PaymentDialog } from "./PaymentDialog"
 
@@ -242,8 +243,11 @@ export function Main() {
       </Stack>
 
       <BottomStatusBar>
-        <Stack alignItems="end">
-          <Currency animate value={endingBalance} />
+        <Stack direction="row" spacing={4} justifyContent="end">
+          <Stack alignItems={"end"}>
+            <Typography>Balance</Typography>
+            <AnimatedCounter value={endingBalance} />
+          </Stack>
         </Stack>
       </BottomStatusBar>
 
