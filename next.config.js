@@ -1,4 +1,6 @@
 module.exports = {
   reactStrictMode: false,
-  swcMinify: true,
+  turbopack: {
+    root: __dirname,
+  },
 }
