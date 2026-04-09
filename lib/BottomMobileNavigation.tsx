@@ -24,6 +24,7 @@ export function BottomMobileNavigation() {
             component={NextLink}
             href={link.href}
             style={{ flex: 1 }}
+            focusRipple
           >
             <Stack
               sx={{
