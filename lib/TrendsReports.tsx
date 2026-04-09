@@ -112,7 +112,7 @@ export function TrendsReports() {
         <LineChart
           style={{
             width: "100%",
-            maxHeight: "80vh",
+            maxHeight: "60vh",
             aspectRatio: 1,
           }}
           responsive

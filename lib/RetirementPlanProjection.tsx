@@ -87,7 +87,7 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
         }
       >
         {report !== undefined && (
-          <>
+          <Stack spacing={2}>
             <Box position={"relative"}>
               <LinearProgress
                 color="primary"
@@ -117,7 +117,20 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
 
             <Box sx={{ width: "100%" }}>
               <TableContainer>
-                <Table>
+                <Table
+                  size="small"
+                  sx={{
+                    "& td, & th": {
+                      // no left padding on first and right padding on last
+                      ":first-of-type": {
+                        paddingLeft: 0,
+                      },
+                      ":last-child": {
+                        paddingRight: 0,
+                      },
+                    },
+                  }}
+                >
                   <TableHead>
                     <TableRow>
                       <TableCell>Year</TableCell>
@@ -181,7 +194,7 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
                 </Table>
               </TableContainer>
             </Box>
-          </>
+          </Stack>
         )}
       </RetirementPlanSection>
 

@@ -24,10 +24,10 @@ const theme: ThemeOptions = {
       },
     },
     h1: {
-      fontSize: 32,
+      fontSize: 30,
       fontWeight: 350,
       "@media (max-width:600px)": {
-        fontSize: 26,
+        fontSize: 24,
       },
     },
   },
