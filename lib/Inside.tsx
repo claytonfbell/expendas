@@ -6,6 +6,7 @@ import {
   Container,
   CssBaseline,
   IconButton,
+  Link,
   Stack,
   Toolbar,
   Tooltip,
@@ -67,9 +68,9 @@ export function Inside(props: Props) {
                 justifyContent="space-between"
                 width="100%"
               >
-                <NextLink href="/">
+                <Link component={NextLink} href="./">
                   <LogoComponent scale={0.3} />
-                </NextLink>
+                </Link>
 
                 <Stack
                   direction="row"
@@ -122,15 +123,15 @@ export function Inside(props: Props) {
                   </Button>
                 </Stack>
 
-                <Stack direction="row" alignItems={"center"} spacing={1}>
+                <Stack direction="row" alignItems={"center"}>
                   <DarkModeToggle variant="icon" />
-                  {/* <Hidden smDown> */}
-                  <Tooltip title="github.com/claytonfbell/expendas">
-                    <IconButton href="https://github.com/claytonfbell/expendas">
-                      <GitHubIcon />
-                    </IconButton>
-                  </Tooltip>
-                  {/* </Hidden> */}
+                  <Stack display={{ xs: "none", sm: "block" }}>
+                    <Tooltip title="github.com/claytonfbell/expendas">
+                      <IconButton href="https://github.com/claytonfbell/expendas">
+                        <GitHubIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Stack>
                   <UserMenu />
                 </Stack>
               </Stack>

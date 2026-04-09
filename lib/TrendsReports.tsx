@@ -1,6 +1,6 @@
 import { Stack, useMediaQuery, useTheme } from "@mui/material"
 import moment from "moment"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   CartesianGrid,
   Legend,
@@ -20,7 +20,14 @@ import {
 export function TrendsReports() {
   const { organizationId } = useGlobalState()
 
-  const [selectedRange, setSelectedRange] = useState<ReportRange>("YTD")
+  const [selectedRange, setSelectedRange] = useState<ReportRange>(() => {
+    const storedRange = localStorage.getItem("TrendsReports.selectedRange")
+    return storedRange ? (storedRange as ReportRange) : "YTD"
+  })
+
+  useEffect(() => {
+    localStorage.setItem("TrendsReports.selectedRange", selectedRange)
+  }, [selectedRange])
 
   const { data: accounts = [] } = useFetchAccountsWithBalanceHistory(
     organizationId,
