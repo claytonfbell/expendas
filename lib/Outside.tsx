@@ -28,7 +28,7 @@ export function Outside(props: Props) {
               justifyContent="space-between"
             >
               <Grid>
-                <LogoComponent scale={0.27} />
+                <LogoComponent height={32} />
               </Grid>
               <Grid>
                 <IconButton
