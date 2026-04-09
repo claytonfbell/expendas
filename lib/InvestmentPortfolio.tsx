@@ -1,9 +1,7 @@
-import FileCopyIcon from "@mui/icons-material/FileCopy"
 import {
   alpha,
   Box,
   Grid,
-  IconButton,
   Stack,
   TableCell,
   TableRow,
@@ -14,6 +12,7 @@ import {
 import { AccountBucket } from "@prisma/client"
 import { ResponsiveTable } from "material-ui-pack"
 import React, { useState } from "react"
+import { useMeasure } from "react-use"
 import {
   Bar,
   BarChart,
@@ -130,6 +129,8 @@ export function InvestmentPortfolio() {
     return undefined
   }, [marketTwoYearLowEquity, fixed])
 
+  const [firstCellRef, { width: firstCellWidth }] = useMeasure<HTMLDivElement>()
+
   return (
     <>
       <Grid container spacing={3}>
@@ -182,32 +183,20 @@ export function InvestmentPortfolio() {
               },
               {
                 label: "Equity",
+                alignRight: true,
                 render: (x) => <Currency value={x.equity} />,
                 xsDownHidden: true,
               },
               {
                 label: "Fixed Income",
+                alignRight: true,
                 render: (x) => <Currency value={x.fixed} />,
                 xsDownHidden: true,
               },
               {
                 label: "Total",
-                render: (x) => (
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Currency value={x.equity + x.fixed} />
-                    <IconButton
-                      size="small"
-                      onClick={() => {
-                        // copy to clipboard
-                        navigator.clipboard.writeText(
-                          `${(x.equity + x.fixed) / 100}`
-                        )
-                      }}
-                    >
-                      <FileCopyIcon />
-                    </IconButton>
-                  </Stack>
-                ),
+                alignRight: true,
+                render: (x) => <Currency value={x.equity + x.fixed} />,
               },
             ]}
           />
@@ -225,9 +214,11 @@ export function InvestmentPortfolio() {
                 label: "Account",
                 render: function render(account) {
                   return (
-                    <Link onClick={() => setSelectedAccount(account)}>
-                      {account.name} {displayAccountType(account.accountType)}
-                    </Link>
+                    <Box ref={firstCellRef}>
+                      <Link onClick={() => setSelectedAccount(account)}>
+                        {account.name} {displayAccountType(account.accountType)}
+                      </Link>
+                    </Box>
                   )
                 },
               },
