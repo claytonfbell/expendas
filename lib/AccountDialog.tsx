@@ -77,6 +77,7 @@ export function AccountDialog(props: Props) {
       <DialogContent>
         <Title label={isNew ? "Add New Account" : "Update Account"} />
         <Form
+          buttons
           state={state}
           setState={setState}
           size="small"

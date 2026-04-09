@@ -36,6 +36,7 @@ export default function ResetPassword() {
         </Alert>
       ) : null}
       <Form
+        buttons
         error={error?.message}
         busy={isPending}
         state={state}

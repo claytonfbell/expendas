@@ -25,6 +25,7 @@ export default function Register() {
   return (
     <Outside title="Create New Account">
       <Form
+        buttons
         error={error?.message}
         busy={isPending}
         state={state}

@@ -30,6 +30,7 @@ export default function ForgotPassword() {
       ) : null}
 
       <Form
+        buttons
         error={error?.message}
         busy={isPending}
         state={state}
