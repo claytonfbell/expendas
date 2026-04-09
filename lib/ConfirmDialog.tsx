@@ -1,12 +1,11 @@
 import {
   Button,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Stack,
 } from "@mui/material"
-import React from "react"
 
 // Simple Confirm Dialog
 type ConfirmDialogProps = {
@@ -42,17 +41,23 @@ const ConfirmDialog = ({
           <DialogContentText id="alert-dialog-description">
             {details}
           </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          {hiddenNoButton !== true && (
-            <Button onClick={onClose} color="primary">
-              {noLabel}
+          <Stack direction="row" spacing={1} justifyContent="flex-end" mt={2}>
+            {hiddenNoButton !== true && (
+              <Button variant="outlined" onClick={onClose} color="primary">
+                {noLabel}
+              </Button>
+            )}
+            <Button
+              disableElevation
+              variant="contained"
+              onClick={onAccept}
+              color="primary"
+              autoFocus
+            >
+              {yesLabel}
             </Button>
-          )}
-          <Button onClick={onAccept} color="primary" autoFocus>
-            {yesLabel}
-          </Button>
-        </DialogActions>
+          </Stack>
+        </DialogContent>
       </Dialog>
     </>
   )
