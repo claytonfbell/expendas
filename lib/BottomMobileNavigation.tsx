@@ -13,7 +13,7 @@ export function BottomMobileNavigation() {
       spacing={0}
       maxWidth={420}
       sx={{
-        backgroundColor: "#000000",
+        backgroundColor: (theme) => theme.palette.background.paper,
       }}
     >
       {navigationLinks.map((link) => {
@@ -27,7 +27,7 @@ export function BottomMobileNavigation() {
             focusRipple
             sx={{
               backgroundColor: isSelected
-                ? (theme) => alpha(theme.palette.secondary.main, 0.2)
+                ? (theme) => alpha(theme.palette.secondary.main, 0.1)
                 : "transparent",
             }}
           >
@@ -38,8 +38,8 @@ export function BottomMobileNavigation() {
                 paddingTop: 1,
                 paddingBottom: 1,
                 color: isSelected
-                  ? (theme) => "#ffffff"
-                  : (theme) => alpha("#ffffff", 0.6),
+                  ? (theme) => theme.palette.text.primary
+                  : (theme) => alpha(theme.palette.text.primary, 0.6),
               }}
               alignItems="center"
               spacing={0.5}

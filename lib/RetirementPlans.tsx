@@ -1,5 +1,11 @@
 import AddIcon from "@mui/icons-material/Add"
-import { Fab, Stack, useMediaQuery, useTheme } from "@mui/material"
+import {
+  IconButton,
+  Stack,
+  Tooltip,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material"
 import { SelectBase } from "material-ui-pack"
 import { useEffect, useState } from "react"
 import { useFetchRetirementPlans } from "./api/api"
@@ -65,13 +71,11 @@ export function RetirementPlans() {
               fullWidth={isMobile}
             />
           </Stack>
-          <Fab
-            size="small"
-            variant="circular"
-            onClick={() => setShowAddDialog(true)}
-          >
-            <AddIcon />
-          </Fab>
+          <Tooltip title="Create new retirement plan">
+            <IconButton size="small" onClick={() => setShowAddDialog(true)}>
+              <AddIcon />
+            </IconButton>
+          </Tooltip>
         </Stack>
 
         {selectedPlan !== null && (

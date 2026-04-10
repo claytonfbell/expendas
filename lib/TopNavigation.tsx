@@ -65,7 +65,7 @@ export function TopNavigation() {
                   ? theme.palette.text.primary
                   : alpha(theme.palette.text.primary, 0.6),
               backgroundColor: isSelected
-                ? (theme) => alpha(theme.palette.secondary.main, 0.2)
+                ? (theme) => alpha(theme.palette.secondary.main, 0.1)
                 : "transparent",
               paddingX: 2,
             }}

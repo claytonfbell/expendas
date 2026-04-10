@@ -29,6 +29,7 @@ export function BottomStatusBar({ children }: Props) {
             textAlign: "right",
           },
           zIndex: theme.zIndex.appBar - 1,
+          borderTop: `1px solid ${theme.palette.divider}`,
         }}
       >
         <Container
