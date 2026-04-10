@@ -27,7 +27,7 @@ export function BottomMobileNavigation() {
             focusRipple
             sx={{
               backgroundColor: isSelected
-                ? (theme) => alpha(theme.palette.primary.main, 0.2)
+                ? (theme) => alpha(theme.palette.secondary.main, 0.2)
                 : "transparent",
             }}
           >
