@@ -196,6 +196,8 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
                                   row.contribution < 0
                                     ? theme.palette.error.main
                                     : theme.palette.success.main,
+                                // no wrapping
+                                whiteSpace: "nowrap",
                               }}
                             >
                               {formatMoney(row.contribution, true)}
