@@ -25,23 +25,28 @@ export function BottomMobileNavigation() {
             href={link.href}
             style={{ flex: 1 }}
             focusRipple
+            sx={{
+              backgroundColor: isSelected
+                ? (theme) => alpha(theme.palette.primary.main, 0.2)
+                : "transparent",
+            }}
           >
             <Stack
               sx={{
                 fontFamily: "Roboto, Helvetica, Arial, sans-serif",
                 fontSize: 14,
-                paddingTop: 2,
-                paddingBottom: 2,
+                paddingTop: 1,
+                paddingBottom: 1,
                 color: isSelected
                   ? (theme) => "#ffffff"
-                  : (theme) => alpha("#ffffff", 0.4),
+                  : (theme) => alpha("#ffffff", 0.6),
               }}
               alignItems="center"
               spacing={0.5}
               width="100%"
             >
+              {isSelected ? <link.ActiveIcon /> : <link.Icon />}
               {link.label}
-              <link.Icon />
             </Stack>
           </ButtonBase>
         )
