@@ -1,5 +1,6 @@
 import {
   Box,
+  Fade,
   LinearProgress,
   Stack,
   Table,
@@ -219,10 +220,12 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
 
       <BottomStatusBar>
         <Stack direction="row" spacing={4} justifyContent="end">
-          <Stack alignItems={"end"}>
-            <Typography>{fiFromNowString}</Typography>
-            <Stack>{fiDate.format("MMMM, YYYY")}</Stack>
-          </Stack>
+          <Fade in={report?.fiDate !== undefined}>
+            <Stack alignItems={"end"}>
+              <Typography>{fiFromNowString}</Typography>
+              <Stack>{fiDate.format("MMMM, YYYY")}</Stack>
+            </Stack>
+          </Fade>
           <Stack alignItems={"end"}>
             <Typography>Financial Independence</Typography>
             <AnimatedCounter

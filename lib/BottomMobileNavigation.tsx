@@ -11,10 +11,10 @@ export function BottomMobileNavigation() {
       display={{ xs: "flex", sm: "none" }}
       direction="row"
       spacing={0}
-      maxWidth={420}
       sx={{
         backgroundColor: (theme) => theme.palette.background.paper,
       }}
+      justifyContent={"stretch"}
     >
       {navigationLinks.map((link) => {
         const isSelected = router.pathname === link.href
