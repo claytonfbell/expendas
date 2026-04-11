@@ -110,6 +110,10 @@ export function FixedIncomeAssets() {
           if (b.daysLeft === null) {
             return 1
           }
+          if (a.daysLeft === null && b.daysLeft === null) {
+            // sort amount desc if both have no days left
+            return b.asset.amount - a.asset.amount
+          }
           return a.daysLeft - b.daysLeft
         })
         // sort bond funds at the end (sort by apr asc)
