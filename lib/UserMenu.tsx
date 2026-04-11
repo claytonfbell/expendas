@@ -2,6 +2,7 @@ import AccountBalanceIcon from "@mui/icons-material/AccountBalance"
 import AddIcon from "@mui/icons-material/Add"
 import CheckIcon from "@mui/icons-material/Check"
 import ExitToAppIcon from "@mui/icons-material/ExitToApp"
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn"
 import ReceiptIcon from "@mui/icons-material/Receipt"
 import SettingsIcon from "@mui/icons-material/Settings"
 import { Button, ListItemIcon } from "@mui/material"
@@ -94,6 +95,13 @@ export function UserMenu() {
             <ReceiptIcon />
           </ListItemIcon>
           Payments
+        </MenuItem>
+
+        <MenuItem onClick={menuClick(() => router.push(`/fixedIncome`))}>
+          <ListItemIcon>
+            <MonetizationOnIcon />
+          </ListItemIcon>
+          Fixed Income
         </MenuItem>
 
         <MenuItem onClick={menuClick(() => logout())}>

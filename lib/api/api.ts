@@ -1,5 +1,6 @@
 import {
   Account,
+  FixedIncomeAsset,
   Item,
   Organization,
   Payment,
@@ -10,6 +11,7 @@ import {
   UsersOnOrganizations,
 } from "@prisma/client"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { NewFixedIncomeAssetRequestBody } from "../../pages/api/organizations/[id]/fixedIncomeAssets"
 import { RetirementPlanReportResponse } from "../../pages/api/organizations/[id]/retirementPlans/[retirementPlanId]/report"
 import { TickerPriceResponse } from "../../pages/api/tickerPrices"
 import {
@@ -671,5 +673,72 @@ export function useFetchRetirementPlanReport(retirementPlanId: number) {
         `/organizations/${organizationId}/retirementPlans/${retirementPlanId}/report`
       ),
     enabled: organizationId !== null && retirementPlanId !== null,
+  })
+}
+
+export type FixedIncomeAssetWithIncludes = FixedIncomeAsset & {
+  account: Account
+}
+
+export function useFetchFixedIncomeAssets() {
+  const { organizationId } = useGlobalState()
+  return useQuery<FixedIncomeAssetWithIncludes[], RestError>({
+    queryKey: ["fixedIncomeAssets", organizationId],
+    queryFn: () =>
+      rest.get(`/organizations/${organizationId}/fixedIncomeAssets`),
+    enabled: organizationId !== null,
+  })
+}
+
+export function useAddFixedIncomeAsset() {
+  const { organizationId } = useGlobalState()
+  const queryClient = useQueryClient()
+  return useMutation<
+    FixedIncomeAssetWithIncludes,
+    RestError,
+    NewFixedIncomeAssetRequestBody
+  >({
+    mutationFn: (params) =>
+      rest.post(`/organizations/${organizationId}/fixedIncomeAssets`, params),
+    onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: ["fixedIncomeAssets", organizationId],
+      })
+    },
+  })
+}
+
+export function useUpdateFixedIncomeAsset() {
+  const { organizationId } = useGlobalState()
+  const queryClient = useQueryClient()
+  return useMutation<FixedIncomeAssetWithIncludes, RestError, FixedIncomeAsset>(
+    {
+      mutationFn: (params) =>
+        rest.put(
+          `/organizations/${organizationId}/fixedIncomeAssets/${params.id}`,
+          params
+        ),
+      onSuccess: () => {
+        queryClient.refetchQueries({
+          queryKey: ["fixedIncomeAssets", organizationId],
+        })
+      },
+    }
+  )
+}
+
+export function useRemoveFixedIncomeAsset() {
+  const { organizationId } = useGlobalState()
+  const queryClient = useQueryClient()
+  return useMutation<void, RestError, FixedIncomeAsset>({
+    mutationFn: (params) =>
+      rest.delete(
+        `/organizations/${organizationId}/fixedIncomeAssets/${params.id}`
+      ),
+    onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: ["fixedIncomeAssets", organizationId],
+      })
+    },
   })
 }

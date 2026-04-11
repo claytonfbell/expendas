@@ -120,6 +120,7 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
             <Box sx={{ width: "100%" }}>
               <TableContainer>
                 <Table
+                  stickyHeader
                   size="small"
                   sx={{
                     "& td, & th": {

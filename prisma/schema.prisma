@@ -72,7 +72,7 @@ model Account {
     tickerPrice       Int?
     balanceHistory    AccountBalanceHistory[]
     retirementPlanContributions RetirementPlanContribution[]
-
+    fixedIncomeAssets  FixedIncomeAsset[]
 }
 
 model Payment {
@@ -166,6 +166,33 @@ model RetirementPlanContribution {
     amount              Int
     retirementPlan      RetirementPlan      @relation(fields: [retirementPlanId], references: [id], onDelete: Cascade)
     account             Account             @relation(fields: [accountId], references: [id], onDelete: Cascade)
+}
+
+model FixedIncomeAsset {
+    id                  Int     @id @default(autoincrement())
+    accountId           Int
+    account             Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+    amount              Int
+    originalCostBasis   Int?
+    apr                 Int?
+    duration            Int?
+    durationUnit        FixedIncomeAssetDurationUnit?
+    type                FixedIncomeAssetType
+    institution         String? @db.VarChar(255)
+    settlementDate      String?
+    matureDate          String?
+}
+
+enum FixedIncomeAssetDurationUnit {
+    Weeks
+    Months
+}
+
+enum FixedIncomeAssetType {
+    US_Treasury_T_Bill
+    CD
+    Money_Market_Fund
+    Bond_Fund
 }
 
 enum AccountType {

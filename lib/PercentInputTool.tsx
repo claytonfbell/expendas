@@ -1,16 +1,14 @@
 import { Box, Link } from "@mui/material"
 import React from "react"
 import { AmountInput } from "./AmountInput"
-import { Currency } from "./Currency"
 
 type Props = {
   value: number
   onChange: (newValue: number) => void
   enabled?: boolean
-  green?: boolean
   minWidth?: number
 }
-export function AmountInputTool(props: Props) {
+export function PercentInputTool(props: Props) {
   const { enabled, value, onChange, minWidth } = props
   const [open, setOpen] = React.useState(false)
 
@@ -32,11 +30,11 @@ export function AmountInputTool(props: Props) {
             }}
             onClick={() => setOpen(true)}
           >
-            <Currency green={props.green} value={value} />
+            {value / 100}%
           </Link>
         )
       ) : (
-        <Currency green={props.green} value={value} />
+        <>{value / 100}%</>
       )}
     </Box>
   )

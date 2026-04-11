@@ -3,7 +3,7 @@
   "version": "1.10.4",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "open http://localhost:3000 && next dev",
     "build": "NODE_OPTIONS=--max_old_space_size=8192 next build",
     "start": "next start",
     "lint": "next lint",
