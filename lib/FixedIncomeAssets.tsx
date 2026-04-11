@@ -1,4 +1,4 @@
-import DeleteIcon from "@mui/icons-material/Delete"
+import CloseIcon from "@mui/icons-material/Close"
 import {
   Chip,
   IconButton,
@@ -335,8 +335,16 @@ function FixedIncomeAssetRow({
       </TableCell>
 
       <TableCell align="right">
-        <IconButton size="small" onClick={() => setConfirmDelete(true)}>
-          <DeleteIcon />
+        <IconButton
+          sx={{ padding: 0 }}
+          size="small"
+          onClick={() => setConfirmDelete(true)}
+        >
+          <CloseIcon
+            sx={{
+              color: (theme) => theme.palette.text.disabled,
+            }}
+          />
         </IconButton>
         <ConfirmDialog
           open={confirmDelete}
