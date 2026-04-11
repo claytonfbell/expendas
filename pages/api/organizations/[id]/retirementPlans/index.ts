@@ -20,7 +20,7 @@ async function handler(
           organizationId,
         },
         orderBy: {
-          id: "asc",
+          name: "asc",
         },
         include: {
           retirementPlanUsers: {
