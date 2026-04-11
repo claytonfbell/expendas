@@ -1,5 +1,6 @@
 import DeleteIcon from "@mui/icons-material/Delete"
 import {
+  Chip,
   IconButton,
   Stack,
   Table,
@@ -14,12 +15,14 @@ import { FixedIncomeAssetType } from "@prisma/client"
 import moment from "moment-timezone"
 import { useMemo, useState } from "react"
 import { AmountInputTool } from "./AmountInputTool"
+import AnimatedCounter from "./AnimatedCounter"
 import {
   FixedIncomeAssetWithIncludes,
   useFetchFixedIncomeAssets,
   useRemoveFixedIncomeAsset,
   useUpdateFixedIncomeAsset,
 } from "./api/api"
+import { BottomStatusBar } from "./BottomStatusBar"
 import ConfirmDialog from "./ConfirmDialog"
 import { Currency } from "./Currency"
 import { FixedIncomeAssetCreateDialog } from "./FixedIncomeAssetCreateDialog"
@@ -104,16 +107,17 @@ export function FixedIncomeAssets() {
         })
         // sort by days left ascending
         .sort((a, b) => {
+          if (a.daysLeft === null && b.daysLeft === null) {
+            // sort amount desc if both have no days left
+            return b.asset.amount - a.asset.amount
+          }
           if (a.daysLeft === null) {
             return -1
           }
           if (b.daysLeft === null) {
             return 1
           }
-          if (a.daysLeft === null && b.daysLeft === null) {
-            // sort amount desc if both have no days left
-            return b.asset.amount - a.asset.amount
-          }
+
           return a.daysLeft - b.daysLeft
         })
         // sort bond funds at the end (sort by apr asc)
@@ -135,60 +139,99 @@ export function FixedIncomeAssets() {
   }, [fixedIncomeAssets])
 
   const totalAmount = useMemo(() => {
-    if (!fixedIncomeAssets) {
-      return 0
-    }
-    return fixedIncomeAssets.reduce((sum, asset) => sum + asset.amount, 0)
-  }, [fixedIncomeAssets])
+    return assetsWithCalculations.reduce(
+      (sum, asset) => sum + asset.asset.amount,
+      0
+    )
+  }, [assetsWithCalculations])
+
+  const totalGains = useMemo(() => {
+    return assetsWithCalculations.reduce((sum, asset) => {
+      if (asset.calculatedGains !== null) {
+        return sum + asset.calculatedGains
+      }
+      return sum
+    }, 0)
+  }, [assetsWithCalculations])
 
   return (
-    <Stack spacing={2}>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems={"start"}
-      >
-        <Typography variant="h1">Fixed Income Assets</Typography>
-        <FixedIncomeAssetCreateDialog />
+    <>
+      <Stack spacing={2}>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems={"start"}
+        >
+          <Typography variant="h1">Fixed Income Assets</Typography>
+          <FixedIncomeAssetCreateDialog />
+        </Stack>
+
+        <TableContainer>
+          <Table
+            size="small"
+            sx={{
+              // striped rows
+              "& tbody tr:nth-of-type(odd)": {
+                backgroundColor: (theme) =>
+                  theme.palette.mode === "light"
+                    ? theme.palette.grey[100]
+                    : theme.palette.grey[800],
+              },
+            }}
+          >
+            <TableHead>
+              <TableRow>
+                <TableCell>Settle Date</TableCell>
+                <TableCell>Mature Date</TableCell>
+                <TableCell align="right">Days Left</TableCell>
+                <TableCell>Type</TableCell>
+                <TableCell align="right">Amount</TableCell>
+                <TableCell align="right">Cost Basis</TableCell>
+                <TableCell>APR</TableCell>
+                <TableCell align="right">Gains</TableCell>
+                <TableCell align="right">&nbsp;</TableCell>
+              </TableRow>
+            </TableHead>
+
+            <TableBody>
+              {assetsWithCalculations?.map((row) => (
+                <FixedIncomeAssetRow
+                  key={row.asset.id}
+                  assetWithCalculations={row}
+                />
+              ))}
+
+              <TableRow>
+                <TableCell colSpan={4}>TOTAL</TableCell>
+                <TableCell align="right">
+                  <Currency value={totalAmount} />
+                </TableCell>
+                <TableCell colSpan={2} align="center">
+                  &nbsp;
+                </TableCell>
+                <TableCell align="right">
+                  <Currency value={totalGains} />
+                </TableCell>
+                <TableCell align="right">&nbsp;</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Stack>
 
-      <TableContainer>
-        <Table size="small" stickyHeader>
-          <TableHead>
-            <TableRow>
-              <TableCell>Settle Date</TableCell>
-              <TableCell>Mature Date</TableCell>
-              <TableCell align="right">Days Left</TableCell>
-              <TableCell>Type</TableCell>
-              <TableCell align="right">Amount</TableCell>
-              <TableCell align="right">Cost Basis</TableCell>
-              <TableCell>APR</TableCell>
-              <TableCell align="right">Gains</TableCell>
-              <TableCell align="right">&nbsp;</TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {assetsWithCalculations?.map((row) => (
-              <FixedIncomeAssetRow
-                key={row.asset.id}
-                assetWithCalculations={row}
-              />
-            ))}
-
-            <TableRow selected>
-              <TableCell colSpan={4}>TOTAL</TableCell>
-              <TableCell align="right">
-                <Currency value={totalAmount} />
-              </TableCell>
-              <TableCell colSpan={4} align="center">
-                &nbsp;
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Stack>
+      <BottomStatusBar>
+        <Stack direction="row" spacing={4} justifyContent="end">
+          <Stack alignItems={"end"}>
+            <Typography>Total Amount</Typography>
+            <AnimatedCounter value={totalAmount} roundNearestDollar />
+          </Stack>
+          <Stack alignItems={"end"}>
+            <Typography>Gains</Typography>
+            <AnimatedCounter value={totalGains} roundNearestDollar />
+          </Stack>
+        </Stack>
+      </BottomStatusBar>
+    </>
   )
 }
 
@@ -241,9 +284,10 @@ function FixedIncomeAssetRow({
           {hasDuration.includes(asset.type) &&
             asset.duration &&
             asset.durationUnit && (
-              <Stack>
-                {asset.duration} {asset.durationUnit}
-              </Stack>
+              <Chip
+                size="small"
+                label={`${asset.duration} ${asset.durationUnit}`}
+              />
             )}
         </Stack>
       </TableCell>
@@ -307,7 +351,10 @@ function FixedIncomeAssetRow({
 
 export const displayFixedIncomeAssetType = (
   fixedIncomeAssetType: FixedIncomeAssetType
-) => fixedIncomeAssetType.replace(/_/g, " ")
+) =>
+  fixedIncomeAssetType === "US_Treasury_T_Bill"
+    ? "U.S. Treasury"
+    : fixedIncomeAssetType.replace(/_/g, " ")
 
 export const allFixedIncomeAssetTypes: FixedIncomeAssetType[] = [
   "Bond_Fund",
