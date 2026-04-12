@@ -4,7 +4,6 @@ import {
   Grid,
   lighten,
   Stack,
-  Table,
   TableBody,
   TableCell,
   TableHead,
@@ -38,6 +37,7 @@ import {
 } from "./api/api"
 import { BottomStatusBar } from "./BottomStatusBar"
 import { Currency } from "./Currency"
+import { ExpendasTable } from "./ExpendasTable"
 import { HorizontalRangeBar } from "./HorizontalRangeBar"
 import { Percentage } from "./Percentage"
 
@@ -173,20 +173,7 @@ export function InvestmentPortfolio() {
         </Grid>
 
         <Grid size={{ xs: 12 }}>
-          <Table
-            size="small"
-            sx={{
-              "& td, & th": {
-                // no left padding on first and right padding on last
-                ":first-of-type": {
-                  paddingLeft: 0,
-                },
-                ":last-child": {
-                  paddingRight: 0,
-                },
-              },
-            }}
-          >
+          <ExpendasTable>
             <TableHead>
               <TableRow>
                 <TableCell>Retirement Bucket</TableCell>
@@ -211,24 +198,11 @@ export function InvestmentPortfolio() {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
+          </ExpendasTable>
         </Grid>
 
         <Grid size={{ xs: 12 }}>
-          <Table
-            size="small"
-            sx={{
-              "& td, & th": {
-                // no left padding on first and right padding on last
-                ":first-of-type": {
-                  paddingLeft: 0,
-                },
-                ":last-child": {
-                  paddingRight: 0,
-                },
-              },
-            }}
-          >
+          <ExpendasTable>
             <TableHead>
               <TableRow>
                 <TableCell>Account</TableCell>
@@ -303,7 +277,7 @@ export function InvestmentPortfolio() {
                 <TableCell align="right"></TableCell>
               </TableRow>
             </TableBody>
-          </Table>
+          </ExpendasTable>
         </Grid>
       </Grid>
 

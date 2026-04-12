@@ -3,7 +3,6 @@ import {
   Chip,
   IconButton,
   Stack,
-  Table,
   TableBody,
   TableCell,
   TableHead,
@@ -24,6 +23,7 @@ import {
 import { BottomStatusBar } from "./BottomStatusBar"
 import ConfirmDialog from "./ConfirmDialog"
 import { Currency } from "./Currency"
+import { ExpendasTable } from "./ExpendasTable"
 import { FixedIncomeAssetCreateDialog } from "./FixedIncomeAssetCreateDialog"
 import { formatMoney } from "./formatMoney"
 import { PercentInputTool } from "./PercentInputTool"
@@ -178,20 +178,7 @@ export function FixedIncomeAssets() {
           <FixedIncomeAssetCreateDialog />
         </Stack>
 
-        <Table
-          size="small"
-          sx={{
-            "& td, & th": {
-              // no left padding on first and right padding on last
-              ":first-of-type": {
-                paddingLeft: 0,
-              },
-              ":last-child": {
-                paddingRight: 0,
-              },
-            },
-          }}
-        >
+        <ExpendasTable>
           <TableHead>
             <TableRow>
               <TableCell>Settle Date</TableCell>
@@ -228,7 +215,7 @@ export function FixedIncomeAssets() {
               <TableCell align="right">&nbsp;</TableCell>
             </TableRow>
           </TableBody>
-        </Table>
+        </ExpendasTable>
       </Stack>
 
       {/* <pre>{JSON.stringify(assetsWithCalculations, null, 2)}</pre> */}

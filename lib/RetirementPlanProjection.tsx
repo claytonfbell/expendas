@@ -3,10 +3,8 @@ import {
   Fade,
   LinearProgress,
   Stack,
-  Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
   Typography,
@@ -21,6 +19,7 @@ import {
   useFetchRetirementPlanUsers,
 } from "./api/api"
 import { BottomStatusBar } from "./BottomStatusBar"
+import { ExpendasTable } from "./ExpendasTable"
 import { formatMoney } from "./formatMoney"
 import { NoBr } from "./NoBr"
 import { RetirementPlanSection } from "./RetirementPlanSection"
@@ -118,102 +117,84 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
             </Box>
 
             <Box sx={{ width: "100%" }}>
-              <TableContainer>
-                <Table
-                  stickyHeader
-                  size="small"
-                  sx={{
-                    "& td, & th": {
-                      // no left padding on first and right padding on last
-                      ":first-of-type": {
-                        paddingLeft: 0,
-                      },
-                      ":last-child": {
-                        paddingRight: 0,
-                      },
-                    },
-                  }}
-                >
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Year</TableCell>
-                      <TableCell align="center">Ages</TableCell>
-                      <TableCell align="right">Starting Balance</TableCell>
-                      <TableCell align="right">Appreciation</TableCell>
-                      <TableCell align="right">Dividend</TableCell>
-                      <TableCell align="right">+ / -</TableCell>
-                      <TableCell align="right">Ending Balance</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {report.projectionRows.map((row) => {
-                      const startDate = moment(`${row.date} 00:00:00`)
-                      const endDate = moment(`${row.date} 00:00:00`).add(
-                        1,
-                        "year"
-                      )
-                      const hilighted = fiDate.isBetween(
-                        startDate,
-                        endDate,
-                        "day",
-                        "[]"
-                      )
+              <ExpendasTable>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Year</TableCell>
+                    <TableCell align="center">Ages</TableCell>
+                    <TableCell align="right">Starting Balance</TableCell>
+                    <TableCell align="right">Appreciation</TableCell>
+                    <TableCell align="right">Dividend</TableCell>
+                    <TableCell align="right">+ / -</TableCell>
+                    <TableCell align="right">Ending Balance</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {report.projectionRows.map((row) => {
+                    const startDate = moment(`${row.date} 00:00:00`)
+                    const endDate = moment(`${row.date} 00:00:00`).add(
+                      1,
+                      "year"
+                    )
+                    const hilighted = fiDate.isBetween(
+                      startDate,
+                      endDate,
+                      "day",
+                      "[]"
+                    )
 
-                      return (
-                        <TableRow key={row.date} selected={hilighted} hover>
-                          <TableCell>
-                            {moment(`${row.date} 00:00:00`).year()}
-                          </TableCell>
-                          <TableCell align="center">
-                            <NoBr>
-                              {users
-                                ? users
-                                    .map((user) => {
-                                      return moment(
-                                        `${row.date} 00:00:00`
-                                      ).diff(
-                                        moment(
-                                          `${user.user.dateOfBirth} 00:00:00`
-                                        ),
-                                        "years"
-                                      )
-                                    })
-                                    .join(" / ")
-                                : ""}
-                            </NoBr>
-                          </TableCell>
-                          <TableCell align="right">
-                            {formatMoney(row.startingBalance, true)}
-                          </TableCell>
-                          <TableCell align="right">
-                            {formatMoney(row.appreciation, true)}
-                          </TableCell>
-                          <TableCell align="right">
-                            {formatMoney(row.dividend, true)}
-                          </TableCell>
-                          <TableCell align="right">
-                            <Box
-                              sx={{
-                                color: (theme) =>
-                                  row.contribution < 0
-                                    ? theme.palette.error.main
-                                    : theme.palette.success.main,
-                                // no wrapping
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              {formatMoney(row.contribution, true)}
-                            </Box>
-                          </TableCell>
-                          <TableCell align="right">
-                            {formatMoney(row.endingBalance, true)}
-                          </TableCell>
-                        </TableRow>
-                      )
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                    return (
+                      <TableRow key={row.date} selected={hilighted} hover>
+                        <TableCell>
+                          {moment(`${row.date} 00:00:00`).year()}
+                        </TableCell>
+                        <TableCell align="center">
+                          <NoBr>
+                            {users
+                              ? users
+                                  .map((user) => {
+                                    return moment(`${row.date} 00:00:00`).diff(
+                                      moment(
+                                        `${user.user.dateOfBirth} 00:00:00`
+                                      ),
+                                      "years"
+                                    )
+                                  })
+                                  .join(" / ")
+                              : ""}
+                          </NoBr>
+                        </TableCell>
+                        <TableCell align="right">
+                          {formatMoney(row.startingBalance, true)}
+                        </TableCell>
+                        <TableCell align="right">
+                          {formatMoney(row.appreciation, true)}
+                        </TableCell>
+                        <TableCell align="right">
+                          {formatMoney(row.dividend, true)}
+                        </TableCell>
+                        <TableCell align="right">
+                          <Box
+                            sx={{
+                              color: (theme) =>
+                                row.contribution < 0
+                                  ? theme.palette.error.main
+                                  : theme.palette.success.main,
+                              // no wrapping
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {formatMoney(row.contribution, true)}
+                          </Box>
+                        </TableCell>
+                        <TableCell align="right">
+                          {formatMoney(row.endingBalance, true)}
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </ExpendasTable>
             </Box>
           </Stack>
         )}
