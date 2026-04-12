@@ -12,7 +12,7 @@ export function BottomMobileNavigation() {
       direction="row"
       spacing={0}
       sx={{
-        backgroundColor: (theme) => theme.palette.background.paper,
+        backgroundColor: (theme) => theme.palette.background.default,
       }}
       justifyContent={"stretch"}
       alignItems={"start"}

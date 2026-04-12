@@ -3,4 +3,5 @@ module.exports = {
   turbopack: {
     root: __dirname,
   },
+  transpilePackages: ["material-ui-pack", "material-ui-bootstrap"],
 }
