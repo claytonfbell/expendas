@@ -16,6 +16,8 @@ export function ExpendasTable({ children }: { children: React.ReactNode }) {
             ":last-child": {
               paddingRight: 0,
             },
+            // no word wrap
+            whiteSpace: "nowrap",
           },
         }}
       >

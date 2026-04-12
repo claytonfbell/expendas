@@ -26,6 +26,7 @@ import { Currency } from "./Currency"
 import { ExpendasTable } from "./ExpendasTable"
 import { FixedIncomeAssetCreateDialog } from "./FixedIncomeAssetCreateDialog"
 import { formatMoney } from "./formatMoney"
+import { Percentage } from "./Percentage"
 import { PercentInputTool } from "./PercentInputTool"
 
 export function FixedIncomeAssets() {
@@ -160,10 +161,7 @@ export function FixedIncomeAssets() {
   }, [assetsWithCalculations])
 
   const calculateAverageApr = useMemo(() => {
-    return ((calulateAnnualGainsWithApr / totalAmount) * 100).toLocaleString(
-      undefined,
-      { maximumFractionDigits: 2 }
-    )
+    return calulateAnnualGainsWithApr / totalAmount
   }, [calulateAnnualGainsWithApr, totalAmount])
 
   return (
@@ -228,7 +226,9 @@ export function FixedIncomeAssets() {
           </Stack>
           <Stack alignItems={"end"}>
             <Typography>Overall APR</Typography>
-            <Stack>{calculateAverageApr}%</Stack>
+            <Stack>
+              <Percentage value={calculateAverageApr} decimals={2} />
+            </Stack>
           </Stack>
           <Stack alignItems={"end"}>
             <Typography>Annual Gains</Typography>

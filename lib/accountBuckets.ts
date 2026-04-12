@@ -1,10 +1,10 @@
 import { AccountBucket } from "@prisma/client"
 import { OptionType } from "material-ui-pack"
 
-const accountBuckets: AccountBucket[] = [
-  "Roth_And_HSA",
-  "Traditional",
+export const accountBuckets: AccountBucket[] = [
   "After_Tax",
+  "Traditional",
+  "Roth_And_HSA",
 ]
 
 export const displayAccountBucket = (accountBucket: AccountBucket) =>

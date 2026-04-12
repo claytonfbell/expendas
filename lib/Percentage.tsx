@@ -1,7 +1,6 @@
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp"
 import { styled } from "@mui/system"
-import React from "react"
 
 const StyledSpan = styled("span")``
 
@@ -11,8 +10,16 @@ interface Props {
   red?: boolean
   green?: boolean
   arrow?: boolean
+  decimals?: number
 }
-export function Percentage(props: Props) {
+export function Percentage({
+  value,
+  bold,
+  red,
+  green,
+  arrow,
+  decimals = 1,
+}: Props) {
   const RED = "#c82333"
   const GREEN = "#0c9c58"
   const DOWN_ARROW = (
@@ -35,18 +42,16 @@ export function Percentage(props: Props) {
         whiteSpace: "nowrap",
       }}
       style={{
-        color:
-          props.value < 0 && props.red
-            ? RED
-            : props.value > 0 && props.green
-            ? GREEN
-            : undefined,
-        fontWeight: props.bold ? "bold" : undefined,
+        color: value < 0 && red ? RED : value > 0 && green ? GREEN : undefined,
+        fontWeight: bold ? "bold" : undefined,
       }}
     >
-      {props.arrow && props.value > 0 ? UP_ARROW : null}
-      {props.arrow && props.value < 0 ? DOWN_ARROW : null}
-      {(props.value * 100).toFixed(1)}%
+      {arrow && value > 0 ? UP_ARROW : null}
+      {arrow && value < 0 ? DOWN_ARROW : null}
+      {(value * 100).toLocaleString(undefined, {
+        maximumFractionDigits: decimals,
+      })}
+      %
     </StyledSpan>
   )
 }

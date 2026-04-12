@@ -1,17 +1,23 @@
 import {
   Box,
   Fade,
+  Grid,
   LinearProgress,
   Stack,
+  styled,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
+  Tooltip,
+  tooltipClasses,
+  TooltipProps,
   Typography,
 } from "@mui/material"
 import { RetirementPlan } from "@prisma/client"
 import moment, { Moment } from "moment"
-import { useMemo } from "react"
+import React, { useMemo } from "react"
+import { accountBuckets, displayAccountBucket } from "./accountBuckets"
 import AnimatedCounter from "./AnimatedCounter"
 import {
   useFetchAccounts,
@@ -23,6 +29,7 @@ import { ExpendasTable } from "./ExpendasTable"
 import { formatMoney } from "./formatMoney"
 import { NoBr } from "./NoBr"
 import { RetirementPlanSection } from "./RetirementPlanSection"
+import { ProjectionRow } from "./server/getRetirementPlanProjection"
 
 interface Props {
   retirementPlan: RetirementPlan
@@ -188,7 +195,9 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
                           </Box>
                         </TableCell>
                         <TableCell align="right">
-                          {formatMoney(row.endingBalance, true)}
+                          <EndingBalanceTooltip projectionRow={row}>
+                            {formatMoney(row.endingBalance, true)}
+                          </EndingBalanceTooltip>
                         </TableCell>
                       </TableRow>
                     )
@@ -231,4 +240,48 @@ function fromNow(target: Moment) {
     return `${months} months`
   }
   return ""
+}
+
+const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))({
+  [`& .${tooltipClasses.tooltip}`]: {
+    maxWidth: 220,
+  },
+})
+
+interface EndingBalanceTooltipProps {
+  projectionRow: ProjectionRow
+  children: React.ReactNode
+}
+
+function EndingBalanceTooltip({
+  projectionRow,
+  children,
+}: EndingBalanceTooltipProps) {
+  return (
+    <CustomWidthTooltip
+      arrow
+      title={
+        <Grid container columns={2} spacing={0} sx={{ fontSize: 14 }}>
+          {accountBuckets.map((accountBucket) => {
+            const sum = projectionRow.accounts
+              .filter((x) => x.accountBucket === accountBucket)
+              .reduce((sum, account) => sum + account.endingBalance, 0)
+
+            return (
+              <React.Fragment key={accountBucket}>
+                <Grid size={1}>{displayAccountBucket(accountBucket)}</Grid>
+                <Grid size={1}>
+                  <Stack alignItems={"end"}>{formatMoney(sum, true)}</Stack>
+                </Grid>
+              </React.Fragment>
+            )
+          })}
+        </Grid>
+      }
+    >
+      <Stack>{children}</Stack>
+    </CustomWidthTooltip>
+  )
 }

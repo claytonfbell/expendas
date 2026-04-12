@@ -119,10 +119,11 @@ async function handler(
                     12
                 )
 
-                let amountToTakeOutOfAccount = Math.min(
-                  withdraw,
-                  account.endingBalance
+                let amountToTakeOutOfAccount = Math.max(
+                  0,
+                  Math.min(withdraw, startingBalance)
                 )
+
                 const tax = 0 // TODO - need to estimate taxes based on account type and user's tax situation
                 amountToTakeOutOfAccount += tax
                 withdraw -= amountToTakeOutOfAccount

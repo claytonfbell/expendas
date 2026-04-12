@@ -14,7 +14,6 @@ import {
 } from "@mui/material"
 import { AccountBucket } from "@prisma/client"
 import React, { useState } from "react"
-import { useMeasure } from "react-use"
 import {
   Bar,
   BarChart,
@@ -131,7 +130,7 @@ export function InvestmentPortfolio() {
     return undefined
   }, [marketTwoYearLowEquity, fixed])
 
-  const [firstCellRef, { width: firstCellWidth }] = useMeasure<HTMLDivElement>()
+  const maxWidth = 250
 
   return (
     <>
@@ -176,36 +175,8 @@ export function InvestmentPortfolio() {
           <ExpendasTable>
             <TableHead>
               <TableRow>
-                <TableCell>Retirement Bucket</TableCell>
-                <TableCell align="right">Equity</TableCell>
-                <TableCell align="right">Fixed Income</TableCell>
-                <TableCell align="right">Total</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.map((row) => (
-                <TableRow key={row.name} hover>
-                  <TableCell>{row.name}</TableCell>
-                  <TableCell align="right">
-                    <Currency value={row.equity} />
-                  </TableCell>
-                  <TableCell align="right">
-                    <Currency value={row.fixed} />
-                  </TableCell>
-                  <TableCell align="right">
-                    <Currency value={row.equity + row.fixed} />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </ExpendasTable>
-        </Grid>
-
-        <Grid size={{ xs: 12 }}>
-          <ExpendasTable>
-            <TableHead>
-              <TableRow>
-                <TableCell>Account</TableCell>
+                <TableCell sx={{ maxWidth }}>Account</TableCell>
+                <TableCell sx={{ maxWidth }}>Retirement Bucket</TableCell>
                 <TableCell align="right">Equity</TableCell>
                 <TableCell align="right">Fixed Income</TableCell>
                 <TableCell align="right">Total</TableCell>
@@ -218,6 +189,10 @@ export function InvestmentPortfolio() {
                 return (
                   <TableRow key={account.id} hover>
                     <TableCell>{account.name}</TableCell>
+                    <TableCell>
+                      {account.accountBucket &&
+                        displayAccountBucket(account.accountBucket)}
+                    </TableCell>
                     <TableCell align="right">
                       <Currency value={equity} />
                     </TableCell>
@@ -242,12 +217,39 @@ export function InvestmentPortfolio() {
                   </TableRow>
                 )
               })}
+              <TableRow>
+                <TableCell colSpan={5}>&nbsp;</TableCell>
+              </TableRow>
+            </TableBody>
+            <TableHead>
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell sx={{ maxWidth }}>Retirement Bucket</TableCell>
+                <TableCell align="right">Equity</TableCell>
+                <TableCell align="right">Fixed Income</TableCell>
+                <TableCell align="right">Total</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data.map((row) => (
+                <TableRow key={row.name} hover>
+                  <TableCell>&nbsp;</TableCell>
+                  <TableCell>{row.name}</TableCell>
+                  <TableCell align="right">
+                    <Currency value={row.equity} />
+                  </TableCell>
+                  <TableCell align="right">
+                    <Currency value={row.fixed} />
+                  </TableCell>
+                  <TableCell align="right">
+                    <Currency value={row.equity + row.fixed} />
+                  </TableCell>
+                </TableRow>
+              ))}
 
               {/* total row */}
               <TableRow hover>
-                <TableCell>
-                  <strong>Total</strong>
-                </TableCell>
+                <TableCell colSpan={2}></TableCell>
                 <TableCell align="right">
                   <strong>
                     <Currency value={equity} />
@@ -267,7 +269,7 @@ export function InvestmentPortfolio() {
 
               {/* percentage row */}
               <TableRow hover>
-                <TableCell></TableCell>
+                <TableCell colSpan={2}></TableCell>
                 <TableCell align="right">
                   <Percentage value={equity / total} />
                 </TableCell>
@@ -283,6 +285,16 @@ export function InvestmentPortfolio() {
 
       <BottomStatusBar>
         <Stack direction="row" spacing={4} justifyContent="end">
+          <Stack alignItems={"end"}>
+            <Typography>Stocks</Typography>
+            <Percentage value={equity / total} decimals={0} />
+          </Stack>
+
+          <Stack alignItems={"end"}>
+            <Typography>Bonds</Typography>
+            <Percentage value={fixed / total} decimals={0} />
+          </Stack>
+
           <Stack alignItems={"end"}>
             <Typography>Savings</Typography>
             <AnimatedCounter value={total} roundNearestDollar />
