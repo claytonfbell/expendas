@@ -176,7 +176,7 @@ export function InvestmentPortfolio() {
           <ResponsiveTable
             size="small"
             striped
-            elevation={4}
+            variant="outlined"
             rowData={data}
             schema={[
               {
@@ -208,7 +208,7 @@ export function InvestmentPortfolio() {
           <ResponsiveTable
             size="small"
             striped
-            elevation={4}
+            variant="outlined"
             rowData={accounts}
             schema={[
               {
