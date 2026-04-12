@@ -241,7 +241,7 @@ export function FixedIncomeAssets() {
             <AnimatedCounter value={totalAmount} roundNearestDollar />
           </Stack>
           <Stack alignItems={"end"}>
-            <Typography>Average APR</Typography>
+            <Typography>Overall APR</Typography>
             <Stack>{calculateAverageApr}%</Stack>
           </Stack>
           <Stack alignItems={"end"}>
