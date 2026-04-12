@@ -41,7 +41,16 @@ export default function MyApp(props: MyAppProps) {
 
 function MyThemeProvider(props: any) {
   const { Component, pageProps } = props
-  const { createMuiThemeWithDarkMode } = useDarkMode()
-  const myTheme = createMuiThemeWithDarkMode(theme)
+  const { createMuiThemeWithDarkMode, darkMode } = useDarkMode()
+  const myTheme = createMuiThemeWithDarkMode({
+    ...theme,
+    palette: {
+      ...theme.palette,
+      background: {
+        default: darkMode ? "#000" : "#f5f5f5",
+        paper: darkMode ? "#121212" : "#fff",
+      },
+    },
+  })
   return <ThemeProvider theme={myTheme}>{props.children}</ThemeProvider>
 }

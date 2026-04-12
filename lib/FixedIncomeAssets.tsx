@@ -12,6 +12,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material"
+import { alpha } from "@mui/material/styles"
 import { FixedIncomeAssetType } from "@prisma/client"
 import moment from "moment-timezone"
 import { useMemo, useState } from "react"
@@ -188,9 +189,7 @@ export function FixedIncomeAssets() {
               // striped rows
               "& tbody tr:nth-of-type(odd)": {
                 backgroundColor: (theme) =>
-                  theme.palette.mode === "light"
-                    ? theme.palette.grey[100]
-                    : theme.palette.grey[800],
+                  alpha(theme.palette.background.default, 0.7),
               },
             }}
           >

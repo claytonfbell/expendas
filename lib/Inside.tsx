@@ -58,7 +58,14 @@ export function Inside(props: Props) {
         </Outside>
       ) : (
         <GlobalStateProvider>
-          <AppBar position="static" color="default" variant="outlined">
+          <AppBar
+            position="static"
+            color="default"
+            sx={{
+              backgroundColor: (theme) => theme.palette.background.paper,
+            }}
+            variant="outlined"
+          >
             <Toolbar>
               <Stack
                 direction="row"
@@ -75,7 +82,7 @@ export function Inside(props: Props) {
 
                 <Stack direction="row" alignItems={"center"}>
                   <DarkModeToggle variant="icon" />
-                  <Stack display={{ xs: "none", sm: "block" }}>
+                  <Stack display={{ xs: "none", lg: "block" }}>
                     <Tooltip title="github.com/claytonfbell/expendas">
                       <IconButton href="https://github.com/claytonfbell/expendas">
                         <GitHubIcon />
