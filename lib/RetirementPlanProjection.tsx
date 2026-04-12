@@ -160,7 +160,7 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
                       )
 
                       return (
-                        <TableRow key={row.date} selected={hilighted}>
+                        <TableRow key={row.date} selected={hilighted} hover>
                           <TableCell>
                             {moment(`${row.date} 00:00:00`).year()}
                           </TableCell>

@@ -4,14 +4,16 @@ import {
   Grid,
   lighten,
   Stack,
+  Table,
+  TableBody,
   TableCell,
+  TableHead,
   TableRow,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material"
 import { AccountBucket } from "@prisma/client"
-import { ResponsiveTable } from "material-ui-pack"
 import React, { useState } from "react"
 import { useMeasure } from "react-use"
 import {
@@ -26,7 +28,6 @@ import {
 import { displayAccountBucket } from "./accountBuckets"
 import { AccountDialog } from "./AccountDialog"
 import { investmentGroup } from "./AccountGroup"
-import { displayAccountType } from "./accountTypes"
 import { AccountWithIncludes } from "./AccountWithIncludes"
 import { AmountInputTool } from "./AmountInputTool"
 import AnimatedCounter from "./AnimatedCounter"
@@ -38,7 +39,6 @@ import {
 import { BottomStatusBar } from "./BottomStatusBar"
 import { Currency } from "./Currency"
 import { HorizontalRangeBar } from "./HorizontalRangeBar"
-import { Link } from "./Link"
 import { Percentage } from "./Percentage"
 
 type Data = {
@@ -173,168 +173,137 @@ export function InvestmentPortfolio() {
         </Grid>
 
         <Grid size={{ xs: 12 }}>
-          <ResponsiveTable
+          <Table
             size="small"
-            striped
-            variant="outlined"
-            rowData={data}
-            schema={[
-              {
-                label: "Retirement Bucket",
-                render: (x) => x.name,
+            sx={{
+              "& td, & th": {
+                // no left padding on first and right padding on last
+                ":first-of-type": {
+                  paddingLeft: 0,
+                },
+                ":last-child": {
+                  paddingRight: 0,
+                },
               },
-              {
-                label: "Equity",
-                alignRight: true,
-                render: (x) => <Currency value={x.equity} />,
-                xsDownHidden: true,
-              },
-              {
-                label: "Fixed Income",
-                alignRight: true,
-                render: (x) => <Currency value={x.fixed} />,
-                xsDownHidden: true,
-              },
-              {
-                label: "Total",
-                alignRight: true,
-                render: (x) => <Currency value={x.equity + x.fixed} />,
-              },
-            ]}
-          />
+            }}
+          >
+            <TableHead>
+              <TableRow>
+                <TableCell>Retirement Bucket</TableCell>
+                <TableCell align="right">Equity</TableCell>
+                <TableCell align="right">Fixed Income</TableCell>
+                <TableCell align="right">Total</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data.map((row) => (
+                <TableRow key={row.name} hover>
+                  <TableCell>{row.name}</TableCell>
+                  <TableCell align="right">
+                    <Currency value={row.equity} />
+                  </TableCell>
+                  <TableCell align="right">
+                    <Currency value={row.fixed} />
+                  </TableCell>
+                  <TableCell align="right">
+                    <Currency value={row.equity + row.fixed} />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </Grid>
 
         <Grid size={{ xs: 12 }}>
-          <ResponsiveTable
+          <Table
             size="small"
-            striped
-            variant="outlined"
-            rowData={accounts}
-            schema={[
-              {
-                smDownHidden: true,
-                label: "Account",
-                render: function render(account) {
-                  return (
-                    <Box ref={firstCellRef}>
-                      <Link onClick={() => setSelectedAccount(account)}>
-                        {account.name} {displayAccountType(account.accountType)}
-                      </Link>
-                    </Box>
-                  )
+            sx={{
+              "& td, & th": {
+                // no left padding on first and right padding on last
+                ":first-of-type": {
+                  paddingLeft: 0,
+                },
+                ":last-child": {
+                  paddingRight: 0,
                 },
               },
-              {
-                smDownHidden: true,
-                label: "Equity",
-                alignRight: true,
-                render: function render(account) {
-                  const fixed = account.totalFixedIncome || 0
-                  return <Currency value={account.balance - fixed} />
-                },
-              },
-              {
-                smDownHidden: true,
-                label: "Fixed Income",
-                alignRight: true,
-                render: function render(account) {
-                  const fixed = account.totalFixedIncome || 0
-                  return (
-                    <AmountInputTool
-                      enabled
-                      value={fixed}
-                      onChange={(totalFixedIncome) => {
-                        updateAccount({ ...account, totalFixedIncome })
-                      }}
-                    />
-                  )
-                },
-              },
-              {
-                smDownHidden: true,
-                label: "Total Value",
-                alignRight: true,
-                render: function render(account) {
-                  return (
-                    <AmountInputTool
-                      enabled
-                      value={account.balance}
-                      onChange={(balance) => {
-                        updateAccount({ ...account, balance })
-                      }}
-                    />
-                  )
-                },
-              },
-            ]}
-            totalRow={
-              isXs ? (
-                <Box padding={1}>
-                  <Grid container spacing={1} justifyContent="space-between">
-                    <Grid size={{ xs: 6 }}>TOTAL EQUITY</Grid>
-                    <Grid size={{ xs: 2 }} style={{ textAlign: "right" }}>
-                      <Percentage value={(total - fixed) / total} />
-                    </Grid>
-                    <Grid size={{ xs: 4 }} style={{ textAlign: "right" }}>
-                      <Currency value={total - fixed} />
-                    </Grid>
-                    <Grid size={{ xs: 6 }}>TOTAL FIXED INCOME</Grid>
-                    <Grid size={{ xs: 2 }} style={{ textAlign: "right" }}>
-                      <Percentage value={fixed / total} />
-                    </Grid>
-                    <Grid size={{ xs: 4 }} style={{ textAlign: "right" }}>
-                      <Currency value={fixed} />
-                    </Grid>
-                    <Grid size={{ xs: 6 }}>
-                      <strong>TOTAL VALUE</strong>
-                    </Grid>
-                    <Grid size={{ xs: 6 }} style={{ textAlign: "right" }}>
-                      <strong>
-                        <Currency value={total} />
-                      </strong>
-                    </Grid>
-                  </Grid>
-                </Box>
-              ) : (
-                <>
-                  <TableRow
-                    sx={{
-                      "& td": {
-                        fontSize: `1.2em`,
-                      },
-                    }}
-                  >
-                    <TableCell>TOTAL</TableCell>
+            }}
+          >
+            <TableHead>
+              <TableRow>
+                <TableCell>Account</TableCell>
+                <TableCell align="right">Equity</TableCell>
+                <TableCell align="right">Fixed Income</TableCell>
+                <TableCell align="right">Total</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {accounts.map((account) => {
+                const equity = account.balance - (account.totalFixedIncome || 0)
+                const fixed = account.totalFixedIncome || 0
+                return (
+                  <TableRow key={account.id} hover>
+                    <TableCell>{account.name}</TableCell>
                     <TableCell align="right">
-                      <Currency value={total - fixed} />
+                      <Currency value={equity} />
                     </TableCell>
                     <TableCell align="right">
-                      <Currency value={fixed} />
+                      <AmountInputTool
+                        enabled
+                        value={fixed}
+                        onChange={(totalFixedIncome) => {
+                          updateAccount({ ...account, totalFixedIncome })
+                        }}
+                      />
                     </TableCell>
                     <TableCell align="right">
-                      <Currency value={total} />
+                      <AmountInputTool
+                        enabled
+                        value={account.balance}
+                        onChange={(balance) => {
+                          updateAccount({ ...account, balance })
+                        }}
+                      />
                     </TableCell>
                   </TableRow>
-                  <TableRow
-                    sx={{
-                      "& td": {
-                        fontSize: `1.2em`,
-                      },
-                    }}
-                  >
-                    <TableCell></TableCell>
-                    <TableCell align="right">
-                      <Percentage value={(total - fixed) / total} />
-                    </TableCell>
-                    <TableCell align="right">
-                      <Percentage value={fixed / total} />
-                    </TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                </>
-              )
-            }
-          />
+                )
+              })}
+
+              {/* total row */}
+              <TableRow hover>
+                <TableCell>
+                  <strong>Total</strong>
+                </TableCell>
+                <TableCell align="right">
+                  <strong>
+                    <Currency value={equity} />
+                  </strong>
+                </TableCell>
+                <TableCell align="right">
+                  <strong>
+                    <Currency value={fixed} />
+                  </strong>
+                </TableCell>
+                <TableCell align="right">
+                  <strong>
+                    <Currency value={total} />
+                  </strong>
+                </TableCell>
+              </TableRow>
+
+              {/* percentage row */}
+              <TableRow hover>
+                <TableCell></TableCell>
+                <TableCell align="right">
+                  <Percentage value={equity / total} />
+                </TableCell>
+                <TableCell align="right">
+                  <Percentage value={fixed / total} />
+                </TableCell>
+                <TableCell align="right"></TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </Grid>
       </Grid>
 

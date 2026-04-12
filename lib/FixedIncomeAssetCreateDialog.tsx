@@ -4,7 +4,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  IconButton,
+  Fab,
   Stack,
   TextField,
 } from "@mui/material"
@@ -81,13 +81,15 @@ export function FixedIncomeAssetCreateDialog() {
 
   return (
     <>
-      <IconButton
+      <Fab
+        size="small"
+        color="primary"
         onClick={() => {
           setOpen(true)
         }}
       >
         <AddIcon />
-      </IconButton>
+      </Fab>
       <Dialog
         open={open}
         onClose={() => setOpen(false)}

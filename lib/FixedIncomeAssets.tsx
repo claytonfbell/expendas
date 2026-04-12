@@ -2,17 +2,14 @@ import CloseIcon from "@mui/icons-material/Close"
 import {
   Chip,
   IconButton,
-  Paper,
   Stack,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
   Typography,
 } from "@mui/material"
-import { alpha } from "@mui/material/styles"
 import { FixedIncomeAssetType } from "@prisma/client"
 import moment from "moment-timezone"
 import { useMemo, useState } from "react"
@@ -176,61 +173,62 @@ export function FixedIncomeAssets() {
           direction="row"
           justifyContent="space-between"
           alignItems={"start"}
-          paddingRight={1}
         >
           <Typography variant="h1">Fixed Income Assets</Typography>
           <FixedIncomeAssetCreateDialog />
         </Stack>
 
-        <TableContainer component={Paper} variant="outlined">
-          <Table
-            size="small"
-            sx={{
-              // striped rows
-              "& tbody tr:nth-of-type(odd)": {
-                backgroundColor: (theme) =>
-                  alpha(theme.palette.background.default, 0.7),
+        <Table
+          size="small"
+          sx={{
+            "& td, & th": {
+              // no left padding on first and right padding on last
+              ":first-of-type": {
+                paddingLeft: 0,
               },
-            }}
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell>Settle Date</TableCell>
-                <TableCell>Mature Date</TableCell>
-                <TableCell align="right">Days Left</TableCell>
-                <TableCell>Type</TableCell>
-                <TableCell align="right">Amount</TableCell>
-                <TableCell align="right">Cost Basis</TableCell>
-                <TableCell>APR</TableCell>
-                <TableCell align="right">Gains</TableCell>
-                <TableCell align="right">&nbsp;</TableCell>
-              </TableRow>
-            </TableHead>
+              ":last-child": {
+                paddingRight: 0,
+              },
+            },
+          }}
+        >
+          <TableHead>
+            <TableRow>
+              <TableCell>Settle Date</TableCell>
+              <TableCell>Mature Date</TableCell>
+              <TableCell align="right">Days Left</TableCell>
+              <TableCell>Type</TableCell>
+              <TableCell align="right">Amount</TableCell>
+              <TableCell align="right">Cost Basis</TableCell>
+              <TableCell>APR</TableCell>
+              <TableCell align="right">Gains</TableCell>
+              <TableCell align="right">&nbsp;</TableCell>
+            </TableRow>
+          </TableHead>
 
-            <TableBody>
-              {assetsWithCalculations?.map((row) => (
-                <FixedIncomeAssetRow
-                  key={row.asset.id}
-                  assetWithCalculations={row}
-                />
-              ))}
+          <TableBody>
+            {assetsWithCalculations?.map((row) => (
+              <FixedIncomeAssetRow
+                key={row.asset.id}
+                assetWithCalculations={row}
+              />
+            ))}
 
-              <TableRow>
-                <TableCell colSpan={4}>TOTAL</TableCell>
-                <TableCell align="right">
-                  <Currency value={totalAmount} />
-                </TableCell>
-                <TableCell colSpan={2} align="center">
-                  &nbsp;
-                </TableCell>
-                <TableCell align="right">
-                  <Currency value={totalGains} />
-                </TableCell>
-                <TableCell align="right">&nbsp;</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
+            <TableRow hover>
+              <TableCell colSpan={4}>TOTAL</TableCell>
+              <TableCell align="right">
+                <Currency value={totalAmount} />
+              </TableCell>
+              <TableCell colSpan={2} align="center">
+                &nbsp;
+              </TableCell>
+              <TableCell align="right">
+                <Currency value={totalGains} />
+              </TableCell>
+              <TableCell align="right">&nbsp;</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </Stack>
 
       {/* <pre>{JSON.stringify(assetsWithCalculations, null, 2)}</pre> */}
@@ -283,7 +281,7 @@ function FixedIncomeAssetRow({
   const [confirmDelete, setConfirmDelete] = useState(false)
 
   return (
-    <TableRow key={asset.id}>
+    <TableRow key={asset.id} hover>
       <TableCell>
         {asset.settlementDate &&
           moment(`${asset.settlementDate} 00:00:00`).format("M/D/YYYY")}
