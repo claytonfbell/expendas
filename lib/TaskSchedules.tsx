@@ -15,6 +15,7 @@ import { TaskScheduleWithIncludes } from "../pages/api/organizations/[id]/tasks/
 import { useFetchTaskSchedules, useRemoveTaskSchedule } from "./api/api"
 import ConfirmDialog from "./ConfirmDialog"
 import { ExpendasTable } from "./ExpendasTable"
+import { TaskGroupChip } from "./TaskGroupChip"
 import { TaskScheduleCreateDialog } from "./TaskScheduleCreateDialog"
 import {
   displayTaskScheduleRepeatsSummary,
@@ -47,6 +48,7 @@ export function TaskSchedules() {
         <ExpendasTable>
           <TableHead>
             <TableRow>
+              <TableCell>Task Group</TableCell>
               <TableCell>Schedule Name</TableCell>
               <TableCell>Scheduled For</TableCell>
               <TableCell align="right">Edit / Remove</TableCell>
@@ -56,6 +58,9 @@ export function TaskSchedules() {
             {taskSchedules &&
               taskSchedules.map((schedule) => (
                 <TableRow key={schedule.id}>
+                  <TableCell>
+                    <TaskGroupChip taskGroup={schedule.taskGroup} />
+                  </TableCell>
                   <TableCell>{schedule.name}</TableCell>
                   <TableCell>
                     <ReactMarkdown>

@@ -1,4 +1,4 @@
-import { TaskSchedule } from "@prisma/client"
+import { TaskGroup, TaskSchedule } from "@prisma/client"
 import { NextApiResponse } from "next"
 import { requireOrganizationAuthentication } from "../../../../../../lib/requireAuthentication"
 import { buildResponse } from "../../../../../../lib/server/buildResponse"
@@ -33,6 +33,9 @@ async function handler(
             },
           },
         },
+        include: {
+          taskGroup: true,
+        },
       })
 
       return taskSchedules
@@ -57,6 +60,9 @@ async function handler(
           createdByUserId: user.id,
           date,
         },
+        include: {
+          taskGroup: true,
+        },
       })
       return taskSchedule
     }
@@ -72,4 +78,6 @@ export type TaskScheduleCreateRequest = Omit<
   taskGroupId: number | null
 }
 
-export type TaskScheduleWithIncludes = TaskSchedule & {}
+export type TaskScheduleWithIncludes = TaskSchedule & {
+  taskGroup: TaskGroup
+}

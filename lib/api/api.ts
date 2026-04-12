@@ -783,6 +783,9 @@ export function useUpdateTaskGroup() {
       queryClient.refetchQueries({
         queryKey: ["taskGroups", organizationId],
       })
+      queryClient.refetchQueries({
+        queryKey: ["taskSchedules", organizationId],
+      })
     },
   })
 }
@@ -798,6 +801,9 @@ export function useRemoveTaskGroup() {
     onSuccess: () => {
       queryClient.refetchQueries({
         queryKey: ["taskGroups", organizationId],
+      })
+      queryClient.refetchQueries({
+        queryKey: ["taskSchedules", organizationId],
       })
     },
   })

@@ -1,4 +1,3 @@
-import { TaskGroup, TaskGroupUser, User } from "@prisma/client"
 import moment from "moment"
 import { NextApiResponse } from "next"
 import { TaskScheduleWithIncludes } from "."
@@ -101,6 +100,9 @@ async function handler(
           repeatsWeekly,
           repeatsOnDates,
         },
+        include: {
+          taskGroup: true,
+        },
       })
 
       // reschedule tasks for the next 90 days based on the updated schedule
@@ -122,12 +124,6 @@ async function handler(
 }
 
 export default withSession(handler)
-
-export type TaskGroupWithIncludes = TaskGroup & {
-  users: (TaskGroupUser & {
-    user: User
-  })[]
-}
 
 async function scheduleTasksForSchedule(
   taskSchedule: TaskScheduleWithIncludes,
