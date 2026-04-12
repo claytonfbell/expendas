@@ -116,7 +116,6 @@ export function AccountBox(props: AccountBoxProps) {
           paddingRight: theme.spacing(2),
           paddingTop: theme.spacing(1),
           paddingBottom: theme.spacing(1),
-          textTransform: "uppercase",
           "&:nth-of-type(odd)": {
             backgroundColor: alpha(theme.palette.primary.main, 0.3),
           },
