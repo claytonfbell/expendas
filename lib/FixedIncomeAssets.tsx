@@ -65,8 +65,7 @@ export function FixedIncomeAssets() {
                   ? 52 / asset.duration
                   : 12 / asset.duration)) /
               asset.amount
-            // round to 4 decimals
-            return apr
+            return Math.round(apr * 10_000)
           })()
 
           const calculatedGains = (() => {
@@ -154,6 +153,20 @@ export function FixedIncomeAssets() {
     }, 0)
   }, [assetsWithCalculations])
 
+  const calulateAnnualGainsWithApr = useMemo(() => {
+    return assetsWithCalculations.reduce((sum, asset) => {
+      const apr = asset.calculatedApr ?? asset.asset.apr ?? 0
+      return sum + asset.asset.amount * (apr / 10_000)
+    }, 0)
+  }, [assetsWithCalculations])
+
+  const calculateAverageApr = useMemo(() => {
+    return ((calulateAnnualGainsWithApr / totalAmount) * 100).toLocaleString(
+      undefined,
+      { maximumFractionDigits: 2 }
+    )
+  }, [calulateAnnualGainsWithApr, totalAmount])
+
   return (
     <>
       <Stack spacing={2}>
@@ -219,6 +232,8 @@ export function FixedIncomeAssets() {
         </TableContainer>
       </Stack>
 
+      {/* <pre>{JSON.stringify(assetsWithCalculations, null, 2)}</pre> */}
+
       <BottomStatusBar>
         <Stack direction="row" spacing={4} justifyContent="end">
           <Stack alignItems={"end"}>
@@ -226,8 +241,15 @@ export function FixedIncomeAssets() {
             <AnimatedCounter value={totalAmount} roundNearestDollar />
           </Stack>
           <Stack alignItems={"end"}>
-            <Typography>Gains</Typography>
-            <AnimatedCounter value={totalGains} roundNearestDollar />
+            <Typography>Average APR</Typography>
+            <Stack>{calculateAverageApr}%</Stack>
+          </Stack>
+          <Stack alignItems={"end"}>
+            <Typography>Annual Gains</Typography>
+            <AnimatedCounter
+              value={calulateAnnualGainsWithApr}
+              roundNearestDollar
+            />
           </Stack>
         </Stack>
       </BottomStatusBar>
@@ -316,7 +338,7 @@ function FixedIncomeAssetRow({
       <TableCell>
         {calculatedApr !== null ? (
           <>
-            {(calculatedApr * 100).toLocaleString(undefined, {
+            {(calculatedApr / 100).toLocaleString(undefined, {
               maximumFractionDigits: 2,
             })}
             %
