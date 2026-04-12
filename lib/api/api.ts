@@ -13,6 +13,10 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { NewFixedIncomeAssetRequestBody } from "../../pages/api/organizations/[id]/fixedIncomeAssets"
 import { RetirementPlanReportResponse } from "../../pages/api/organizations/[id]/retirementPlans/[retirementPlanId]/report"
+import { TaskGroupCreateRequest } from "../../pages/api/organizations/[id]/tasks/groups"
+import { TaskGroupWithIncludes } from "../../pages/api/organizations/[id]/tasks/groups/[taskGroupId]"
+import { TaskScheduleWithIncludes } from "../../pages/api/organizations/[id]/tasks/schedules"
+import { TaskScheduleCreateRequest } from "../../pages/api/organizations/[id]/tasks/schedules/index"
 import { TickerPriceResponse } from "../../pages/api/tickerPrices"
 import {
   AccountWithBalanceHistory,
@@ -738,6 +742,126 @@ export function useRemoveFixedIncomeAsset() {
     onSuccess: () => {
       queryClient.refetchQueries({
         queryKey: ["fixedIncomeAssets", organizationId],
+      })
+    },
+  })
+}
+
+export function useFetchTaskGroups() {
+  const { organizationId } = useGlobalState()
+  return useQuery<TaskGroupWithIncludes[], RestError>({
+    queryKey: ["taskGroups", organizationId],
+    queryFn: () => rest.get(`/organizations/${organizationId}/tasks/groups`),
+    enabled: organizationId !== null,
+  })
+}
+
+export function useAddTaskGroup() {
+  const { organizationId } = useGlobalState()
+  const queryClient = useQueryClient()
+  return useMutation<TaskGroupWithIncludes, RestError, TaskGroupCreateRequest>({
+    mutationFn: (params) =>
+      rest.post(`/organizations/${organizationId}/tasks/groups`, params),
+    onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: ["taskGroups", organizationId],
+      })
+    },
+  })
+}
+
+export function useUpdateTaskGroup() {
+  const { organizationId } = useGlobalState()
+  const queryClient = useQueryClient()
+  return useMutation<TaskGroupWithIncludes, RestError, TaskGroupWithIncludes>({
+    mutationFn: (params) =>
+      rest.put(
+        `/organizations/${organizationId}/tasks/groups/${params.id}`,
+        params
+      ),
+    onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: ["taskGroups", organizationId],
+      })
+    },
+  })
+}
+
+export function useRemoveTaskGroup() {
+  const { organizationId } = useGlobalState()
+  const queryClient = useQueryClient()
+  return useMutation<void, RestError, number>({
+    mutationFn: (taskGroupId) =>
+      rest.delete(
+        `/organizations/${organizationId}/tasks/groups/${taskGroupId}`
+      ),
+    onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: ["taskGroups", organizationId],
+      })
+    },
+  })
+}
+
+export function useFetchTaskSchedules() {
+  const { organizationId } = useGlobalState()
+  return useQuery<TaskScheduleWithIncludes[], RestError>({
+    queryKey: ["taskSchedules", organizationId],
+    queryFn: () => rest.get(`/organizations/${organizationId}/tasks/schedules`),
+    enabled: organizationId !== null,
+  })
+}
+
+export function useAddTaskSchedule() {
+  const { organizationId } = useGlobalState()
+  const queryClient = useQueryClient()
+  return useMutation<
+    TaskScheduleWithIncludes,
+    RestError,
+    TaskScheduleCreateRequest
+  >({
+    mutationFn: (params) =>
+      rest.post(`/organizations/${organizationId}/tasks/schedules`, params),
+    onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: ["taskSchedules", organizationId],
+      })
+    },
+  })
+}
+
+export function useUpdateTaskSchedule() {
+  const { organizationId } = useGlobalState()
+  const queryClient = useQueryClient()
+  return useMutation<
+    TaskScheduleWithIncludes,
+    RestError,
+    TaskScheduleWithIncludes
+  >({
+    mutationFn: (params) =>
+      rest.put(
+        `/organizations/${organizationId}/tasks/schedules/${params.id}`,
+        params
+      ),
+    onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: ["taskSchedules", organizationId],
+      })
+    },
+  })
+}
+
+export function useRemoveTaskSchedule() {
+  const { organizationId } = useGlobalState()
+  const queryClient = useQueryClient()
+  return useMutation<void, RestError, number>({
+    mutationFn: (taskScheduleId) =>
+      rest.delete(
+        `/organizations/${organizationId}/tasks/schedules/${taskScheduleId}`
+      ),
+    onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: ["taskSchedules", organizationId],
       })
     },
   })

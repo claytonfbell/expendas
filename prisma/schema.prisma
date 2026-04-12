@@ -13,6 +13,7 @@ model Organization {
     users           UsersOnOrganizations[]
     PlaidCredential PlaidCredential[]
     retirementPlans RetirementPlan[]
+    taskGroups      TaskGroup[]
 }
 
 model User {
@@ -26,7 +27,11 @@ model User {
     organizations     UsersOnOrganizations[]
     dateOfBirth       String?                @db.VarChar(255)
     socialSecurityEstimates Int[]            @default([0, 0, 0, 0, 0, 0, 0, 0, 0]) // estimates for ages 62-70
-    retirementPlans    RetirementPlanUser[]
+    retirementPlans   RetirementPlanUser[]
+    taskGroups        TaskGroupUser[]
+    createdTaskSchedules    TaskSchedule[]
+    closedTasks             Task[] @relation(name: "closedTasks")
+    completedTasks          Task[] @relation(name: "completedTasks")
 
     @@index([authCode], map: "User.authCode_index")
 }
@@ -181,6 +186,70 @@ model FixedIncomeAsset {
     institution         String? @db.VarChar(255)
     settlementDate      String?
     matureDate          String?
+}
+
+model TaskGroup {
+    id              Int     @id @default(autoincrement())
+    organizationId  Int
+    organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    name            String  @db.VarChar(255)
+    color           TaskGroupColor
+    users           TaskGroupUser[]
+    taskSchedules   TaskSchedule[]
+}
+
+model TaskGroupUser {
+    id          Int         @id @default(autoincrement())
+    taskGroupId Int
+    taskGroup   TaskGroup   @relation(fields: [taskGroupId], references: [id], onDelete: Cascade)
+    userId      Int
+    user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+    @@unique([taskGroupId, userId], map: "TaskGroupUser.taskGroupId_userId_unique")
+}
+
+model TaskSchedule {
+    id                      Int     @id @default(autoincrement())
+    taskGroupId             Int
+    taskGroup               TaskGroup   @relation(fields: [taskGroupId], references: [id], onDelete: Cascade)
+    name                    String  @db.VarChar(255)
+    description             String? @db.VarChar(255)
+    autoClose               Boolean @default(false) // close open tasks after they expire
+    createdByUserId         Int
+    createdByUser           User    @relation(fields: [createdByUserId], references: [id], onDelete: Cascade)
+    date                    String // the start date (or only date if not repeating)
+    repeats                 Boolean @default(false)
+    repeatsUntilDate        String? // filter so only occurrences until this date are included
+    repeatsOnDaysOfWeek     Int[] // filter so only specified days of week are included 0-6 (0 = Sunday)
+    repeatsOnDaysOfMonth    Int[] // filter so only specified days of month are included 1-31 (29-31 could be treated as last day of month)
+    repeatsOnMonthsOfYear   Int[] // filter so only specified months are included
+    repeatsWeekly           Int? // 1 = every week, 2 = every 2 weeks, etc. starting from date field
+    repeatsOnDates          String[] // additional specific dates YYYY-MM-DD (ignore other filters)
+    tasks                   Task[]
+}
+
+model Task {
+    id                  Int     @id @default(autoincrement())
+    taskScheduleId      Int
+    taskSchedule        TaskSchedule   @relation(fields: [taskScheduleId], references: [id], onDelete: Cascade)
+    date                String
+    closed              Boolean @default(false)
+    closedAt            String?
+    closedByUserId      Int?
+    closedByUser        User?   @relation(fields: [closedByUserId], references: [id], onDelete: Cascade, name: "closedTasks")
+    completed           Boolean @default(false)
+    completedAt         String?
+    completedByUserId   Int?
+    completedByUser     User?   @relation(fields: [completedByUserId], references: [id], onDelete: Cascade, name: "completedTasks")
+}
+
+enum TaskGroupColor {
+    Red
+    Orange
+    Yellow
+    Green
+    Blue
+    Purple
+    Gray
 }
 
 enum FixedIncomeAssetDurationUnit {

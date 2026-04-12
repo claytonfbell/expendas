@@ -1,3 +1,4 @@
+import AddTaskIcon from "@mui/icons-material/AddTask"
 import GitHubIcon from "@mui/icons-material/GitHub"
 import {
   AppBar,
@@ -82,6 +83,11 @@ export function Inside(props: Props) {
 
                 <Stack direction="row" alignItems={"center"}>
                   <DarkModeToggle variant="icon" />
+
+                  <IconButton component={NextLink} href="/tasks">
+                    <AddTaskIcon />
+                  </IconButton>
+
                   <Stack display={{ xs: "none", lg: "block" }}>
                     <Tooltip title="github.com/claytonfbell/expendas">
                       <IconButton href="https://github.com/claytonfbell/expendas">
