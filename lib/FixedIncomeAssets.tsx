@@ -2,6 +2,7 @@ import CloseIcon from "@mui/icons-material/Close"
 import {
   Chip,
   IconButton,
+  Paper,
   Stack,
   Table,
   TableBody,
@@ -174,12 +175,13 @@ export function FixedIncomeAssets() {
           direction="row"
           justifyContent="space-between"
           alignItems={"start"}
+          paddingRight={1}
         >
           <Typography variant="h1">Fixed Income Assets</Typography>
           <FixedIncomeAssetCreateDialog />
         </Stack>
 
-        <TableContainer>
+        <TableContainer component={Paper} variant="outlined">
           <Table
             size="small"
             sx={{
