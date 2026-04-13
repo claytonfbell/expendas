@@ -44,10 +44,12 @@ export function TaskDate({ date, tasks }: Props) {
   return (
     <Paper
       sx={{
-        padding: 2,
+        paddingY: 1,
+        paddingX: 2,
         // stretch to fill height of grid item
         height: "100%",
         minHeight: 200,
+        borderRadius: { xl: 0 },
         // lined paper background
         backgroundImage: (theme) => `repeating-linear-gradient(
               to bottom,
@@ -59,7 +61,25 @@ export function TaskDate({ date, tasks }: Props) {
         position: "relative",
       }}
     >
+      {/* xl size */}
       <Stack
+        display={{ xs: "none", xl: "flex" }}
+        alignItems={"end"}
+        position={"absolute"}
+        right={8}
+        top={8}
+        sx={{
+          fontWeight: "bold",
+          fontSize: "1.2rem",
+          color: (theme) => alpha(theme.palette.text.primary, 0.3),
+        }}
+      >
+        {dateObject.format(" Do")}
+      </Stack>
+
+      {/* normal date display */}
+      <Stack
+        display={{ xs: "flex", xl: "none" }}
         alignItems={"end"}
         spacing={1}
         position={"absolute"}
