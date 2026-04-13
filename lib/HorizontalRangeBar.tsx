@@ -120,7 +120,7 @@ function HorizontalRangeBarIndicator({
           fontWeight={"bold"}
           sx={{ color: (theme) => theme.palette[color].main }}
         >
-          {formatMoney(value)}
+          {formatMoney(value, true)}
         </Typography>
         <Typography
           fontWeight={"bold"}

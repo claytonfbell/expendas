@@ -8,6 +8,8 @@ import withSession, { NextIronRequest } from "../../../../../lib/server/session"
 import validate from "../../../../../lib/server/validate"
 import { TaskScheduleWithIncludes } from "./schedules"
 
+moment.tz.setDefault("America/Los_Angeles")
+
 async function handler(
   req: NextIronRequest,
   res: NextApiResponse
@@ -50,11 +52,8 @@ async function handler(
               OR: [
                 {
                   date: {
-                    gte: moment(`${startDate} 00:00:00`)
-                      .tz("America/Los_Angeles")
-                      .format("YYYY-MM-DD"),
+                    gte: moment(`${startDate} 00:00:00`).format("YYYY-MM-DD"),
                     lte: moment(`${endDate} 00:00:00`)
-                      .tz("America/Los_Angeles")
                       .endOf("day")
                       .format("YYYY-MM-DD"),
                   },
@@ -65,7 +64,6 @@ async function handler(
                   closed: false,
                   date: {
                     lte: moment(`${startDate} 00:00:00`)
-                      .tz("America/Los_Angeles")
                       .endOf("day")
                       .format("YYYY-MM-DD"),
                   },

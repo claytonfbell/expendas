@@ -9,6 +9,8 @@ import withSession, {
 } from "../../../../../../lib/server/session"
 import validate from "../../../../../../lib/server/validate"
 
+moment.tz.setDefault("America/Los_Angeles")
+
 async function handler(
   req: NextIronRequest,
   res: NextApiResponse
@@ -130,19 +132,17 @@ async function scheduleTasksForSchedule(
   daysAhead: number
 ) {
   // this will populate task table with tasks
-  let startDate = moment(`${taskSchedule.date} 00:00:00`)
-    .tz("America/Los_Angeles")
-    .startOf("day")
+  let startDate = moment(`${taskSchedule.date} 00:00:00`).startOf("day")
 
   // we don't want to add/remove tasks in the past
-  const today = moment().tz("America/Los_Angeles").startOf("day")
+  const today = moment().startOf("day")
   if (startDate.isBefore(today)) {
     startDate = today.clone()
   }
 
   // loop daysAhead into the future and create tasks for any dates that match the schedule
   for (let i = 0; i <= daysAhead; i++) {
-    const date = startDate.clone().tz("America/Los_Angeles").add(i, "days")
+    const date = startDate.clone().add(i, "days")
 
     let repeatsOnThisDate = false
     const exists = await prisma.task.findFirst({
@@ -187,9 +187,7 @@ async function scheduleTasksForSchedule(
       // check weekly repeats if specified
       if (taskSchedule.repeatsWeekly !== null) {
         const weeksSinceStart = date.diff(
-          moment(`${taskSchedule.date} 00:00:00`)
-            .tz("America/Los_Angeles")
-            .startOf("day"),
+          moment(`${taskSchedule.date} 00:00:00`).startOf("day"),
           "weeks"
         )
         if (weeksSinceStart % taskSchedule.repeatsWeekly !== 0) {
@@ -201,9 +199,7 @@ async function scheduleTasksForSchedule(
       if (taskSchedule.repeatsUntilDate) {
         if (
           date.isAfter(
-            moment(`${taskSchedule.repeatsUntilDate} 00:00:00`)
-              .tz("America/Los_Angeles")
-              .endOf("day")
+            moment(`${taskSchedule.repeatsUntilDate} 00:00:00`).endOf("day")
           )
         ) {
           repeatsOnThisDate = false
