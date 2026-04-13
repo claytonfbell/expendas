@@ -102,7 +102,6 @@ export function Inside(props: Props) {
           </AppBar>
 
           <Container
-            maxWidth="xl"
             style={{
               marginTop: 24,
               paddingBottom: 120,
