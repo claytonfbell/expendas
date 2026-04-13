@@ -215,17 +215,17 @@ async function scheduleTasksForSchedule(
       if (taskSchedule.repeatsOnDates.includes(date.format("YYYY-MM-DD"))) {
         repeatsOnThisDate = true
       }
-    }
-
-    // if this is the date
-    if (
-      date.isSame(
-        moment(`${taskSchedule.date} 00:00:00`)
-          .tz("America/Los_Angeles")
-          .startOf("day")
-      )
-    ) {
-      repeatsOnThisDate = true
+    } else {
+      // if this is the date on non repeating schedule, then it should be this specific date
+      if (
+        date.isSame(
+          moment(`${taskSchedule.date} 00:00:00`)
+            .tz("America/Los_Angeles")
+            .startOf("day")
+        )
+      ) {
+        repeatsOnThisDate = true
+      }
     }
 
     // remove task - no longer repeats on this date
