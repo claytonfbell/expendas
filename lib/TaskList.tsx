@@ -11,10 +11,11 @@ export function TaskList() {
   })
   const { data: tasks } = useFetchTasks(state.startDate, state.endDate)
 
+  // limit to 7 dates at a time to avoid overwhelming the UI - we can add pagination or infinite scroll later if needed
   const uniqueDatesInTasks = useMemo(() => {
     if (!tasks) return []
     const uniqueDatesSet = new Set(tasks.map((task) => task.date))
-    return Array.from(uniqueDatesSet).sort()
+    return Array.from(uniqueDatesSet).sort().slice(0, 7)
   }, [tasks])
 
   return (
@@ -30,7 +31,7 @@ export function TaskList() {
         <Grid container spacing={2}>
           {tasks &&
             uniqueDatesInTasks.map((date) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={date}>
+              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={date}>
                 <TaskDate date={date} tasks={tasks} />
               </Grid>
             ))}

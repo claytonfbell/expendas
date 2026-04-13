@@ -15,6 +15,7 @@ import { TaskGroupWithIncludes } from "../pages/api/organizations/[id]/tasks/gro
 import { useFetchTaskGroups, useRemoveTaskGroup } from "./api/api"
 import ConfirmDialog from "./ConfirmDialog"
 import { ExpendasTable } from "./ExpendasTable"
+import { getHexColorForTaskGroupColor } from "./TaskGroupChip"
 import { TaskGroupCreateDialog } from "./TaskGroupCreateDialog"
 import { TaskGroupEditDialog } from "./TaskGroupEditDialog"
 
@@ -54,7 +55,18 @@ export function TaskGroups() {
               taskGroups.map((group) => (
                 <TableRow key={group.id}>
                   <TableCell>{group.name}</TableCell>
-                  <TableCell>{group.color}</TableCell>
+                  <TableCell>
+                    <Chip
+                      size="small"
+                      sx={{
+                        backgroundColor: getHexColorForTaskGroupColor(
+                          group.color
+                        ),
+                        color: "white",
+                      }}
+                      label={group.color}
+                    />
+                  </TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={1} flexWrap="wrap">
                       {group.users.map((u) => (

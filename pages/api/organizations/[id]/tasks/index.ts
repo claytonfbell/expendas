@@ -1,5 +1,5 @@
 import { Task } from "@prisma/client"
-import moment from "moment"
+import moment from "moment-timezone"
 import { NextApiResponse } from "next"
 import { requireOrganizationAuthentication } from "../../../../../lib/requireAuthentication"
 import { buildResponse } from "../../../../../lib/server/buildResponse"
@@ -50,8 +50,11 @@ async function handler(
               OR: [
                 {
                   date: {
-                    gte: moment(`${startDate} 00:00:00`).format("YYYY-MM-DD"),
+                    gte: moment(`${startDate} 00:00:00`)
+                      .tz("America/Los_Angeles")
+                      .format("YYYY-MM-DD"),
                     lte: moment(`${endDate} 00:00:00`)
+                      .tz("America/Los_Angeles")
                       .endOf("day")
                       .format("YYYY-MM-DD"),
                   },
@@ -62,6 +65,7 @@ async function handler(
                   closed: false,
                   date: {
                     lte: moment(`${startDate} 00:00:00`)
+                      .tz("America/Los_Angeles")
                       .endOf("day")
                       .format("YYYY-MM-DD"),
                   },

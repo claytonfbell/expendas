@@ -1,4 +1,4 @@
-import moment from "moment"
+import moment from "moment-timezone"
 import { NextApiResponse } from "next"
 import { TaskScheduleWithIncludes } from "."
 import { requireOrganizationAuthentication } from "../../../../../../lib/requireAuthentication"
@@ -130,10 +130,12 @@ async function scheduleTasksForSchedule(
   daysAhead: number
 ) {
   // this will populate task table with tasks
-  let startDate = moment(`${taskSchedule.date} 00:00:00`).startOf("day")
+  let startDate = moment(`${taskSchedule.date} 00:00:00`)
+    .tz("America/Los_Angeles")
+    .startOf("day")
 
   // we don't want to add/remove tasks in the past
-  const today = moment().startOf("day")
+  const today = moment().tz("America/Los_Angeles").startOf("day")
   if (startDate.isBefore(today)) {
     startDate = today.clone()
   }
@@ -185,7 +187,9 @@ async function scheduleTasksForSchedule(
       // check weekly repeats if specified
       if (taskSchedule.repeatsWeekly !== null) {
         const weeksSinceStart = date.diff(
-          moment(`${taskSchedule.date} 00:00:00`).startOf("day"),
+          moment(`${taskSchedule.date} 00:00:00`)
+            .tz("America/Los_Angeles")
+            .startOf("day"),
           "weeks"
         )
         if (weeksSinceStart % taskSchedule.repeatsWeekly !== 0) {
@@ -197,7 +201,9 @@ async function scheduleTasksForSchedule(
       if (taskSchedule.repeatsUntilDate) {
         if (
           date.isAfter(
-            moment(`${taskSchedule.repeatsUntilDate} 00:00:00`).endOf("day")
+            moment(`${taskSchedule.repeatsUntilDate} 00:00:00`)
+              .tz("America/Los_Angeles")
+              .endOf("day")
           )
         ) {
           repeatsOnThisDate = false
@@ -211,7 +217,13 @@ async function scheduleTasksForSchedule(
     }
 
     // if this is the date
-    if (date.isSame(moment(`${taskSchedule.date} 00:00:00`).startOf("day"))) {
+    if (
+      date.isSame(
+        moment(`${taskSchedule.date} 00:00:00`)
+          .tz("America/Los_Angeles")
+          .startOf("day")
+      )
+    ) {
       repeatsOnThisDate = true
     }
 
