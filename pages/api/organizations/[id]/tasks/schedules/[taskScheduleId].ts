@@ -219,10 +219,7 @@ async function scheduleTasksForSchedule(
       // if this is the date on non repeating schedule, then it should be this specific date
       if (
         date.format("YYYY-MM-DD") ===
-        moment(`${taskSchedule.date} 00:00:00`)
-          .tz("America/Los_Angeles")
-          .startOf("day")
-          .format("YYYY-MM-DD")
+        moment(`${taskSchedule.date} 00:00:00`).format("YYYY-MM-DD")
       ) {
         repeatsOnThisDate = true
       }
