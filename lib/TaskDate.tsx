@@ -69,8 +69,7 @@ export function TaskDate({ date, tasks }: Props) {
         <Stack
           sx={{
             color: (theme) => alpha(theme.palette.text.disabled, 0.3),
-            fontSize: "1.2rem",
-            lineHeight: 0.75,
+            lineHeight: 0.6,
           }}
         >
           {dateObject.format("dddd")}
@@ -78,6 +77,7 @@ export function TaskDate({ date, tasks }: Props) {
         <Stack
           sx={{
             color: (theme) => alpha(theme.palette.text.disabled, 0.3),
+            lineHeight: 0.6,
             fontSize: "1.2rem",
             fontWeight: "bold",
           }}

@@ -33,6 +33,7 @@ export function BottomStatusBar({ children }: Props) {
         }}
       >
         <Container
+          maxWidth="xl"
           sx={{
             paddingBottom: 1,
           }}
