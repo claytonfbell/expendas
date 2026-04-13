@@ -1,6 +1,7 @@
 import DeleteIcon from "@mui/icons-material/Delete"
 import EditIcon from "@mui/icons-material/Edit"
 import {
+  Box,
   IconButton,
   Stack,
   TableBody,
@@ -63,9 +64,22 @@ export function TaskSchedules() {
                   </TableCell>
                   <TableCell>{schedule.name}</TableCell>
                   <TableCell>
-                    <ReactMarkdown>
-                      {displayTaskScheduleRepeatsSummary(schedule)}
-                    </ReactMarkdown>
+                    <Box
+                      sx={{
+                        "& p, & ul": {
+                          margin: 0,
+                          padding: 0,
+                        },
+                        // hide bullet points from markdown
+                        "& li": {
+                          listStyleType: "none",
+                        },
+                      }}
+                    >
+                      <ReactMarkdown>
+                        {displayTaskScheduleRepeatsSummary(schedule)}
+                      </ReactMarkdown>
+                    </Box>
                   </TableCell>
 
                   <TableCell>

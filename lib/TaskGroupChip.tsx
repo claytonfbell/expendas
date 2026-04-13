@@ -18,7 +18,7 @@ export function TaskGroupChip({ taskGroup }: Props) {
   )
 }
 
-function getHexColorForTaskGroupColor(color: TaskGroupColor) {
+export function getHexColorForTaskGroupColor(color: TaskGroupColor) {
   switch (color) {
     case "Blue":
       return "#1976d2"
@@ -27,7 +27,7 @@ function getHexColorForTaskGroupColor(color: TaskGroupColor) {
     case "Red":
       return "#d32f2f"
     case "Yellow":
-      return "#fbc02d"
+      return "#d9c751"
     case "Purple":
       return "#7b1fa2"
     case "Orange":

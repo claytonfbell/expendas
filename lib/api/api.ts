@@ -13,6 +13,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { NewFixedIncomeAssetRequestBody } from "../../pages/api/organizations/[id]/fixedIncomeAssets"
 import { RetirementPlanReportResponse } from "../../pages/api/organizations/[id]/retirementPlans/[retirementPlanId]/report"
+import { TaskWithIncludes } from "../../pages/api/organizations/[id]/tasks"
 import { TaskGroupCreateRequest } from "../../pages/api/organizations/[id]/tasks/groups"
 import { TaskGroupWithIncludes } from "../../pages/api/organizations/[id]/tasks/groups/[taskGroupId]"
 import { TaskScheduleWithIncludes } from "../../pages/api/organizations/[id]/tasks/schedules"
@@ -786,6 +787,9 @@ export function useUpdateTaskGroup() {
       queryClient.refetchQueries({
         queryKey: ["taskSchedules", organizationId],
       })
+      queryClient.refetchQueries({
+        queryKey: ["tasks", organizationId],
+      })
     },
   })
 }
@@ -804,6 +808,9 @@ export function useRemoveTaskGroup() {
       })
       queryClient.refetchQueries({
         queryKey: ["taskSchedules", organizationId],
+      })
+      queryClient.refetchQueries({
+        queryKey: ["tasks", organizationId],
       })
     },
   })
@@ -853,6 +860,9 @@ export function useUpdateTaskSchedule() {
       queryClient.refetchQueries({
         queryKey: ["taskSchedules", organizationId],
       })
+      queryClient.refetchQueries({
+        queryKey: ["tasks", organizationId],
+      })
     },
   })
 }
@@ -868,6 +878,36 @@ export function useRemoveTaskSchedule() {
     onSuccess: () => {
       queryClient.refetchQueries({
         queryKey: ["taskSchedules", organizationId],
+      })
+      queryClient.refetchQueries({
+        queryKey: ["tasks", organizationId],
+      })
+    },
+  })
+}
+
+export function useFetchTasks(startDate: string, endDate: string) {
+  const { organizationId } = useGlobalState()
+  return useQuery<TaskWithIncludes[], RestError>({
+    queryKey: ["tasks", organizationId, startDate, endDate],
+    queryFn: () =>
+      rest.get(`/organizations/${organizationId}/tasks`, {
+        startDate,
+        endDate,
+      }),
+    enabled: organizationId !== null,
+  })
+}
+
+export function useUpdateTask() {
+  const { organizationId } = useGlobalState()
+  const queryClient = useQueryClient()
+  return useMutation<TaskWithIncludes, RestError, TaskWithIncludes>({
+    mutationFn: (params) =>
+      rest.put(`/organizations/${organizationId}/tasks/${params.id}`, params),
+    onSuccess: (data) => {
+      queryClient.refetchQueries({
+        queryKey: ["tasks", organizationId],
       })
     },
   })
