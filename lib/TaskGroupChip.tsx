@@ -46,5 +46,5 @@ export function getHexColorForTaskGroupColor(
   mode: "light" | "dark"
 ) {
   const baseColor = getBaseColor(color)
-  return adjustColorForAACompliance(baseColor, 3, mode)
+  return adjustColorForAACompliance(baseColor, 4, mode)
 }
