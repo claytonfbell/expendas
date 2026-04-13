@@ -92,10 +92,20 @@ async function handler(
             },
           },
         },
-        orderBy: {
-          date: "asc",
-          id: "asc",
-        },
+        orderBy: [
+          {
+            taskSchedule: {
+              taskGroup: {
+                name: "asc",
+              },
+            },
+          },
+          {
+            taskSchedule: {
+              name: "asc",
+            },
+          },
+        ],
       })
       return tasks
     }
