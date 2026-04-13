@@ -52,6 +52,7 @@ export function TaskSchedules() {
               <TableCell>Task Group</TableCell>
               <TableCell>Schedule Name</TableCell>
               <TableCell>Scheduled For</TableCell>
+              <TableCell align="center">Auto Close</TableCell>
               <TableCell align="right">Edit / Remove</TableCell>
             </TableRow>
           </TableHead>
@@ -80,6 +81,9 @@ export function TaskSchedules() {
                         {displayTaskScheduleRepeatsSummary(schedule)}
                       </ReactMarkdown>
                     </Box>
+                  </TableCell>
+                  <TableCell align="center">
+                    {schedule.autoClose ? "Yes" : ""}
                   </TableCell>
 
                   <TableCell>
