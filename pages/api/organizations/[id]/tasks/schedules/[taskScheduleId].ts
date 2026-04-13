@@ -141,7 +141,6 @@ async function scheduleTasksForSchedule(
   }
 
   // loop daysAhead into the future and create tasks for any dates that match the schedule
-  startDate = startDate.subtract(1, "day") // subtract 1 day to ensure we include the start date in the loop
   for (let i = 0; i <= daysAhead; i++) {
     const date = startDate.clone().tz("America/Los_Angeles").add(i, "days")
 
