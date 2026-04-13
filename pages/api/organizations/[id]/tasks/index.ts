@@ -92,6 +92,10 @@ async function handler(
             },
           },
         },
+        orderBy: {
+          date: "asc",
+          id: "asc",
+        },
       })
       return tasks
     }
