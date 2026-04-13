@@ -1,5 +1,6 @@
 import { Chip } from "@mui/material"
 import { TaskGroup, TaskGroupColor } from "@prisma/client"
+import { adjustColorForAACompliance } from "./adjustColor"
 
 interface Props {
   taskGroup: TaskGroup
@@ -11,14 +12,15 @@ export function TaskGroupChip({ taskGroup }: Props) {
       label={taskGroup.name}
       size="small"
       sx={{
-        backgroundColor: getHexColorForTaskGroupColor(taskGroup.color),
+        backgroundColor: (theme) =>
+          getHexColorForTaskGroupColor(taskGroup.color, theme.palette.mode),
         color: "white",
       }}
     />
   )
 }
 
-export function getHexColorForTaskGroupColor(color: TaskGroupColor) {
+export function getBaseColor(color: TaskGroupColor) {
   switch (color) {
     case "Blue":
       return "#1976d2"
@@ -37,4 +39,12 @@ export function getHexColorForTaskGroupColor(color: TaskGroupColor) {
     default:
       return "#1976d2" // default to blue if color is unrecognized
   }
+}
+
+export function getHexColorForTaskGroupColor(
+  color: TaskGroupColor,
+  mode: "light" | "dark"
+) {
+  const baseColor = getBaseColor(color)
+  return adjustColorForAACompliance(baseColor, 3, mode)
 }

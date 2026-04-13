@@ -59,9 +59,11 @@ export function TaskGroups() {
                     <Chip
                       size="small"
                       sx={{
-                        backgroundColor: getHexColorForTaskGroupColor(
-                          group.color
-                        ),
+                        backgroundColor: (theme) =>
+                          getHexColorForTaskGroupColor(
+                            group.color,
+                            theme.palette.mode
+                          ),
                         color: "white",
                       }}
                       label={group.color}

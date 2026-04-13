@@ -7,6 +7,7 @@ import {
   Paper,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material"
 import moment from "moment"
 import { useEffect, useMemo, useState } from "react"
@@ -121,7 +122,8 @@ export function TaskDate({ date, tasks }: Props) {
                     allTasksCompleted
                       ? alpha(theme.palette.text.primary, 0.3)
                       : getHexColorForTaskGroupColor(
-                          groupTasks[0].taskSchedule.taskGroup.color
+                          groupTasks[0].taskSchedule.taskGroup.color,
+                          theme.palette.mode
                         ),
                   textTransform: "uppercase",
                   fontWeight: "bold",
@@ -151,7 +153,11 @@ function TaskItem({ task }: { task: TaskWithIncludes }) {
     setState(task)
   }, [task])
 
-  const color = getHexColorForTaskGroupColor(task.taskSchedule.taskGroup.color)
+  const theme = useTheme()
+  const color = getHexColorForTaskGroupColor(
+    task.taskSchedule.taskGroup.color,
+    theme.palette.mode
+  )
 
   return (
     <FormControlLabel
@@ -181,7 +187,7 @@ function TaskItem({ task }: { task: TaskWithIncludes }) {
             textDecoration: state.completed ? "line-through" : "none",
             color: state.completed
               ? (theme) => alpha(theme.palette.text.primary, 0.4)
-              : "inherit",
+              : color,
           }}
         >
           {task.taskSchedule.name}
