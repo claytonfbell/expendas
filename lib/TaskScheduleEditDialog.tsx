@@ -19,7 +19,12 @@ import moment from "moment"
 import { useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
 import { TaskScheduleWithIncludes } from "../pages/api/organizations/[id]/tasks/schedules"
-import { useFetchTaskGroups, useUpdateTaskSchedule } from "./api/api"
+import {
+  useFetchTaskGroups,
+  useRemoveTaskSchedule,
+  useUpdateTaskSchedule,
+} from "./api/api"
+import ConfirmDialog from "./ConfirmDialog"
 
 interface Props {
   taskSchedule: TaskScheduleWithIncludes | null
@@ -28,6 +33,7 @@ interface Props {
 
 export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
   const { mutateAsync: updateTaskSchedule } = useUpdateTaskSchedule()
+  const { mutateAsync: removeTaskSchedule } = useRemoveTaskSchedule()
   const { data: taskGroups } = useFetchTaskGroups()
 
   const [state, setState] = useState<TaskScheduleWithIncludes | null>(null)
@@ -46,6 +52,8 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
   }
 
   const [openAdditionalDates, setOpenAdditionalDates] = useState(false)
+
+  const [confirm, setConfirm] = useState(false)
 
   return (
     <>
@@ -66,7 +74,7 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
             }}
           >
             {state !== null && (
-              <Stack spacing={2} marginTop={1}>
+              <Stack spacing={1} marginTop={1}>
                 <SelectBase
                   size="small"
                   label="Group"
@@ -353,24 +361,6 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
                   </ReactMarkdown>
                 </Alert>
 
-                {/* id                      Int     @id @default(autoincrement())
-    taskGroupId             Int
-    taskGroup               TaskGroup   @relation(fields: [taskGroupId], references: [id], onDelete: Cascade)
-    name                    String  @db.VarChar(255)
-    description             String? @db.VarChar(255)
-    autoClose               Boolean @default(false) // close open tasks after they expire
-    createdByUserId         Int
-    createdByUser           User    @relation(fields: [createdByUserId], references: [id], onDelete: Cascade)
-    date                    String // the start date (or only date if not repeating)
-    repeats                 Boolean @default(false)
-    repeatsUntilDate        String? // filter so only occurrences until this date are included
-    repeatsOnDaysOfWeek     Int[] // filter so only specified days of week are included 0-6 (0 = Sunday)
-    repeatsOnDaysOfMonth    Int[] // filter so only specified days of month are included 1-31 (29-31 could be treated as last day of month)
-    repeatsOnMonthsOfYear   Int[] // filter so only specified months are included
-    repeatsWeekly           Int? // 1 = every week, 2 = every 2 weeks, etc. starting from date field
-    repeatsOnDates          String[] // additional specific dates YYYY-MM-DD (ignore other filters)
-    tasks                   Task[] */}
-
                 <Stack direction="row" spacing={2} justifyContent="flex-end">
                   <Button variant="outlined" onClick={onClose}>
                     Cancel
@@ -378,12 +368,31 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
                   <Button variant="contained" type="submit">
                     Save
                   </Button>
+
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => setConfirm(true)}
+                  >
+                    Delete
+                  </Button>
                 </Stack>
               </Stack>
             )}
           </form>
         </DialogContent>
       </Dialog>
+      <ConfirmDialog
+        open={confirm}
+        onClose={() => setConfirm(false)}
+        message="Are you sure you want to delete schedule?"
+        onAccept={() => {
+          if (!state) return
+          removeTaskSchedule(state.id)
+          setConfirm(false)
+          onClose()
+        }}
+      />
     </>
   )
 }

@@ -1,19 +1,25 @@
 import CheckIcon from "@mui/icons-material/Check"
+import SettingsIcon from "@mui/icons-material/Settings"
 import {
   alpha,
   Checkbox,
   Chip,
+  Fade,
   FormControlLabel,
+  IconButton,
   Paper,
   Stack,
+  TextField,
   Typography,
   useTheme,
 } from "@mui/material"
 import moment from "moment"
 import { useEffect, useMemo, useState } from "react"
 import { TaskWithIncludes } from "../pages/api/organizations/[id]/tasks"
-import { useUpdateTask } from "./api/api"
+import { TaskScheduleWithIncludes } from "../pages/api/organizations/[id]/tasks/schedules"
+import { useAddTaskSchedule, useUpdateTask } from "./api/api"
 import { getHexColorForTaskGroupColor } from "./TaskGroupChip"
+import { TaskScheduleEditDialog } from "./TaskScheduleEditDialog"
 
 interface Props {
   date: string
@@ -112,40 +118,89 @@ export function TaskDate({ date, tasks }: Props) {
 
       <Stack spacing={2}>
         {uniqueTaskGroups.map((groupTasks) => {
-          const allTasksCompleted = groupTasks.every((task) => task.completed)
           return (
-            <Stack key={groupTasks[0].taskSchedule.taskGroup.id}>
-              <Typography
-                variant="subtitle2"
-                sx={{
-                  color: (theme) =>
-                    allTasksCompleted
-                      ? alpha(theme.palette.text.primary, 0.3)
-                      : getHexColorForTaskGroupColor(
-                          groupTasks[0].taskSchedule.taskGroup.color,
-                          theme.palette.mode
-                        ),
-                  textTransform: "uppercase",
-                  fontWeight: "bold",
-                  textDecoration: allTasksCompleted ? "line-through" : "none",
-                }}
-              >
-                {groupTasks[0].taskSchedule.taskGroup.name}
-              </Typography>
-              <Stack>
-                {groupTasks.map((task) => (
-                  <TaskItem key={task.id} task={task} />
-                ))}
-              </Stack>
-            </Stack>
+            <TaskItemGroup
+              key={groupTasks[0].taskSchedule.taskGroup.id}
+              groupTasks={groupTasks}
+            />
           )
         })}
       </Stack>
     </Paper>
   )
 }
+interface TaskItemGroupProps {
+  groupTasks: TaskWithIncludes[]
+}
 
-function TaskItem({ task }: { task: TaskWithIncludes }) {
+function TaskItemGroup({ groupTasks }: TaskItemGroupProps) {
+  const [showQuickAdd, setShowQuickAdd] = useState(false)
+  const allTasksCompleted = groupTasks.every((task) => task.completed)
+  const [editTaskSchedule, setEditTaskSchedule] =
+    useState<TaskScheduleWithIncludes | null>(null)
+
+  const date = groupTasks[0].date!
+
+  return (
+    <>
+      <Stack
+        key={groupTasks[0].taskSchedule.taskGroup.id}
+        onMouseEnter={() => setShowQuickAdd(true)}
+        onMouseLeave={() => setShowQuickAdd(false)}
+      >
+        <Typography
+          variant="subtitle2"
+          sx={{
+            color: (theme) =>
+              allTasksCompleted
+                ? alpha(theme.palette.text.primary, 0.3)
+                : getHexColorForTaskGroupColor(
+                    groupTasks[0].taskSchedule.taskGroup.color,
+                    theme.palette.mode
+                  ),
+            textTransform: "uppercase",
+            fontWeight: "bold",
+            textDecoration: allTasksCompleted ? "line-through" : "none",
+          }}
+        >
+          {groupTasks[0].taskSchedule.taskGroup.name}
+        </Typography>
+        <Stack>
+          {groupTasks
+            // sort by id
+            .sort((a, b) => a.id - b.id)
+            .map((task) => (
+              <TaskItem
+                key={task.id}
+                task={task}
+                onClickSettings={() => setEditTaskSchedule(task.taskSchedule)}
+              />
+            ))}
+          <Fade in={showQuickAdd}>
+            <Stack>
+              <QuickAddTaskSchedule
+                taskGroupId={groupTasks[0].taskSchedule.taskGroup.id}
+                date={date}
+              />
+            </Stack>
+          </Fade>
+        </Stack>
+      </Stack>
+
+      <TaskScheduleEditDialog
+        taskSchedule={editTaskSchedule}
+        onClose={() => setEditTaskSchedule(null)}
+      />
+    </>
+  )
+}
+
+interface TaskItemProps {
+  task: TaskWithIncludes
+  onClickSettings: (task: TaskWithIncludes) => void
+}
+
+function TaskItem({ task, onClickSettings }: TaskItemProps) {
   const { mutateAsync: updateTask } = useUpdateTask()
 
   const [state, setState] = useState(task)
@@ -159,40 +214,116 @@ function TaskItem({ task }: { task: TaskWithIncludes }) {
     theme.palette.mode
   )
 
+  const [showSettings, setShowSettings] = useState(false)
+
   return (
-    <FormControlLabel
-      control={
-        <Checkbox
-          sx={{
-            marginY: 0,
-            paddingY: 0,
-            color,
-            // checked color
-            "&.Mui-checked": {
+    <Stack
+      direction={"row"}
+      alignItems={"center"}
+      justifyContent={"space-between"}
+      onMouseEnter={() => setShowSettings(true)}
+      onMouseLeave={() => setShowSettings(false)}
+    >
+      <FormControlLabel
+        control={
+          <Checkbox
+            sx={{
+              marginY: 0,
+              paddingY: 0,
               color,
+              // checked color
+              "&.Mui-checked": {
+                color,
+              },
+            }}
+            size="small"
+            checked={state.completed}
+            onChange={(e, checked) => {
+              setState((prev) => ({ ...prev, completed: checked }))
+              updateTask({ ...state, completed: checked })
+            }}
+          />
+        }
+        label={
+          <Typography
+            variant="body2"
+            sx={{
+              textDecoration: state.completed ? "line-through" : "none",
+              color: state.completed
+                ? (theme) => alpha(theme.palette.text.primary, 0.4)
+                : color,
+            }}
+          >
+            {task.taskSchedule.name}
+          </Typography>
+        }
+      />
+      <Fade in={showSettings}>
+        <IconButton
+          size="small"
+          sx={{
+            padding: "2px",
+            color: (theme) => alpha(color, 0.6),
+          }}
+          onClick={() => onClickSettings(task)}
+        >
+          <SettingsIcon />
+        </IconButton>
+      </Fade>
+    </Stack>
+  )
+}
+
+interface QuickAddTaskScheduleProps {
+  taskGroupId: number
+  date: string
+}
+
+function QuickAddTaskSchedule({
+  taskGroupId,
+  date,
+}: QuickAddTaskScheduleProps) {
+  const { mutateAsync: quickAddTaskSchedule } = useAddTaskSchedule()
+  const [name, setName] = useState("")
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        if (name.trim() === "") return
+        quickAddTaskSchedule({
+          name,
+          date,
+          taskGroupId,
+          description: null,
+          autoClose: false,
+          repeats: false,
+          repeatsUntilDate: null,
+          repeatsOnDaysOfWeek: [],
+          repeatsOnDaysOfMonth: [],
+          repeatsOnMonthsOfYear: [],
+          repeatsWeekly: null,
+          repeatsOnDates: [],
+        })
+        setName("")
+      }}
+    >
+      <Stack paddingLeft={`28px`}>
+        <TextField
+          fullWidth
+          slotProps={{
+            input: {
+              sx: {
+                fontSize: 14,
+              },
             },
           }}
+          placeholder="Quick Add Task"
           size="small"
-          checked={state.completed}
-          onChange={(e, checked) => {
-            setState((prev) => ({ ...prev, completed: checked }))
-            updateTask({ ...state, completed: checked })
-          }}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          variant="standard"
         />
-      }
-      label={
-        <Typography
-          variant="body2"
-          sx={{
-            textDecoration: state.completed ? "line-through" : "none",
-            color: state.completed
-              ? (theme) => alpha(theme.palette.text.primary, 0.4)
-              : color,
-          }}
-        >
-          {task.taskSchedule.name}
-        </Typography>
-      }
-    />
+      </Stack>
+    </form>
   )
 }

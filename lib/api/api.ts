@@ -839,6 +839,9 @@ export function useAddTaskSchedule() {
       queryClient.refetchQueries({
         queryKey: ["taskSchedules", organizationId],
       })
+      queryClient.refetchQueries({
+        queryKey: ["tasks", organizationId],
+      })
     },
   })
 }

@@ -7,6 +7,7 @@ import withSession, {
   NextIronRequest,
 } from "../../../../../../lib/server/session"
 import validate from "../../../../../../lib/server/validate"
+import { scheduleTasksForSchedule } from "./[taskScheduleId]"
 
 async function handler(
   req: NextIronRequest,
@@ -64,6 +65,10 @@ async function handler(
           taskGroup: true,
         },
       })
+
+      // reschedule tasks for the next 90 days based on the updated schedule
+      await scheduleTasksForSchedule(taskSchedule, 90)
+
       return taskSchedule
     }
   })

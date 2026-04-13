@@ -127,7 +127,7 @@ async function handler(
 
 export default withSession(handler)
 
-async function scheduleTasksForSchedule(
+export async function scheduleTasksForSchedule(
   taskSchedule: TaskScheduleWithIncludes,
   daysAhead: number
 ) {
@@ -211,11 +211,15 @@ async function scheduleTasksForSchedule(
         repeatsOnThisDate = true
       }
     } else {
+      console.log(
+        "Non repeating schedule, checking date " + date.format("YYYY-MM-DD")
+      )
       // if this is the date on non repeating schedule, then it should be this specific date
       if (
         date.format("YYYY-MM-DD") ===
         moment(`${taskSchedule.date} 00:00:00`).format("YYYY-MM-DD")
       ) {
+        console.log("Non repeating schedule matches this date")
         repeatsOnThisDate = true
       }
     }
