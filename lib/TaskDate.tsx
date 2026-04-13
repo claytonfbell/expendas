@@ -47,6 +47,7 @@ export function TaskDate({ date, tasks }: Props) {
   }, [filteredTasks])
 
   const allTasksCompleted = filteredTasks.every((task) => task.completed)
+  const isInThePast = dateObject.isBefore(moment(), "day")
 
   return (
     <Paper
@@ -64,6 +65,11 @@ export function TaskDate({ date, tasks }: Props) {
               ${alpha(theme.palette.divider, 0.06)} 31px
             )`,
         position: "relative",
+
+        // fade if in the past and not today
+        opacity: isInThePast && !isToday ? 0.4 : 1,
+        // desaturate if not today
+        filter: isInThePast && !isToday ? "grayscale(100%)" : "none",
       }}
     >
       <Stack
@@ -116,7 +122,7 @@ export function TaskDate({ date, tasks }: Props) {
         )}
       </Stack>
 
-      <Stack spacing={2}>
+      <Stack>
         {uniqueTaskGroups.map((groupTasks) => {
           return (
             <TaskItemGroup
