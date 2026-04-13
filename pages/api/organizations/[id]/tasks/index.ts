@@ -28,6 +28,9 @@ async function handler(
 
       const oneHourAgo = moment().subtract(1, "hour")
 
+      // auto-close overdue tasks before fetching tasks to ensure the UI is up to date
+      await autoCloseOverdueTasks(user.id)
+
       const tasks = await prisma.task.findMany({
         where: {
           AND: [
@@ -63,7 +66,7 @@ async function handler(
                       .format("YYYY-MM-DD"),
                   },
                 },
-                // include completd within the past hour
+                // include anything completed within the past hour - this is to ensure tasks that were just completed are still visible in the UI
                 {
                   completed: true,
                   completedAt: {
@@ -95,4 +98,25 @@ export default withSession(handler)
 
 export type TaskWithIncludes = Task & {
   taskSchedule: TaskScheduleWithIncludes
+}
+
+async function autoCloseOverdueTasks(closedByUserId: number) {
+  const twoDaysAgo = moment().subtract(2, "days").startOf("day")
+  await prisma.task.updateMany({
+    where: {
+      closed: false,
+      completed: false,
+      date: {
+        lte: twoDaysAgo.format("YYYY-MM-DD"),
+      },
+      taskSchedule: {
+        autoClose: true,
+      },
+    },
+    data: {
+      closed: true,
+      closedAt: moment().toISOString(),
+      closedByUserId,
+    },
+  })
 }

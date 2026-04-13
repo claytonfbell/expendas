@@ -1,3 +1,4 @@
+import CheckIcon from "@mui/icons-material/Check"
 import {
   alpha,
   Checkbox,
@@ -38,6 +39,8 @@ export function TaskDate({ date, tasks }: Props) {
     return Object.values(groupsMap)
   }, [filteredTasks])
 
+  const allTasksCompleted = filteredTasks.every((task) => task.completed)
+
   return (
     <Paper
       sx={{
@@ -58,7 +61,7 @@ export function TaskDate({ date, tasks }: Props) {
     >
       <Stack
         alignItems={"end"}
-        spacing={0}
+        spacing={1}
         position={"absolute"}
         right={16}
         top={16}
@@ -87,6 +90,19 @@ export function TaskDate({ date, tasks }: Props) {
             size="small"
             color="primary"
             sx={{
+              fontWeight: "bold",
+            }}
+          />
+        )}
+        {allTasksCompleted && (
+          <Chip
+            label="All Completed"
+            size="small"
+            icon={<CheckIcon color="success" />}
+            sx={{
+              backgroundColor: (theme) =>
+                alpha(theme.palette.success.main, 0.1),
+              color: (theme) => alpha(theme.palette.success.main, 0.8),
               fontWeight: "bold",
             }}
           />
