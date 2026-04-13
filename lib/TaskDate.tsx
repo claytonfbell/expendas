@@ -1,5 +1,6 @@
 import CheckIcon from "@mui/icons-material/Check"
 import SettingsIcon from "@mui/icons-material/Settings"
+import StarIcon from "@mui/icons-material/Star"
 import {
   alpha,
   Checkbox,
@@ -81,35 +82,51 @@ export function TaskDate({ date, tasks }: Props) {
       >
         <Stack
           sx={{
-            color: (theme) => alpha(theme.palette.text.disabled, 0.3),
-            lineHeight: 0.6,
+            color: (theme) => alpha(theme.palette.text.disabled, 0.2),
+            lineHeight: 0.7,
+            textTransform: "uppercase",
+            fontSize: "0.8rem",
           }}
         >
           {dateObject.format("dddd")}
         </Stack>
         <Stack
           sx={{
-            color: (theme) => alpha(theme.palette.text.disabled, 0.3),
-            lineHeight: 0.6,
-            fontSize: "1.2rem",
+            color: (theme) => alpha(theme.palette.text.disabled, 0.2),
+            lineHeight: 0.7,
+            fontSize: "2.2rem",
             fontWeight: "bold",
           }}
         >
-          {dateObject.format("MMMM Do")}
+          {dateObject.format("D")}
+        </Stack>
+        <Stack
+          sx={{
+            color: (theme) => alpha(theme.palette.text.disabled, 0.2),
+            lineHeight: 0.7,
+            fontWeight: "bold",
+            textTransform: "uppercase",
+          }}
+        >
+          {dateObject.format("MMMM")}
         </Stack>
         {isToday && (
           <Chip
             label="Today"
             size="small"
-            color="primary"
+            icon={<StarIcon color="primary" />}
             sx={{
+              backgroundColor: (theme) =>
+                alpha(theme.palette.primary.main, 0.1),
+              color: (theme) => alpha(theme.palette.primary.main, 0.8),
               fontWeight: "bold",
+              textTransform: "uppercase",
             }}
           />
         )}
         {allTasksCompleted && (
           <Chip
-            label="All Completed"
+            label="Complete"
             size="small"
             icon={<CheckIcon color="success" />}
             sx={{
@@ -117,6 +134,7 @@ export function TaskDate({ date, tasks }: Props) {
                 alpha(theme.palette.success.main, 0.1),
               color: (theme) => alpha(theme.palette.success.main, 0.8),
               fontWeight: "bold",
+              textTransform: "uppercase",
             }}
           />
         )}
