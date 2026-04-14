@@ -1,5 +1,6 @@
+import CloseIcon from "@mui/icons-material/Close"
 import SettingsIcon from "@mui/icons-material/Settings"
-import { Container, Drawer, Fab, Stack } from "@mui/material"
+import { ButtonBase, Container, Drawer, Fab, Stack } from "@mui/material"
 import { useState } from "react"
 import { TaskGroups } from "./TaskGroups"
 import { TaskList } from "./TaskList"
@@ -28,12 +29,37 @@ export function Tasks() {
       <TaskList />
 
       <Drawer open={open} onClose={toggleDrawer(false)} anchor="bottom">
+        <Fab
+          size="small"
+          sx={{
+            position: "absolute",
+            right: 16,
+            top: 16,
+          }}
+          onClick={toggleDrawer(false)}
+        >
+          <CloseIcon />
+        </Fab>
+
         <Container
           sx={{
-            paddingY: 4,
+            paddingBottom: 4,
           }}
         >
-          <Stack spacing={4}>
+          <Stack alignItems={"center"} width="100%" paddingY={1}>
+            <ButtonBase
+              focusRipple
+              sx={{
+                backgroundColor: (theme) => theme.palette.divider,
+                width: { xs: 40, sm: 80 },
+                height: 8,
+                borderRadius: 20,
+              }}
+              onClick={toggleDrawer(false)}
+            ></ButtonBase>
+          </Stack>
+
+          <Stack spacing={2} paddingTop={4}>
             <TaskGroups />
             <TaskSchedules />
           </Stack>

@@ -3,6 +3,7 @@ import SettingsIcon from "@mui/icons-material/Settings"
 import StarIcon from "@mui/icons-material/Star"
 import {
   alpha,
+  Box,
   Checkbox,
   Chip,
   Fade,
@@ -10,6 +11,7 @@ import {
   IconButton,
   Paper,
   Stack,
+  SvgIconProps,
   TextField,
   Typography,
   useTheme,
@@ -50,10 +52,14 @@ export function TaskDate({ date, tasks }: Props) {
   const allTasksCompleted = filteredTasks.every((task) => task.completed)
   const isInThePast = dateObject.isBefore(moment(), "day")
 
+  const theme = useTheme()
+
   return (
     <Paper
+      variant="outlined"
       sx={{
-        padding: 2,
+        paddingX: 2,
+        paddingY: 1,
         // stretch to fill height of grid item
         height: "100%",
         minHeight: 200,
@@ -77,66 +83,18 @@ export function TaskDate({ date, tasks }: Props) {
         alignItems={"end"}
         spacing={1}
         position={"absolute"}
-        right={16}
+        right={12}
         top={16}
       >
-        <Stack
-          sx={{
-            color: (theme) => alpha(theme.palette.text.disabled, 0.2),
-            lineHeight: 0.7,
-            textTransform: "uppercase",
-            fontSize: "0.8rem",
-          }}
-        >
-          {dateObject.format("dddd")}
+        <Stack alignItems={"end"}>
+          <DateText>{dateObject.format("ddd")}</DateText>
+          <DateText variant="number">{dateObject.format("D")}</DateText>
+          <DateText>{dateObject.format("MMMM")}</DateText>
         </Stack>
-        <Stack
-          sx={{
-            color: (theme) => alpha(theme.palette.text.disabled, 0.2),
-            lineHeight: 0.7,
-            fontSize: "2.2rem",
-            fontWeight: "bold",
-          }}
-        >
-          {dateObject.format("D")}
-        </Stack>
-        <Stack
-          sx={{
-            color: (theme) => alpha(theme.palette.text.disabled, 0.2),
-            lineHeight: 0.7,
-            fontWeight: "bold",
-            textTransform: "uppercase",
-          }}
-        >
-          {dateObject.format("MMMM")}
-        </Stack>
-        {isToday && (
-          <Chip
-            label="Today"
-            size="small"
-            icon={<StarIcon color="primary" />}
-            sx={{
-              backgroundColor: (theme) =>
-                alpha(theme.palette.primary.main, 0.1),
-              color: (theme) => alpha(theme.palette.primary.main, 0.8),
-              fontWeight: "bold",
-              textTransform: "uppercase",
-            }}
-          />
-        )}
+
+        {isToday && <TaskChip label="Today" color="primary" Icon={StarIcon} />}
         {allTasksCompleted && (
-          <Chip
-            label="Complete"
-            size="small"
-            icon={<CheckIcon color="success" />}
-            sx={{
-              backgroundColor: (theme) =>
-                alpha(theme.palette.success.main, 0.1),
-              color: (theme) => alpha(theme.palette.success.main, 0.8),
-              fontWeight: "bold",
-              textTransform: "uppercase",
-            }}
-          />
+          <TaskChip label="Completed" color="success" Icon={CheckIcon} />
         )}
       </Stack>
 
@@ -153,6 +111,55 @@ export function TaskDate({ date, tasks }: Props) {
     </Paper>
   )
 }
+
+interface DateTextProps {
+  children: React.ReactNode
+  variant?: "default" | "number"
+}
+
+function DateText({ children, variant = "default" }: DateTextProps) {
+  return (
+    <Box
+      sx={{
+        color: (theme) => alpha(theme.palette.text.primary, 0.4),
+        fontSize: variant === "number" ? "1.6rem" : "0.75rem",
+        lineHeight: 1,
+        fontWeight: "bold",
+        textTransform: "uppercase",
+        letterSpacing: variant === "number" ? 1 : 2,
+      }}
+    >
+      {children}
+    </Box>
+  )
+}
+
+interface TaskChipProps {
+  label: string
+  color: "success" | "primary" | "error"
+  Icon: React.ElementType<SvgIconProps>
+}
+
+function TaskChip({ label, color, Icon }: TaskChipProps) {
+  return (
+    <Stack position={"relative"} width={128} height={20}>
+      <Chip
+        label={label}
+        size="small"
+        icon={<Icon color={color} />}
+        sx={{
+          position: "absolute",
+          right: -8,
+          backgroundColor: (theme) => alpha(theme.palette[color].main, 0.1),
+          color: (theme) => alpha(theme.palette[color].main, 0.8),
+          fontWeight: "bold",
+          textTransform: "uppercase",
+        }}
+      />
+    </Stack>
+  )
+}
+
 interface TaskItemGroupProps {
   groupTasks: TaskWithIncludes[]
 }
@@ -233,10 +240,12 @@ function TaskItem({ task, onClickSettings }: TaskItemProps) {
   }, [task])
 
   const theme = useTheme()
-  const color = getHexColorForTaskGroupColor(
-    task.taskSchedule.taskGroup.color,
-    theme.palette.mode
-  )
+  const color = state.completed
+    ? alpha(theme.palette.text.primary, 0.4)
+    : getHexColorForTaskGroupColor(
+        task.taskSchedule.taskGroup.color,
+        theme.palette.mode
+      )
 
   const [showSettings, setShowSettings] = useState(false)
 
@@ -273,9 +282,7 @@ function TaskItem({ task, onClickSettings }: TaskItemProps) {
             variant="body2"
             sx={{
               textDecoration: state.completed ? "line-through" : "none",
-              color: state.completed
-                ? (theme) => alpha(theme.palette.text.primary, 0.4)
-                : color,
+              color,
             }}
           >
             {task.taskSchedule.name}
