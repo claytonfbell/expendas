@@ -84,7 +84,7 @@ export function TaskDate({ date, tasks }: Props) {
         spacing={1}
         position={"absolute"}
         right={12}
-        top={16}
+        top={12}
       >
         <Stack alignItems={"end"}>
           <DateText>{dateObject.format("ddd")}</DateText>
