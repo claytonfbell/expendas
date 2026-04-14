@@ -132,14 +132,7 @@ export async function scheduleTasksForSchedule(
   daysAhead: number
 ) {
   // this will populate task table with tasks
-  let startDate = moment(`${taskSchedule.date} 00:00:00`).startOf("day")
-
-  // we don't want to add/remove tasks in the past
-  const today = moment().startOf("day")
-  if (startDate.isBefore(today)) {
-    startDate = today.clone()
-  }
-
+  let startDate = moment().startOf("day")
   // loop daysAhead into the future and create tasks for any dates that match the schedule
   for (let i = 0; i <= daysAhead; i++) {
     const date = startDate.clone().add(i, "days")
