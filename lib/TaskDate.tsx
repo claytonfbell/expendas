@@ -1,6 +1,5 @@
-import CheckIcon from "@mui/icons-material/Check"
 import SettingsIcon from "@mui/icons-material/Settings"
-import StarIcon from "@mui/icons-material/Star"
+import TaskAltIcon from "@mui/icons-material/TaskAlt"
 import {
   alpha,
   Box,
@@ -52,8 +51,6 @@ export function TaskDate({ date, tasks }: Props) {
   const allTasksCompleted = filteredTasks.every((task) => task.completed)
   const isInThePast = dateObject.isBefore(moment(), "day")
 
-  const theme = useTheme()
-
   return (
     <Paper
       variant="outlined"
@@ -86,16 +83,26 @@ export function TaskDate({ date, tasks }: Props) {
         right={12}
         top={12}
       >
-        <Stack alignItems={"end"}>
+        <Stack
+          alignItems={"end"}
+          sx={{
+            color: (theme) =>
+              allTasksCompleted
+                ? "success.light"
+                : isToday
+                  ? "primary.light"
+                  : theme.palette.text.disabled,
+          }}
+        >
           <DateText>{dateObject.format("ddd")}</DateText>
-          <DateText variant="number">{dateObject.format("D")}</DateText>
+          <DateText variant="number">
+            <Stack direction={"row"}>
+              {allTasksCompleted && <TaskAltIcon fontSize="inherit" />}
+              <Stack>{dateObject.format("D")}</Stack>
+            </Stack>
+          </DateText>
           <DateText>{dateObject.format("MMMM")}</DateText>
         </Stack>
-
-        {isToday && <TaskChip label="Today" color="primary" Icon={StarIcon} />}
-        {allTasksCompleted && (
-          <TaskChip label="Completed" color="success" Icon={CheckIcon} />
-        )}
       </Stack>
 
       <Stack>
@@ -121,7 +128,6 @@ function DateText({ children, variant = "default" }: DateTextProps) {
   return (
     <Box
       sx={{
-        color: (theme) => alpha(theme.palette.text.primary, 0.4),
         fontSize: variant === "number" ? "1.6rem" : "0.75rem",
         lineHeight: 1,
         fontWeight: "bold",
@@ -258,9 +264,7 @@ function TaskItem({ task, onClickSettings }: TaskItemProps) {
       onMouseLeave={() => setShowSettings(false)}
       position="relative"
       sx={{
-        backgroundColor: showSettings
-          ? (theme) => alpha(color, 0.08)
-          : "transparent",
+        backgroundColor: showSettings ? alpha(color, 0.08) : "transparent",
         borderRadius: 1,
         padding: 0.25,
       }}

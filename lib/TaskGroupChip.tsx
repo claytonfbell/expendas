@@ -23,7 +23,7 @@ export function TaskGroupChip({ taskGroup }: Props) {
 export function getBaseColor(color: TaskGroupColor) {
   switch (color) {
     case "Blue":
-      return "#1976d2"
+      return "#0088b3"
     case "Green":
       return "#388e3c"
     case "Red":
