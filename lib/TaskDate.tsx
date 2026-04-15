@@ -70,6 +70,7 @@ export function TaskDate({ date, tasks }: Props) {
               ${alpha(theme.palette.divider, 0.06)} 30px,
               ${alpha(theme.palette.divider, 0.06)} 31px
             )`,
+
         position: "relative",
 
         // fade if in the past and not today
@@ -292,7 +293,7 @@ function TaskItem({ task, onClickSettings }: TaskItemProps) {
       <Box
         sx={{
           position: "absolute",
-          right: -16,
+          right: -8,
         }}
       >
         <Fade in={showSettings}>

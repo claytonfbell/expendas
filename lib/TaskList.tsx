@@ -60,7 +60,10 @@ export function TaskList() {
                   variant="subtitle2"
                   align="center"
                   sx={{
+                    lineHeight: 0.4,
+                    fontWeight: "bold",
                     textTransform: "uppercase",
+                    letterSpacing: 2,
                     color: (theme) => alpha(theme.palette.text.primary, 0.6),
                   }}
                 >
