@@ -257,6 +257,13 @@ function TaskItem({ task, onClickSettings }: TaskItemProps) {
       onMouseEnter={() => setShowSettings(true)}
       onMouseLeave={() => setShowSettings(false)}
       position="relative"
+      sx={{
+        backgroundColor: showSettings
+          ? (theme) => alpha(color, 0.08)
+          : "transparent",
+        borderRadius: 1,
+        padding: 0.25,
+      }}
     >
       <FormControlLabel
         control={
@@ -293,7 +300,7 @@ function TaskItem({ task, onClickSettings }: TaskItemProps) {
       <Box
         sx={{
           position: "absolute",
-          right: -8,
+          right: -6,
         }}
       >
         <Fade in={showSettings}>
