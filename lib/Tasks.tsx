@@ -43,6 +43,7 @@ export function Tasks() {
 
         <Container
           sx={{
+            paddingTop: 2,
             paddingBottom: 4,
           }}
         >

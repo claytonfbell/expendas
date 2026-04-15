@@ -58,11 +58,10 @@ export function TaskDate({ date, tasks }: Props) {
     <Paper
       variant="outlined"
       sx={{
-        paddingX: 2,
+        paddingX: { xs: 2, xl: 1 },
         paddingY: 1,
         // stretch to fill height of grid item
         height: "100%",
-        minHeight: 200,
         // lined paper background
         backgroundImage: (theme) => `repeating-linear-gradient(
               to bottom,
@@ -256,6 +255,7 @@ function TaskItem({ task, onClickSettings }: TaskItemProps) {
       justifyContent={"space-between"}
       onMouseEnter={() => setShowSettings(true)}
       onMouseLeave={() => setShowSettings(false)}
+      position="relative"
     >
       <FormControlLabel
         control={
@@ -289,18 +289,25 @@ function TaskItem({ task, onClickSettings }: TaskItemProps) {
           </Typography>
         }
       />
-      <Fade in={showSettings}>
-        <IconButton
-          size="small"
-          sx={{
-            padding: "2px",
-            color: (theme) => alpha(color, 0.6),
-          }}
-          onClick={() => onClickSettings(task)}
-        >
-          <SettingsIcon />
-        </IconButton>
-      </Fade>
+      <Box
+        sx={{
+          position: "absolute",
+          right: -16,
+        }}
+      >
+        <Fade in={showSettings}>
+          <IconButton
+            size="small"
+            sx={{
+              padding: "2px",
+              color: alpha(color, 0.6),
+            }}
+            onClick={() => onClickSettings(task)}
+          >
+            <SettingsIcon />
+          </IconButton>
+        </Fade>
+      </Box>
     </Stack>
   )
 }
