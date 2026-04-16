@@ -20,6 +20,7 @@ import { useEffect, useMemo, useState } from "react"
 import { TaskWithIncludes } from "../pages/api/organizations/[id]/tasks"
 import { TaskScheduleWithIncludes } from "../pages/api/organizations/[id]/tasks/schedules"
 import { useAddTaskSchedule, useUpdateTask } from "./api/api"
+import { BottomStatusBar } from "./BottomStatusBar"
 import { getHexColorForTaskGroupColor } from "./TaskGroupChip"
 import { TaskScheduleEditDialog } from "./TaskScheduleEditDialog"
 
@@ -50,6 +51,33 @@ export function TaskDate({ date, tasks }: Props) {
 
   const allTasksCompleted = filteredTasks.every((task) => task.completed)
   const isInThePast = dateObject.isBefore(moment(), "day")
+
+  const remainingTasks = useMemo(() => {
+    if (isToday) {
+      return filteredTasks.filter((task) => !task.completed).length
+    }
+    return 0
+  }, [filteredTasks, isToday])
+
+  const statusMessage = useMemo(() => {
+    if (allTasksCompleted) {
+      return "All tasks completed! Great job!"
+    } else if (isToday && remainingTasks > 0) {
+      return `You have ${remainingTasks} task${remainingTasks > 1 ? "s" : ""} remaining today.`
+    } else if (isToday && remainingTasks === 0) {
+      return "All tasks completed for today! Great job!"
+    } else if (isInThePast) {
+      return `You had ${filteredTasks.length} task${filteredTasks.length > 1 ? "s" : ""} on this day.`
+    } else {
+      return null
+    }
+  }, [
+    allTasksCompleted,
+    isToday,
+    isInThePast,
+    filteredTasks.length,
+    remainingTasks,
+  ])
 
   return (
     <Paper
@@ -115,6 +143,12 @@ export function TaskDate({ date, tasks }: Props) {
           )
         })}
       </Stack>
+
+      {isToday && (
+        <BottomStatusBar>
+          <Stack alignItems={"end"}>{statusMessage}</Stack>
+        </BottomStatusBar>
+      )}
     </Paper>
   )
 }
