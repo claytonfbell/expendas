@@ -72,15 +72,17 @@ export function HorizontalRangeBar({ low, current, high }: Props) {
           collides={lowColision}
         />
 
-        <HorizontalRangeBarIndicator
-          containerRef={highRef}
-          align="end"
-          value={high}
-          color="success"
-          label="All Time High"
-          Icon={ArrowDropUpIcon}
-          collides={highColision}
-        />
+        {high !== current && (
+          <HorizontalRangeBarIndicator
+            containerRef={highRef}
+            align="end"
+            value={high}
+            color="success"
+            label="All Time High"
+            Icon={ArrowDropUpIcon}
+            collides={highColision}
+          />
+        )}
       </Stack>
     </>
   )
@@ -115,16 +117,16 @@ function HorizontalRangeBarIndicator({
       alignItems={align}
     >
       <Icon color={color} fontSize="large" />
-      <Stack marginTop={collides ? 5 : 0} alignItems={align}>
+      <Stack marginTop={collides ? 6 : 0} alignItems={align}>
         <Typography
           fontWeight={"bold"}
-          sx={{ color: (theme) => theme.palette[color].main }}
+          sx={{ color: (theme) => theme.palette[color].main, lineHeight: 1.2 }}
         >
           {formatMoney(value, true)}
         </Typography>
         <Typography
           fontWeight={"bold"}
-          sx={{ color: (theme) => theme.palette[color].main }}
+          sx={{ color: (theme) => theme.palette[color].main, lineHeight: 1.2 }}
         >
           {label}
         </Typography>

@@ -75,9 +75,6 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
     }, 0)
   }, [retirementAccounts])
 
-  const millionaireDate = moment(report?.millionaireDate?.date)
-  const millionaireFromNowString = fromNow(millionaireDate)
-
   return (
     <>
       <RetirementPlanSection
@@ -90,7 +87,6 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
             <Stack>{fiDate.format("MMMM, YYYY")}</Stack>
             <Stack>{fiFromNowString}</Stack>
             <Stack>Ages: {agesString}</Stack>
-            <Stack>Millionaire : {millionaireFromNowString}</Stack>
           </>
         }
       >

@@ -59,11 +59,6 @@ async function handler(
           return row.endingBalance > dateAndAmount.amount
         })
 
-        // find millionaire date
-        const millionaireRow = projectionRows.find(
-          (row) => row.endingBalance >= 1_000_000_00
-        )
-
         // now do decumulation projection starting at fi date
         let prevRow: ProjectionRow | null = null
         projectionRows = projectionRows.map((row) => {
@@ -254,7 +249,6 @@ async function handler(
         const resp: RetirementPlanReportResponse = {
           projectionRows,
           fiDate: fiRow!,
-          millionaireDate: millionaireRow!,
         }
         return resp
       } else {
@@ -269,7 +263,6 @@ export default withSession(handler)
 export type RetirementPlanReportResponse = {
   projectionRows: ProjectionRow[]
   fiDate: ProjectionRow
-  millionaireDate: ProjectionRow
 }
 
 function getSocialSecurityForMonth(
