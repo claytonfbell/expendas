@@ -14,7 +14,7 @@ import { TaskDate } from "./TaskDate"
 export function TaskList() {
   const [state, setState] = useState({
     startDate: moment().startOf("day").format("YYYY-MM-DD"),
-    endDate: moment().add(3, "weeks").startOf("day").format("YYYY-MM-DD"),
+    endDate: moment().add(6, "weeks").startOf("day").format("YYYY-MM-DD"),
   })
   const { data: tasks } = useFetchTasks(state.startDate, state.endDate)
 
@@ -32,7 +32,7 @@ export function TaskList() {
       .sort()
       .slice(
         0,
-        isXL ? 21 - moment().day() : isLG ? 12 : isMD ? 9 : isSM ? 6 : 7
+        isXL ? 35 - moment().day() : isLG ? 12 : isMD ? 9 : isSM ? 6 : 7
       )
   }, [tasks, isXL, isLG, isMD, isSM])
 
