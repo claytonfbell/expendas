@@ -1,4 +1,5 @@
 import { TaskGroup, TaskSchedule } from "@prisma/client"
+import moment from "moment"
 import { NextApiResponse } from "next"
 import { requireOrganizationAuthentication } from "../../../../../../lib/requireAuthentication"
 import { buildResponse } from "../../../../../../lib/server/buildResponse"
@@ -23,19 +24,45 @@ async function handler(
 
     // GET
     if (req.method === "GET") {
+      const ago = moment()
+        .subtract(7, "day")
+        .startOf("day")
+        .format("YYYY-MM-DD")
+
       const taskSchedules = await prisma.taskSchedule.findMany({
         where: {
-          taskGroup: {
-            organizationId,
-            users: {
-              some: {
-                userId: user.id,
+          AND: [
+            {
+              taskGroup: {
+                organizationId,
+                users: {
+                  some: {
+                    userId: user.id,
+                  },
+                },
               },
             },
-          },
+            {
+              // if non repeating exclude past schedules older than 1 day ago
+              OR: [
+                {
+                  repeats: false,
+                  date: {
+                    gte: ago,
+                  },
+                },
+                {
+                  repeats: true,
+                },
+              ],
+            },
+          ],
         },
         include: {
           taskGroup: true,
+        },
+        orderBy: {
+          date: "asc",
         },
       })
 
