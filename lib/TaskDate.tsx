@@ -97,11 +97,9 @@ export function TaskDate({ date, tasks }: Props) {
             )`,
 
         position: "relative",
-
-        // fade if in the past and not today
-        opacity: isInThePast && !isToday ? 0.4 : 1,
-        // desaturate if not today
-        filter: isInThePast && !isToday ? "grayscale(100%)" : "none",
+        outline: isInThePast
+          ? (theme) => `2px dashed ${alpha(theme.palette.error.main, 0.5)}`
+          : undefined,
       }}
     >
       <Stack
@@ -119,7 +117,9 @@ export function TaskDate({ date, tasks }: Props) {
                 ? "success.light"
                 : isToday
                   ? "primary.light"
-                  : theme.palette.text.disabled,
+                  : isInThePast
+                    ? "error.light"
+                    : theme.palette.text.disabled,
           }}
         >
           <DateText>{dateObject.format("ddd")}</DateText>
