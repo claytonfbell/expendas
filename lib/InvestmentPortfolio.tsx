@@ -156,14 +156,13 @@ export function InvestmentPortfolio() {
   const offTargetBy = Math.abs(equity / total - targetEquityPercentage)
   const isOutsideTargetThreshold = offTargetBy > 0.04
   const isWithinOnePercentOfTarget = offTargetBy <= 0.01
-
   const rebalanceEquityAmount = total * targetEquityPercentage - equity
-
+  const targetPortfolio: string = `${Math.round(targetEquityPercentage * 100)}/${Math.round((1 - targetEquityPercentage) * 100)}`
   const rebalanceMessage: string = isWithinOnePercentOfTarget
-    ? `Your portfolio is only **${formatPercentage(offTargetBy, false)}** off your target allocation. You can skip rebalancing on the next rebalance date if you want.`
+    ? `Your portfolio is only **${formatPercentage(offTargetBy, false)}** off your target allocation of **${targetPortfolio}**. You can skip rebalancing on the next rebalance date if you want.`
     : !isOutsideTargetThreshold
-      ? `To reach your target allocation, you will ${rebalanceEquityAmount > 0 ? "buy" : "sell"} **${formatMoney(rebalanceEquityAmount, true)}** of stocks at the next rebalance date scheduled.`
-      : `Your portfolio is outside of your target allocation by **${formatPercentage(offTargetBy, false)}**. Consider rebalancing to get back on track.`
+      ? `To reach your target allocation of **${targetPortfolio}**, you will ${rebalanceEquityAmount > 0 ? "buy" : "sell"} **${formatMoney(Math.abs(rebalanceEquityAmount), true)}** of stocks at the next rebalance date scheduled.`
+      : `Your portfolio is outside of your target allocation by **${formatPercentage(offTargetBy, false)}**. Consider ${rebalanceEquityAmount > 0 ? "buying" : "selling"} **${formatMoney(Math.abs(rebalanceEquityAmount), true)}** of stocks to get back to your target allocation of **${targetPortfolio}**.`
 
   return (
     <>
