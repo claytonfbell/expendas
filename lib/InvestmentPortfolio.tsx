@@ -1,9 +1,11 @@
 import {
   alpha,
   Box,
+  Chip,
   Grid,
   lighten,
   Stack,
+  styled,
   TableBody,
   TableCell,
   TableHead,
@@ -39,6 +41,7 @@ import { Currency } from "./Currency"
 import { ExpendasTable } from "./ExpendasTable"
 import { HorizontalRangeBar } from "./HorizontalRangeBar"
 import { Percentage } from "./Percentage"
+import { PercentInputTool } from "./PercentInputTool"
 
 type Data = {
   name: AccountBucket
@@ -131,6 +134,18 @@ export function InvestmentPortfolio() {
   }, [marketTwoYearLowEquity, fixed])
 
   const maxWidth = 250
+
+  // persist target equity percentage in local storage
+  const [targetEquityPercentage, setTargetEquityPercentage] = useState(() => {
+    const value = localStorage.getItem("targetEquityPercentage") || "0.9"
+    return parseFloat(value)
+  })
+  React.useEffect(() => {
+    localStorage.setItem(
+      "targetEquityPercentage",
+      targetEquityPercentage.toString()
+    )
+  }, [targetEquityPercentage])
 
   return (
     <>
@@ -278,6 +293,73 @@ export function InvestmentPortfolio() {
                 </TableCell>
                 <TableCell align="right"></TableCell>
               </TableRow>
+
+              {/* target allocation row  */}
+              <TableRow hover>
+                <TableCell></TableCell>
+                <TableCell>Target Allocation</TableCell>
+                <TableCell align="right">
+                  <StyledSpan
+                    sx={{
+                      fontFamily: `'Roboto Mono', monospace`,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <PercentInputTool
+                      enabled
+                      value={targetEquityPercentage * 10_000}
+                      onChange={(value) =>
+                        setTargetEquityPercentage(value / 10_000)
+                      }
+                    />
+                  </StyledSpan>
+                </TableCell>
+                <TableCell align="right">
+                  <Percentage value={1 - targetEquityPercentage} />
+                </TableCell>
+                <TableCell align="right"></TableCell>
+              </TableRow>
+
+              {/* target amounts */}
+              <TableRow hover>
+                <TableCell></TableCell>
+                <TableCell>Target Amounts</TableCell>
+                <TableCell align="right">
+                  <Currency value={total * targetEquityPercentage} />
+                </TableCell>
+                <TableCell align="right">
+                  <Currency value={total * (1 - targetEquityPercentage)} />
+                </TableCell>
+                <TableCell align="right">
+                  {/* suggesting to buy or sell to reach target allocation */}
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    justifyContent="end"
+                    alignItems="center"
+                  >
+                    <Chip
+                      label={
+                        total * targetEquityPercentage - equity > 0
+                          ? "Buy"
+                          : "Sell"
+                      }
+                      size="small"
+                      color={
+                        total * targetEquityPercentage - equity > 0
+                          ? "success"
+                          : "error"
+                      }
+                      variant="outlined"
+                    />
+                    <Currency
+                      value={total * targetEquityPercentage - equity}
+                      green
+                      red
+                    />
+                  </Stack>
+                </TableCell>
+              </TableRow>
             </TableBody>
           </ExpendasTable>
         </Grid>
@@ -309,6 +391,8 @@ export function InvestmentPortfolio() {
     </>
   )
 }
+
+const StyledSpan = styled("span")``
 
 interface CustomTooltipProps {
   payload?: [TooltipPayload, TooltipPayload]
