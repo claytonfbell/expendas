@@ -290,10 +290,29 @@ export function InvestmentPortfolio() {
               {/* percentage row */}
               <TableRow hover>
                 <TableCell colSpan={2}></TableCell>
-                <TableCell align="right">
+                <TableCell
+                  align="right"
+                  sx={{
+                    // color red if off by 4% or more of the target
+                    color:
+                      Math.abs(equity / total - targetEquityPercentage) > 0.04
+                        ? theme.palette.error.main
+                        : undefined,
+                  }}
+                >
                   <Percentage value={equity / total} />
                 </TableCell>
-                <TableCell align="right">
+                <TableCell
+                  align="right"
+                  sx={{
+                    // color red if off by 4% or more of the target
+                    color:
+                      Math.abs(fixed / total - (1 - targetEquityPercentage)) >
+                      0.04
+                        ? theme.palette.error.main
+                        : undefined,
+                  }}
+                >
                   <Percentage value={fixed / total} />
                 </TableCell>
                 <TableCell align="right"></TableCell>
