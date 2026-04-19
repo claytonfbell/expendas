@@ -167,10 +167,10 @@ export function InvestmentPortfolio() {
 
   return (
     <>
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid size={{ xs: 12 }}>
-          <Box maxWidth={600}>
-            <ResponsiveContainer width={"100%"} height={180}>
+          <Box maxWidth={500}>
+            <ResponsiveContainer width={"100%"} height={160}>
               <BarChart width={500} height={300} data={data}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
@@ -306,9 +306,14 @@ export function InvestmentPortfolio() {
                   </TableCell>
                 </TableRow>
 
+                <TableRow>
+                  <TableCell colSpan={5}>&nbsp;</TableCell>
+                </TableRow>
+
                 {/* percentage row */}
                 <TableRow hover>
-                  <TableCell colSpan={2}></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell>Current Allocation</TableCell>
                   <TableCell
                     align="right"
                     sx={{
