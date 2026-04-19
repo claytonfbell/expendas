@@ -355,7 +355,22 @@ export function InvestmentPortfolio() {
                     </StyledSpan>
                   </TableCell>
                   <TableCell align="right">
-                    <Percentage value={1 - targetEquityPercentage} />
+                    <StyledSpan
+                      sx={{
+                        fontFamily: `'Roboto Mono', monospace`,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      <PercentInputTool
+                        enabled
+                        value={Math.round(
+                          (1 - targetEquityPercentage) * 10_000
+                        )}
+                        onChange={(value) =>
+                          setTargetEquityPercentage(1 - value / 10_000)
+                        }
+                      />
+                    </StyledSpan>
                   </TableCell>
                   <TableCell align="right"></TableCell>
                 </TableRow>
