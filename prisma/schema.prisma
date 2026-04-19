@@ -14,6 +14,7 @@ model Organization {
     PlaidCredential PlaidCredential[]
     retirementPlans RetirementPlan[]
     taskGroups      TaskGroup[]
+    targetEquityPercentage Int                 @default(9000) // 90%
 }
 
 model User {

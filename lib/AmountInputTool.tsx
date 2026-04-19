@@ -29,6 +29,9 @@ export function AmountInputTool(props: Props) {
             color="inherit"
             sx={{
               cursor: "pointer",
+              "&:hover": {
+                textDecoration: "underline",
+              },
             }}
             onClick={() => setOpen(true)}
           >

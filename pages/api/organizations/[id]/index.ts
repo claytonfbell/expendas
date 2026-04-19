@@ -49,7 +49,11 @@ async function handler(
       // PUT
       else if (req.method === "PUT") {
         await requireAdminAuthentication(req, prisma, organization.id)
-        const { name, users }: OrganizationWithIncludes = req.body
+        const {
+          name,
+          users,
+          targetEquityPercentage,
+        }: OrganizationWithIncludes = req.body
         validate({ name }).notEmpty()
 
         // name must be unique
@@ -84,6 +88,7 @@ async function handler(
           where: { id: organization.id },
           data: {
             name,
+            targetEquityPercentage: Math.round(targetEquityPercentage),
           },
           include: organizationInclude,
         })

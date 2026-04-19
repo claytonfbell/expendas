@@ -1,7 +1,7 @@
 import {
+  Alert,
   alpha,
   Box,
-  Chip,
   Grid,
   lighten,
   Stack,
@@ -15,7 +15,9 @@ import {
   useTheme,
 } from "@mui/material"
 import { AccountBucket } from "@prisma/client"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
+import ReactMarkdown from "react-markdown"
+import { useDebounce } from "react-use"
 import {
   Bar,
   BarChart,
@@ -35,10 +37,13 @@ import {
   useFetchAccounts,
   useFetchTickerPrices,
   useUpdateAccount,
+  useUpdateOrganization,
 } from "./api/api"
 import { BottomStatusBar } from "./BottomStatusBar"
 import { Currency } from "./Currency"
 import { ExpendasTable } from "./ExpendasTable"
+import { formatMoney, formatPercentage } from "./formatMoney"
+import { useGlobalState } from "./GlobalStateProvider"
 import { HorizontalRangeBar } from "./HorizontalRangeBar"
 import { Percentage } from "./Percentage"
 import { PercentInputTool } from "./PercentInputTool"
@@ -51,6 +56,7 @@ type Data = {
 
 export function InvestmentPortfolio() {
   const theme = useTheme()
+  const { organization } = useGlobalState()
   const { data: unfiltered = [] } = useFetchAccounts()
   const accounts = unfiltered.filter((x) =>
     investmentGroup.types.includes(x.accountType)
@@ -90,20 +96,6 @@ export function InvestmentPortfolio() {
 
   const [selectedAccount, setSelectedAccount] = useState<AccountWithIncludes>()
 
-  const totalRothAndHSA = accounts.reduce(
-    (a, b) => a + (b.accountBucket === "Roth_And_HSA" ? b.balance : 0),
-    0
-  )
-  const totalTraditional = accounts.reduce(
-    (a, b) => a + (b.accountBucket === "Traditional" ? b.balance : 0),
-    0
-  )
-
-  const totalAfterTax = accounts.reduce(
-    (a, b) => a + (b.accountBucket === "After_Tax" ? b.balance : 0),
-    0
-  )
-
   const { data: tickerPrices } = useFetchTickerPrices()
   const marketHighEquity = React.useMemo(() => {
     if (tickerPrices) {
@@ -135,24 +127,50 @@ export function InvestmentPortfolio() {
 
   const maxWidth = 250
 
-  // persist target equity percentage in local storage
-  const [targetEquityPercentage, setTargetEquityPercentage] = useState(() => {
-    const value = localStorage.getItem("targetEquityPercentage") || "0.9"
-    return parseFloat(value)
-  })
-  React.useEffect(() => {
-    localStorage.setItem(
-      "targetEquityPercentage",
-      targetEquityPercentage.toString()
-    )
-  }, [targetEquityPercentage])
+  const [targetEquityPercentage, setTargetEquityPercentage] = useState(
+    organization?.targetEquityPercentage
+      ? organization.targetEquityPercentage / 10_000
+      : 0.9
+  )
+  useEffect(() => {
+    if (organization) {
+      setTargetEquityPercentage(organization.targetEquityPercentage / 10_000)
+    }
+  }, [organization])
+
+  const { mutateAsync: updateOrganization } = useUpdateOrganization()
+  useDebounce(
+    () => {
+      if (organization) {
+        updateOrganization({
+          ...organization,
+          targetEquityPercentage: Math.round(targetEquityPercentage * 10_000),
+        })
+      }
+    },
+    500,
+    [targetEquityPercentage]
+  )
+
+  // if the current equity percentage is off by more than 4% from the target, show a warning
+  const offTargetBy = Math.abs(equity / total - targetEquityPercentage)
+  const isOutsideTargetThreshold = offTargetBy > 0.04
+  const isWithinOnePercentOfTarget = offTargetBy <= 0.01
+
+  const rebalanceEquityAmount = total * targetEquityPercentage - equity
+
+  const rebalanceMessage: string = isWithinOnePercentOfTarget
+    ? `Your portfolio is only **${formatPercentage(offTargetBy, false)}** off your target allocation. You can skip rebalancing on the next rebalance date if you want.`
+    : !isOutsideTargetThreshold
+      ? `To reach your target allocation, you will ${rebalanceEquityAmount > 0 ? "buy" : "sell"} **${formatMoney(rebalanceEquityAmount, true)}** of stocks at the next rebalance date scheduled.`
+      : `Your portfolio is outside of your target allocation by **${formatPercentage(offTargetBy, false)}**. Consider rebalancing to get back on track.`
 
   return (
     <>
       <Grid container spacing={3}>
         <Grid size={{ xs: 12 }}>
           <Box maxWidth={600}>
-            <ResponsiveContainer width={"100%"} height={isXs ? 180 : 180}>
+            <ResponsiveContainer width={"100%"} height={180}>
               <BarChart width={500} height={300} data={data}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
@@ -189,203 +207,197 @@ export function InvestmentPortfolio() {
         </Grid>
 
         <Grid size={{ xs: 12 }}>
-          <ExpendasTable>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ maxWidth }}>Account</TableCell>
-                <TableCell sx={{ maxWidth }}>Retirement Bucket</TableCell>
-                <TableCell align="right">Equity</TableCell>
-                <TableCell align="right">Fixed Income</TableCell>
-                <TableCell align="right">Total</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {accounts
-                .filter((x) => x.balance > 0)
-                .map((account) => {
-                  const equity =
-                    account.balance - (account.totalFixedIncome || 0)
-                  const fixed = account.totalFixedIncome || 0
-                  return (
-                    <TableRow key={account.id} hover>
-                      <TableCell>{account.name}</TableCell>
-                      <TableCell>
-                        {account.accountBucket &&
-                          displayAccountBucket(account.accountBucket)}
-                      </TableCell>
-                      <TableCell align="right">
-                        <Currency value={equity} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <AmountInputTool
-                          enabled
-                          value={fixed}
-                          onChange={(totalFixedIncome) => {
-                            updateAccount({ ...account, totalFixedIncome })
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell align="right">
-                        <AmountInputTool
-                          enabled
-                          value={account.balance}
-                          onChange={(balance) => {
-                            updateAccount({ ...account, balance })
-                          }}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  )
-                })}
-              <TableRow>
-                <TableCell colSpan={5}>&nbsp;</TableCell>
-              </TableRow>
-            </TableBody>
-            <TableHead>
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell sx={{ maxWidth }}>Retirement Bucket</TableCell>
-                <TableCell align="right">Equity</TableCell>
-                <TableCell align="right">Fixed Income</TableCell>
-                <TableCell align="right">Total</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.map((row) => (
-                <TableRow key={row.name} hover>
-                  <TableCell>&nbsp;</TableCell>
-                  <TableCell>{row.name}</TableCell>
+          <Stack spacing={2}>
+            <ExpendasTable>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ maxWidth }}>Account</TableCell>
+                  <TableCell sx={{ maxWidth }}>Retirement Bucket</TableCell>
+                  <TableCell align="right">Equity</TableCell>
+                  <TableCell align="right">Fixed Income</TableCell>
+                  <TableCell align="right">Total</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {accounts
+                  .filter((x) => x.balance > 0)
+                  .map((account) => {
+                    const equity =
+                      account.balance - (account.totalFixedIncome || 0)
+                    const fixed = account.totalFixedIncome || 0
+                    return (
+                      <TableRow key={account.id} hover>
+                        <TableCell>{account.name}</TableCell>
+                        <TableCell>
+                          {account.accountBucket &&
+                            displayAccountBucket(account.accountBucket)}
+                        </TableCell>
+                        <TableCell align="right">
+                          <Currency value={equity} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <AmountInputTool
+                            enabled
+                            value={fixed}
+                            onChange={(totalFixedIncome) => {
+                              updateAccount({ ...account, totalFixedIncome })
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell align="right">
+                          <AmountInputTool
+                            enabled
+                            value={account.balance}
+                            onChange={(balance) => {
+                              updateAccount({ ...account, balance })
+                            }}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
+                <TableRow>
+                  <TableCell colSpan={5}>&nbsp;</TableCell>
+                </TableRow>
+              </TableBody>
+              <TableHead>
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell sx={{ maxWidth }}>Retirement Bucket</TableCell>
+                  <TableCell align="right">Equity</TableCell>
+                  <TableCell align="right">Fixed Income</TableCell>
+                  <TableCell align="right">Total</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data.map((row) => (
+                  <TableRow key={row.name} hover>
+                    <TableCell>&nbsp;</TableCell>
+                    <TableCell>{row.name}</TableCell>
+                    <TableCell align="right">
+                      <Currency value={row.equity} />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Currency value={row.fixed} />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Currency value={row.equity + row.fixed} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+
+                {/* total row */}
+                <TableRow hover>
+                  <TableCell colSpan={2}></TableCell>
                   <TableCell align="right">
-                    <Currency value={row.equity} />
+                    <strong>
+                      <Currency value={equity} />
+                    </strong>
                   </TableCell>
                   <TableCell align="right">
-                    <Currency value={row.fixed} />
+                    <strong>
+                      <Currency value={fixed} />
+                    </strong>
                   </TableCell>
                   <TableCell align="right">
-                    <Currency value={row.equity + row.fixed} />
+                    <strong>
+                      <Currency value={total} />
+                    </strong>
                   </TableCell>
                 </TableRow>
-              ))}
 
-              {/* total row */}
-              <TableRow hover>
-                <TableCell colSpan={2}></TableCell>
-                <TableCell align="right">
-                  <strong>
-                    <Currency value={equity} />
-                  </strong>
-                </TableCell>
-                <TableCell align="right">
-                  <strong>
-                    <Currency value={fixed} />
-                  </strong>
-                </TableCell>
-                <TableCell align="right">
-                  <strong>
-                    <Currency value={total} />
-                  </strong>
-                </TableCell>
-              </TableRow>
-
-              {/* percentage row */}
-              <TableRow hover>
-                <TableCell colSpan={2}></TableCell>
-                <TableCell
-                  align="right"
-                  sx={{
-                    // color red if off by 4% or more of the target
-                    color:
-                      Math.abs(equity / total - targetEquityPercentage) > 0.04
-                        ? theme.palette.error.main
-                        : undefined,
-                  }}
-                >
-                  <Percentage value={equity / total} />
-                </TableCell>
-                <TableCell
-                  align="right"
-                  sx={{
-                    // color red if off by 4% or more of the target
-                    color:
-                      Math.abs(fixed / total - (1 - targetEquityPercentage)) >
-                      0.04
-                        ? theme.palette.error.main
-                        : undefined,
-                  }}
-                >
-                  <Percentage value={fixed / total} />
-                </TableCell>
-                <TableCell align="right"></TableCell>
-              </TableRow>
-
-              {/* target allocation row  */}
-              <TableRow hover>
-                <TableCell></TableCell>
-                <TableCell>Target Allocation</TableCell>
-                <TableCell align="right">
-                  <StyledSpan
+                {/* percentage row */}
+                <TableRow hover>
+                  <TableCell colSpan={2}></TableCell>
+                  <TableCell
+                    align="right"
                     sx={{
-                      fontFamily: `'Roboto Mono', monospace`,
-                      whiteSpace: "nowrap",
+                      // color red if off by 4% or more of the target
+                      color: isOutsideTargetThreshold
+                        ? theme.palette.error.main
+                        : undefined,
                     }}
                   >
-                    <PercentInputTool
-                      enabled
-                      value={targetEquityPercentage * 10_000}
-                      onChange={(value) =>
-                        setTargetEquityPercentage(value / 10_000)
-                      }
-                    />
-                  </StyledSpan>
-                </TableCell>
-                <TableCell align="right">
-                  <Percentage value={1 - targetEquityPercentage} />
-                </TableCell>
-                <TableCell align="right"></TableCell>
-              </TableRow>
-
-              {/* target amounts */}
-              <TableRow hover>
-                <TableCell></TableCell>
-                <TableCell>Target Amounts</TableCell>
-                <TableCell align="right">
-                  <Currency value={total * targetEquityPercentage} />
-                </TableCell>
-                <TableCell align="right">
-                  <Currency value={total * (1 - targetEquityPercentage)} />
-                </TableCell>
-                <TableCell align="right">
-                  {/* suggesting to buy or sell to reach target allocation */}
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    justifyContent="end"
-                    alignItems="center"
+                    <Percentage value={equity / total} />
+                  </TableCell>
+                  <TableCell
+                    align="right"
+                    sx={{
+                      // color red if off by 4% or more of the target
+                      color: isOutsideTargetThreshold
+                        ? theme.palette.error.main
+                        : undefined,
+                    }}
                   >
-                    <Chip
-                      label={
-                        total * targetEquityPercentage - equity > 0
-                          ? "Buy"
-                          : "Sell"
-                      }
-                      size="small"
-                      color={
-                        total * targetEquityPercentage - equity > 0
-                          ? "success"
-                          : "error"
-                      }
-                      variant="outlined"
-                    />
-                    <Currency
-                      value={total * targetEquityPercentage - equity}
-                      green
-                      red
-                    />
-                  </Stack>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </ExpendasTable>
+                    <Percentage value={fixed / total} />
+                  </TableCell>
+                  <TableCell align="right"></TableCell>
+                </TableRow>
+
+                {/* target allocation row  */}
+                <TableRow hover>
+                  <TableCell></TableCell>
+                  <TableCell>Target Allocation</TableCell>
+                  <TableCell align="right">
+                    <StyledSpan
+                      sx={{
+                        fontFamily: `'Roboto Mono', monospace`,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      <PercentInputTool
+                        enabled
+                        value={Math.round(targetEquityPercentage * 10_000)}
+                        onChange={(value) =>
+                          setTargetEquityPercentage(value / 10_000)
+                        }
+                      />
+                    </StyledSpan>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Percentage value={1 - targetEquityPercentage} />
+                  </TableCell>
+                  <TableCell align="right"></TableCell>
+                </TableRow>
+
+                {/* target amounts */}
+                <TableRow hover>
+                  <TableCell></TableCell>
+                  <TableCell>Target Amounts</TableCell>
+                  <TableCell align="right">
+                    <Currency value={total * targetEquityPercentage} />
+                  </TableCell>
+                  <TableCell align="right">
+                    <Currency value={total * (1 - targetEquityPercentage)} />
+                  </TableCell>
+                  <TableCell align="right"></TableCell>
+                </TableRow>
+              </TableBody>
+            </ExpendasTable>
+
+            {/* suggesting to buy or sell to reach target allocation */}
+            <CustomAlert
+              severity={
+                isWithinOnePercentOfTarget
+                  ? "success"
+                  : isOutsideTargetThreshold
+                    ? "warning"
+                    : "info"
+              }
+              variant="outlined"
+            >
+              <Typography
+                component="div"
+                sx={{
+                  "& p": {
+                    margin: 0,
+                  },
+                }}
+              >
+                <ReactMarkdown>{rebalanceMessage}</ReactMarkdown>
+              </Typography>
+            </CustomAlert>
+          </Stack>
         </Grid>
       </Grid>
 
@@ -490,3 +502,8 @@ function CustomTooltip({ payload, label, active }: CustomTooltipProps) {
     </Box>
   ) : null
 }
+
+const CustomAlert = styled(Alert)`
+  background-color: ${(props) =>
+    alpha(props.theme.palette[props.severity ?? "info"].light, 0.1)};
+`
