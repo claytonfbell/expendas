@@ -151,31 +151,33 @@ export function InvestmentPortfolio() {
     <>
       <Grid container spacing={3}>
         <Grid size={{ xs: 12 }}>
-          <ResponsiveContainer width="100%" height={isXs ? 180 : 300}>
-            <BarChart width={500} height={300} data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis hide />
-              <Tooltip
-                content={<CustomTooltip />}
-                isAnimationActive={false}
-                // label="name"
-                // formatter={(x: number) => formatMoney(x * 100)}
-              />
-              <Bar
-                dataKey="equity"
-                stackId="a"
-                fill={theme.palette.primary.main}
-                name="Equity"
-              />
-              <Bar
-                dataKey="fixed"
-                stackId="a"
-                fill={theme.palette.secondary.main}
-                name="Fixed Income"
-              />
-            </BarChart>
-          </ResponsiveContainer>
+          <Box maxWidth={600}>
+            <ResponsiveContainer width={"100%"} height={isXs ? 180 : 180}>
+              <BarChart width={500} height={300} data={data}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis hide />
+                <Tooltip
+                  content={<CustomTooltip />}
+                  isAnimationActive={false}
+                  // label="name"
+                  // formatter={(x: number) => formatMoney(x * 100)}
+                />
+                <Bar
+                  dataKey="equity"
+                  stackId="a"
+                  fill={theme.palette.primary.main}
+                  name="Equity"
+                />
+                <Bar
+                  dataKey="fixed"
+                  stackId="a"
+                  fill={theme.palette.secondary.main}
+                  name="Fixed Income"
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </Box>
         </Grid>
 
         <Grid size={{ xs: 12 }}>
@@ -198,40 +200,43 @@ export function InvestmentPortfolio() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {accounts.map((account) => {
-                const equity = account.balance - (account.totalFixedIncome || 0)
-                const fixed = account.totalFixedIncome || 0
-                return (
-                  <TableRow key={account.id} hover>
-                    <TableCell>{account.name}</TableCell>
-                    <TableCell>
-                      {account.accountBucket &&
-                        displayAccountBucket(account.accountBucket)}
-                    </TableCell>
-                    <TableCell align="right">
-                      <Currency value={equity} />
-                    </TableCell>
-                    <TableCell align="right">
-                      <AmountInputTool
-                        enabled
-                        value={fixed}
-                        onChange={(totalFixedIncome) => {
-                          updateAccount({ ...account, totalFixedIncome })
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell align="right">
-                      <AmountInputTool
-                        enabled
-                        value={account.balance}
-                        onChange={(balance) => {
-                          updateAccount({ ...account, balance })
-                        }}
-                      />
-                    </TableCell>
-                  </TableRow>
-                )
-              })}
+              {accounts
+                .filter((x) => x.balance > 0)
+                .map((account) => {
+                  const equity =
+                    account.balance - (account.totalFixedIncome || 0)
+                  const fixed = account.totalFixedIncome || 0
+                  return (
+                    <TableRow key={account.id} hover>
+                      <TableCell>{account.name}</TableCell>
+                      <TableCell>
+                        {account.accountBucket &&
+                          displayAccountBucket(account.accountBucket)}
+                      </TableCell>
+                      <TableCell align="right">
+                        <Currency value={equity} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <AmountInputTool
+                          enabled
+                          value={fixed}
+                          onChange={(totalFixedIncome) => {
+                            updateAccount({ ...account, totalFixedIncome })
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        <AmountInputTool
+                          enabled
+                          value={account.balance}
+                          onChange={(balance) => {
+                            updateAccount({ ...account, balance })
+                          }}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
               <TableRow>
                 <TableCell colSpan={5}>&nbsp;</TableCell>
               </TableRow>
