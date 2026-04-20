@@ -2,7 +2,8 @@ import AccountBalanceIcon from "@mui/icons-material/AccountBalance"
 import AddIcon from "@mui/icons-material/Add"
 import CheckIcon from "@mui/icons-material/Check"
 import ExitToAppIcon from "@mui/icons-material/ExitToApp"
-import ReceiptIcon from "@mui/icons-material/Receipt"
+import PaymentsIcon from "@mui/icons-material/Payments"
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong"
 import SettingsIcon from "@mui/icons-material/Settings"
 import { Button, ListItemIcon } from "@mui/material"
 import Menu from "@mui/material/Menu"
@@ -91,9 +92,16 @@ export function UserMenu() {
 
         <MenuItem onClick={menuClick(() => router.push(`/payments`))}>
           <ListItemIcon>
-            <ReceiptIcon />
+            <PaymentsIcon />
           </ListItemIcon>
           Payments
+        </MenuItem>
+
+        <MenuItem onClick={menuClick(() => router.push(`/receipts`))}>
+          <ListItemIcon>
+            <ReceiptLongIcon />
+          </ListItemIcon>
+          Receipts
         </MenuItem>
 
         <MenuItem onClick={menuClick(() => logout())}>

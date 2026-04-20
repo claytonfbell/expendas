@@ -12,6 +12,10 @@ import {
 } from "@prisma/client"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { NewFixedIncomeAssetRequestBody } from "../../pages/api/organizations/[id]/fixedIncomeAssets"
+import {
+  ReceiptCreateRequest,
+  ReceiptWithIncludes,
+} from "../../pages/api/organizations/[id]/receipts"
 import { RetirementPlanReportResponse } from "../../pages/api/organizations/[id]/retirementPlans/[retirementPlanId]/report"
 import { TaskWithIncludes } from "../../pages/api/organizations/[id]/tasks"
 import { TaskGroupCreateRequest } from "../../pages/api/organizations/[id]/tasks/groups"
@@ -911,6 +915,60 @@ export function useUpdateTask() {
     onSuccess: (data) => {
       queryClient.refetchQueries({
         queryKey: ["tasks", organizationId],
+      })
+    },
+  })
+}
+
+export function useFetchReceipts() {
+  const { organizationId } = useGlobalState()
+  return useQuery<ReceiptWithIncludes[], RestError>({
+    queryKey: ["receipts", organizationId],
+    queryFn: () => rest.get(`/organizations/${organizationId}/receipts`),
+    enabled: organizationId !== null,
+  })
+}
+
+export function useAddReceipt() {
+  const { organizationId } = useGlobalState()
+  const queryClient = useQueryClient()
+  return useMutation<ReceiptWithIncludes, RestError, ReceiptCreateRequest>({
+    mutationFn: (params) =>
+      rest.post(`/organizations/${organizationId}/receipts`, params),
+    onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: ["receipts", organizationId],
+      })
+    },
+  })
+}
+
+export function useUpdateReceipt() {
+  const { organizationId } = useGlobalState()
+  const queryClient = useQueryClient()
+  return useMutation<ReceiptWithIncludes, RestError, ReceiptWithIncludes>({
+    mutationFn: (params) =>
+      rest.put(
+        `/organizations/${organizationId}/receipts/${params.id}`,
+        params
+      ),
+    onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: ["receipts", organizationId],
+      })
+    },
+  })
+}
+
+export function useRemoveReceipt() {
+  const { organizationId } = useGlobalState()
+  const queryClient = useQueryClient()
+  return useMutation<void, RestError, number>({
+    mutationFn: (receiptId) =>
+      rest.delete(`/organizations/${organizationId}/receipts/${receiptId}`),
+    onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: ["receipts", organizationId],
       })
     },
   })

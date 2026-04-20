@@ -15,6 +15,7 @@ model Organization {
     retirementPlans RetirementPlan[]
     taskGroups      TaskGroup[]
     targetEquityPercentage Int                 @default(9000) // 90%
+    cloudFiles      OrganizationCloudFile[]
 }
 
 model User {
@@ -76,9 +77,10 @@ model Account {
     plaidCredential   PlaidCredential? @relation(fields: [plaidCredentialId], references: [id])
     plaidAccountId    String?          @db.VarChar(255)
     tickerPrice       Int?
-    balanceHistory    AccountBalanceHistory[]
+    balanceHistory              AccountBalanceHistory[]
     retirementPlanContributions RetirementPlanContribution[]
-    fixedIncomeAssets  FixedIncomeAsset[]
+    fixedIncomeAssets           FixedIncomeAsset[]
+    receipts                    Receipt[]
 }
 
 model Payment {
@@ -241,6 +243,51 @@ model Task {
     completedAt         String?
     completedByUserId   Int?
     completedByUser     User?   @relation(fields: [completedByUserId], references: [id], onDelete: Cascade, name: "completedTasks")
+}
+
+model CloudFile {
+    id              Int     @id @default(autoincrement())
+    md5             String  @unique(map: "CloudFile.md5_unique") @db.VarChar(255)
+    originalName    String  @db.VarChar(255)
+    contentType     String  @db.VarChar(255)
+    size            Int
+    organizationCloudFiles OrganizationCloudFile[]
+}
+
+model OrganizationCloudFile {
+    id              Int     @id @default(autoincrement())
+    organizationId  Int
+    cloudFileId     Int
+    organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    cloudFile       CloudFile    @relation(fields: [cloudFileId], references: [id], onDelete: Cascade)
+    name            String  @db.VarChar(255) // name given by user when uploading, doesn't have to be unique
+    useCase         OrganizationCloudFileUseCase
+    receipts        Receipt[]
+    @@unique([cloudFileId, useCase, organizationId], map: "OrganizationCloudFile.cloudFileId_useCase_organizationId_unique")
+}
+
+model Receipt {
+    id                      Int     @id @default(autoincrement())
+    organizationCloudFileId Int
+    organizationCloudFile   OrganizationCloudFile @relation(fields: [organizationCloudFileId], references: [id], onDelete: Cascade)
+    accountId               Int
+    account                 Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+    date                    String?
+    datePaid                String?
+    amount                  Int
+    merchant                String  @db.VarChar(255)
+    notes                   String? @db.VarChar(255)
+    receiptType             ReceiptType
+}
+
+enum OrganizationCloudFileUseCase {
+    Receipt
+}
+
+enum ReceiptType {
+    HSA_Eligible
+    Charity
+    Other
 }
 
 enum TaskGroupColor {

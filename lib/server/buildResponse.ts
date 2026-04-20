@@ -9,8 +9,12 @@ export const buildResponse = async (
     const result = await func()
     if (result === undefined) {
       res.status(204).send(null)
+      0
     } else {
-      res.status(200).json(result)
+      // if result is false do nothing, otherwise return result
+      if (result !== false) {
+        res.status(200).json(result)
+      }
     }
   } catch (e: any) {
     console.log(e)
