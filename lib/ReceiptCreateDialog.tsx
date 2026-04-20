@@ -11,15 +11,15 @@ import {
 } from "@mui/material"
 import { ReceiptType } from "@prisma/client"
 import { CurrencyFieldBase, DatePickerBase, SelectBase } from "material-ui-pack"
-import moment from "moment"
 import { useState } from "react"
 import {
   ReceiptCreateRequest,
   ReceiptWithIncludes,
 } from "../pages/api/organizations/[id]/receipts"
+import { displayAccountType } from "./accountTypes"
 import { useAddReceipt, useFetchAccounts } from "./api/api"
 import DisplayError from "./DisplayError"
-import { getReceiptTypeLabel, receiptTypes } from "./receiptTypes"
+import { displayReceiptType, receiptTypes } from "./receiptTypes"
 import { SelectFile } from "./SelectFile"
 
 const defaultState: ReceiptCreateRequest = {
@@ -29,8 +29,8 @@ const defaultState: ReceiptCreateRequest = {
   merchant: "",
   amount: 0,
   receiptType: "Other",
-  date: moment().format("YYYY-MM-DD"),
-  datePaid: moment().format("YYYY-MM-DD"),
+  date: null,
+  datePaid: null,
   accountId: null,
   notes: null,
 }
@@ -103,7 +103,7 @@ export function ReceiptCreateDialog({ onComplete }: Props) {
                   handleUpdate({ receiptType: receiptType as ReceiptType })
                 }
                 options={receiptTypes.map((type) => {
-                  return { label: getReceiptTypeLabel(type), value: type }
+                  return { label: displayReceiptType(type), value: type }
                 })}
               />
               <DatePickerBase
@@ -134,8 +134,11 @@ export function ReceiptCreateDialog({ onComplete }: Props) {
                 onChange={(accountId) =>
                   handleUpdate({ accountId: accountId as number })
                 }
-                options={(accounts ?? []).map(({ id, name }) => {
-                  return { label: name, value: id }
+                options={(accounts ?? []).map(({ id, name, accountType }) => {
+                  return {
+                    label: `${name} (${displayAccountType(accountType)})`,
+                    value: id,
+                  }
                 })}
               />
               {state.fileBase64 ? (

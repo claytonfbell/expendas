@@ -2,7 +2,7 @@ import { ReceiptType } from "@prisma/client"
 
 export const receiptTypes: ReceiptType[] = ["Charity", "HSA_Eligible", "Other"]
 
-export function getReceiptTypeLabel(receiptType: ReceiptType) {
+export function displayReceiptType(receiptType: ReceiptType) {
   switch (receiptType) {
     case "Charity":
       return "Charity"

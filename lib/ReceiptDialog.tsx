@@ -10,10 +10,11 @@ import { ReceiptType } from "@prisma/client"
 import { CurrencyFieldBase, DatePickerBase, SelectBase } from "material-ui-pack"
 import { useEffect, useState } from "react"
 import { ReceiptWithIncludes } from "../pages/api/organizations/[id]/receipts"
+import { displayAccountType } from "./accountTypes"
 import { useFetchAccounts, useRemoveReceipt, useUpdateReceipt } from "./api/api"
 import ConfirmDialog from "./ConfirmDialog"
 import DisplayError from "./DisplayError"
-import { getReceiptTypeLabel, receiptTypes } from "./receiptTypes"
+import { displayReceiptType, receiptTypes } from "./receiptTypes"
 
 interface Props {
   receipt: ReceiptWithIncludes | null
@@ -88,7 +89,7 @@ export function ReceiptDialog({ receipt, onClose, onComplete }: Props) {
                   handleUpdate({ receiptType: receiptType as ReceiptType })
                 }
                 options={receiptTypes.map((type) => {
-                  return { label: getReceiptTypeLabel(type), value: type }
+                  return { label: displayReceiptType(type), value: type }
                 })}
               />
               <DatePickerBase
@@ -119,8 +120,11 @@ export function ReceiptDialog({ receipt, onClose, onComplete }: Props) {
                 onChange={(accountId) =>
                   handleUpdate({ accountId: accountId as number })
                 }
-                options={(accounts ?? []).map(({ id, name }) => {
-                  return { label: name, value: id }
+                options={(accounts ?? []).map(({ id, name, accountType }) => {
+                  return {
+                    label: `${name} (${displayAccountType(accountType)})`,
+                    value: id,
+                  }
                 })}
               />
 

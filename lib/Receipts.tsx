@@ -19,7 +19,7 @@ import { ExpendasTable } from "./ExpendasTable"
 import { formatMoney } from "./formatMoney"
 import { ReceiptCreateDialog } from "./ReceiptCreateDialog"
 import { ReceiptDialog } from "./ReceiptDialog"
-import { getReceiptTypeLabel } from "./receiptTypes"
+import { displayReceiptType } from "./receiptTypes"
 
 export function Receipts() {
   const { data: receipts } = useFetchReceipts()
@@ -47,9 +47,7 @@ export function Receipts() {
             {receipts?.map((receipt) => (
               <TableRow key={receipt.id}>
                 <TableCell>{receipt.merchant}</TableCell>
-                <TableCell>
-                  {getReceiptTypeLabel(receipt.receiptType)}
-                </TableCell>
+                <TableCell>{displayReceiptType(receipt.receiptType)}</TableCell>
                 <TableCell align="right">
                   {formatMoney(receipt.amount)}
                 </TableCell>
