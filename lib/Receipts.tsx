@@ -1,7 +1,7 @@
 import DownloadIcon from "@mui/icons-material/Download"
 import EditIcon from "@mui/icons-material/Edit"
 import {
-  Chip,
+  Button,
   IconButton,
   Link,
   Stack,
@@ -64,22 +64,15 @@ export function Receipts() {
                 </TableCell>
                 <TableCell>{receipt.account.name}</TableCell>
                 <TableCell>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Stack>{receipt.organizationCloudFile.name}</Stack>
-                    <Chip
-                      size="small"
-                      label={prettyBytes(
-                        receipt.organizationCloudFile.cloudFile.size
-                      )}
-                    />
-                    <IconButton
-                      size="small"
-                      component={Link}
-                      href={`${rest.baseURL}/organizations/${receipt.account.organizationId}/receipts/${receipt.id}/download`}
-                    >
-                      <DownloadIcon />
-                    </IconButton>
-                  </Stack>
+                  <Button
+                    startIcon={<DownloadIcon />}
+                    size="small"
+                    component={Link}
+                    href={`${rest.baseURL}/organizations/${receipt.account.organizationId}/receipts/${receipt.id}/download`}
+                  >
+                    {receipt.organizationCloudFile.name} (
+                    {prettyBytes(receipt.organizationCloudFile.cloudFile.size)})
+                  </Button>
                 </TableCell>
                 <TableCell align="right">
                   <Stack direction="row" justifyContent="flex-end">
