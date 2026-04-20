@@ -8,6 +8,7 @@ import crypto from "crypto"
 import fs from "fs"
 import os from "os"
 import path from "path"
+import prisma from "./prisma"
 
 const s3 = new S3Client({
   endpoint: process.env.S3_ENDPOINT,
@@ -32,7 +33,7 @@ export async function putCloudFile({
   const md5Hash = crypto.createHash("md5").update(buffer).digest("hex")
 
   // check if file exists
-  const exists = await prisma?.cloudFile.findUnique({
+  const exists = await prisma.cloudFile.findUnique({
     where: {
       md5: md5Hash,
     },
@@ -53,9 +54,9 @@ export async function putCloudFile({
 
   // persist the file into local temp folder for caching
   saveToTempFile(md5Hash, buffer)
-
+  1
   // save file metadata to database
-  const cloudFile = await prisma?.cloudFile.create({
+  const cloudFile = await prisma.cloudFile.create({
     data: {
       md5: md5Hash,
       originalName: fileName,
