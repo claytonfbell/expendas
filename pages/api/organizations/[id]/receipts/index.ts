@@ -11,6 +11,14 @@ import { putCloudFile } from "../../../../../lib/server/cloudFile"
 import prisma from "../../../../../lib/server/prisma"
 import withSession, { NextIronRequest } from "../../../../../lib/server/session"
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "10mb",
+    },
+  },
+}
+
 async function handler(req: NextIronRequest, res: NextApiResponse) {
   buildResponse(res, async () => {
     const organizationId = Number(req.query.id)

@@ -34,6 +34,9 @@ crontab -e
 apt install net-tools
 vim /etc/nginx/sites-available/default
 
+        # Increase upload limit to 100 Megabytes
+        client_max_body_size 100M;
+
         location / {
                 proxy_pass http://localhost:3000;
                 proxy_http_version 1.1;
