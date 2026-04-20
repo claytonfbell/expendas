@@ -54,10 +54,12 @@ export function Receipts() {
                   {formatMoney(receipt.amount)}
                 </TableCell>
                 <TableCell>
-                  {moment(receipt.date, "YYYY-MM-DD").format("ll")}
+                  {receipt.date &&
+                    moment(receipt.date, "YYYY-MM-DD").format("ll")}
                 </TableCell>
                 <TableCell>
-                  {moment(receipt.datePaid, "YYYY-MM-DD").format("ll")}
+                  {receipt.datePaid &&
+                    moment(receipt.datePaid, "YYYY-MM-DD").format("ll")}
                 </TableCell>
                 <TableCell>{receipt.account.name}</TableCell>
                 <TableCell align="right">
