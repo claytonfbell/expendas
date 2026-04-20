@@ -71,7 +71,6 @@ async function handler(req: NextIronRequest, res: NextApiResponse) {
       if (!existing) {
         organizationCloudFile = await prisma.organizationCloudFile.create({
           data: {
-            ...data,
             name: cloudFile.originalName,
             organizationId,
             cloudFileId: cloudFile.id,
