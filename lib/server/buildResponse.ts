@@ -9,7 +9,6 @@ export const buildResponse = async (
     const result = await func()
     if (result === undefined) {
       res.status(204).send(null)
-      0
     } else {
       // if result is false do nothing, otherwise return result
       if (result !== false) {
