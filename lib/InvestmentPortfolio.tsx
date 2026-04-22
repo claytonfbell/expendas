@@ -163,10 +163,14 @@ export function InvestmentPortfolio() {
     const isWithinOnePercentOfTarget = offTargetBy <= 0.01
     const rebalanceEquityAmount = total * targetEquityPercentage - equity
     const targetPortfolio: string = `${Math.round(targetEquityPercentage * 100)}/${Math.round((1 - targetEquityPercentage) * 100)}`
+    const toReachMessage = `To reach your target allocation of **${targetPortfolio}**, you will ${rebalanceEquityAmount > 0 ? "buy" : "sell"} **${formatMoney(Math.abs(rebalanceEquityAmount), true)}** of stocks at the next rebalance date scheduled.`
+
     const rebalanceMessage: string = isWithinOnePercentOfTarget
-      ? `Your portfolio is only **${formatPercentage(offTargetBy, false)}** off your target allocation of **${targetPortfolio}**. You can skip rebalancing on the next rebalance date if you want.`
+      ? `Your portfolio is only **${formatPercentage(offTargetBy, false)}** off your target allocation. You can skip rebalancing on the next rebalance date if you want.
+
+${toReachMessage}`
       : !isOutsideTargetThreshold
-        ? `To reach your target allocation of **${targetPortfolio}**, you will ${rebalanceEquityAmount > 0 ? "buy" : "sell"} **${formatMoney(Math.abs(rebalanceEquityAmount), true)}** of stocks at the next rebalance date scheduled.`
+        ? `${toReachMessage}`
         : `Your portfolio is outside of your target allocation by **${formatPercentage(offTargetBy, false)}**. Consider ${rebalanceEquityAmount > 0 ? "buying" : "selling"} **${formatMoney(Math.abs(rebalanceEquityAmount), true)}** of stocks to get back to your target allocation of **${targetPortfolio}**.`
 
     return {
@@ -178,38 +182,36 @@ export function InvestmentPortfolio() {
 
   return (
     <>
-      <Grid container spacing={2}>
-        <Grid size={{ xs: 12 }}>
-          <Box maxWidth={500}>
-            <ResponsiveContainer width={"100%"} height={160}>
-              <BarChart width={500} height={300} data={data}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis hide />
-                <Tooltip
-                  content={<CustomTooltip />}
-                  isAnimationActive={false}
-                  // label="name"
-                  // formatter={(x: number) => formatMoney(x * 100)}
-                />
-                <Bar
-                  dataKey="equity"
-                  stackId="a"
-                  fill={theme.palette.primary.main}
-                  name="Equity"
-                />
-                <Bar
-                  dataKey="fixed"
-                  stackId="a"
-                  fill={theme.palette.secondary.main}
-                  name="Fixed Income"
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </Box>
+      <Grid container spacing={3}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <ResponsiveContainer width={"100%"} height={160}>
+            <BarChart width={500} height={300} data={data}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis hide />
+              <Tooltip
+                content={<CustomTooltip />}
+                isAnimationActive={false}
+                // label="name"
+                // formatter={(x: number) => formatMoney(x * 100)}
+              />
+              <Bar
+                dataKey="equity"
+                stackId="a"
+                fill={theme.palette.primary.main}
+                name="Equity"
+              />
+              <Bar
+                dataKey="fixed"
+                stackId="a"
+                fill={theme.palette.secondary.main}
+                name="Fixed Income"
+              />
+            </BarChart>
+          </ResponsiveContainer>
         </Grid>
 
-        <Grid size={{ xs: 12 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <HorizontalRangeBar
             low={marketTwoYearLowTotal ?? 0}
             current={total}
@@ -405,30 +407,31 @@ export function InvestmentPortfolio() {
                 </TableRow>
               </TableBody>
             </ExpendasTable>
-
-            {/* suggesting to buy or sell to reach target allocation */}
-            <CustomAlert
-              severity={
-                isWithinOnePercentOfTarget
-                  ? "success"
-                  : isOutsideTargetThreshold
-                    ? "warning"
-                    : "info"
-              }
-              variant="outlined"
-            >
-              <Typography
-                component="div"
-                sx={{
-                  "& p": {
-                    margin: 0,
-                  },
-                }}
-              >
-                <ReactMarkdown>{rebalanceMessage}</ReactMarkdown>
-              </Typography>
-            </CustomAlert>
           </Stack>
+        </Grid>
+        <Grid size={{ xs: 12 }}>
+          {/* suggesting to buy or sell to reach target allocation */}
+          <CustomAlert
+            severity={
+              isWithinOnePercentOfTarget
+                ? "success"
+                : isOutsideTargetThreshold
+                  ? "warning"
+                  : "info"
+            }
+            variant="outlined"
+          >
+            <Typography
+              component="div"
+              sx={{
+                "& p": {
+                  margin: 0,
+                },
+              }}
+            >
+              <ReactMarkdown>{rebalanceMessage}</ReactMarkdown>
+            </Typography>
+          </CustomAlert>
         </Grid>
       </Grid>
 
