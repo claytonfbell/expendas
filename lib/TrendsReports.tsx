@@ -100,7 +100,7 @@ export function TrendsReports() {
     50_000
 
   const isXs = useMediaQuery(theme.breakpoints.down("sm"))
-  const strokeWidth = isXs ? 3 : 6
+  const strokeWidth = isXs ? 2 : 2
 
   const latestDataPoint =
     investmentData.length > 0 ? investmentData[investmentData.length - 1] : null
@@ -170,15 +170,7 @@ export function TrendsReports() {
               strokeWidth={strokeWidth}
               isAnimationActive={true}
               name="Net Worth"
-            />
-
-            <Line
-              type="monotone"
-              dataKey="marketHigh"
-              stroke={theme.palette.success.main}
-              strokeWidth={strokeWidth}
-              isAnimationActive={true}
-              name="Market High"
+              dot={false}
             />
 
             <Line
@@ -188,6 +180,17 @@ export function TrendsReports() {
               strokeWidth={strokeWidth}
               isAnimationActive={true}
               name="Savings"
+              dot={false}
+            />
+
+            <Line
+              type="monotone"
+              dataKey="marketHigh"
+              stroke={theme.palette.success.main}
+              strokeWidth={strokeWidth}
+              isAnimationActive={true}
+              name="Market High"
+              dot={false}
             />
 
             <Line
@@ -195,6 +198,7 @@ export function TrendsReports() {
               dataKey="marketLow"
               stroke={theme.palette.error.main}
               strokeWidth={strokeWidth}
+              dot={false}
               isAnimationActive={true}
               name="Market Low"
             />
