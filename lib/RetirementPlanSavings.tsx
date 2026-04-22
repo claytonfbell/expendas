@@ -1,4 +1,4 @@
-import { Grid, Stack, useMediaQuery, useTheme } from "@mui/material"
+import { Grid, Stack } from "@mui/material"
 import { AccountBucket, RetirementPlan } from "@prisma/client"
 import { CurrencyFieldBase } from "material-ui-pack"
 import { useEffect, useMemo, useState } from "react"
@@ -17,6 +17,8 @@ type StateItem = {
   accountId: number
   amount: number
 }
+
+type FormState = { id: number; items: StateItem[] }
 
 interface Props {
   retirementPlan: RetirementPlan
@@ -39,7 +41,10 @@ export function RetirementPlanSavings({ retirementPlan }: Props) {
     [accounts]
   )
 
-  const [state, setState] = useState<StateItem[]>([])
+  const [state, setState] = useState<FormState>({
+    id: retirementPlan.id,
+    items: [],
+  })
 
   useEffect(() => {
     if (contributions !== undefined) {
@@ -53,21 +58,18 @@ export function RetirementPlanSavings({ retirementPlan }: Props) {
           amount: contribution?.amount ?? 0,
         })
       })
-      setState(newState)
+      setState({ id: retirementPlan.id, items: newState })
     }
   }, [contributions, retirementAccounts])
 
-  const {
-    mutateAsync: updateRetirementContributions,
-    status,
-    error,
-  } = useUpdateRetirementPlanContributions()
+  const { mutateAsync: updateRetirementContributions, error } =
+    useUpdateRetirementPlanContributions()
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       updateRetirementContributions({
-        retirementPlanId: retirementPlan.id,
-        contributions: state.map((item) => ({
+        retirementPlanId: state.id,
+        contributions: state.items.map((item) => ({
           accountId: item.accountId,
           amount: item.amount,
         })),
@@ -78,7 +80,7 @@ export function RetirementPlanSavings({ retirementPlan }: Props) {
   }, [state, retirementPlan.id, updateRetirementContributions])
 
   const totalSavedPerMonth =
-    state.length > 0 ? state.reduce((a, b) => a + b.amount, 0) : 0
+    state.items.length > 0 ? state.items.reduce((a, b) => a + b.amount, 0) : 0
   const totalSavedPerYear = totalSavedPerMonth * 12
 
   const savedSoFar = useMemo(() => {
@@ -87,15 +89,11 @@ export function RetirementPlanSavings({ retirementPlan }: Props) {
     }, 0)
   }, [retirementAccounts])
 
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
-  const [collapsed, setCollapsed] = useState(!isMobile)
-
   const accountsGroupedByBucket = useMemo(() => {
     const groups: {
       [bucket: string]: AccountWithIncludes[]
     } = {}
-    state.forEach((item) => {
+    state.items.forEach((item) => {
       const account = accounts?.find((a) => a.id === item.accountId)
       if (account) {
         const bucket = account.accountBucket ?? "Other"
@@ -160,13 +158,13 @@ export function RetirementPlanSavings({ retirementPlan }: Props) {
                             allowCents={false}
                             label={account.name}
                             value={
-                              (state.find(
+                              (state.items.find(
                                 (item) => item.accountId === account.id
                               )?.amount ?? 0) / 100
                             }
                             onChange={(x) => {
                               setState((prev) => {
-                                const newState = [...prev]
+                                const newState = [...prev.items]
                                 const index = newState.findIndex(
                                   (item) => item.accountId === account.id
                                 )
@@ -181,7 +179,7 @@ export function RetirementPlanSavings({ retirementPlan }: Props) {
                                     amount: Math.round(x * 100),
                                   })
                                 }
-                                return newState
+                                return { id: prev.id, items: newState }
                               })
                             }}
                           />
