@@ -10,6 +10,7 @@ import { formatMoney } from "./formatMoney"
 import { RetirementPlanSection } from "./RetirementPlanSection"
 
 type FormState = {
+  id: number
   name: string
   desiredIncome: number
   healthInsuranceEstimate: number
@@ -25,6 +26,7 @@ interface Props {
 
 export function RetirementPlanSettings({ retirementPlan }: Props) {
   const [state, setState] = useState<FormState>({
+    id: retirementPlan.id,
     name: "",
     desiredIncome: 0,
     healthInsuranceEstimate: 0,
@@ -36,6 +38,7 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
   useEffect(() => {
     if (retirementPlan !== null) {
       setState({
+        id: retirementPlan.id,
         name: retirementPlan.name,
         desiredIncome: retirementPlan.desiredIncome,
         healthInsuranceEstimate: retirementPlan.healthInsuranceEstimate,
@@ -75,6 +78,10 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
   useDebounce(
     () => {
       if (!ready) return
+      if (retirementPlan.id !== state.id) {
+        console.warn("ID mismatch between state and prop, skipping update")
+        return
+      }
       updateRetirementPlan({
         ...retirementPlan,
         ...state,
