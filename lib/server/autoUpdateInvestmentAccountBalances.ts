@@ -44,6 +44,7 @@ export async function autoUpdateInvestmentAccountBalances() {
         account.totalFixedIncome &&
         account.totalFixedIncome > 0 &&
         account.accountBucket === "Traditional" &&
+        account.fixedIncomeTickerPrice !== null &&
         latestFbndPrice
       ) {
         const fixedIncomeShares =
