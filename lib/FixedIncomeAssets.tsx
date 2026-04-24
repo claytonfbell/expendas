@@ -202,7 +202,7 @@ export function FixedIncomeAssets() {
             ))}
 
             <TableRow hover>
-              <TableCell colSpan={4}>TOTAL</TableCell>
+              <TableCell colSpan={5}>TOTAL</TableCell>
               <TableCell align="right">
                 <Currency value={totalAmount} />
               </TableCell>
