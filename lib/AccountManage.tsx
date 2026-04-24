@@ -239,6 +239,7 @@ export function AccountManage() {
             plaidCredentialId: null,
             plaidAccountId: null,
             tickerPrice: null,
+            fixedIncomeTickerPrice: null,
           })
         }
       >
