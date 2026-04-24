@@ -1,7 +1,11 @@
-export async function scrapeCurrentVOOPrice(): Promise<number | null> {
+import { Ticker } from "./populateMissingTickerPrices"
+
+export async function scrapeCurrentTickerPrice(
+  ticker: Ticker
+): Promise<number | null> {
   try {
     // from cnbc (yahoo and fideliety use javascript for anti-scraping)
-    const url = "https://www.cnbc.com/quotes/VOO"
+    const url = `https://www.cnbc.com/quotes/${ticker}`
     //<span class="QuoteStrip-lastPrice">585.23</span>
     const priceRegex = /<span class="QuoteStrip-lastPrice">.*?<\/span>/g
 
@@ -15,13 +19,13 @@ export async function scrapeCurrentVOOPrice(): Promise<number | null> {
         console.log("Raw scraped price string: ", match[1])
         const priceStr = match[1].replace(/,/g, "")
         const price = Math.round(parseFloat(priceStr) * 100) // convert to cents
-        console.log("Scraped VOO price: ", price)
+        console.log(`Scraped ${ticker} price: `, price)
         return price
       }
     }
     return null
   } catch (error) {
-    console.error("Error scraping VOO price: ", error)
+    console.error(`Error scraping ${ticker} price: `, error)
     return null
   }
 }

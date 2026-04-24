@@ -73,9 +73,15 @@ async function handler(
       // passed validation
 
       // if its an investment account - stick it to current tickerPrice
-      let latestTickerPrice: TickerPrice | null = null
+      let latestVooPrice: TickerPrice | null = null
       if (accountType === "Investment") {
-        latestTickerPrice = await getLatestTickerPrice()
+        latestVooPrice = await getLatestTickerPrice("VOO")
+      }
+
+      // if its a traditional account - assume all fixed income is FBND and stick it to current price
+      let latestFbndPrice: TickerPrice | null = null
+      if (accountBucket === "Traditional") {
+        latestFbndPrice = await getLatestTickerPrice("FBND")
       }
 
       const account = await prisma.account.update({
@@ -86,7 +92,10 @@ async function handler(
           balance,
           creditCardType,
           totalFixedIncome,
-          tickerPrice: latestTickerPrice ? latestTickerPrice.price : null,
+          tickerPrice: latestVooPrice ? latestVooPrice.price : null,
+          fixedIncomeTickerPrice: latestFbndPrice
+            ? latestFbndPrice.price
+            : null,
         },
         where: { id: accountId },
       })

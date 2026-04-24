@@ -77,6 +77,7 @@ model Account {
     plaidCredential   PlaidCredential? @relation(fields: [plaidCredentialId], references: [id])
     plaidAccountId    String?          @db.VarChar(255)
     tickerPrice       Int?
+    fixedIncomeTickerPrice   Int?
     balanceHistory              AccountBalanceHistory[]
     retirementPlanContributions RetirementPlanContribution[]
     fixedIncomeAssets           FixedIncomeAsset[]

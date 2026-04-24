@@ -1,20 +1,26 @@
 import moment from "moment-timezone"
 import prisma from "./prisma"
 import { RateLimit } from "./RateLimit"
-import { scrapeCurrentVOOPrice } from "./scrapeCurrentVOOPrice"
+import { scrapeCurrentTickerPrice } from "./scrapeCurrentTickerPrice"
 
-export async function populateMissingTickerPrices() {
+/**
+ * VOO = S&P INDEX
+ * FBND = TOTAL BOND INDEX
+ * */
+export type Ticker = "VOO" | "FBND"
+
+export async function populateMissingTickerPrices(ticker: Ticker) {
   // try and find up to five missing dates in row that need to be fetched from the massive.com API and populated in the database
   // go back as far as 90 days in the past, but stop once we find 5 missing dates in a row (to avoid too many requests to the massive.com API)
   const fiveMissingDates: string[] = []
 
-  // find the most recent saved ticker prices for VOO
+  // find the most recent saved ticker prices for ticker
   const mostRecent = await prisma.tickerPrice.findMany({
     orderBy: {
       date: "desc",
     },
     where: {
-      ticker: "VOO",
+      ticker: ticker,
       date: {
         gte: moment().subtract(90, "days").format("YYYY-MM-DD"),
       },
@@ -67,10 +73,11 @@ export async function populateMissingTickerPrices() {
     }
 
     // curl -X GET "https://api.massive.com/v1/open-close/VOO/2026-03-27?adjusted=true&apiKey=XbyXpvEG3KGRxYfvLutlhlBNKuolCEee"
+    // curl -X GET "https://api.massive.com/v1/open-close/FBND/2026-03-27?adjusted=true&apiKey=XbyXpvEG3KGRxYfvLutlhlBNKuolCEee"
     const dateToFetch = fiveMissingDates.shift()!
     console.log("fetching price for date", dateToFetch)
 
-    const massiveUrl = `https://api.massive.com/v1/open-close/VOO/${dateToFetch}?adjusted=true&apiKey=${process.env.MASSIVE_API_KEY}`
+    const massiveUrl = `https://api.massive.com/v1/open-close/${ticker}/${dateToFetch}?adjusted=true&apiKey=${process.env.MASSIVE_API_KEY}`
     const massiveResponse: MassiveApiResponse = await (
       await fetch(massiveUrl)
     ).json()
@@ -85,7 +92,7 @@ export async function populateMissingTickerPrices() {
       const existing = await prisma.tickerPrice.findUnique({
         where: {
           ticker_date: {
-            ticker: "VOO",
+            ticker: ticker,
             date: dateToFetch,
           },
         },
@@ -103,7 +110,7 @@ export async function populateMissingTickerPrices() {
       } else {
         await prisma.tickerPrice.create({
           data: {
-            ticker: "VOO",
+            ticker: ticker,
             price: (massiveResponse.close ?? 0) * 100, // convert to cents, 0 if market was closed that day and no price is available
             date: dateToFetch,
             closed: true,
@@ -113,8 +120,8 @@ export async function populateMissingTickerPrices() {
     }
   }
 
-  // now scrape today's current VOO price from yahoo finance
-  const scrapeRateLimit = new RateLimit("scrapeCurrentVOOPrice", [
+  // now scrape today's current ticker price from cnbc
+  const scrapeRateLimit = new RateLimit(`scrapeCurrentPrice-${ticker}`, [
     {
       max: 1,
       durationMs: 5 * 60 * 1000, // 5 minutes
@@ -132,14 +139,14 @@ export async function populateMissingTickerPrices() {
     return
   } else {
     console.log("scraping today's price from the web")
-    const scrapedPrice = await scrapeCurrentVOOPrice()
+    const scrapedPrice = await scrapeCurrentTickerPrice(ticker)
     if (scrapedPrice !== null) {
       console.log("scrapedPrice", scrapedPrice)
       // insert or update the price in the database
       const existing = await prisma.tickerPrice.findUnique({
         where: {
           ticker_date: {
-            ticker: "VOO",
+            ticker: ticker,
             date: today,
           },
         },
@@ -157,7 +164,7 @@ export async function populateMissingTickerPrices() {
       } else {
         await prisma.tickerPrice.create({
           data: {
-            ticker: "VOO",
+            ticker: ticker,
             price: scrapedPrice,
             date: today,
             closed: false,

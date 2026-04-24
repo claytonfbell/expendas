@@ -25,8 +25,8 @@ export async function updateAccountBalanceHistory(organizationId: number) {
     existingRows.map((row) => [row.accountId, row])
   )
 
-  const marketHighPrice = (await getAllTimeHighTickerPrice())!.price
-  const marketLowPrice = (await getTwoYearLowTickerPrice())!.price
+  const marketHighPrice = (await getAllTimeHighTickerPrice("VOO"))!.price
+  const marketLowPrice = (await getTwoYearLowTickerPrice("VOO"))!.price
 
   for (const account of accounts) {
     // calculate marketHigh and marketLow

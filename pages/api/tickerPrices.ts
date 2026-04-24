@@ -14,13 +14,13 @@ async function handler(
 ): Promise<void> {
   if (req.method === "GET") {
     buildResponse(res, async () => {
-      const currentPrice = await getLatestTickerPrice().then(
+      const currentPrice = await getLatestTickerPrice("VOO").then(
         (price) => price?.price ?? 0
       )
-      const allTimeHigh = await getAllTimeHighTickerPrice().then(
+      const allTimeHigh = await getAllTimeHighTickerPrice("VOO").then(
         (price) => price?.price ?? 0
       )
-      const twoYearLow = await getTwoYearLowTickerPrice().then(
+      const twoYearLow = await getTwoYearLowTickerPrice("VOO").then(
         (price) => price?.price ?? 0
       )
 
