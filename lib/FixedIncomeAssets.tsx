@@ -12,6 +12,7 @@ import {
 import { FixedIncomeAssetType } from "@prisma/client"
 import moment from "moment-timezone"
 import { useMemo, useState } from "react"
+import { displayAccountBucket } from "./accountBuckets"
 import { AmountInputTool } from "./AmountInputTool"
 import AnimatedCounter from "./AnimatedCounter"
 import {
@@ -179,6 +180,7 @@ export function FixedIncomeAssets() {
         <ExpendasTable>
           <TableHead>
             <TableRow>
+              <TableCell>Account</TableCell>
               <TableCell>Settle Date</TableCell>
               <TableCell>Mature Date</TableCell>
               <TableCell align="right">Days Left</TableCell>
@@ -269,6 +271,11 @@ function FixedIncomeAssetRow({
 
   return (
     <TableRow key={asset.id} hover>
+      <TableCell>
+        {asset.account.name}{" "}
+        {asset.account.accountBucket &&
+          ` (${displayAccountBucket(asset.account.accountBucket)})`}
+      </TableCell>
       <TableCell>
         {asset.settlementDate &&
           moment(`${asset.settlementDate} 00:00:00`).format("M/D/YYYY")}

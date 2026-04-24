@@ -7,8 +7,16 @@ export const accountBuckets: AccountBucket[] = [
   "Roth_And_HSA",
 ]
 
-export const displayAccountBucket = (accountBucket: AccountBucket) =>
-  accountBucket.replace(/_/g, " ")
+export const displayAccountBucket = (accountBucket: AccountBucket) => {
+  switch (accountBucket) {
+    case "After_Tax":
+      return "Taxable"
+    case "Traditional":
+      return "Tax Deferred"
+    case "Roth_And_HSA":
+      return "Tax Free"
+  }
+}
 
 export const accountBucketOptions: OptionType[] = accountBuckets.map(
   (value) => ({
