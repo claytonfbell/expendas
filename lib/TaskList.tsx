@@ -36,6 +36,23 @@ export function TaskList() {
       )
   }, [tasks, isXL, isLG, isMD, isSM])
 
+  // if isXL, fill in missing dates so they aren't skipped in the calendar view
+  const allDatesToShow = useMemo(() => {
+    if (!tasks) return []
+    if (!isXL) return uniqueDatesInTasks
+    const allDatesSet = new Set(uniqueDatesInTasks)
+    const firstDate = moment(uniqueDatesInTasks[0])
+    const lastDate = moment(uniqueDatesInTasks[uniqueDatesInTasks.length - 1])
+    for (
+      let date = firstDate.clone();
+      date.isSameOrBefore(lastDate);
+      date.add(1, "day")
+    ) {
+      allDatesSet.add(date.format("YYYY-MM-DD"))
+    }
+    return Array.from(allDatesSet).sort()
+  }, [tasks, uniqueDatesInTasks, isXL])
+
   return (
     <>
       <Stack spacing={2}>
@@ -92,7 +109,7 @@ export function TaskList() {
             ))}
 
           {tasks &&
-            uniqueDatesInTasks.map((date) => (
+            allDatesToShow.map((date) => (
               <Grid size={1} key={date}>
                 <TaskDate date={date} tasks={tasks} />
               </Grid>
