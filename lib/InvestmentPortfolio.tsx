@@ -27,6 +27,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
+import { AccountBucketChip } from "./AccountBucketChip"
 import { displayAccountBucket } from "./accountBuckets"
 import { AccountDialog } from "./AccountDialog"
 import { investmentGroup } from "./AccountGroup"
@@ -52,6 +53,7 @@ type Data = {
   name: AccountBucket
   equity: number
   fixed: number
+  bucket: AccountBucket | null
 }
 
 export function InvestmentPortfolio() {
@@ -69,6 +71,7 @@ export function InvestmentPortfolio() {
       const equity = x.balance - (x.totalFixedIncome || 0)
       return {
         name: x.accountBucket || "After_Tax",
+        bucket: x.accountBucket,
         equity,
         fixed: x.totalFixedIncome || 0,
       }
@@ -83,7 +86,11 @@ export function InvestmentPortfolio() {
       }
       return a
     }, [])
-    .map((x) => ({ ...x, name: displayAccountBucket(x.name) }))
+    .map((x) => ({
+      ...x,
+      name: displayAccountBucket(x.name),
+      bucket: x.bucket,
+    }))
 
   const equity = accounts.reduce(
     (a, b) => a + b.balance - (b.totalFixedIncome || 0),
@@ -242,8 +249,7 @@ ${toReachMessage}`
                       <TableRow key={account.id} hover>
                         <TableCell>{account.name}</TableCell>
                         <TableCell>
-                          {account.accountBucket &&
-                            displayAccountBucket(account.accountBucket)}
+                          <AccountBucketChip bucket={account.accountBucket} />
                         </TableCell>
                         <TableCell align="right">
                           <Currency value={equity} />
@@ -286,7 +292,9 @@ ${toReachMessage}`
                 {data.map((row) => (
                   <TableRow key={row.name} hover>
                     <TableCell>&nbsp;</TableCell>
-                    <TableCell>{row.name}</TableCell>
+                    <TableCell>
+                      <AccountBucketChip bucket={row.bucket} />
+                    </TableCell>
                     <TableCell align="right">
                       <Currency value={row.equity} />
                     </TableCell>

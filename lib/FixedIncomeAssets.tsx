@@ -12,7 +12,7 @@ import {
 import { FixedIncomeAssetType } from "@prisma/client"
 import moment from "moment-timezone"
 import { useMemo, useState } from "react"
-import { displayAccountBucket } from "./accountBuckets"
+import { AccountBucketChip } from "./AccountBucketChip"
 import { AmountInputTool } from "./AmountInputTool"
 import AnimatedCounter from "./AnimatedCounter"
 import {
@@ -273,8 +273,9 @@ function FixedIncomeAssetRow({
     <TableRow key={asset.id} hover>
       <TableCell>
         {asset.account.name}{" "}
-        {asset.account.accountBucket &&
-          ` (${displayAccountBucket(asset.account.accountBucket)})`}
+        {asset.account.accountBucket && (
+          <AccountBucketChip bucket={asset.account.accountBucket} />
+        )}
       </TableCell>
       <TableCell>
         {asset.settlementDate &&
