@@ -20,6 +20,9 @@ async function handler(
           organizationId,
         },
         orderBy: {
+          // order by retirementPlanType then coastDate with null first, then name
+          retirementPlanType: "asc",
+          coastDate: "asc",
           name: "asc",
         },
         include: {
@@ -81,6 +84,8 @@ async function handler(
             dividendYieldEstimate: copyPlan.dividendYieldEstimate,
             inflationRateEstimate: copyPlan.inflationRateEstimate,
             withdrawalRateEstimate: copyPlan.withdrawalRateEstimate,
+            retirementPlanType: copyPlan.retirementPlanType,
+            coastDate: copyPlan.coastDate,
             retirementPlanContributions: {
               create: copyPlan.retirementPlanContributions.map(
                 (contribution) => ({
