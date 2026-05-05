@@ -1,7 +1,6 @@
 import { RetirementPlanType } from "@prisma/client"
 import { NextApiResponse } from "next"
 import { requireOrganizationAuthentication } from "../../../../../../lib/requireAuthentication"
-import { BadRequestException } from "../../../../../../lib/server/HttpException"
 import { buildResponse } from "../../../../../../lib/server/buildResponse"
 import prisma from "../../../../../../lib/server/prisma"
 import withSession, {
@@ -57,16 +56,16 @@ async function handler(
 
       validate({ name }).notEmpty()
       // check unique
-      const exists = await prisma.retirementPlan.findFirst({
-        where: {
-          name: { equals: name },
-          organizationId: { equals: organizationId },
-          id: { not: { equals: retirementPlanId } },
-        },
-      })
-      if (exists !== null) {
-        throw new BadRequestException("Retirement plan name is already used.")
-      }
+      //   const exists = await prisma.retirementPlan.findFirst({
+      //     where: {
+      //       name: { equals: name },
+      //       organizationId: { equals: organizationId },
+      //       id: { not: { equals: retirementPlanId } },
+      //     },
+      //   })
+      //   if (exists !== null) {
+      //     throw new BadRequestException("Retirement plan name is already used.")
+      //   }
 
       // passed validation - update
       await prisma.retirementPlan.update({
