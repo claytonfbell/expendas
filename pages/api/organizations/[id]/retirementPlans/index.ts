@@ -1,5 +1,6 @@
 import { NextApiResponse } from "next"
 import { requireOrganizationAuthentication } from "../../../../../lib/requireAuthentication"
+import { retirementPlanTypes } from "../../../../../lib/retirementPlanTypes"
 import { buildResponse } from "../../../../../lib/server/buildResponse"
 import { BadRequestException } from "../../../../../lib/server/HttpException"
 import prisma from "../../../../../lib/server/prisma"
@@ -15,29 +16,43 @@ async function handler(
     await requireOrganizationAuthentication(req, prisma, organizationId)
     // GET
     if (req.method === "GET") {
-      const retirementPlans = await prisma.retirementPlan.findMany({
-        where: {
-          organizationId,
-        },
-        orderBy: {
-          // order by retirementPlanType then coastDate with null first, then name
-          retirementPlanType: "asc",
-          coastDate: "asc",
-          name: "asc",
-        },
-        include: {
-          retirementPlanUsers: {
-            include: {
-              user: true,
+      const retirementPlans = (
+        await prisma.retirementPlan.findMany({
+          where: {
+            organizationId,
+          },
+          include: {
+            retirementPlanUsers: {
+              include: {
+                user: true,
+              },
+            },
+            retirementPlanContributions: {
+              include: {
+                account: true,
+              },
             },
           },
-          retirementPlanContributions: {
-            include: {
-              account: true,
-            },
-          },
-        },
-      })
+        })
+      )
+        // sort by retirementPlanTypes index order in enum then coastDate with null first, then name
+        .sort((a, b) => {
+          const retirementPlanTypeIndexA = retirementPlanTypes.indexOf(
+            a.retirementPlanType
+          )
+          const retirementPlanTypeIndexB = retirementPlanTypes.indexOf(
+            b.retirementPlanType
+          )
+          if (retirementPlanTypeIndexA !== retirementPlanTypeIndexB) {
+            return retirementPlanTypeIndexA - retirementPlanTypeIndexB
+          } else if (a.coastDate === null && b.coastDate !== null) {
+            return -1
+          } else if (a.coastDate !== null && b.coastDate === null) {
+            return 1
+          } else {
+            return a.name.localeCompare(b.name)
+          }
+        })
       return retirementPlans
     }
     // POST

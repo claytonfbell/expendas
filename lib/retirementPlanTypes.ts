@@ -1,7 +1,7 @@
 import { RetirementPlan, RetirementPlanType } from "@prisma/client"
 import { OptionType } from "material-ui-pack"
 
-const retirementPlanTypes: RetirementPlanType[] = [
+export const retirementPlanTypes: RetirementPlanType[] = [
   "Lean",
   "Traditional",
   "Chubby",
