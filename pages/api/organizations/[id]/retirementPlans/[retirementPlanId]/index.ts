@@ -1,3 +1,4 @@
+import { RetirementPlanType } from "@prisma/client"
 import { NextApiResponse } from "next"
 import { requireOrganizationAuthentication } from "../../../../../../lib/requireAuthentication"
 import { BadRequestException } from "../../../../../../lib/server/HttpException"
@@ -50,7 +51,9 @@ async function handler(
         dividendYieldEstimate,
         inflationRateEstimate,
         withdrawalRateEstimate,
-      } = req.body
+        retirementPlanType,
+        coastDate,
+      } = req.body as RetirementPlanUpdateRequest
 
       validate({ name }).notEmpty()
       // check unique
@@ -75,6 +78,8 @@ async function handler(
           dividendYieldEstimate,
           inflationRateEstimate,
           withdrawalRateEstimate,
+          retirementPlanType,
+          coastDate,
         },
         where: { id: retirementPlanId },
       })
@@ -108,3 +113,16 @@ async function handler(
 }
 
 export default withSession(handler)
+
+export type RetirementPlanUpdateRequest = {
+  id: number
+  name: string
+  desiredIncome: number
+  healthInsuranceEstimate: number
+  stockAppreciationEstimate: number
+  dividendYieldEstimate: number
+  inflationRateEstimate: number
+  withdrawalRateEstimate: number
+  retirementPlanType: RetirementPlanType
+  coastDate: string | null
+}

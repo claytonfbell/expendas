@@ -14,6 +14,7 @@ import { RetirementPlanSavings } from "./RetirementPlanSavings"
 import { RetirementPlansCreateDialog } from "./RetirementPlansCreateDialog"
 import { RetirementPlanSettings } from "./RetirementPlanSettings"
 import { RetirementPlanSocialSecurity } from "./RetirementPlanSocialSecurity"
+import { displayRetirementPlanName } from "./retirementPlanTypes"
 
 const LOCAL_STORAGE_KEY = "RetirementPlans.lastRetirementPlanId"
 
@@ -63,7 +64,7 @@ export function RetirementPlans() {
             <SelectBase
               size="small"
               options={(retirementPlans ?? []).map((x) => ({
-                label: x.name,
+                label: displayRetirementPlanName(x),
                 value: x.id,
               }))}
               onChange={(x) => setSelectedId(x as number)}

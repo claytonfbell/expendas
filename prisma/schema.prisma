@@ -150,6 +150,8 @@ model RetirementPlan {
     organization                Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
     name                        String          @db.VarChar(255)
     desiredIncome               Int
+    retirementPlanType          RetirementPlanType  @default(Traditional)
+    coastDate                   String?
     healthInsuranceEstimate     Int
     stockAppreciationEstimate   Int
     dividendYieldEstimate       Int
@@ -279,6 +281,13 @@ model Receipt {
     merchant                String  @db.VarChar(255)
     notes                   String? @db.VarChar(255)
     receiptType             ReceiptType
+}
+
+enum RetirementPlanType {
+    Lean
+    Traditional
+    Chubby
+    Fat
 }
 
 enum OrganizationCloudFileUseCase {

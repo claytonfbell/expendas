@@ -120,9 +120,16 @@ export async function getRetirementPlanProjection(
               (retirementPlan.stockAppreciationEstimate / 100000)) /
               12
           )
-          const contribution = account.retirementPlanContributions.find(
-            (c) => c.accountId === account.id
-          )!.amount
+
+          const isAfterCoastDate =
+            retirementPlan.coastDate !== null &&
+            month.isAfter(moment(`${retirementPlan.coastDate} 00:00:00`))
+
+          const contribution = isAfterCoastDate
+            ? 0
+            : account.retirementPlanContributions.find(
+                (c) => c.accountId === account.id
+              )!.amount
 
           const acc: ProjectionRowAccount = {
             accountId: account.id,

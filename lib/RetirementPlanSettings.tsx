@@ -1,31 +1,27 @@
 import { Button, Grid, Stack, TextField } from "@mui/material"
-import { RetirementPlan } from "@prisma/client"
-import { CurrencyFieldBase, PercentageFieldBase } from "material-ui-pack"
+import { RetirementPlan, RetirementPlanType } from "@prisma/client"
+import {
+  CurrencyFieldBase,
+  DatePickerBase,
+  PercentageFieldBase,
+  SelectBase,
+} from "material-ui-pack"
 import { useEffect, useState } from "react"
 import { useDebounce } from "react-use"
+import { RetirementPlanUpdateRequest } from "../pages/api/organizations/[id]/retirementPlans/[retirementPlanId]"
 import { useDeleteRetirementPlan, useUpdateRetirementPlan } from "./api/api"
 import ConfirmDialog from "./ConfirmDialog"
 import DisplayError from "./DisplayError"
 import { formatMoney } from "./formatMoney"
 import { RetirementPlanSection } from "./RetirementPlanSection"
-
-type FormState = {
-  id: number
-  name: string
-  desiredIncome: number
-  healthInsuranceEstimate: number
-  stockAppreciationEstimate: number
-  dividendYieldEstimate: number
-  inflationRateEstimate: number
-  withdrawalRateEstimate: number
-}
+import { retirementPlanTypeOptions } from "./retirementPlanTypes"
 
 interface Props {
   retirementPlan: RetirementPlan
 }
 
 export function RetirementPlanSettings({ retirementPlan }: Props) {
-  const [state, setState] = useState<FormState>({
+  const [state, setState] = useState<RetirementPlanUpdateRequest>({
     id: retirementPlan.id,
     name: "",
     desiredIncome: 0,
@@ -34,6 +30,8 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
     dividendYieldEstimate: 0,
     inflationRateEstimate: 0,
     withdrawalRateEstimate: 0,
+    retirementPlanType: "Traditional",
+    coastDate: null,
   })
   useEffect(() => {
     if (retirementPlan !== null) {
@@ -46,6 +44,8 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
         dividendYieldEstimate: retirementPlan.dividendYieldEstimate,
         inflationRateEstimate: retirementPlan.inflationRateEstimate,
         withdrawalRateEstimate: retirementPlan.withdrawalRateEstimate,
+        retirementPlanType: retirementPlan.retirementPlanType,
+        coastDate: retirementPlan.coastDate,
       })
     }
   }, [retirementPlan])
@@ -114,7 +114,7 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
       <Grid
         container
         spacing={2}
-        columns={{ xs: 12, sm: 16 }}
+        columns={{ xs: 12, sm: 16, lg: 18, xl: 21 }}
         alignItems={"center"}
       >
         <CustomGridItem>
@@ -128,6 +128,35 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
             }
           />
         </CustomGridItem>
+        <CustomGridItem>
+          <SelectBase
+            size="small"
+            options={retirementPlanTypeOptions}
+            value={state.retirementPlanType}
+            onChange={(value) =>
+              setState((prev) => ({
+                ...prev,
+                retirementPlanType: value as RetirementPlanType,
+              }))
+            }
+            label="Plan Type"
+          />
+        </CustomGridItem>
+
+        <CustomGridItem>
+          <DatePickerBase
+            size="small"
+            value={state.coastDate}
+            onChange={(value) =>
+              setState((prev) => ({
+                ...prev,
+                coastDate: value as RetirementPlanType,
+              }))
+            }
+            label="Coast Date"
+          />
+        </CustomGridItem>
+
         <CustomGridItem>
           <CurrencyFieldBase
             size="small"
@@ -262,5 +291,7 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
 }
 
 function CustomGridItem(props: { children: React.ReactNode }) {
-  return <Grid size={{ xs: 4, sm: 4, md: 3, lg: 2 }}>{props.children}</Grid>
+  return (
+    <Grid size={{ xs: 4, sm: 4, md: 3, lg: 3, xl: 3 }}>{props.children}</Grid>
+  )
 }
