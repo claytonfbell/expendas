@@ -44,15 +44,15 @@ async function handler(
       validate({ name }).notEmpty()
 
       // check unique
-      const exists = await prisma.retirementPlan.findFirst({
-        where: {
-          name: { equals: name },
-          organizationId: { equals: organizationId },
-        },
-      })
-      if (exists !== null) {
-        throw new BadRequestException("Retirement plan name is already used.")
-      }
+      //   const exists = await prisma.retirementPlan.findFirst({
+      //     where: {
+      //       name: { equals: name },
+      //       organizationId: { equals: organizationId },
+      //     },
+      //   })
+      //   if (exists !== null) {
+      //     throw new BadRequestException("Retirement plan name is already used.")
+      //   }
 
       // if copyPlanId provided, validate it and copy settings and contributions
       if (copyPlanId) {
