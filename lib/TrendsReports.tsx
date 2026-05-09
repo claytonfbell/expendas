@@ -118,7 +118,7 @@ export function TrendsReports() {
           <LineChart
             style={{
               width: "100%",
-              maxHeight: "60vh",
+              maxHeight: "70vh",
               aspectRatio: 1,
             }}
             responsive
@@ -139,7 +139,7 @@ export function TrendsReports() {
             <YAxis
               width="auto"
               tickFormatter={formatCurrency}
-              domain={[lowestMarketLow, highestNetWorth]}
+              //domain={[lowestMarketLow, highestNetWorth]}
               hide={isXs}
               stroke={theme.palette.text.primary}
             />
