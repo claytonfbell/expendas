@@ -81,6 +81,17 @@ export function RetirementPlanProjectionChart({ retirementPlan }: Props) {
   const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
   const theme = useTheme()
 
+  const socialSecurityBeginYears = useMemo(() => {
+    if (!users) return []
+    return users.map((user) => {
+      const birthYear = moment(`${user.user.dateOfBirth} 00:00:00`).year()
+      return {
+        year: birthYear + user.collectSocialSecurityAge,
+        name: `${user.user.firstName}'s Social Security`,
+      }
+    })
+  }, [users])
+
   return (
     <>
       <RetirementPlanSection
@@ -170,15 +181,32 @@ export function RetirementPlanProjectionChart({ retirementPlan }: Props) {
             <ReferenceLine
               x={fiDate.year()}
               stroke={theme.palette.primary.light}
-              strokeWidth={4}
+              strokeWidth={2}
               strokeDasharray="5 5"
               label={{
-                value: "Retirement Begins",
+                value: "Retirement Begin",
                 position: "top",
                 fill: theme.palette.primary.light,
                 fontWeight: "bold",
               }}
             />
+
+            {socialSecurityBeginYears.map((ss, index) => (
+              <ReferenceLine
+                key={ss.name}
+                x={ss.year}
+                stroke={theme.palette.primary.light}
+                strokeWidth={2}
+                strokeDasharray="5 5"
+                label={{
+                  value: ss.name,
+                  position:
+                    index % 2 === 0 ? "insideTopLeft" : "insideTopRight",
+                  fill: theme.palette.primary.light,
+                  fontWeight: "bold",
+                }}
+              />
+            ))}
           </BarChart>
         </Stack>
       </RetirementPlanSection>
