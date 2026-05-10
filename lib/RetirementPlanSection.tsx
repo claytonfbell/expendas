@@ -8,6 +8,7 @@ interface Props {
   summary: React.ReactNode
   children: React.ReactNode
   collapsible?: boolean
+  defaultExpanded?: boolean
 }
 
 export function RetirementPlanSection({
@@ -15,8 +16,11 @@ export function RetirementPlanSection({
   summary,
   children,
   collapsible = false,
+  defaultExpanded = false,
 }: Props) {
-  const [collapsed, setCollapsed] = useState(collapsible)
+  const [collapsed, setCollapsed] = useState(
+    collapsible ? !defaultExpanded : false
+  )
 
   return (
     <Stack spacing={3} alignItems={"stretch"}>

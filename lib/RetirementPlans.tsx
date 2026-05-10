@@ -10,6 +10,7 @@ import { SelectBase } from "material-ui-pack"
 import { useEffect, useState } from "react"
 import { useFetchRetirementPlans } from "./api/api"
 import { RetirementPlanProjection } from "./RetirementPlanProjection"
+import { RetirementPlanProjectionChart } from "./RetirementPlanProjectionChart"
 import { RetirementPlanSavings } from "./RetirementPlanSavings"
 import { RetirementPlansCreateDialog } from "./RetirementPlansCreateDialog"
 import { RetirementPlanSettings } from "./RetirementPlanSettings"
@@ -84,6 +85,7 @@ export function RetirementPlans() {
             <RetirementPlanSettings retirementPlan={selectedPlan} />
             <RetirementPlanSavings retirementPlan={selectedPlan} />
             <RetirementPlanSocialSecurity retirementPlan={selectedPlan} />
+            <RetirementPlanProjectionChart retirementPlan={selectedPlan} />
             <RetirementPlanProjection retirementPlan={selectedPlan} />
           </Stack>
         )}
