@@ -226,7 +226,7 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
   )
 }
 
-function fromNow(target: Moment) {
+export function fromNow(target: Moment) {
   const now = moment()
   const years = target.diff(now, "years")
   const months = target.diff(now, "months") % 12

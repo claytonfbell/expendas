@@ -1,4 +1,4 @@
-import { Stack, Typography, useTheme } from "@mui/material"
+import { Stack, useTheme } from "@mui/material"
 import { RetirementPlan } from "@prisma/client"
 import moment from "moment"
 import React, { useMemo } from "react"
@@ -17,6 +17,7 @@ import {
   useFetchRetirementPlanUsers,
 } from "./api/api"
 import { formatMoney } from "./formatMoney"
+import { fromNow } from "./RetirementPlanProjection"
 import {
   RetirementPlanProjectionChartTimeRangeSelect,
   RetirementPlanProjectionRange,
@@ -33,6 +34,21 @@ export function RetirementPlanProjectionChart({ retirementPlan }: Props) {
   const { data: users } = useFetchRetirementPlanUsers(retirementPlan.id)
 
   const fiDate = moment(report?.fiDate?.date)
+  const fiFromNowString = fromNow(fiDate)
+  const agesString = useMemo(
+    () =>
+      users
+        ? users
+            .map((user) =>
+              moment(fiDate).diff(
+                moment(`${user.user.dateOfBirth} 00:00:00`),
+                "years"
+              )
+            )
+            .join(" / ")
+        : "",
+    [users, fiDate]
+  )
 
   const buildAgesString = (date: string) => {
     return users
@@ -64,7 +80,7 @@ export function RetirementPlanProjectionChart({ retirementPlan }: Props) {
         return true
       })
       .map((row) => ({
-        name: moment(`${row.date} 00:00:00`).year(),
+        name: moment(`${row.date} 00:00:00`).year() + 1,
         endingBalance: row.endingBalance,
         taxableBalance: row.accounts
           .filter((x) => x.accountBucket === "After_Tax")
@@ -98,7 +114,16 @@ export function RetirementPlanProjectionChart({ retirementPlan }: Props) {
         collapsible
         defaultExpanded
         title="Chart"
-        summary={<Typography>Projected balance over time</Typography>}
+        summary={
+          <>
+            <Stack>
+              {formatMoney(report?.fiDate.endingBalance ?? 0, true)}
+            </Stack>
+            <Stack>{fiDate.format("MMMM, YYYY")}</Stack>
+            <Stack>{fiFromNowString}</Stack>
+            <Stack>Ages: {agesString}</Stack>
+          </>
+        }
       >
         <Stack spacing={2} alignItems="center">
           <RetirementPlanProjectionChartTimeRangeSelect
@@ -194,7 +219,7 @@ export function RetirementPlanProjectionChart({ retirementPlan }: Props) {
             {socialSecurityBeginYears.map((ss, index) => (
               <ReferenceLine
                 key={ss.name}
-                x={ss.year}
+                x={ss.year + 1}
                 stroke={theme.palette.primary.light}
                 strokeWidth={2}
                 strokeDasharray="5 5"
