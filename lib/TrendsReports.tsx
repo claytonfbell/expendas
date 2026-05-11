@@ -139,7 +139,7 @@ export function TrendsReports() {
             <YAxis
               width="auto"
               tickFormatter={formatCurrency}
-              //domain={[lowestMarketLow, highestNetWorth]}
+              domain={[lowestMarketLow, highestNetWorth]}
               hide={isXs}
               stroke={theme.palette.text.primary}
             />
