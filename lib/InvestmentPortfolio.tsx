@@ -11,13 +11,12 @@ import {
   TableHead,
   TableRow,
   Typography,
-  useMediaQuery,
   useTheme,
 } from "@mui/material"
 import { AccountBucket } from "@prisma/client"
-import React, { useEffect, useMemo, useState } from "react"
+import dayjs from "dayjs"
+import React, { useMemo, useState } from "react"
 import ReactMarkdown from "react-markdown"
-import { useDebounce } from "react-use"
 import {
   Bar,
   BarChart,
@@ -38,16 +37,15 @@ import {
   useFetchAccounts,
   useFetchTickerPrices,
   useUpdateAccount,
-  useUpdateOrganization,
 } from "./api/api"
 import { BottomStatusBar } from "./BottomStatusBar"
 import { Currency } from "./Currency"
 import { ExpendasTable } from "./ExpendasTable"
 import { formatMoney, formatPercentage } from "./formatMoney"
+import { customGlidePath, temporaryGlidePath } from "./glidePaths"
 import { useGlobalState } from "./GlobalStateProvider"
 import { HorizontalRangeBar } from "./HorizontalRangeBar"
 import { Percentage } from "./Percentage"
-import { PercentInputTool } from "./PercentInputTool"
 
 type Data = {
   name: AccountBucket
@@ -63,8 +61,6 @@ export function InvestmentPortfolio() {
   const accounts = unfiltered.filter((x) =>
     investmentGroup.types.includes(x.accountType)
   )
-  const isLg = useMediaQuery(theme.breakpoints.up("lg"))
-  const isXs = useMediaQuery(theme.breakpoints.down("sm"))
   const data = accounts
     .sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance))
     .map((x) => {
@@ -134,30 +130,79 @@ export function InvestmentPortfolio() {
 
   const maxWidth = 250
 
-  const [targetEquityPercentage, setTargetEquityPercentage] = useState(
-    organization?.targetEquityPercentage
-      ? organization.targetEquityPercentage / 10_000
-      : 0.9
-  )
-  useEffect(() => {
-    if (organization) {
-      setTargetEquityPercentage(organization.targetEquityPercentage / 10_000)
-    }
-  }, [organization])
+  // calculate the target equity percentage based on the glide path and the time to retirement
+  const targetEquityPercentage = useMemo(() => {
+    const glidePath = dayjs(temporaryGlidePath.retirementDate).isAfter(
+      dayjs("2027-01-01")
+    )
+      ? customGlidePath
+      : temporaryGlidePath
 
-  const { mutateAsync: updateOrganization } = useUpdateOrganization()
-  useDebounce(
-    () => {
-      if (organization) {
-        updateOrganization({
-          ...organization,
-          targetEquityPercentage: Math.round(targetEquityPercentage * 10_000),
-        })
-      }
-    },
-    500,
-    [targetEquityPercentage]
-  )
+    const currentDate = dayjs()
+    const retirementDate = dayjs(glidePath.retirementDate)
+    const startOfFirstGlidePeriod = retirementDate.subtract(
+      glidePath.glideMonthsPriorToRetirement,
+      "month"
+    )
+    const endOfLastGlidePeriod = retirementDate.add(
+      glidePath.glideMonthsAfterRetirement,
+      "month"
+    )
+
+    if (currentDate.isBefore(startOfFirstGlidePeriod)) {
+      return glidePath.targetEquityPercentage
+    } else if (currentDate.isAfter(endOfLastGlidePeriod)) {
+      return glidePath.targetEquityPercentageAtRetirement
+    } else if (
+      currentDate.isAfter(startOfFirstGlidePeriod) &&
+      currentDate.isBefore(retirementDate)
+    ) {
+      const monthsIntoGlide = currentDate.diff(startOfFirstGlidePeriod, "month")
+      const glideProgress =
+        monthsIntoGlide / glidePath.glideMonthsPriorToRetirement
+      return (
+        glidePath.targetEquityPercentage -
+        glideProgress *
+          (glidePath.targetEquityPercentage -
+            glidePath.targetEquityPercentageAtRetirement)
+      )
+    } else {
+      const monthsIntoGlide = currentDate.diff(retirementDate, "month")
+      const glideProgress =
+        monthsIntoGlide / glidePath.glideMonthsAfterRetirement
+      return (
+        glidePath.targetEquityPercentageAtRetirement +
+        glideProgress *
+          (glidePath.targetEquityPercentage -
+            glidePath.targetEquityPercentageAtRetirement)
+      )
+    }
+  }, [temporaryGlidePath, customGlidePath])
+
+  //   const [targetEquityPercentage, setTargetEquityPercentage] = useState(
+  //     organization?.targetEquityPercentage
+  //       ? organization.targetEquityPercentage / 10_000
+  //       : 0.9
+  //   )
+  //   useEffect(() => {
+  //     if (organization) {
+  //       setTargetEquityPercentage(organization.targetEquityPercentage / 10_000)
+  //     }
+  //   }, [organization])
+
+  //   const { mutateAsync: updateOrganization } = useUpdateOrganization()
+  //   useDebounce(
+  //     () => {
+  //       if (organization) {
+  //         updateOrganization({
+  //           ...organization,
+  //           targetEquityPercentage: Math.round(targetEquityPercentage * 10_000),
+  //         })
+  //       }
+  //     },
+  //     500,
+  //     [targetEquityPercentage]
+  //   )
 
   // if the current equity percentage is off by more than 4% from the target, show a warning
   const {
@@ -371,13 +416,14 @@ ${toReachMessage}`
                         whiteSpace: "nowrap",
                       }}
                     >
-                      <PercentInputTool
+                      <Percentage value={targetEquityPercentage} />
+                      {/* <PercentInputTool
                         enabled
                         value={Math.round(targetEquityPercentage * 10_000)}
                         onChange={(value) =>
                           setTargetEquityPercentage(value / 10_000)
                         }
-                      />
+                      /> */}
                     </StyledSpan>
                   </TableCell>
                   <TableCell align="right">
@@ -387,7 +433,8 @@ ${toReachMessage}`
                         whiteSpace: "nowrap",
                       }}
                     >
-                      <PercentInputTool
+                      <Percentage value={1 - targetEquityPercentage} />
+                      {/* <PercentInputTool
                         enabled
                         value={Math.round(
                           (1 - targetEquityPercentage) * 10_000
@@ -395,7 +442,7 @@ ${toReachMessage}`
                         onChange={(value) =>
                           setTargetEquityPercentage(1 - value / 10_000)
                         }
-                      />
+                      /> */}
                     </StyledSpan>
                   </TableCell>
                   <TableCell align="right"></TableCell>
