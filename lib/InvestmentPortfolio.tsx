@@ -42,7 +42,8 @@ import { BottomStatusBar } from "./BottomStatusBar"
 import { Currency } from "./Currency"
 import { ExpendasTable } from "./ExpendasTable"
 import { formatMoney, formatPercentage } from "./formatMoney"
-import { customGlidePath, temporaryGlidePath } from "./glidePaths"
+import { GlidePathRebalanceSchedule } from "./GlidePathRebalanceSchedule"
+import { getTargetEquityPercentageWithGlidePaths } from "./glidePaths"
 import { useGlobalState } from "./GlobalStateProvider"
 import { HorizontalRangeBar } from "./HorizontalRangeBar"
 import { Percentage } from "./Percentage"
@@ -130,54 +131,9 @@ export function InvestmentPortfolio() {
 
   const maxWidth = 250
 
-  // calculate the target equity percentage based on the glide path and the time to retirement
   const targetEquityPercentage = useMemo(() => {
-    const glidePath = dayjs(temporaryGlidePath.retirementDate).isAfter(
-      dayjs("2027-01-01")
-    )
-      ? customGlidePath
-      : temporaryGlidePath
-
-    const currentDate = dayjs()
-    const retirementDate = dayjs(glidePath.retirementDate)
-    const startOfFirstGlidePeriod = retirementDate.subtract(
-      glidePath.glideMonthsPriorToRetirement,
-      "month"
-    )
-    const endOfLastGlidePeriod = retirementDate.add(
-      glidePath.glideMonthsAfterRetirement,
-      "month"
-    )
-
-    if (currentDate.isBefore(startOfFirstGlidePeriod)) {
-      return glidePath.targetEquityPercentage
-    } else if (currentDate.isAfter(endOfLastGlidePeriod)) {
-      return glidePath.targetEquityPercentageAtRetirement
-    } else if (
-      currentDate.isAfter(startOfFirstGlidePeriod) &&
-      currentDate.isBefore(retirementDate)
-    ) {
-      const monthsIntoGlide = currentDate.diff(startOfFirstGlidePeriod, "month")
-      const glideProgress =
-        monthsIntoGlide / glidePath.glideMonthsPriorToRetirement
-      return (
-        glidePath.targetEquityPercentage -
-        glideProgress *
-          (glidePath.targetEquityPercentage -
-            glidePath.targetEquityPercentageAtRetirement)
-      )
-    } else {
-      const monthsIntoGlide = currentDate.diff(retirementDate, "month")
-      const glideProgress =
-        monthsIntoGlide / glidePath.glideMonthsAfterRetirement
-      return (
-        glidePath.targetEquityPercentageAtRetirement +
-        glideProgress *
-          (glidePath.targetEquityPercentage -
-            glidePath.targetEquityPercentageAtRetirement)
-      )
-    }
-  }, [temporaryGlidePath, customGlidePath])
+    return getTargetEquityPercentageWithGlidePaths(dayjs())
+  }, [])
 
   //   const [targetEquityPercentage, setTargetEquityPercentage] = useState(
   //     organization?.targetEquityPercentage
@@ -476,16 +432,19 @@ ${toReachMessage}`
             }
             variant="outlined"
           >
-            <Typography
-              component="div"
-              sx={{
-                "& p": {
-                  margin: 0,
-                },
-              }}
-            >
-              <ReactMarkdown>{rebalanceMessage}</ReactMarkdown>
-            </Typography>
+            <Stack spacing={2}>
+              <Typography
+                component="div"
+                sx={{
+                  "& p": {
+                    margin: 0,
+                  },
+                }}
+              >
+                <ReactMarkdown>{rebalanceMessage}</ReactMarkdown>
+              </Typography>
+              <GlidePathRebalanceSchedule />
+            </Stack>
           </CustomAlert>
         </Grid>
       </Grid>
