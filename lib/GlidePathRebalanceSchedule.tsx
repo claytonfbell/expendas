@@ -4,7 +4,6 @@ import {
   Button,
   Collapse,
   Stack,
-  Table,
   TableBody,
   TableCell,
   TableHead,
@@ -12,6 +11,7 @@ import {
 } from "@mui/material"
 import dayjs from "dayjs"
 import { useMemo, useState } from "react"
+import { ExpendasTable } from "./ExpendasTable"
 import { getTargetEquityPercentageWithGlidePaths } from "./glidePaths"
 
 export function GlidePathRebalanceSchedule() {
@@ -46,7 +46,7 @@ export function GlidePathRebalanceSchedule() {
         {show ? "Hide Rebalance Schedule" : "Show Rebalance Schedule"}
       </Button>
       <Collapse in={show}>
-        <Table>
+        <ExpendasTable>
           <TableHead>
             <TableRow>
               <TableCell>Date</TableCell>
@@ -97,7 +97,7 @@ export function GlidePathRebalanceSchedule() {
               )
             })}
           </TableBody>
-        </Table>
+        </ExpendasTable>
       </Collapse>
     </Stack>
   )
