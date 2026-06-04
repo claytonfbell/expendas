@@ -11,6 +11,7 @@ import {
   TableHead,
   TableRow,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material"
 import { AccountBucket } from "@prisma/client"
@@ -187,6 +188,8 @@ ${toReachMessage}`
       isWithinOnePercentOfTarget,
     }
   }, [equity, total, targetEquityPercentage])
+
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
 
   return (
     <>
@@ -431,6 +434,7 @@ ${toReachMessage}`
                   : "info"
             }
             variant="outlined"
+            icon={isMobile ? false : undefined}
           >
             <Stack spacing={2}>
               <Typography
