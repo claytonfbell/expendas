@@ -8,15 +8,7 @@ interface GlidePath {
   retirementDate: string
 }
 
-export const temporaryGlidePath: GlidePath = {
-  targetEquityPercentage: 0.9,
-  targetEquityPercentageAtRetirement: 0.87,
-  glideMonthsPriorToRetirement: 3,
-  glideMonthsAfterRetirement: 3,
-  retirementDate: "2026-06-22",
-}
-
-export const customGlidePath: GlidePath = {
+const glidePath: GlidePath = {
   targetEquityPercentage: 0.9,
   targetEquityPercentageAtRetirement: 0.7,
   glideMonthsPriorToRetirement: 12 * 4,
@@ -28,10 +20,6 @@ export const customGlidePath: GlidePath = {
 export const getTargetEquityPercentageWithGlidePaths = function (
   forDate: Dayjs
 ) {
-  const glidePath = forDate.isAfter(dayjs("2027-01-01"))
-    ? customGlidePath
-    : temporaryGlidePath
-
   const retirementDate = dayjs(glidePath.retirementDate)
   const startOfFirstGlidePeriod = retirementDate.subtract(
     glidePath.glideMonthsPriorToRetirement,

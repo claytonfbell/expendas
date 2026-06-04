@@ -9,24 +9,14 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material"
-import dayjs from "dayjs"
-import { useMemo, useState } from "react"
-import { ExpendasTable } from "./ExpendasTable"
+import { useState } from "react"
+import { ExpendasTable } from "../ExpendasTable"
 import { getTargetEquityPercentageWithGlidePaths } from "./glidePaths"
+import { useAllRebalanceDates } from "./useAllRebalanceDates"
 
 export function GlidePathRebalanceSchedule() {
-  const allRebalanceDates = useMemo(() => {
-    const firstRebalanceDate = dayjs("2026-09-22")
-    const rebalanceFrequencyMonths = 3
-    const numberOfYears = 30
-    const dates = []
-    for (let i = 0; i < (numberOfYears * 12) / rebalanceFrequencyMonths; i++) {
-      dates.push(firstRebalanceDate.add(i * rebalanceFrequencyMonths, "month"))
-    }
-    return dates
-  }, [])
-
   const [show, setShow] = useState(false)
+  const allRebalanceDates = useAllRebalanceDates()
 
   return (
     <Stack spacing={2} sx={{ alignItems: { xs: "stretch", sm: "flex-start" } }}>

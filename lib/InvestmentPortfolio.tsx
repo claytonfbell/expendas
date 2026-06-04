@@ -39,12 +39,13 @@ import {
   useFetchTickerPrices,
   useUpdateAccount,
 } from "./api/api"
+import { GlidePathRebalanceSchedule } from "./AssetAllocationGlidePath/GlidePathRebalanceSchedule"
+import { getTargetEquityPercentageWithGlidePaths } from "./AssetAllocationGlidePath/glidePaths"
+import { useAllRebalanceDates } from "./AssetAllocationGlidePath/useAllRebalanceDates"
 import { BottomStatusBar } from "./BottomStatusBar"
 import { Currency } from "./Currency"
 import { ExpendasTable } from "./ExpendasTable"
 import { formatMoney, formatPercentage } from "./formatMoney"
-import { GlidePathRebalanceSchedule } from "./GlidePathRebalanceSchedule"
-import { getTargetEquityPercentageWithGlidePaths } from "./glidePaths"
 import { useGlobalState } from "./GlobalStateProvider"
 import { HorizontalRangeBar } from "./HorizontalRangeBar"
 import { Percentage } from "./Percentage"
@@ -136,6 +137,9 @@ export function InvestmentPortfolio() {
     return getTargetEquityPercentageWithGlidePaths(dayjs())
   }, [])
 
+  const allRebalanceDates = useAllRebalanceDates()
+  const nextRebalanceDate = allRebalanceDates[0]
+
   //   const [targetEquityPercentage, setTargetEquityPercentage] = useState(
   //     organization?.targetEquityPercentage
   //       ? organization.targetEquityPercentage / 10_000
@@ -172,10 +176,10 @@ export function InvestmentPortfolio() {
     const isWithinOnePercentOfTarget = offTargetBy <= 0.01
     const rebalanceEquityAmount = total * targetEquityPercentage - equity
     const targetPortfolio: string = `${Math.round(targetEquityPercentage * 100)}/${Math.round((1 - targetEquityPercentage) * 100)}`
-    const toReachMessage = `To reach your target allocation of **${targetPortfolio}**, you will ${rebalanceEquityAmount > 0 ? "buy" : "sell"} **${formatMoney(Math.abs(rebalanceEquityAmount), true)}** of stocks at the next rebalance date scheduled.`
+    const toReachMessage = `To reach your target allocation of **${targetPortfolio}**, you will ${rebalanceEquityAmount > 0 ? "buy" : "sell"} **${formatMoney(Math.abs(rebalanceEquityAmount), true)}** of stocks at the next rebalance date (${nextRebalanceDate.format("l")}).`
 
     const rebalanceMessage: string = isWithinOnePercentOfTarget
-      ? `Your portfolio is only **${formatPercentage(offTargetBy, false)}** off your target allocation. You can skip rebalancing on the next rebalance date if you want.
+      ? `Your portfolio is only **${formatPercentage(offTargetBy, false)}** off your target allocation. You can skip rebalancing on the next rebalance date (${nextRebalanceDate.format("l")}) if you want.
 
 ${toReachMessage}`
       : !isOutsideTargetThreshold
