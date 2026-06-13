@@ -1,5 +1,8 @@
 import {
   Box,
+  Button,
+  Dialog,
+  DialogContent,
   Fade,
   Grid,
   LinearProgress,
@@ -13,6 +16,8 @@ import {
   tooltipClasses,
   TooltipProps,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material"
 import { RetirementPlan } from "@prisma/client"
 import moment, { Moment } from "moment"
@@ -75,6 +80,12 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
     }, 0)
   }, [retirementAccounts])
 
+  const [showDetails, setShowDetails] = React.useState(false)
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+
+  const [yearsOfBondsToHold, setYearsOfBondsToHold] = React.useState(7)
+
   return (
     <>
       <RetirementPlanSection
@@ -87,6 +98,9 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
             <Stack>{fiDate.format("MMMM, YYYY")}</Stack>
             <Stack>{fiFromNowString}</Stack>
             <Stack>Ages: {agesString}</Stack>
+            <Button variant="outlined" onClick={() => setShowDetails(true)}>
+              More Details
+            </Button>
           </>
         }
       >
@@ -222,14 +236,81 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
           </Stack>
         </Stack>
       </BottomStatusBar>
+
+      <Dialog
+        open={showDetails}
+        onClose={() => setShowDetails(false)}
+        fullWidth
+        maxWidth="sm"
+        fullScreen={isMobile}
+      >
+        <DialogContent>
+          <Stack spacing={1}>
+            <DetailItem label="Amount:">
+              {formatMoney(
+                (report?.fiDate.endingBalance ?? 0) -
+                  (report?.selfFundedSocialSecurityAmount ?? 0) -
+                  (report?.selfFundedHealthInsuranceAmount ?? 0),
+                true
+              )}
+            </DetailItem>
+            <DetailItem label="Self-Funded Health Insurance Amount:">
+              {formatMoney(report?.selfFundedHealthInsuranceAmount ?? 0, true)}
+            </DetailItem>
+            <DetailItem label="Self-Funded Social Security Amount:">
+              {formatMoney(report?.selfFundedSocialSecurityAmount ?? 0, true)}
+            </DetailItem>
+
+            <DetailItem label="Total Portfolio Amount at FI Date:">
+              {formatMoney(report?.fiDate.endingBalance ?? 0, true)}
+            </DetailItem>
+
+            <DetailItem label="Total Self-Funded Term:">
+              {fromDate(
+                moment(report?.fiDate.date),
+                moment(report?.fiDate.date).add(
+                  report?.selfFundedTotalMonths ?? 0,
+                  "months"
+                )
+              )}
+            </DetailItem>
+          </Stack>
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={() => setShowDetails(false)}
+            sx={{ mt: 2 }}
+          >
+            Close
+          </Button>
+        </DialogContent>
+      </Dialog>
     </>
+  )
+}
+
+interface DetailItemProps {
+  label: React.ReactNode
+  children: React.ReactNode
+}
+
+function DetailItem({ label, children }: DetailItemProps) {
+  return (
+    <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <Stack>{label}</Stack>
+      <Stack>{children}</Stack>
+    </Stack>
   )
 }
 
 export function fromNow(target: Moment) {
   const now = moment()
-  const years = target.diff(now, "years")
-  const months = target.diff(now, "months") % 12
+  return fromDate(now, target)
+}
+
+export function fromDate(date1: Moment, date2: Moment) {
+  const years = date2.diff(date1, "years")
+  const months = date2.diff(date1, "months") % 12
   if (years >= 1) {
     return `${years} years, ${months} months`
   } else if (months >= 1) {

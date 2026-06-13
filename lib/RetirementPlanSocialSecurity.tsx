@@ -128,7 +128,7 @@ export function RetirementPlanSocialSecurity({ retirementPlan }: Props) {
             >
               Current Age
             </TableCell>
-            <TableCell>Age</TableCell>
+            <TableCell>Start Collecting Age</TableCell>
             <TableCell align="right">Social Security</TableCell>
           </TableRow>
         </TableHead>

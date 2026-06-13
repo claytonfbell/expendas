@@ -59,6 +59,16 @@ async function handler(
           return row.endingBalance > dateAndAmount.amount
         })
 
+        const {
+          selfFundedSocialSecurityAmount,
+          selfFundedHealthInsuranceAmount,
+          selfFundedTotalMonths,
+        } = dateAndAmounts.find((da) => da.date === fiRow!.date) ?? {
+          selfFundedSocialSecurityAmount: 0,
+          selfFundedHealthInsuranceAmount: 0,
+          selfFundedTotalMonths: 0,
+        }
+
         // now do decumulation projection starting at fi date
         let prevRow: ProjectionRow | null = null
         projectionRows = projectionRows.map((row) => {
@@ -249,6 +259,9 @@ async function handler(
         const resp: RetirementPlanReportResponse = {
           projectionRows,
           fiDate: fiRow!,
+          selfFundedSocialSecurityAmount,
+          selfFundedHealthInsuranceAmount,
+          selfFundedTotalMonths,
         }
         return resp
       } else {
@@ -263,6 +276,9 @@ export default withSession(handler)
 export type RetirementPlanReportResponse = {
   projectionRows: ProjectionRow[]
   fiDate: ProjectionRow
+  selfFundedSocialSecurityAmount: number
+  selfFundedHealthInsuranceAmount: number
+  selfFundedTotalMonths: number
 }
 
 function getSocialSecurityForMonth(

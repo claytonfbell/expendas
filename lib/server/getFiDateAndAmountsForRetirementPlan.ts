@@ -2,6 +2,14 @@ import { RetirementPlan, RetirementPlanUser, User } from "@prisma/client"
 import moment, { Moment } from "moment"
 import { adjustForInflation } from "./adjustForInflation"
 
+type FiDateAndAmounts = {
+  date: string
+  amount: number
+  selfFundedSocialSecurityAmount: number
+  selfFundedHealthInsuranceAmount: number
+  selfFundedTotalMonths: number
+}
+
 export async function getFiDateAndAmountsForRetirementPlan(
   retirementPlan: RetirementPlan & {
     retirementPlanUsers: (RetirementPlanUser & {
@@ -9,7 +17,7 @@ export async function getFiDateAndAmountsForRetirementPlan(
     })[]
   }
 ) {
-  const dateAndAmounts: { date: string; amount: number }[] = []
+  const dateAndAmounts: FiDateAndAmounts[] = []
 
   // get date of when youngest user turns 70
   const users = retirementPlan.retirementPlanUsers.map((rpu) => rpu.user)
@@ -35,16 +43,13 @@ export async function getFiDateAndAmountsForRetirementPlan(
 
     const currentMonth = moment().startOf("month")
     while (month.isAfter(currentMonth)) {
-      const amount = await getFiAmountForRetirementPlanOnDate(
+      const fiDateAndAmounts = await getFiAmountForRetirementPlanOnDate(
         retirementPlan,
         month
       )
       month.subtract(1, "month")
 
-      dateAndAmounts.push({
-        date: month.format("YYYY-MM-DD"),
-        amount,
-      })
+      dateAndAmounts.push(fiDateAndAmounts)
     }
   }
 
@@ -58,7 +63,7 @@ async function getFiAmountForRetirementPlanOnDate(
     })[]
   },
   date: Moment
-) {
+): Promise<FiDateAndAmounts> {
   // TODO - need to estimate taxes also
 
   // get total social security income (when both collecting)
@@ -83,6 +88,31 @@ async function getFiAmountForRetirementPlanOnDate(
     ) - annualSocialSecurityIncome
   const withdrawalRate = retirementPlan.withdrawalRateEstimate / 100000
   const amount = requiredPortfolioIncome / withdrawalRate
+
+  /**
+   * selfFundedTotalMonths should be the total number of months after "date" until all users are receiving social security and medicare, which represents the months where the user is fully self-funding those gaps. This is a useful number to understand how long the user is in the "most difficult" part of retirement, where they don't have social security or medicare kicking in yet.
+   */
+  let selfFundedTotalMonths = 0
+  for (const rpu of retirementPlan.retirementPlanUsers) {
+    const socialSecurityStartAge = rpu.collectSocialSecurityAge
+    const socialSecurityStartDate = moment(
+      `${rpu.user.dateOfBirth} 00:00:00`
+    ).add(socialSecurityStartAge, "years")
+
+    const medicareStartDate = moment(`${rpu.user.dateOfBirth} 00:00:00`).add(
+      65,
+      "years"
+    )
+
+    const userSelfFundedEndDate = moment.max(
+      socialSecurityStartDate,
+      medicareStartDate
+    )
+    if (userSelfFundedEndDate.isAfter(date)) {
+      const months = userSelfFundedEndDate.diff(date, "months")
+      selfFundedTotalMonths = Math.max(selfFundedTotalMonths, months)
+    }
+  }
 
   // social security gap
   let totalSocialSecurityGap = 0
@@ -125,5 +155,11 @@ async function getFiAmountForRetirementPlanOnDate(
       }
     }
   }
-  return amount + totalSocialSecurityGap + totalHealthInsuranceGap
+  return {
+    date: date.format("YYYY-MM-DD"),
+    amount: amount + totalSocialSecurityGap + totalHealthInsuranceGap,
+    selfFundedSocialSecurityAmount: totalSocialSecurityGap,
+    selfFundedHealthInsuranceAmount: totalHealthInsuranceGap,
+    selfFundedTotalMonths,
+  }
 }
