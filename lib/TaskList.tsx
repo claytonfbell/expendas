@@ -32,7 +32,7 @@ export function TaskList() {
       .sort()
       .slice(
         0,
-        isXL ? 35 - moment().day() : isLG ? 12 : isMD ? 9 : isSM ? 6 : 7
+        isXL ? 35 - moment().day() : isLG ? 16 : isMD ? 15 : isSM ? 14 : 14
       )
   }, [tasks, isXL, isLG, isMD, isSM])
 
