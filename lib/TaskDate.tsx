@@ -103,15 +103,17 @@ export function TaskDate({ date, tasks }: Props) {
       }}
     >
       <Stack
-        alignItems={"end"}
         spacing={1}
-        position={"absolute"}
-        right={12}
-        top={12}
-      >
+        sx={{
+          alignItems: "end",
+          position: "absolute",
+          right: 12,
+          top: 12
+        }}>
         <Stack
-          alignItems={"end"}
           sx={{
+            alignItems: "end",
+
             color: (theme) =>
               allTasksCompleted
                 ? "success.light"
@@ -119,9 +121,8 @@ export function TaskDate({ date, tasks }: Props) {
                   ? "primary.light"
                   : isInThePast
                     ? "error.light"
-                    : theme.palette.text.disabled,
-          }}
-        >
+                    : theme.palette.text.disabled
+          }}>
           <DateText>{dateObject.format("ddd")}</DateText>
           <DateText variant="number">
             <Stack direction={"row"}>
@@ -132,7 +133,6 @@ export function TaskDate({ date, tasks }: Props) {
           <DateText>{dateObject.format("MMMM")}</DateText>
         </Stack>
       </Stack>
-
       <Stack>
         {uniqueTaskGroups.map((groupTasks) => {
           return (
@@ -143,14 +143,15 @@ export function TaskDate({ date, tasks }: Props) {
           )
         })}
       </Stack>
-
       {isToday && (
         <BottomStatusBar>
-          <Stack alignItems={"end"}>{statusMessage}</Stack>
+          <Stack sx={{
+            alignItems: "end"
+          }}>{statusMessage}</Stack>
         </BottomStatusBar>
       )}
     </Paper>
-  )
+  );
 }
 
 interface DateTextProps {
@@ -182,7 +183,12 @@ interface TaskChipProps {
 
 function TaskChip({ label, color, Icon }: TaskChipProps) {
   return (
-    <Stack position={"relative"} width={128} height={20}>
+    <Stack
+      sx={{
+        position: "relative",
+        width: 128,
+        height: 20
+      }}>
       <Chip
         label={label}
         size="small"
@@ -197,7 +203,7 @@ function TaskChip({ label, color, Icon }: TaskChipProps) {
         }}
       />
     </Stack>
-  )
+  );
 }
 
 interface TaskItemGroupProps {
@@ -292,17 +298,16 @@ function TaskItem({ task, onClickSettings }: TaskItemProps) {
   return (
     <Stack
       direction={"row"}
-      alignItems={"center"}
-      justifyContent={"space-between"}
       onMouseEnter={() => setShowSettings(true)}
       onMouseLeave={() => setShowSettings(false)}
-      position="relative"
       sx={{
+        alignItems: "center",
+        justifyContent: "space-between",
+        position: "relative",
         backgroundColor: showSettings ? alpha(color, 0.08) : "transparent",
         borderRadius: 1,
-        padding: 0.25,
-      }}
-    >
+        padding: 0.25
+      }}>
       <FormControlLabel
         control={
           <Checkbox
@@ -355,7 +360,7 @@ function TaskItem({ task, onClickSettings }: TaskItemProps) {
         </Fade>
       </Box>
     </Stack>
-  )
+  );
 }
 
 interface QuickAddTaskScheduleProps {
@@ -391,7 +396,9 @@ function QuickAddTaskSchedule({
         setName("")
       }}
     >
-      <Stack paddingLeft={`28px`}>
+      <Stack sx={{
+        paddingLeft: `28px`
+      }}>
         <TextField
           fullWidth
           slotProps={{
@@ -409,5 +416,5 @@ function QuickAddTaskSchedule({
         />
       </Stack>
     </form>
-  )
+  );
 }

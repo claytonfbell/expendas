@@ -32,9 +32,10 @@ export function TaskGroups() {
       <Stack spacing={2}>
         <Stack
           direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}>
           <Typography variant="h1">Task Groups</Typography>
           <TaskGroupCreateDialog
             onCreate={(newTaskGroup) => setTaskGroup(newTaskGroup)}
@@ -70,7 +71,9 @@ export function TaskGroups() {
                     />
                   </TableCell>
                   <TableCell>
-                    <Stack direction="row" spacing={1} flexWrap="wrap">
+                    <Stack direction="row" spacing={1} sx={{
+                      flexWrap: "wrap"
+                    }}>
                       {group.users.map((u) => (
                         <Chip
                           key={u.id}
@@ -84,7 +87,9 @@ export function TaskGroups() {
                     <Stack
                       direction="row"
                       spacing={1}
-                      justifyContent="flex-end"
+                      sx={{
+                        justifyContent: "flex-end"
+                      }}
                     >
                       <IconButton
                         size="small"
@@ -105,12 +110,10 @@ export function TaskGroups() {
           </TableBody>
         </ExpendasTable>
       </Stack>
-
       <TaskGroupEditDialog
         taskGroup={taskGroup}
         onClose={() => setTaskGroup(null)}
       />
-
       <ConfirmDialog
         message="Are you sure you want to delete?"
         open={!!confirmDelete}
@@ -122,5 +125,5 @@ export function TaskGroups() {
         }}
       />
     </>
-  )
+  );
 }

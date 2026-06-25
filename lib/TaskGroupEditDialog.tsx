@@ -48,7 +48,9 @@ export function TaskGroupEditDialog({ taskGroup, onClose }: Props) {
             }}
           >
             {state !== null && (
-              <Stack spacing={2} marginTop={1}>
+              <Stack spacing={2} sx={{
+                marginTop: 1
+              }}>
                 <TextField
                   size="small"
                   label="Name"
@@ -121,7 +123,9 @@ export function TaskGroupEditDialog({ taskGroup, onClose }: Props) {
                       }}
                     />
                   ))}
-                <Stack direction="row" spacing={2} justifyContent="flex-end">
+                <Stack direction="row" spacing={2} sx={{
+                  justifyContent: "flex-end"
+                }}>
                   <Button variant="outlined" onClick={onClose}>
                     Cancel
                   </Button>
@@ -135,5 +139,5 @@ export function TaskGroupEditDialog({ taskGroup, onClose }: Props) {
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }

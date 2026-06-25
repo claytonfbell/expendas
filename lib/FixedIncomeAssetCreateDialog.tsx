@@ -104,7 +104,9 @@ export function FixedIncomeAssetCreateDialog() {
               addFixedIncomeAsset(state).then(() => setOpen(false))
             }}
           >
-            <Stack spacing={2} marginTop={1}>
+            <Stack spacing={2} sx={{
+              marginTop: 1
+            }}>
               {/* <pre>{JSON.stringify(state, null, 2)}</pre> */}
               <DisplayError error={error} />
               <SelectBase
@@ -263,7 +265,9 @@ export function FixedIncomeAssetCreateDialog() {
                 />
               </Show>
 
-              <Stack direction="row" justifyContent="flex-end" spacing={2}>
+              <Stack direction="row" spacing={2} sx={{
+                justifyContent: "flex-end"
+              }}>
                 <Button
                   type="submit"
                   variant="contained"
@@ -280,5 +284,5 @@ export function FixedIncomeAssetCreateDialog() {
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }

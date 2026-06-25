@@ -63,7 +63,9 @@ export function ReceiptDialog({ receipt, onClose, onComplete }: Props) {
               }
             }}
           >
-            <Stack marginTop={2} spacing={2}>
+            <Stack spacing={2} sx={{
+              marginTop: 2
+            }}>
               <DisplayError error={error} />
               <TextField
                 size="small"
@@ -128,7 +130,9 @@ export function ReceiptDialog({ receipt, onClose, onComplete }: Props) {
                 })}
               />
 
-              <Stack direction="row" spacing={2} justifyContent="flex-end">
+              <Stack direction="row" spacing={2} sx={{
+                justifyContent: "flex-end"
+              }}>
                 <Button
                   variant="outlined"
                   color="error"
@@ -147,7 +151,6 @@ export function ReceiptDialog({ receipt, onClose, onComplete }: Props) {
           </form>
         </DialogContent>
       </Dialog>
-
       <ConfirmDialog
         open={confirm}
         onClose={() => setConfirm(false)}
@@ -161,5 +164,5 @@ export function ReceiptDialog({ receipt, onClose, onComplete }: Props) {
         }}
       />
     </>
-  )
+  );
 }

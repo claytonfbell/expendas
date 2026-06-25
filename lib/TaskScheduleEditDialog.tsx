@@ -74,7 +74,9 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
             }}
           >
             {state !== null && (
-              <Stack spacing={1} marginTop={1}>
+              <Stack spacing={1} sx={{
+                marginTop: 1
+              }}>
                 <SelectBase
                   size="small"
                   label="Group"
@@ -159,9 +161,10 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
                       <Stack
                         direction="row"
                         spacing={0}
-                        alignItems="center"
-                        flexWrap="wrap"
-                      >
+                        sx={{
+                          alignItems: "center",
+                          flexWrap: "wrap"
+                        }}>
                         {state.repeatsOnDaysOfWeek.length > 0 &&
                           [
                             { label: "Sun", value: 0 },
@@ -209,9 +212,10 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
                       <Stack
                         direction="row"
                         spacing={0}
-                        alignItems="center"
-                        flexWrap="wrap"
-                      >
+                        sx={{
+                          alignItems: "center",
+                          flexWrap: "wrap"
+                        }}>
                         {state.repeatsOnDaysOfMonth.length > 0 &&
                           Array.from({ length: 31 }, (_, i) => i + 1).map(
                             (day) => (
@@ -251,9 +255,10 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
                       <Stack
                         direction="row"
                         spacing={0}
-                        alignItems="center"
-                        flexWrap="wrap"
-                      >
+                        sx={{
+                          alignItems: "center",
+                          flexWrap: "wrap"
+                        }}>
                         {state.repeatsOnMonthsOfYear.length > 0 &&
                           Array.from({ length: 12 }, (_, i) => i).map(
                             (month) => (
@@ -280,7 +285,9 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
                     </Stack>
 
                     {/* repeatsWeekly */}
-                    <Stack direction="row" spacing={1} alignItems="center">
+                    <Stack direction="row" spacing={1} sx={{
+                      alignItems: "center"
+                    }}>
                       <SelectBase
                         size="small"
                         label="Skip Weeks"
@@ -323,9 +330,10 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
                       <Stack
                         direction="row"
                         spacing={1}
-                        alignItems="center"
-                        flexWrap="wrap"
-                      >
+                        sx={{
+                          alignItems: "center",
+                          flexWrap: "wrap"
+                        }}>
                         {state.repeatsOnDates.map((date) => (
                           <Chip
                             sx={{ marginBottom: 1 }}
@@ -361,7 +369,9 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
                   </ReactMarkdown>
                 </Alert>
 
-                <Stack direction="row" spacing={2} justifyContent="flex-end">
+                <Stack direction="row" spacing={2} sx={{
+                  justifyContent: "flex-end"
+                }}>
                   <Button variant="outlined" onClick={onClose}>
                     Cancel
                   </Button>
@@ -394,7 +404,7 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
         }}
       />
     </>
-  )
+  );
 }
 
 export function displayTaskScheduleRepeatsSummary({

@@ -39,7 +39,7 @@ export function AmountInput(props: Props) {
 
   function dollarsToCents(dollars: string) {
     dollars = Number(dollars).toFixed(2)
-    return Number(dollars.replace(/[^\d-]/g, ""))
+    return Number(dollars.replace(/[^\d-]/g, ""));
   }
 
   const [firstKeyPressed, setFirstKeyPressed] = useState(false)
@@ -156,5 +156,5 @@ export function AmountInput(props: Props) {
         onBlur={() => setClose((x) => x + 1)}
       />
     </Box>
-  )
+  );
 }

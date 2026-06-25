@@ -129,11 +129,18 @@ export function AccountDialog(props: Props) {
                     xs: 12,
                     renderAfter: (
                       <Grid size={12}>
-                        <Box paddingLeft={2} paddingRight={2} paddingBottom={2}>
+                        <Box
+                          sx={{
+                            paddingLeft: 2,
+                            paddingRight: 2,
+                            paddingBottom: 2
+                          }}>
                           <Grid
                             container
-                            justifyContent="space-between"
                             spacing={2}
+                            sx={{
+                              justifyContent: "space-between"
+                            }}
                           >
                             <Grid>Equity</Grid>
                             <Grid>
@@ -154,5 +161,5 @@ export function AccountDialog(props: Props) {
         <br />
       </DialogContent>
     </Dialog>
-  )
+  );
 }

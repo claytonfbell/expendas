@@ -23,16 +23,21 @@ export function RetirementPlanSection({
   )
 
   return (
-    <Stack spacing={3} alignItems={"stretch"}>
+    <Stack spacing={3} sx={{
+      alignItems: "stretch"
+    }}>
       <Stack
         direction="row"
-        alignItems={{ xs: "start", sm: "baseline" }}
-        justifyContent={"space-between"}
-      >
+        sx={{
+          alignItems: { xs: "start", sm: "baseline" },
+          justifyContent: "space-between"
+        }}>
         <Stack
           direction={{ xs: "column", sm: "row" }}
-          alignItems={"baseline"}
           spacing={{ xs: 0, sm: 3 }}
+          sx={{
+            alignItems: "baseline"
+          }}
         >
           <Typography variant="h1">{title}</Typography>
           {summary}
@@ -45,10 +50,9 @@ export function RetirementPlanSection({
           </Stack>
         )}
       </Stack>
-
       <Collapse in={!collapsed} unmountOnExit>
         {children}
       </Collapse>
     </Stack>
-  )
+  );
 }

@@ -118,7 +118,9 @@ export function UserManage(props: Props) {
                 ) : null}
               </TableCell>
               <TableCell>
-                <Stack direction="row" spacing={1} justifyContent={"end"}>
+                <Stack direction="row" spacing={1} sx={{
+                  justifyContent: "end"
+                }}>
                   {checkLogin?.user.id !== user.userId &&
                   props.state.users.length > 1 ? (
                     <IconButton
@@ -141,20 +143,17 @@ export function UserManage(props: Props) {
           ))}
         </TableBody>
       </Table>
-
       <UserDialog
         organizationId={organizationId}
         user={editUser}
         onClose={() => setEditUser(null)}
       />
-
       <ConfirmDialog
         open={removeThisUser !== undefined}
         onClose={() => setRemoveThisUser(undefined)}
         message="Are you sure you want to remove this user from the organization?"
         onAccept={handleRemoveUser}
       />
-
       <Button
         style={{ marginTop: 18 }}
         color="primary"
@@ -205,5 +204,5 @@ export function UserManage(props: Props) {
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }

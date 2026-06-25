@@ -110,12 +110,13 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
       collapsible
     >
       <DisplayError error={updateError ?? deleteError} />
-
       <Grid
         container
         spacing={2}
         columns={{ xs: 12, sm: 16, lg: 18, xl: 21 }}
-        alignItems={"center"}
+        sx={{
+          alignItems: "center"
+        }}
       >
         <CustomGridItem>
           <TextField
@@ -270,7 +271,6 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
           </Button>
         </CustomGridItem>
       </Grid>
-
       <Stack spacing={2}>
         <Stack spacing={2}>
           <ConfirmDialog
@@ -287,7 +287,7 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
         </Stack>
       </Stack>
     </RetirementPlanSection>
-  )
+  );
 }
 
 function CustomGridItem(props: { children: React.ReactNode }) {

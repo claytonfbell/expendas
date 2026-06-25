@@ -144,7 +144,9 @@ export function RetirementPlanSocialSecurity({ retirementPlan }: Props) {
             return (
               <TableRow key={user.id}>
                 <TableCell>
-                  <Stack direction={"row"} spacing={0.5} alignItems={"center"}>
+                  <Stack direction={"row"} spacing={0.5} sx={{
+                    alignItems: "center"
+                  }}>
                     <Stack>{user.firstName}</Stack>
                     <Stack
                       sx={{
@@ -205,19 +207,20 @@ export function RetirementPlanSocialSecurity({ retirementPlan }: Props) {
                   <Stack
                     direction={{ xs: "column", sm: "row" }}
                     spacing={0.5}
-                    alignItems={{ xs: "end", sm: "center" }}
-                    justifyContent={"end"}
                     divider={isMobile ? undefined : <span>/</span>}
-                  >
+                    sx={{
+                      alignItems: { xs: "end", sm: "center" },
+                      justifyContent: "end"
+                    }}>
                     <Stack>{formatMoney(ssMonthly, true)} mo</Stack>
                     <Stack>{formatMoney(ssYearly, true)} yr</Stack>
                   </Stack>
                 </TableCell>
               </TableRow>
-            )
+            );
           })}
         </TableBody>
       </Table>
     </RetirementPlanSection>
-  )
+  );
 }

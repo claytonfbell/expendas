@@ -170,9 +170,10 @@ export function FixedIncomeAssets() {
       <Stack spacing={2}>
         <Stack
           direction="row"
-          justifyContent="space-between"
-          alignItems={"start"}
-        >
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "start"
+          }}>
           <Typography variant="h1">Fixed Income Assets</Typography>
           <FixedIncomeAssetCreateDialog />
         </Stack>
@@ -217,22 +218,28 @@ export function FixedIncomeAssets() {
           </TableBody>
         </ExpendasTable>
       </Stack>
-
       {/* <pre>{JSON.stringify(assetsWithCalculations, null, 2)}</pre> */}
-
       <BottomStatusBar>
-        <Stack direction="row" spacing={4} justifyContent="end">
-          <Stack alignItems={"end"}>
+        <Stack direction="row" spacing={4} sx={{
+          justifyContent: "end"
+        }}>
+          <Stack sx={{
+            alignItems: "end"
+          }}>
             <Typography>Total Amount</Typography>
             <AnimatedCounter value={totalAmount} roundNearestDollar />
           </Stack>
-          <Stack alignItems={"end"}>
+          <Stack sx={{
+            alignItems: "end"
+          }}>
             <Typography>Overall APR</Typography>
             <Stack>
               <Percentage value={calculateAverageApr} decimals={2} />
             </Stack>
           </Stack>
-          <Stack alignItems={"end"}>
+          <Stack sx={{
+            alignItems: "end"
+          }}>
             <Typography>Annual Gains</Typography>
             <AnimatedCounter
               value={calulateAnnualGainsWithApr}
@@ -242,7 +249,7 @@ export function FixedIncomeAssets() {
         </Stack>
       </BottomStatusBar>
     </>
-  )
+  );
 }
 
 type AssetWithCalculations = {
@@ -294,7 +301,9 @@ function FixedIncomeAssetRow({
           : null}
       </TableCell>
       <TableCell>
-        <Stack direction="row" spacing={1} alignItems="baseline">
+        <Stack direction="row" spacing={1} sx={{
+          alignItems: "baseline"
+        }}>
           <Stack>{displayFixedIncomeAssetType(asset.type)}</Stack>
           {asset.institution && <Stack>{asset.institution}</Stack>}
           {hasDuration.includes(asset.type) &&
@@ -314,7 +323,6 @@ function FixedIncomeAssetRow({
           onChange={(amount) => handleUpdate({ amount })}
         />
       </TableCell>
-
       <TableCell align="right">
         {asset.originalCostBasis && (
           <AmountInputTool
@@ -328,7 +336,6 @@ function FixedIncomeAssetRow({
           />
         )}
       </TableCell>
-
       <TableCell>
         {calculatedApr !== null ? (
           <>
@@ -345,11 +352,9 @@ function FixedIncomeAssetRow({
           />
         )}
       </TableCell>
-
       <TableCell align="right">
         {calculatedGains !== null ? formatMoney(calculatedGains) : null}
       </TableCell>
-
       <TableCell align="right">
         <IconButton
           sx={{ padding: 0 }}
@@ -370,7 +375,7 @@ function FixedIncomeAssetRow({
         />
       </TableCell>
     </TableRow>
-  )
+  );
 }
 
 export const displayFixedIncomeAssetType = (

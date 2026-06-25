@@ -14,17 +14,24 @@ export function Outside(props: Props) {
   const [selected, setSelected] = useState(0)
   return (
     <Stack
-      height="100vh"
-      justifyContent={{ xs: "start", md: "center" }}
-      padding={2}
-      alignItems={"center"}
-    >
-      <Stack maxWidth={400} minHeight={800} spacing={2}>
+      sx={{
+        height: "100vh",
+        justifyContent: { xs: "start", md: "center" },
+        padding: 2,
+        alignItems: "center"
+      }}>
+      <Stack
+        spacing={2}
+        sx={{
+          maxWidth: 400,
+          minHeight: 800
+        }}>
         <Stack
           direction="row"
-          justifyContent={"space-between"}
-          alignItems={"center"}
-        >
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}>
           <LogoComponent height={32} />
           <IconButton
             color="primary"
@@ -45,5 +52,5 @@ export function Outside(props: Props) {
         </Stack>
       </Stack>
     </Stack>
-  )
+  );
 }

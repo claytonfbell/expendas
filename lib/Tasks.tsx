@@ -15,7 +15,9 @@ export function Tasks() {
 
   return (
     <Stack>
-      <Stack alignItems={"end"}>
+      <Stack sx={{
+        alignItems: "end"
+      }}>
         <Fab
           onClick={toggleDrawer(true)}
           size="small"
@@ -25,9 +27,7 @@ export function Tasks() {
           <SettingsIcon />
         </Fab>
       </Stack>
-
       <TaskList />
-
       <Drawer open={open} onClose={toggleDrawer(false)} anchor="bottom">
         <Fab
           size="small"
@@ -47,7 +47,12 @@ export function Tasks() {
             paddingBottom: 4,
           }}
         >
-          <Stack alignItems={"center"} width="100%" paddingY={1}>
+          <Stack
+            sx={{
+              alignItems: "center",
+              width: "100%",
+              paddingY: 1
+            }}>
             <ButtonBase
               focusRipple
               sx={{
@@ -60,12 +65,14 @@ export function Tasks() {
             ></ButtonBase>
           </Stack>
 
-          <Stack spacing={2} paddingTop={4}>
+          <Stack spacing={2} sx={{
+            paddingTop: 4
+          }}>
             <TaskGroups />
             <TaskSchedules />
           </Stack>
         </Container>
       </Drawer>
     </Stack>
-  )
+  );
 }

@@ -71,24 +71,29 @@ export function Inside(props: Props) {
               <Stack
                 direction="row"
                 spacing={2}
-                alignItems="center"
-                justifyContent="space-between"
-                width="100%"
-              >
+                sx={{
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  width: "100%"
+                }}>
                 <ButtonBase focusRipple component={NextLink} href="/">
                   <LogoComponent height={28} />
                 </ButtonBase>
 
                 <TopNavigation />
 
-                <Stack direction="row" alignItems={"center"}>
+                <Stack direction="row" sx={{
+                  alignItems: "center"
+                }}>
                   <DarkModeToggle variant="icon" />
 
                   <IconButton component={NextLink} href="/tasks">
                     <AddTaskIcon />
                   </IconButton>
 
-                  <Stack display={{ xs: "none", lg: "block" }}>
+                  <Stack sx={{
+                    display: { xs: "none", lg: "block" }
+                  }}>
                     <Tooltip title="github.com/claytonfbell/expendas">
                       <IconButton href="https://github.com/claytonfbell/expendas">
                         <GitHubIcon />
@@ -108,7 +113,9 @@ export function Inside(props: Props) {
               paddingBottom: 120,
             }}
           >
-            <Box marginBottom={2}>
+            <Box sx={{
+              marginBottom: 2
+            }}>
               {props.breadcrumbs.length > 0 ? (
                 <ExpendasBreadcrumbs links={props.breadcrumbs} />
               ) : null}
@@ -133,7 +140,7 @@ export function Inside(props: Props) {
         </GlobalStateProvider>
       )}
     </>
-  )
+  );
 }
 
 interface Size {

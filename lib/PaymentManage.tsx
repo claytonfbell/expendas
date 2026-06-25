@@ -30,7 +30,6 @@ export function PaymentManage() {
   return (
     <>
       <DisplayError error={error} />
-
       <ResponsiveTable
         striped
         elevation={4}
@@ -58,10 +57,12 @@ export function PaymentManage() {
             label: "When",
             render: function render(payment) {
               return (
-                <Box maxWidth={400}>
+                <Box sx={{
+                  maxWidth: 400
+                }}>
                   {getRepeatingPaymentFeedback(payment).description}
                 </Box>
-              )
+              );
             },
           },
           {
@@ -73,7 +74,6 @@ export function PaymentManage() {
           },
         ]}
       />
-
       <br />
       <Button
         onClick={() =>
@@ -100,7 +100,6 @@ export function PaymentManage() {
           onClose={() => setPaymentToUpdate(undefined)}
         />
       ) : null}
-
       <ConfirmDialog
         open={paymentToRemove !== undefined}
         onClose={() => setPaymentToRemove(undefined)}
@@ -108,5 +107,5 @@ export function PaymentManage() {
         message="Are you sure you want to delete payment?"
       />
     </>
-  )
+  );
 }

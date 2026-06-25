@@ -172,5 +172,5 @@ async function scrapeEmailsFromFidelityAndUpdateBalances() {
     })
 
     imap.connect()
-  })
+  });
 }

@@ -57,7 +57,9 @@ export function RetirementPlansCreateDialog({ open, onClose }: Props) {
               })
             }}
           >
-            <Stack spacing={2} marginTop={2}>
+            <Stack spacing={2} sx={{
+              marginTop: 2
+            }}>
               <DisplayError error={error} />
               <Stack spacing={2}>
                 <TextField
@@ -89,7 +91,9 @@ export function RetirementPlansCreateDialog({ open, onClose }: Props) {
                 <Stack
                   direction={"row"}
                   spacing={2}
-                  justifyContent={"flex-end"}
+                  sx={{
+                    justifyContent: "flex-end"
+                  }}
                 >
                   <Button
                     variant="outlined"
@@ -112,5 +116,5 @@ export function RetirementPlansCreateDialog({ open, onClose }: Props) {
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }

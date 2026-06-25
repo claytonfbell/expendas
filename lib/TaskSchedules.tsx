@@ -37,9 +37,10 @@ export function TaskSchedules() {
       <Stack spacing={2}>
         <Stack
           direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}>
           <Typography variant="h1">Task Schedules</Typography>
           <TaskScheduleCreateDialog
             onCreate={(newTaskSchedule) => setTaskSchedule(newTaskSchedule)}
@@ -90,7 +91,9 @@ export function TaskSchedules() {
                     <Stack
                       direction="row"
                       spacing={1}
-                      justifyContent="flex-end"
+                      sx={{
+                        justifyContent: "flex-end"
+                      }}
                     >
                       <IconButton
                         size="small"
@@ -111,12 +114,10 @@ export function TaskSchedules() {
           </TableBody>
         </ExpendasTable>
       </Stack>
-
       <TaskScheduleEditDialog
         taskSchedule={taskSchedule}
         onClose={() => setTaskSchedule(null)}
       />
-
       <ConfirmDialog
         message="Are you sure you want to delete?"
         open={!!confirmDelete}
@@ -128,5 +129,5 @@ export function TaskSchedules() {
         }}
       />
     </>
-  )
+  );
 }
