@@ -36,9 +36,12 @@ export function Login() {
         password: () => (
           <>
             <TextField name="password" formatter="password" />
-            <Box style={{ textAlign: "right" }} sx={{
-              marginTop: 1
-            }}>
+            <Box
+              style={{ textAlign: "right" }}
+              sx={{
+                marginTop: 1,
+              }}
+            >
               <Link href="/forgotPassword">Forgot Password</Link>
             </Box>
           </>
@@ -49,5 +52,5 @@ export function Login() {
         cancelButton: { xs: 12 },
       }}
     />
-  );
+  )
 }

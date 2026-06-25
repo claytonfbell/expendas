@@ -123,9 +123,12 @@ export function AccountBox(props: AccountBoxProps) {
         onMouseOver={() => setIsHoverDebounce(true)}
         onMouseOut={() => setIsHoverDebounce(false)}
       >
-        <Grid container sx={{
-          justifyContent: "space-between"
-        }}>
+        <Grid
+          container
+          sx={{
+            justifyContent: "space-between",
+          }}
+        >
           <Grid size={{ xs: 8 }}>
             <Link
               sx={{ cursor: "pointer" }}
@@ -201,9 +204,11 @@ export function AccountBox(props: AccountBoxProps) {
             ) : null}
             {isCurrentCycle && account.accountType === "Checking_Account" ? (
               <Grid size={{ xs: 12 }}>
-                <Box sx={{
-                  padding: 2
-                }}>
+                <Box
+                  sx={{
+                    padding: 2,
+                  }}
+                >
                   <PayCardNow
                     account={account}
                     endingBalance={endingBalance}
@@ -217,5 +222,5 @@ export function AccountBox(props: AccountBoxProps) {
         </Box>
       )}
     </>
-  );
+  )
 }

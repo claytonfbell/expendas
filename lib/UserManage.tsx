@@ -118,9 +118,13 @@ export function UserManage(props: Props) {
                 ) : null}
               </TableCell>
               <TableCell>
-                <Stack direction="row" spacing={1} sx={{
-                  justifyContent: "end"
-                }}>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{
+                    justifyContent: "end",
+                  }}
+                >
                   {checkLogin?.user.id !== user.userId &&
                   props.state.users.length > 1 ? (
                     <IconButton
@@ -204,5 +208,5 @@ export function UserManage(props: Props) {
         </DialogContent>
       </Dialog>
     </>
-  );
+  )
 }

@@ -131,8 +131,9 @@ export function RetirementPlanSavings({ retirementPlan }: Props) {
               columns={16}
               sx={{
                 width: "100%",
-                alignItems: { sm: "start", md: "center" }
-              }}>
+                alignItems: { sm: "start", md: "center" },
+              }}
+            >
               <Grid size={{ xs: 4, sm: 3, md: 2 }} key={bucket}>
                 {displayAccountBucket(bucket as AccountBucket)}
               </Grid>
@@ -190,9 +191,9 @@ export function RetirementPlanSavings({ retirementPlan }: Props) {
                 </Grid>
               </Grid>
             </Grid>
-          );
+          )
         })}
       </Stack>
     </RetirementPlanSection>
-  );
+  )
 }

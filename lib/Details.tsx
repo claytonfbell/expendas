@@ -8,12 +8,15 @@ interface Props {
 
 export function Details(props: Props) {
   return (
-    <Box style={{ maxWidth: 700 }} sx={{
-      overflow: "auto"
-    }}>
+    <Box
+      style={{ maxWidth: 700 }}
+      sx={{
+        overflow: "auto",
+      }}
+    >
       {props.details !== null ? (
         <ReactMarkdown>{props.details}</ReactMarkdown>
       ) : null}
     </Box>
-  );
+  )
 }

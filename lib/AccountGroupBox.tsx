@@ -89,11 +89,16 @@ export function AccountGroupBox(props: Props) {
               sx={{
                 justifyContent: "space-between",
                 alignItems: "center",
-                width: "100%"
-              }}>
-              <Stack direction={"row"} spacing={2} sx={{
-                alignItems: "center"
-              }}>
+                width: "100%",
+              }}
+            >
+              <Stack
+                direction={"row"}
+                spacing={2}
+                sx={{
+                  alignItems: "center",
+                }}
+              >
                 <Stack>
                   {!isExpanded ? (
                     <ExpandMoreIcon style={{ color: "#fff" }} />
@@ -145,8 +150,9 @@ export function AccountGroupBox(props: Props) {
               <Stack
                 sx={{
                   alignItems: "end",
-                  width: "100%"
-                }}>
+                  width: "100%",
+                }}
+              >
                 <Currency animate value={endingBalance} />
               </Stack>
             </ButtonBase>
@@ -154,5 +160,5 @@ export function AccountGroupBox(props: Props) {
         </Box>
       </Paper>
     </Fade>
-  );
+  )
 }

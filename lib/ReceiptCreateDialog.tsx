@@ -76,9 +76,12 @@ export function ReceiptCreateDialog({ onComplete }: Props) {
               })
             }}
           >
-            <Stack spacing={2} sx={{
-              marginTop: 2
-            }}>
+            <Stack
+              spacing={2}
+              sx={{
+                marginTop: 2,
+              }}
+            >
               <DisplayError error={error} />
               <TextField
                 size="small"
@@ -143,9 +146,11 @@ export function ReceiptCreateDialog({ onComplete }: Props) {
                 })}
               />
               {state.fileBase64 ? (
-                <Stack sx={{
-                  alignItems: "start"
-                }}>
+                <Stack
+                  sx={{
+                    alignItems: "start",
+                  }}
+                >
                   <Chip
                     color="primary"
                     label={state.fileName}
@@ -171,9 +176,13 @@ export function ReceiptCreateDialog({ onComplete }: Props) {
                   }
                 />
               )}
-              <Stack direction="row" spacing={2} sx={{
-                justifyContent: "flex-end"
-              }}>
+              <Stack
+                direction="row"
+                spacing={2}
+                sx={{
+                  justifyContent: "flex-end",
+                }}
+              >
                 <Button variant="outlined" onClick={() => setOpen(false)}>
                   Cancel
                 </Button>
@@ -186,5 +195,5 @@ export function ReceiptCreateDialog({ onComplete }: Props) {
         </DialogContent>
       </Dialog>
     </>
-  );
+  )
 }

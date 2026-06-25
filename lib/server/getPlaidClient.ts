@@ -13,8 +13,8 @@ export function getPlaidClient() {
           PLAID_ENVIRONMENT === PlaidEnvironment.Sandbox
             ? process.env.PLAID_SECRET_SANDBOX
             : PLAID_ENVIRONMENT === PlaidEnvironment.Development
-            ? process.env.PLAID_SECRET_DEVELOPMENT
-            : process.env.PLAID_SECRET_PRODUCTION,
+              ? process.env.PLAID_SECRET_DEVELOPMENT
+              : process.env.PLAID_SECRET_PRODUCTION,
       },
     },
   })

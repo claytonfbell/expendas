@@ -38,9 +38,11 @@ export function CycleItemRow(props: Props) {
           }}
         >
           <Grid container spacing={2}>
-            <Grid sx={{
-              alignContent: "flex-start"
-            }}>
+            <Grid
+              sx={{
+                alignContent: "flex-start",
+              }}
+            >
               <Tooltip
                 placement="left"
                 title="Check if this item has already been settled and no longer impacts your account balance."
@@ -78,5 +80,5 @@ export function CycleItemRow(props: Props) {
         </Grid>
       </Grid>
     </Box>
-  );
+  )
 }

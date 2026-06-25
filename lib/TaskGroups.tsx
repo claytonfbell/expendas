@@ -34,8 +34,9 @@ export function TaskGroups() {
           direction="row"
           sx={{
             justifyContent: "space-between",
-            alignItems: "center"
-          }}>
+            alignItems: "center",
+          }}
+        >
           <Typography variant="h1">Task Groups</Typography>
           <TaskGroupCreateDialog
             onCreate={(newTaskGroup) => setTaskGroup(newTaskGroup)}
@@ -71,9 +72,13 @@ export function TaskGroups() {
                     />
                   </TableCell>
                   <TableCell>
-                    <Stack direction="row" spacing={1} sx={{
-                      flexWrap: "wrap"
-                    }}>
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      sx={{
+                        flexWrap: "wrap",
+                      }}
+                    >
                       {group.users.map((u) => (
                         <Chip
                           key={u.id}
@@ -88,7 +93,7 @@ export function TaskGroups() {
                       direction="row"
                       spacing={1}
                       sx={{
-                        justifyContent: "flex-end"
+                        justifyContent: "flex-end",
                       }}
                     >
                       <IconButton
@@ -125,5 +130,5 @@ export function TaskGroups() {
         }}
       />
     </>
-  );
+  )
 }

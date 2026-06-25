@@ -150,7 +150,7 @@ export function Main() {
           direction={{ xs: "column", md: "row" }}
           spacing={{ xs: 0, md: 1 }}
           sx={{
-            justifyContent: "center"
+            justifyContent: "center",
           }}
         >
           <FormControlLabel
@@ -184,9 +184,13 @@ export function Main() {
           />
         </Stack>
 
-        <Grid container spacing={2} sx={{
-          alignContent: "flex-start"
-        }}>
+        <Grid
+          container
+          spacing={2}
+          sx={{
+            alignContent: "flex-start",
+          }}
+        >
           <Grid size={{ xs: 12, md: 6, lg: 4 }}>
             <AccountGroupBox
               includeSettled={includeSettled}
@@ -212,9 +216,13 @@ export function Main() {
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-            <Grid container spacing={2} sx={{
-              alignContent: "flex-start"
-            }}>
+            <Grid
+              container
+              spacing={2}
+              sx={{
+                alignContent: "flex-start",
+              }}
+            >
               {includeSavings ? (
                 <Grid size={12}>
                   <AccountGroupBox
@@ -249,12 +257,18 @@ export function Main() {
       </Stack>
 
       <BottomStatusBar>
-        <Stack direction="row" spacing={4} sx={{
-          justifyContent: "end"
-        }}>
-          <Stack sx={{
-            alignItems: "end"
-          }}>
+        <Stack
+          direction="row"
+          spacing={4}
+          sx={{
+            justifyContent: "end",
+          }}
+        >
+          <Stack
+            sx={{
+              alignItems: "end",
+            }}
+          >
             <Typography>Balance</Typography>
             <AnimatedCounter value={endingBalance} roundNearestDollar />
           </Stack>
@@ -284,5 +298,5 @@ export function Main() {
         />
       ))}
     </>
-  );
+  )
 }

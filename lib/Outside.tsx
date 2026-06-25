@@ -18,20 +18,23 @@ export function Outside(props: Props) {
         height: "100vh",
         justifyContent: { xs: "start", md: "center" },
         padding: 2,
-        alignItems: "center"
-      }}>
+        alignItems: "center",
+      }}
+    >
       <Stack
         spacing={2}
         sx={{
           maxWidth: 400,
-          minHeight: 800
-        }}>
+          minHeight: 800,
+        }}
+      >
         <Stack
           direction="row"
           sx={{
             justifyContent: "space-between",
-            alignItems: "center"
-          }}>
+            alignItems: "center",
+          }}
+        >
           <LogoComponent height={32} />
           <IconButton
             color="primary"
@@ -52,5 +55,5 @@ export function Outside(props: Props) {
         </Stack>
       </Stack>
     </Stack>
-  );
+  )
 }

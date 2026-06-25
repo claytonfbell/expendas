@@ -89,9 +89,12 @@ export function UserDialog({ organizationId, user, onClose }: Props) {
             }
           }}
         >
-          <Stack spacing={2} sx={{
-            marginTop: 2
-          }}>
+          <Stack
+            spacing={2}
+            sx={{
+              marginTop: 2,
+            }}
+          >
             <DisplayError error={error} />
             <Stack direction={"row"} spacing={2}>
               <TextField
@@ -125,9 +128,12 @@ export function UserDialog({ organizationId, user, onClose }: Props) {
             <Stack spacing={2}>
               <div>Social Security Estimates (monthly)</div>
               {state.socialSecurityEstimates.map((estimate, index) => (
-                <Stack key={index} sx={{
-                  alignItems: "start"
-                }}>
+                <Stack
+                  key={index}
+                  sx={{
+                    alignItems: "start",
+                  }}
+                >
                   <CurrencyFieldBase
                     size="small"
                     allowCents={false}
@@ -160,5 +166,5 @@ export function UserDialog({ organizationId, user, onClose }: Props) {
         </form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

@@ -46,8 +46,9 @@ const ConfirmDialog = ({
             spacing={1}
             sx={{
               justifyContent: "flex-end",
-              mt: 2
-            }}>
+              mt: 2,
+            }}
+          >
             {hiddenNoButton !== true && (
               <Button variant="outlined" onClick={onClose} color="primary">
                 {noLabel}
@@ -66,7 +67,7 @@ const ConfirmDialog = ({
         </DialogContent>
       </Dialog>
     </>
-  );
+  )
 }
 
 export default ConfirmDialog

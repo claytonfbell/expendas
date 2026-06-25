@@ -29,9 +29,12 @@ export function Receipts() {
   return (
     <>
       <Stack spacing={2}>
-        <Stack direction="row" sx={{
-          justifyContent: "space-between"
-        }}>
+        <Stack
+          direction="row"
+          sx={{
+            justifyContent: "space-between",
+          }}
+        >
           <Typography variant="h1">Receipts</Typography>
           <ReceiptCreateDialog />
         </Stack>
@@ -77,9 +80,12 @@ export function Receipts() {
                   </Button>
                 </TableCell>
                 <TableCell align="right">
-                  <Stack direction="row" sx={{
-                    justifyContent: "flex-end"
-                  }}>
+                  <Stack
+                    direction="row"
+                    sx={{
+                      justifyContent: "flex-end",
+                    }}
+                  >
                     <IconButton
                       size="small"
                       onClick={() => setReceipt(receipt)}
@@ -113,5 +119,5 @@ export function Receipts() {
       </Stack>
       <ReceiptDialog receipt={receipt} onClose={() => setReceipt(null)} />
     </>
-  );
+  )
 }

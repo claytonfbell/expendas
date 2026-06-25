@@ -60,12 +60,18 @@ export function RetirementPlans() {
   return (
     <>
       <Stack spacing={4}>
-        <Stack direction={"row"} spacing={2} sx={{
-          justifyContent: "space-between"
-        }}>
-          <Stack sx={{
-            width: isMobile ? "100%" : undefined
-          }}>
+        <Stack
+          direction={"row"}
+          spacing={2}
+          sx={{
+            justifyContent: "space-between",
+          }}
+        >
+          <Stack
+            sx={{
+              width: isMobile ? "100%" : undefined,
+            }}
+          >
             <SelectBase
               size="small"
               options={(retirementPlans ?? []).map((x) => ({
@@ -85,9 +91,12 @@ export function RetirementPlans() {
         </Stack>
 
         {selectedPlan !== null && (
-          <Stack spacing={3} sx={{
-            width: "100%"
-          }}>
+          <Stack
+            spacing={3}
+            sx={{
+              width: "100%",
+            }}
+          >
             <RetirementPlanSettings retirementPlan={selectedPlan} />
             <RetirementPlanSavings retirementPlan={selectedPlan} />
             <RetirementPlanSocialSecurity retirementPlan={selectedPlan} />
@@ -102,5 +111,5 @@ export function RetirementPlans() {
         onClose={() => setShowAddDialog(false)}
       />
     </>
-  );
+  )
 }

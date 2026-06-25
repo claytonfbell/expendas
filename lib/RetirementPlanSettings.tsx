@@ -115,7 +115,7 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
         spacing={2}
         columns={{ xs: 12, sm: 16, lg: 18, xl: 21 }}
         sx={{
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         <CustomGridItem>
@@ -287,7 +287,7 @@ export function RetirementPlanSettings({ retirementPlan }: Props) {
         </Stack>
       </Stack>
     </RetirementPlanSection>
-  );
+  )
 }
 
 function CustomGridItem(props: { children: React.ReactNode }) {

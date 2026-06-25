@@ -457,26 +457,36 @@ ${toReachMessage}`
         </Grid>
       </Grid>
       <BottomStatusBar>
-        <Stack direction="row" spacing={4} sx={{
-          justifyContent: "end"
-        }}>
-          <Stack sx={{
-            alignItems: "end"
-          }}>
+        <Stack
+          direction="row"
+          spacing={4}
+          sx={{
+            justifyContent: "end",
+          }}
+        >
+          <Stack
+            sx={{
+              alignItems: "end",
+            }}
+          >
             <Typography>Stocks</Typography>
             <Percentage value={equity / total} decimals={0} />
           </Stack>
 
-          <Stack sx={{
-            alignItems: "end"
-          }}>
+          <Stack
+            sx={{
+              alignItems: "end",
+            }}
+          >
             <Typography>Bonds</Typography>
             <Percentage value={fixed / total} decimals={0} />
           </Stack>
 
-          <Stack sx={{
-            alignItems: "end"
-          }}>
+          <Stack
+            sx={{
+              alignItems: "end",
+            }}
+          >
             <Typography>Savings</Typography>
             <AnimatedCounter value={total} roundNearestDollar />
           </Stack>
@@ -487,7 +497,7 @@ ${toReachMessage}`
         onClose={() => setSelectedAccount(undefined)}
       />
     </>
-  );
+  )
 }
 
 const StyledSpan = styled("span")``
@@ -524,11 +534,16 @@ function CustomTooltip({ payload, label, active }: CustomTooltipProps) {
         color: "#ffffff",
         borderRadius: 5,
         backgroundColor: alpha("#000", 0.9),
-        boxShadow: `5px 11px 22px 1px rgba(0,0,0,0.43)`
-      }}>
-      <Grid container spacing={3} sx={{
-        justifyContent: "space-between"
-      }}>
+        boxShadow: `5px 11px 22px 1px rgba(0,0,0,0.43)`,
+      }}
+    >
+      <Grid
+        container
+        spacing={3}
+        sx={{
+          justifyContent: "space-between",
+        }}
+      >
         <Grid>
           <Typography>{label}</Typography>
         </Grid>
@@ -538,9 +553,13 @@ function CustomTooltip({ payload, label, active }: CustomTooltipProps) {
           </Typography>
         </Grid>
       </Grid>
-      <Grid container spacing={1} sx={{
-        justifyContent: "space-between"
-      }}>
+      <Grid
+        container
+        spacing={1}
+        sx={{
+          justifyContent: "space-between",
+        }}
+      >
         <Grid>
           <Typography style={{ color: lighten(payload[0].fill, 0.5) }}>
             {payload[0].name}
@@ -552,9 +571,13 @@ function CustomTooltip({ payload, label, active }: CustomTooltipProps) {
           </Typography>
         </Grid>
       </Grid>
-      <Grid container spacing={1} sx={{
-        justifyContent: "space-between"
-      }}>
+      <Grid
+        container
+        spacing={1}
+        sx={{
+          justifyContent: "space-between",
+        }}
+      >
         <Grid>
           <Typography style={{ color: lighten(payload[1].fill, 0.3) }}>
             {payload[1].name}
@@ -567,7 +590,7 @@ function CustomTooltip({ payload, label, active }: CustomTooltipProps) {
         </Grid>
       </Grid>
     </Box>
-  ) : null;
+  ) : null
 }
 
 const CustomAlert = styled(Alert)`

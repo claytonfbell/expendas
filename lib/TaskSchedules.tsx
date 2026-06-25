@@ -39,8 +39,9 @@ export function TaskSchedules() {
           direction="row"
           sx={{
             justifyContent: "space-between",
-            alignItems: "center"
-          }}>
+            alignItems: "center",
+          }}
+        >
           <Typography variant="h1">Task Schedules</Typography>
           <TaskScheduleCreateDialog
             onCreate={(newTaskSchedule) => setTaskSchedule(newTaskSchedule)}
@@ -92,7 +93,7 @@ export function TaskSchedules() {
                       direction="row"
                       spacing={1}
                       sx={{
-                        justifyContent: "flex-end"
+                        justifyContent: "flex-end",
                       }}
                     >
                       <IconButton
@@ -129,5 +130,5 @@ export function TaskSchedules() {
         }}
       />
     </>
-  );
+  )
 }

@@ -64,8 +64,9 @@ export function TopNavigation() {
         spacing={{ md: 0, lg: 2 }}
         sx={{
           alignItems: "center",
-          display: { xs: "none", md: "flex" }
-        }}>
+          display: { xs: "none", md: "flex" },
+        }}
+      >
         {navigationLinks.map((link) => {
           const isSelected = router.pathname === link.href
           return (
@@ -92,5 +93,5 @@ export function TopNavigation() {
         })}
       </Stack>
     </>
-  );
+  )
 }

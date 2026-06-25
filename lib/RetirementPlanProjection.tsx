@@ -106,9 +106,11 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
       >
         {report !== undefined && (
           <Stack spacing={2}>
-            <Box sx={{
-              position: "relative"
-            }}>
+            <Box
+              sx={{
+                position: "relative",
+              }}
+            >
               <LinearProgress
                 color="primary"
                 value={(savedSoFar / (report?.fiDate.endingBalance ?? 1)) * 100}
@@ -125,8 +127,9 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
                   top: 0,
                   fontWeight: "bold",
                   fontSize: "1.1rem",
-                  color: (theme) => theme.palette.primary.main
-                }}>
+                  color: (theme) => theme.palette.primary.main,
+                }}
+              >
                 {Math.round(
                   (savedSoFar / (report?.fiDate.endingBalance ?? 1)) * 100
                 )}
@@ -220,20 +223,28 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
         )}
       </RetirementPlanSection>
       <BottomStatusBar>
-        <Stack direction="row" spacing={4} sx={{
-          justifyContent: "end"
-        }}>
+        <Stack
+          direction="row"
+          spacing={4}
+          sx={{
+            justifyContent: "end",
+          }}
+        >
           <Fade in={report?.fiDate !== undefined}>
-            <Stack sx={{
-              alignItems: "end"
-            }}>
+            <Stack
+              sx={{
+                alignItems: "end",
+              }}
+            >
               <Typography>{fiFromNowString}</Typography>
               <Stack>{fiDate.format("MMMM, YYYY")}</Stack>
             </Stack>
           </Fade>
-          <Stack sx={{
-            alignItems: "end"
-          }}>
+          <Stack
+            sx={{
+              alignItems: "end",
+            }}
+          >
             <Typography>Financial Independence</Typography>
             <AnimatedCounter
               value={report?.fiDate.endingBalance ?? 0}
@@ -291,7 +302,7 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
         </DialogContent>
       </Dialog>
     </>
-  );
+  )
 }
 
 interface DetailItemProps {
@@ -305,12 +316,13 @@ function DetailItem({ label, children }: DetailItemProps) {
       direction="row"
       sx={{
         justifyContent: "space-between",
-        alignItems: "center"
-      }}>
+        alignItems: "center",
+      }}
+    >
       <Stack>{label}</Stack>
       <Stack>{children}</Stack>
     </Stack>
-  );
+  )
 }
 
 export function fromNow(target: Moment) {
@@ -360,17 +372,21 @@ function EndingBalanceTooltip({
               <React.Fragment key={accountBucket}>
                 <Grid size={1}>{displayAccountBucket(accountBucket)}</Grid>
                 <Grid size={1}>
-                  <Stack sx={{
-                    alignItems: "end"
-                  }}>{formatMoney(sum, true)}</Stack>
+                  <Stack
+                    sx={{
+                      alignItems: "end",
+                    }}
+                  >
+                    {formatMoney(sum, true)}
+                  </Stack>
                 </Grid>
               </React.Fragment>
-            );
+            )
           })}
         </Grid>
       }
     >
       <Stack>{children}</Stack>
     </CustomWidthTooltip>
-  );
+  )
 }

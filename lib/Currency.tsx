@@ -40,8 +40,8 @@ export function Currency(props: Props) {
           props.value < 0 && props.red
             ? RED
             : props.value > 0 && props.green
-            ? GREEN
-            : undefined,
+              ? GREEN
+              : undefined,
         fontWeight: props.bold ? "bold" : undefined,
       }}
     >

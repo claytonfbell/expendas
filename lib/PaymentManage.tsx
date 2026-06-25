@@ -57,12 +57,14 @@ export function PaymentManage() {
             label: "When",
             render: function render(payment) {
               return (
-                <Box sx={{
-                  maxWidth: 400
-                }}>
+                <Box
+                  sx={{
+                    maxWidth: 400,
+                  }}
+                >
                   {getRepeatingPaymentFeedback(payment).description}
                 </Box>
-              );
+              )
             },
           },
           {
@@ -107,5 +109,5 @@ export function PaymentManage() {
         message="Are you sure you want to delete payment?"
       />
     </>
-  );
+  )
 }

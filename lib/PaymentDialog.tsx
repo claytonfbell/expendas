@@ -352,14 +352,17 @@ export function PaymentDialog(props: Props) {
                   label="On Select Dates"
                 />
                 <Collapse in={repeatsType === "dates"}>
-                  <Box sx={{
-                    marginLeft: 4
-                  }}>
+                  <Box
+                    sx={{
+                      marginLeft: 4,
+                    }}
+                  >
                     <Box
                       sx={{
                         marginTop: 1,
-                        marginBottom: 1
-                      }}>
+                        marginBottom: 1,
+                      }}
+                    >
                       {state.repeatsOnDates.map((x) => (
                         <Chip
                           key={x}
@@ -592,5 +595,5 @@ export function PaymentDialog(props: Props) {
         </Dialog>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

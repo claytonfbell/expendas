@@ -60,8 +60,9 @@ export function TaskList() {
           direction="row"
           sx={{
             justifyContent: "space-between",
-            alignItems: "center"
-          }}>
+            alignItems: "center",
+          }}
+        >
           <Typography variant="h1">Tasks</Typography>
         </Stack>
         <Grid
@@ -118,5 +119,5 @@ export function TaskList() {
         </Grid>
       </Stack>
     </>
-  );
+  )
 }

@@ -108,9 +108,11 @@ export function TrendsReports() {
   return (
     <>
       <Stack spacing={3}>
-        <Stack sx={{
-          alignItems: "center"
-        }}>
+        <Stack
+          sx={{
+            alignItems: "center",
+          }}
+        >
           <TrendsReportsTimeRangeSelect
             value={selectedRange}
             onChange={setSelectedRange}
@@ -209,21 +211,29 @@ export function TrendsReports() {
       </Stack>
       {latestDataPoint && (
         <BottomStatusBar>
-          <Stack direction="row" spacing={4} sx={{
-            justifyContent: "end"
-          }}>
-            <Stack sx={{
-              alignItems: "end"
-            }}>
+          <Stack
+            direction="row"
+            spacing={4}
+            sx={{
+              justifyContent: "end",
+            }}
+          >
+            <Stack
+              sx={{
+                alignItems: "end",
+              }}
+            >
               <Typography>Savings</Typography>
               <AnimatedCounter
                 value={latestDataPoint.balance * 100}
                 roundNearestDollar
               />
             </Stack>
-            <Stack sx={{
-              alignItems: "end"
-            }}>
+            <Stack
+              sx={{
+                alignItems: "end",
+              }}
+            >
               <Typography>Net Worth</Typography>
               <AnimatedCounter
                 value={latestDataPoint.totalNetWorth * 100}
@@ -234,7 +244,7 @@ export function TrendsReports() {
         </BottomStatusBar>
       )}
     </>
-  );
+  )
 }
 
 const formatCurrency = (value: number) => {

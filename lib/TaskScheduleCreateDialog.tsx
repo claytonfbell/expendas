@@ -68,9 +68,12 @@ export function TaskScheduleCreateDialog({ onCreate }: Props) {
               onCreate(newTaskSchedule)
             }}
           >
-            <Stack spacing={2} sx={{
-              marginTop: 1
-            }}>
+            <Stack
+              spacing={2}
+              sx={{
+                marginTop: 1,
+              }}
+            >
               <DisplayError error={error} />
               <SelectBase
                 size="small"
@@ -96,9 +99,13 @@ export function TaskScheduleCreateDialog({ onCreate }: Props) {
                 }
               />
 
-              <Stack direction="row" spacing={2} sx={{
-                justifyContent: "flex-end"
-              }}>
+              <Stack
+                direction="row"
+                spacing={2}
+                sx={{
+                  justifyContent: "flex-end",
+                }}
+              >
                 <Button variant="outlined" onClick={() => setOpen(false)}>
                   Cancel
                 </Button>
@@ -111,5 +118,5 @@ export function TaskScheduleCreateDialog({ onCreate }: Props) {
         </DialogContent>
       </Dialog>
     </>
-  );
+  )
 }

@@ -36,8 +36,9 @@ export function HorizontalRangeBar({ low, current, high }: Props) {
         sx={{
           alignItems: "start",
           position: "relative",
-          justifyContent: "space-between"
-        }}>
+          justifyContent: "space-between",
+        }}
+      >
         <Divider
           sx={{
             position: "absolute",
@@ -86,7 +87,7 @@ export function HorizontalRangeBar({ low, current, high }: Props) {
         )}
       </Stack>
     </>
-  );
+  )
 }
 
 interface HorizontalRangeBarIndicatorProps {
@@ -116,31 +117,35 @@ function HorizontalRangeBarIndicator({
       sx={{
         left: left,
         position: left ? "absolute" : undefined,
-        alignItems: align
-      }}>
+        alignItems: align,
+      }}
+    >
       <Icon color={color} fontSize="large" />
       <Stack
         sx={{
           marginTop: collides ? 6 : 0,
-          alignItems: align
-        }}>
+          alignItems: align,
+        }}
+      >
         <Typography
           sx={{
             fontWeight: "bold",
             color: (theme) => theme.palette[color].main,
-            lineHeight: 1.2
-          }}>
+            lineHeight: 1.2,
+          }}
+        >
           {formatMoney(value, true)}
         </Typography>
         <Typography
           sx={{
             fontWeight: "bold",
             color: (theme) => theme.palette[color].main,
-            lineHeight: 1.2
-          }}>
+            lineHeight: 1.2,
+          }}
+        >
           {label}
         </Typography>
       </Stack>
     </Stack>
-  );
+  )
 }

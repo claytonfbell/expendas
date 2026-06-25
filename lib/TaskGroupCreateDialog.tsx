@@ -65,9 +65,12 @@ export function TaskGroupCreateDialog({ onCreate }: Props) {
               onCreate(newTaskGroup)
             }}
           >
-            <Stack spacing={2} sx={{
-              marginTop: 1
-            }}>
+            <Stack
+              spacing={2}
+              sx={{
+                marginTop: 1,
+              }}
+            >
               <DisplayError error={error} />
               <TextField
                 size="small"
@@ -92,9 +95,13 @@ export function TaskGroupCreateDialog({ onCreate }: Props) {
                   }))
                 }
               />
-              <Stack direction="row" spacing={2} sx={{
-                justifyContent: "flex-end"
-              }}>
+              <Stack
+                direction="row"
+                spacing={2}
+                sx={{
+                  justifyContent: "flex-end",
+                }}
+              >
                 <Button variant="outlined" onClick={() => setOpen(false)}>
                   Cancel
                 </Button>
@@ -107,5 +114,5 @@ export function TaskGroupCreateDialog({ onCreate }: Props) {
         </DialogContent>
       </Dialog>
     </>
-  );
+  )
 }

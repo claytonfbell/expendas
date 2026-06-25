@@ -125,9 +125,12 @@ export function RetirementPlanProjectionChart({ retirementPlan }: Props) {
           </>
         }
       >
-        <Stack spacing={2} sx={{
-          alignItems: "center"
-        }}>
+        <Stack
+          spacing={2}
+          sx={{
+            alignItems: "center",
+          }}
+        >
           <RetirementPlanProjectionChartTimeRangeSelect
             value={range}
             onChange={setRange}
@@ -238,5 +241,5 @@ export function RetirementPlanProjectionChart({ retirementPlan }: Props) {
         </Stack>
       </RetirementPlanSection>
     </>
-  );
+  )
 }

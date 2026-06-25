@@ -125,19 +125,24 @@ export function SelectFile({
           sx={{
             minHeight: 120,
             alignItems: "center",
-            justifyContent: "space-around"
-          }}>
-          <Stack spacing={0} sx={{
-            alignItems: "center"
-          }}>
+            justifyContent: "space-around",
+          }}
+        >
+          <Stack
+            spacing={0}
+            sx={{
+              alignItems: "center",
+            }}
+          >
             {isDragActive ? (
               <Stack
                 direction="row"
                 spacing={1}
                 sx={{
                   alignItems: "center",
-                  fontSize: 18
-                }}>
+                  fontSize: 18,
+                }}
+              >
                 <CloudUploadIcon fontSize="inherit" />
                 <Box>Drop File Here ...</Box>
               </Stack>
@@ -148,34 +153,47 @@ export function SelectFile({
                   spacing={1}
                   sx={{
                     alignItems: "center",
-                    fontSize: 18
-                  }}>
+                    fontSize: 18,
+                  }}
+                >
                   <CloudUploadIcon fontSize="inherit" />
                   <Box>{label}</Box>
                 </Stack>
                 {fileExtensions !== "" ? (
-                  <Typography variant="caption" sx={{
-                    color: "inherit"
-                  }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: "inherit",
+                    }}
+                  >
                     Accepted: {fileExtensions}
                   </Typography>
                 ) : null}
-                <Typography variant="caption" sx={{
-                  color: "inherit"
-                }}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: "inherit",
+                  }}
+                >
                   Maximum File Size: {prettyBytes(maxSize)}
                 </Typography>
                 {recommendedAtLeastDimensions !== undefined ? (
-                  <Typography variant="caption" sx={{
-                    color: "inherit"
-                  }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: "inherit",
+                    }}
+                  >
                     Recommended at least {recommendedAtLeastDimensions}
                   </Typography>
                 ) : null}
                 {details !== undefined ? (
-                  <Typography variant="caption" sx={{
-                    color: "inherit"
-                  }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: "inherit",
+                    }}
+                  >
                     {details}
                   </Typography>
                 ) : null}
@@ -185,5 +203,5 @@ export function SelectFile({
         </Stack>
       </DropZoneStyleBox>
     </>
-  );
+  )
 }

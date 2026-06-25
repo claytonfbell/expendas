@@ -14,8 +14,9 @@ export function BottomMobileNavigation() {
         display: { xs: "flex", md: "none" },
         justifyContent: "stretch",
         alignItems: "start",
-        backgroundColor: (theme) => theme.palette.background.default
-      }}>
+        backgroundColor: (theme) => theme.palette.background.default,
+      }}
+    >
       {navigationLinks.map((link) => {
         const isSelected = router.pathname === link.href
         return (
@@ -46,14 +47,15 @@ export function BottomMobileNavigation() {
 
                 color: isSelected
                   ? (theme) => theme.palette.text.primary
-                  : (theme) => alpha(theme.palette.text.primary, 0.6)
-              }}>
+                  : (theme) => alpha(theme.palette.text.primary, 0.6),
+              }}
+            >
               <Stack>{isSelected ? <link.ActiveIcon /> : <link.Icon />}</Stack>
               <Stack>{link.xsLabel ?? link.label}</Stack>
             </Stack>
           </ButtonBase>
-        );
+        )
       })}
     </Stack>
-  );
+  )
 }

@@ -30,8 +30,9 @@ export function CycleNavigation(props: Props) {
       spacing={2}
       sx={{
         alignItems: "center",
-        justifyContent: "center"
-      }}>
+        justifyContent: "center",
+      }}
+    >
       {dates.length > 0 ? (
         <>
           <Fade in={prev !== null}>
@@ -64,5 +65,5 @@ export function CycleNavigation(props: Props) {
         </>
       ) : null}
     </Stack>
-  );
+  )
 }
