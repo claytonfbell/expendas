@@ -1,5 +1,5 @@
 import { RetirementPlan, RetirementPlanUser, User } from "@prisma/client"
-import moment, { Moment } from "moment"
+import dayjs, { Dayjs } from "../dayjs"
 import { adjustForInflation } from "./adjustForInflation"
 
 type FiDateAndAmounts = {
@@ -37,17 +37,17 @@ export async function getFiDateAndAmountsForRetirementPlan(
   )
 
   if (youngestUser && youngestUser.dateOfBirth) {
-    const month = moment(youngestUser.dateOfBirth)
+    let month = dayjs(youngestUser.dateOfBirth)
       .add(70, "years")
       .startOf("month")
 
-    const currentMonth = moment().startOf("month")
+    const currentMonth = dayjs().startOf("month")
     while (month.isAfter(currentMonth)) {
       const fiDateAndAmounts = await getFiAmountForRetirementPlanOnDate(
         retirementPlan,
         month
       )
-      month.subtract(1, "month")
+      month = month.subtract(1, "month")
 
       dateAndAmounts.push(fiDateAndAmounts)
     }
@@ -62,7 +62,7 @@ async function getFiAmountForRetirementPlanOnDate(
       user: User
     })[]
   },
-  date: Moment
+  date: Dayjs
 ): Promise<FiDateAndAmounts> {
   // TODO - need to estimate taxes also
 
@@ -95,19 +95,20 @@ async function getFiAmountForRetirementPlanOnDate(
   let selfFundedTotalMonths = 0
   for (const rpu of retirementPlan.retirementPlanUsers) {
     const socialSecurityStartAge = rpu.collectSocialSecurityAge
-    const socialSecurityStartDate = moment(
+    const socialSecurityStartDate = dayjs(
       `${rpu.user.dateOfBirth} 00:00:00`
     ).add(socialSecurityStartAge, "years")
 
-    const medicareStartDate = moment(`${rpu.user.dateOfBirth} 00:00:00`).add(
+    const medicareStartDate = dayjs(`${rpu.user.dateOfBirth} 00:00:00`).add(
       65,
       "years"
     )
 
-    const userSelfFundedEndDate = moment.max(
-      socialSecurityStartDate,
+    const userSelfFundedEndDate = socialSecurityStartDate.isAfter(
       medicareStartDate
     )
+      ? socialSecurityStartDate
+      : medicareStartDate
     if (userSelfFundedEndDate.isAfter(date)) {
       const months = userSelfFundedEndDate.diff(date, "months")
       selfFundedTotalMonths = Math.max(selfFundedTotalMonths, months)
@@ -118,12 +119,12 @@ async function getFiAmountForRetirementPlanOnDate(
   let totalSocialSecurityGap = 0
   for (const rpu of retirementPlan.retirementPlanUsers) {
     const socialSecurityStartAge = rpu.collectSocialSecurityAge
-    const socialSecurityStartDate = moment(
+    const socialSecurityStartDate = dayjs(
       `${rpu.user.dateOfBirth} 00:00:00`
     ).add(socialSecurityStartAge, "years")
 
     if (socialSecurityStartDate.isAfter(date)) {
-      const loopDate = date.clone()
+      let loopDate = date.clone()
       while (loopDate.isBefore(socialSecurityStartDate)) {
         const sse = adjustForInflation(
           rpu.user.socialSecurityEstimates[rpu.collectSocialSecurityAge - 62],
@@ -131,7 +132,7 @@ async function getFiAmountForRetirementPlanOnDate(
           retirementPlan.inflationRateEstimate
         )
         totalSocialSecurityGap += sse
-        loopDate.add(1, "month")
+        loopDate = loopDate.add(1, "month")
       }
     }
   }
@@ -139,19 +140,19 @@ async function getFiAmountForRetirementPlanOnDate(
   // health insurance gap
   let totalHealthInsuranceGap = 0
   for (const rpu of retirementPlan.retirementPlanUsers) {
-    const medicareStartDate = moment(`${rpu.user.dateOfBirth} 00:00:00`).add(
+    const medicareStartDate = dayjs(`${rpu.user.dateOfBirth} 00:00:00`).add(
       65,
       "years"
     )
     if (medicareStartDate.isAfter(date)) {
-      const loopDate = date.clone()
+      let loopDate = date.clone()
       while (loopDate.isBefore(medicareStartDate)) {
         totalHealthInsuranceGap += adjustForInflation(
           retirementPlan.healthInsuranceEstimate,
           loopDate,
           retirementPlan.inflationRateEstimate
         )
-        loopDate.add(1, "month")
+        loopDate = loopDate.add(1, "month")
       }
     }
   }

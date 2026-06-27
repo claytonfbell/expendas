@@ -1,5 +1,5 @@
 import { Payment } from "@prisma/client"
-import moment from "moment"
+import dayjs from "./dayjs"
 
 type ScheduleFeedback = {
   description: string
@@ -12,16 +12,16 @@ export function getRepeatingPaymentFeedback(
   let errors: string[] = []
   let msg: string = ""
   if (schedule !== undefined) {
-    msg = moment(schedule.date).format("l")
+    msg = dayjs(schedule.date).format("l")
     // repeating on dates
     if (schedule.repeatsOnDates.length > 0) {
-      msg = schedule.repeatsOnDates.map((x) => moment(x).format("l")).join(", ")
+      msg = schedule.repeatsOnDates.map((x) => dayjs(x).format("l")).join(", ")
     }
     // repeating on days of month
     else if (schedule.repeatsOnDaysOfMonth.length > 0) {
       msg =
         schedule.repeatsOnDaysOfMonth
-          .map((x) => moment.localeData().ordinal(x))
+          .map((x) => dayjs.localeData().ordinal(x))
           .join(", ") + " of "
       if (
         schedule.repeatsOnMonthsOfYear.length === 0 ||
@@ -30,14 +30,14 @@ export function getRepeatingPaymentFeedback(
         msg += "each month"
       } else {
         msg += schedule.repeatsOnMonthsOfYear
-          .map((x) => moment().month(x).format("MMMM"))
+          .map((x) => dayjs().month(x).format("MMMM"))
           .join(", ")
       }
     }
     // repeating weekly / biweekly
     else if (schedule.repeatsWeekly !== null) {
       msg =
-        moment(schedule.date).format("dddd") +
+        dayjs(schedule.date).format("dddd") +
         (schedule.repeatsWeekly === 1
           ? " each week"
           : ` every ${schedule.repeatsWeekly} weeks`)
@@ -49,7 +49,7 @@ export function getRepeatingPaymentFeedback(
         schedule.repeatsWeekly !== null) &&
       schedule.repeatsUntilDate !== null
     ) {
-      msg += ` until ${moment(schedule.repeatsUntilDate).format("M/D/YYYY")}`
+      msg += ` until ${dayjs(schedule.repeatsUntilDate).format("M/D/YYYY")}`
     }
 
     // errors
@@ -58,7 +58,7 @@ export function getRepeatingPaymentFeedback(
       errors = schedule.repeatsOnDaysOfMonth
         .map((x) =>
           invalidDates.includes(x)
-            ? `Invalid repeating date **${moment.localeData().ordinal(x)}**`
+            ? `Invalid repeating date **${dayjs.localeData().ordinal(x)}**`
             : ""
         )
         .filter((x) => x !== "")

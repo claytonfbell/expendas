@@ -1,5 +1,5 @@
 import { RetirementPlan, RetirementPlanUser, User } from "@prisma/client"
-import moment, { Moment } from "moment"
+import dayjs, { Dayjs } from "../../../../../../lib/dayjs"
 import { NextApiResponse } from "next"
 import { requireOrganizationAuthentication } from "../../../../../../lib/requireAuthentication"
 import { adjustForInflation } from "../../../../../../lib/server/adjustForInflation"
@@ -76,7 +76,7 @@ async function handler(
           if (!isDecumulation) {
             return row
           } else {
-            const month = moment(`${row.date} 00:00:00`)
+            const month = dayjs(`${row.date} 00:00:00`)
             let withdraw = adjustForInflation(
               Math.round(retirementPlan.desiredIncome / 12),
               month,
@@ -174,10 +174,10 @@ async function handler(
 
         // now groups of 12 rows for each year from current month
         const annualProjectionRows: ProjectionRow[][] = []
-        let currentMonth = moment(`${projectionRows[0].date} 00:00:00`)
+        let currentMonth = dayjs(`${projectionRows[0].date} 00:00:00`)
         let currentYearRows: ProjectionRow[] = []
         projectionRows.forEach((row) => {
-          const month = moment(`${row.date} 00:00:00`)
+          const month = dayjs(`${row.date} 00:00:00`)
           if (month.isSameOrAfter(currentMonth.clone().add(1, "year"))) {
             annualProjectionRows.push(currentYearRows)
             currentMonth = month.clone()
@@ -287,12 +287,12 @@ function getSocialSecurityForMonth(
       user: User
     })[]
   },
-  date: Moment
+  date: Dayjs
 ) {
   let totalSocialSecurity = 0
   for (const rpu of retirementPlan.retirementPlanUsers) {
     const socialSecurityStartAge = rpu.collectSocialSecurityAge
-    const socialSecurityStartDate = moment(
+    const socialSecurityStartDate = dayjs(
       `${rpu.user.dateOfBirth} 00:00:00`
     ).add(socialSecurityStartAge, "years")
     if (socialSecurityStartDate.isSameOrBefore(date)) {
@@ -313,13 +313,13 @@ function getHealthInsuranceForMonth(
       user: User
     })[]
   },
-  date: Moment
+  date: Dayjs
 ) {
   let totalHealthInsurance = 0
   for (const rpu of retirementPlan.retirementPlanUsers) {
     const medicareStartAge = 65
     if (
-      moment(`${rpu.user.dateOfBirth} 00:00:00`)
+      dayjs(`${rpu.user.dateOfBirth} 00:00:00`)
         .add(medicareStartAge, "years")
         .isSameOrBefore(date)
     ) {

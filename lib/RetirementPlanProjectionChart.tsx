@@ -1,6 +1,6 @@
 import { Stack, useTheme } from "@mui/material"
 import { RetirementPlan } from "@prisma/client"
-import moment from "moment"
+import dayjs from "./dayjs"
 import React, { useMemo } from "react"
 import {
   Bar,
@@ -33,15 +33,15 @@ export function RetirementPlanProjectionChart({ retirementPlan }: Props) {
 
   const { data: users } = useFetchRetirementPlanUsers(retirementPlan.id)
 
-  const fiDate = moment(report?.fiDate?.date)
+  const fiDate = dayjs(report?.fiDate?.date)
   const fiFromNowString = fromNow(fiDate)
   const agesString = useMemo(
     () =>
       users
         ? users
             .map((user) =>
-              moment(fiDate).diff(
-                moment(`${user.user.dateOfBirth} 00:00:00`),
+              dayjs(fiDate).diff(
+                dayjs(`${user.user.dateOfBirth} 00:00:00`),
                 "years"
               )
             )
@@ -54,8 +54,8 @@ export function RetirementPlanProjectionChart({ retirementPlan }: Props) {
     return users
       ? users
           .map((user) =>
-            moment(`${date} 00:00:00`).diff(
-              moment(`${user.user.dateOfBirth} 00:00:00`),
+            dayjs(`${date} 00:00:00`).diff(
+              dayjs(`${user.user.dateOfBirth} 00:00:00`),
               "years"
             )
           )
@@ -68,8 +68,8 @@ export function RetirementPlanProjectionChart({ retirementPlan }: Props) {
     if (!report) return []
     return report.projectionRows
       .filter((row) => {
-        const rowYear = moment(`${row.date} 00:00:00`).year()
-        const currentYear = moment().year()
+        const rowYear = dayjs(`${row.date} 00:00:00`).year()
+        const currentYear = dayjs().year()
         if (range === "10Y") {
           return rowYear <= currentYear + 10
         } else if (range === "20Y") {
@@ -80,7 +80,7 @@ export function RetirementPlanProjectionChart({ retirementPlan }: Props) {
         return true
       })
       .map((row) => ({
-        name: moment(`${row.date} 00:00:00`).year() + 1,
+        name: dayjs(`${row.date} 00:00:00`).year() + 1,
         endingBalance: row.endingBalance,
         taxableBalance: row.accounts
           .filter((x) => x.accountBucket === "After_Tax")
@@ -100,7 +100,7 @@ export function RetirementPlanProjectionChart({ retirementPlan }: Props) {
   const socialSecurityBeginYears = useMemo(() => {
     if (!users) return []
     return users.map((user) => {
-      const birthYear = moment(`${user.user.dateOfBirth} 00:00:00`).year()
+      const birthYear = dayjs(`${user.user.dateOfBirth} 00:00:00`).year()
       return {
         year: birthYear + user.collectSocialSecurityAge,
         name: `${user.user.firstName}'s Social Security`,

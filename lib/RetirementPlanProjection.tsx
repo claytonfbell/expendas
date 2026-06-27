@@ -20,7 +20,7 @@ import {
   useTheme,
 } from "@mui/material"
 import { RetirementPlan } from "@prisma/client"
-import moment, { Moment } from "moment"
+import dayjs, { Dayjs } from "./dayjs"
 import React, { useMemo } from "react"
 import { accountBuckets, displayAccountBucket } from "./accountBuckets"
 import AnimatedCounter from "./AnimatedCounter"
@@ -45,15 +45,15 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
 
   const { data: users } = useFetchRetirementPlanUsers(retirementPlan.id)
 
-  const fiDate = moment(report?.fiDate?.date)
+  const fiDate = dayjs(report?.fiDate?.date)
   const fiFromNowString = fromNow(fiDate)
   const agesString = useMemo(
     () =>
       users
         ? users
             .map((user) =>
-              moment(fiDate).diff(
-                moment(`${user.user.dateOfBirth} 00:00:00`),
+              dayjs(fiDate).diff(
+                dayjs(`${user.user.dateOfBirth} 00:00:00`),
                 "years"
               )
             )
@@ -152,8 +152,8 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
                 </TableHead>
                 <TableBody>
                   {report.projectionRows.map((row) => {
-                    const startDate = moment(`${row.date} 00:00:00`)
-                    const endDate = moment(`${row.date} 00:00:00`).add(
+                    const startDate = dayjs(`${row.date} 00:00:00`)
+                    const endDate = dayjs(`${row.date} 00:00:00`).add(
                       1,
                       "year"
                     )
@@ -167,15 +167,15 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
                     return (
                       <TableRow key={row.date} selected={hilighted} hover>
                         <TableCell>
-                          {moment(`${row.date} 00:00:00`).year()}
+                          {dayjs(`${row.date} 00:00:00`).year()}
                         </TableCell>
                         <TableCell align="center">
                           <NoBr>
                             {users
                               ? users
                                   .map((user) => {
-                                    return moment(`${row.date} 00:00:00`).diff(
-                                      moment(
+                                    return dayjs(`${row.date} 00:00:00`).diff(
+                                      dayjs(
                                         `${user.user.dateOfBirth} 00:00:00`
                                       ),
                                       "years"
@@ -283,8 +283,8 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
 
             <DetailItem label="Total Self-Funded Term:">
               {fromDate(
-                moment(report?.fiDate.date),
-                moment(report?.fiDate.date).add(
+                dayjs(report?.fiDate.date),
+                dayjs(report?.fiDate.date).add(
                   report?.selfFundedTotalMonths ?? 0,
                   "months"
                 )
@@ -325,12 +325,12 @@ function DetailItem({ label, children }: DetailItemProps) {
   )
 }
 
-export function fromNow(target: Moment) {
-  const now = moment()
+export function fromNow(target: Dayjs) {
+  const now = dayjs()
   return fromDate(now, target)
 }
 
-export function fromDate(date1: Moment, date2: Moment) {
+export function fromDate(date1: Dayjs, date2: Dayjs) {
   const years = date2.diff(date1, "years")
   const months = date2.diff(date1, "months") % 12
   if (years >= 1) {

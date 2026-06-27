@@ -1,6 +1,6 @@
 // pages/api/login.ts
 import { SHA3 } from "crypto-js"
-import moment from "moment"
+import dayjs from "../../lib/dayjs"
 import { NextApiRequest, NextApiResponse } from "next"
 import { ResetPasswordRequest } from "../../lib/api/ResetPasswordRequest"
 import { ResetPasswordResponse } from "../../lib/api/ResetPasswordResponse"
@@ -30,7 +30,7 @@ async function handler(
       }
       if (
         user.authCodeExpiresAt === null ||
-        user.authCodeExpiresAt < moment().toDate()
+        user.authCodeExpiresAt < dayjs().toDate()
       ) {
         throw new BadRequestException("Reset code expired.")
       }

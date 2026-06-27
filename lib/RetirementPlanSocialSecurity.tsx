@@ -10,7 +10,7 @@ import {
 } from "@mui/material"
 import { RetirementPlan } from "@prisma/client"
 import { SelectBase } from "material-ui-pack"
-import moment from "moment"
+import dayjs from "./dayjs"
 import { useEffect, useMemo, useState } from "react"
 import {
   useFetchOrganization,
@@ -166,8 +166,8 @@ export function RetirementPlanSocialSecurity({ retirementPlan }: Props) {
                     display: { xs: "none", sm: "table-cell" },
                   }}
                 >
-                  {moment().diff(
-                    moment(`${user.dateOfBirth} 00:00:00`),
+                  {dayjs().diff(
+                    dayjs(`${user.dateOfBirth} 00:00:00`),
                     "years"
                   )}
                 </TableCell>

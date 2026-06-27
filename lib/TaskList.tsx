@@ -6,15 +6,15 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material"
-import moment from "moment"
+import dayjs from "./dayjs"
 import { useMemo, useState } from "react"
 import { useFetchTasks } from "./api/api"
 import { TaskDate } from "./TaskDate"
 
 export function TaskList() {
   const [state, setState] = useState({
-    startDate: moment().startOf("day").format("YYYY-MM-DD"),
-    endDate: moment().add(6, "weeks").startOf("day").format("YYYY-MM-DD"),
+    startDate: dayjs().startOf("day").format("YYYY-MM-DD"),
+    endDate: dayjs().add(6, "weeks").startOf("day").format("YYYY-MM-DD"),
   })
   const { data: tasks } = useFetchTasks(state.startDate, state.endDate)
 
@@ -32,7 +32,7 @@ export function TaskList() {
       .sort()
       .slice(
         0,
-        isXL ? 35 - moment().day() : isLG ? 16 : isMD ? 15 : isSM ? 14 : 14
+        isXL ? 35 - dayjs().day() : isLG ? 16 : isMD ? 15 : isSM ? 14 : 14
       )
   }, [tasks, isXL, isLG, isMD, isSM])
 
@@ -41,8 +41,8 @@ export function TaskList() {
     if (!tasks) return []
     if (!isXL) return uniqueDatesInTasks
     const allDatesSet = new Set(uniqueDatesInTasks)
-    const firstDate = moment(uniqueDatesInTasks[0])
-    const lastDate = moment(uniqueDatesInTasks[uniqueDatesInTasks.length - 1])
+    const firstDate = dayjs(uniqueDatesInTasks[0])
+    const lastDate = dayjs(uniqueDatesInTasks[uniqueDatesInTasks.length - 1])
     for (
       let date = firstDate.clone();
       date.isSameOrBefore(lastDate);
@@ -96,7 +96,7 @@ export function TaskList() {
             isXL &&
             uniqueDatesInTasks.length > 0 &&
             Array.from(
-              { length: moment(uniqueDatesInTasks[0]).day() },
+              { length: dayjs(uniqueDatesInTasks[0]).day() },
               (_, i) => i
             ).map((i) => (
               <Grid

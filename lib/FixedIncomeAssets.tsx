@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material"
 import { FixedIncomeAssetType } from "@prisma/client"
-import moment from "moment-timezone"
+import dayjs from "./dayjs"
 import { useMemo, useState } from "react"
 import { AccountBucketChip } from "./AccountBucketChip"
 import { AmountInputTool } from "./AmountInputTool"
@@ -95,11 +95,11 @@ export function FixedIncomeAssets() {
             calculatedGains,
             daysLeft:
               asset.matureDate !== null
-                ? moment(`${asset.matureDate} 00:00:00`)
+                ? dayjs(`${asset.matureDate} 00:00:00`)
                     .tz("America/Los_Angeles")
                     .startOf("day")
                     .diff(
-                      moment().tz("America/Los_Angeles").startOf("day"),
+                      dayjs().tz("America/Los_Angeles").startOf("day"),
                       "days"
                     )
                 : null,
@@ -297,18 +297,18 @@ function FixedIncomeAssetRow({
       </TableCell>
       <TableCell>
         {asset.settlementDate &&
-          moment(`${asset.settlementDate} 00:00:00`).format("M/D/YYYY")}
+          dayjs(`${asset.settlementDate} 00:00:00`).format("M/D/YYYY")}
       </TableCell>
       <TableCell>
         {asset.matureDate &&
-          moment(`${asset.matureDate} 00:00:00`).format("M/D/YYYY")}
+          dayjs(`${asset.matureDate} 00:00:00`).format("M/D/YYYY")}
       </TableCell>
       <TableCell align="right">
         {asset.matureDate !== null
-          ? moment(`${asset.matureDate} 00:00:00`)
+          ? dayjs(`${asset.matureDate} 00:00:00`)
               .tz("America/Los_Angeles")
               .startOf("day")
-              .diff(moment().tz("America/Los_Angeles").startOf("day"), "days")
+              .diff(dayjs().tz("America/Los_Angeles").startOf("day"), "days")
           : null}
       </TableCell>
       <TableCell>

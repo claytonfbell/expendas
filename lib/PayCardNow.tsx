@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 import { Button } from "@mui/material"
 import { Account } from "@prisma/client"
-import moment from "moment"
+import dayjs from "./dayjs"
 import { useFetchAccounts, useFetchItems } from "./api/api"
 import { formatMoney } from "./formatMoney"
 import { PaymentForm } from "./PaymentForm"
@@ -61,7 +61,7 @@ export function PayCardNow(props: Props) {
       repeatsOnMonthsOfYear: [],
       repeatsUntilDate: null,
       repeatsWeekly: null,
-      date: moment().format("YYYY-MM-DD"),
+      date: dayjs().format("YYYY-MM-DD"),
       isTransfer: true,
     })
   }

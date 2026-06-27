@@ -1,5 +1,5 @@
 import { TickerPrice } from "@prisma/client"
-import moment from "moment-timezone"
+import dayjs from "../dayjs"
 import {
   populateMissingTickerPrices,
   Ticker,
@@ -25,7 +25,7 @@ export async function getLatestTickerPrice(ticker: Ticker) {
 }
 
 export async function getTwoYearLowTickerPrice(ticker: Ticker) {
-  const twoYearsAgo = moment().subtract(2, "years").format("YYYY-MM-DD")
+  const twoYearsAgo = dayjs().subtract(2, "years").format("YYYY-MM-DD")
   const twoYearLow = await prisma.tickerPrice.findFirst({
     where: {
       ticker: ticker,

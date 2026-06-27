@@ -31,7 +31,7 @@ import {
   SubmitButton,
   TextField,
 } from "material-ui-pack"
-import moment from "moment-timezone"
+import dayjs from "./dayjs"
 import { ChangeEvent, useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
 import DisplayError from "./DisplayError"
@@ -179,7 +179,7 @@ export function PaymentDialog(props: Props) {
   useEffect(() => {
     if (state.repeatsOnDaysOfMonth.length > 0) {
       const newArray = [...state.repeatsOnDaysOfMonth]
-      const x = moment(state.date).date()
+      const x = dayjs(state.date).date()
       if (!newArray.includes(x)) {
         newArray.push(x)
         newArray.sort((a, b) => a - b)
@@ -195,7 +195,7 @@ export function PaymentDialog(props: Props) {
   useEffect(() => {
     if (state.repeatsOnMonthsOfYear.length > 0) {
       const newArray = [...state.repeatsOnMonthsOfYear]
-      const x = moment(state.date).month()
+      const x = dayjs(state.date).month()
       if (!newArray.includes(x)) {
         newArray.push(x)
         newArray.sort((a, b) => a - b)
@@ -327,12 +327,12 @@ export function PaymentDialog(props: Props) {
                       ...prev,
                       repeatsOnDates: [],
                       repeatsWeekly: null,
-                      repeatsOnDaysOfMonth: [moment(state.date).date()],
+                      repeatsOnDaysOfMonth: [dayjs(state.date).date()],
                     }))
                   } else if (newType === "dates") {
                     setState((prev) => ({
                       ...prev,
-                      repeatsOnDates: [moment(state.date).format("YYYY-MM-DD")],
+                      repeatsOnDates: [dayjs(state.date).format("YYYY-MM-DD")],
                       repeatsWeekly: null,
                       repeatsOnDaysOfMonth: [],
                     }))
@@ -436,7 +436,7 @@ export function PaymentDialog(props: Props) {
                     }))
                   }}
                   color={"primary"}
-                  disabled={moment(state.date).date() === x + 1}
+                  disabled={dayjs(state.date).date() === x + 1}
                   variant={
                     state.repeatsOnDaysOfMonth !== null &&
                     state.repeatsOnDaysOfMonth.includes(x + 1)
@@ -444,7 +444,7 @@ export function PaymentDialog(props: Props) {
                       : "text"
                   }
                 >
-                  {moment.localeData().ordinal(x + 1)}
+                  {dayjs.localeData().ordinal(x + 1)}
                 </Button>
               ))}
               <br />
@@ -460,7 +460,7 @@ export function PaymentDialog(props: Props) {
                   } else {
                     setState((prev) => ({
                       ...prev,
-                      repeatsOnMonthsOfYear: [moment(state.date).month()],
+                      repeatsOnMonthsOfYear: [dayjs(state.date).month()],
                     }))
                   }
                 }}
@@ -488,7 +488,7 @@ export function PaymentDialog(props: Props) {
                       }))
                     }}
                     color={"primary"}
-                    disabled={moment(state.date).month() === x}
+                    disabled={dayjs(state.date).month() === x}
                     variant={
                       state.repeatsOnMonthsOfYear !== null &&
                       state.repeatsOnMonthsOfYear.includes(x)
@@ -496,7 +496,7 @@ export function PaymentDialog(props: Props) {
                         : "text"
                     }
                   >
-                    {moment().month(x).format("MMMM")}
+                    {dayjs().month(x).format("MMMM")}
                   </Button>
                 ))}
               </Collapse>
@@ -513,7 +513,7 @@ export function PaymentDialog(props: Props) {
                 } else {
                   setState((prev) => ({
                     ...prev,
-                    repeatsUntilDate: moment()
+                    repeatsUntilDate: dayjs()
                       .add(1, "years")
                       .format("YYYY-MM-DD"),
                   }))

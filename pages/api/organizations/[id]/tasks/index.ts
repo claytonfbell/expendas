@@ -1,5 +1,5 @@
 import { Task } from "@prisma/client"
-import moment from "moment-timezone"
+import dayjs from "../../../../../lib/dayjs"
 import { NextApiResponse } from "next"
 import { requireOrganizationAuthentication } from "../../../../../lib/requireAuthentication"
 import { buildResponse } from "../../../../../lib/server/buildResponse"
@@ -8,7 +8,7 @@ import withSession, { NextIronRequest } from "../../../../../lib/server/session"
 import validate from "../../../../../lib/server/validate"
 import { TaskScheduleWithIncludes } from "./schedules"
 
-moment.tz.setDefault("America/Los_Angeles")
+dayjs.tz.setDefault("America/Los_Angeles")
 
 async function handler(
   req: NextIronRequest,
@@ -28,7 +28,7 @@ async function handler(
 
       validate({ startDate, endDate }).notNull()
 
-      const oneHourAgo = moment().subtract(1, "hour")
+      const oneHourAgo = dayjs().subtract(1, "hour")
 
       // auto-close overdue tasks before fetching tasks to ensure the UI is up to date
       await autoCloseOverdueTasks(user.id)
@@ -52,8 +52,8 @@ async function handler(
               OR: [
                 {
                   date: {
-                    gte: moment(`${startDate} 00:00:00`).format("YYYY-MM-DD"),
-                    lte: moment(`${endDate} 00:00:00`)
+                    gte: dayjs(`${startDate} 00:00:00`).format("YYYY-MM-DD"),
+                    lte: dayjs(`${endDate} 00:00:00`)
                       .endOf("day")
                       .format("YYYY-MM-DD"),
                   },
@@ -63,7 +63,7 @@ async function handler(
                   completed: false,
                   closed: false,
                   date: {
-                    lte: moment(`${startDate} 00:00:00`)
+                    lte: dayjs(`${startDate} 00:00:00`)
                       .endOf("day")
                       .format("YYYY-MM-DD"),
                   },
@@ -117,7 +117,7 @@ export type TaskWithIncludes = Task & {
 }
 
 async function autoCloseOverdueTasks(closedByUserId: number) {
-  const twoDaysAgo = moment().subtract(2, "days").startOf("day")
+  const twoDaysAgo = dayjs().subtract(2, "days").startOf("day")
   await prisma.task.updateMany({
     where: {
       closed: false,
@@ -131,7 +131,7 @@ async function autoCloseOverdueTasks(closedByUserId: number) {
     },
     data: {
       closed: true,
-      closedAt: moment().toISOString(),
+      closedAt: dayjs().toISOString(),
       closedByUserId,
     },
   })

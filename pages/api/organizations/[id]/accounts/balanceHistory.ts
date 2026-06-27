@@ -1,4 +1,4 @@
-import moment from "moment"
+import dayjs from "../../../../../lib/dayjs"
 import { NextApiResponse } from "next"
 import { buildResponse } from "../../../../../lib/server/buildResponse"
 import prisma from "../../../../../lib/server/prisma"
@@ -35,7 +35,7 @@ async function handler(
             where: {
               date: {
                 gte: (() => {
-                  const now = moment()
+                  const now = dayjs()
                   switch (range) {
                     case "1W":
                       return now.subtract(1, "week").format("YYYY-MM-DD")
@@ -71,9 +71,9 @@ async function handler(
       //     .flatMap((account) => account.balanceHistory)
       //     .reduce((earliest, entry) => {
       //       return entry.date < earliest ? entry.date : earliest
-      //     }, moment().format("YYYY-MM-DD"))
+      //     }, dayjs().format("YYYY-MM-DD"))
       //   // subract 7 days to be safe
-      //   const earliestDateMinus7 = moment(`${earliestDate} 00:00:00`)
+      //   const earliestDateMinus7 = dayjs(`${earliestDate} 00:00:00`)
       //     .subtract(7, "day")
       //     .format("YYYY-MM-DD")
       //   const tickerPrices = await prisma.tickerPrice.findMany({
@@ -100,7 +100,7 @@ async function handler(
       //           let tries = 0
       //           while (tickerPrice === undefined && tries < 10) {
       //             tries++
-      //             const previousDate = moment(`${entry.date} 00:00:00`)
+      //             const previousDate = dayjs(`${entry.date} 00:00:00`)
       //               .subtract(tries, "day")
       //               .format("YYYY-MM-DD")
       //             tickerPrice = tickerPriceMap.get(previousDate)

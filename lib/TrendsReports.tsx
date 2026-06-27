@@ -1,5 +1,5 @@
 import { Stack, Typography, useMediaQuery, useTheme } from "@mui/material"
-import moment from "moment"
+import dayjs from "./dayjs"
 import { useEffect, useState } from "react"
 import {
   CartesianGrid,
@@ -137,7 +137,7 @@ export function TrendsReports() {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="date"
-              tickFormatter={(x) => moment(`${x} 00:00:00`).format("M/D/YYYY")}
+              tickFormatter={(x) => dayjs(`${x} 00:00:00`).format("M/D/YYYY")}
               stroke={theme.palette.text.primary}
             />
             <YAxis

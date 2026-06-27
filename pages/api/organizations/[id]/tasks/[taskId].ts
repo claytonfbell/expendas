@@ -1,4 +1,4 @@
-import moment from "moment"
+import dayjs from "../../../../../lib/dayjs"
 import { NextApiResponse } from "next"
 import { TaskWithIncludes } from "."
 import { requireOrganizationAuthentication } from "../../../../../lib/requireAuthentication"
@@ -70,14 +70,14 @@ async function handler(
           // if marking completed from incomplete
           ...(completed && !task.completed
             ? {
-                completedAt: moment().toISOString(),
+                completedAt: dayjs().toISOString(),
                 completedByUserId: user.id,
               }
             : {}),
           // if marking closed from open
           ...(closed && !task.closed
             ? {
-                closedAt: moment().toISOString(),
+                closedAt: dayjs().toISOString(),
                 closedByUserId: user.id,
               }
             : {}),

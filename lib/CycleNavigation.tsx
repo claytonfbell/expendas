@@ -1,7 +1,7 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
 import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 import { Fade, IconButton, Stack, Typography } from "@mui/material"
-import moment from "moment"
+import dayjs from "./dayjs"
 
 type Props = {
   date: string
@@ -48,7 +48,7 @@ export function CycleNavigation(props: Props) {
           </Fade>
 
           <Typography variant="h1" component={"span"}>
-            {moment(props.date).format("M/D/YYYY")}
+            {dayjs(props.date).format("M/D/YYYY")}
           </Typography>
 
           {next !== null ? (

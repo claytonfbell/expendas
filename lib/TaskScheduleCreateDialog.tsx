@@ -7,7 +7,7 @@ import {
   TextField,
 } from "@mui/material"
 import { SelectBase } from "material-ui-pack"
-import moment from "moment"
+import dayjs from "./dayjs"
 import { useEffect, useState } from "react"
 import {
   TaskScheduleCreateRequest,
@@ -20,7 +20,7 @@ const defaultState: TaskScheduleCreateRequest = {
   name: "",
   description: null,
   taskGroupId: null,
-  date: moment().format("YYYY-MM-DD"),
+  date: dayjs().format("YYYY-MM-DD"),
   repeats: false,
   repeatsUntilDate: null,
   repeatsOnDaysOfWeek: [],

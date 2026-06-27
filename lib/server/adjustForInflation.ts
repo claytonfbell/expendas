@@ -1,11 +1,11 @@
-import moment, { Moment } from "moment"
+import dayjs, { Dayjs } from "../dayjs"
 
 export function adjustForInflation(
   amount: number,
-  toDate: Moment,
+  toDate: Dayjs,
   inflationRate: number
 ) {
-  const currentDate = moment()
+  const currentDate = dayjs()
   const monthsDifference = toDate.diff(currentDate, "months")
   const monthlyInflationRate = inflationRate / 100000 / 12
   return Math.round(

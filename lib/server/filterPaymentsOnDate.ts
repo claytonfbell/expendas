@@ -1,16 +1,16 @@
 import { Payment } from "@prisma/client"
-import moment, { Moment } from "moment"
+import dayjs, { Dayjs } from "../dayjs"
 
-export function filterPaymentsOnDate(payments: Payment[], date: Moment) {
+export function filterPaymentsOnDate(payments: Payment[], date: Dayjs) {
   return payments.filter((x) => {
     // expired
     if (x.repeatsUntilDate !== null) {
-      if (moment(x.repeatsUntilDate).isBefore(date)) {
+      if (dayjs(x.repeatsUntilDate).isBefore(date)) {
         return false
       }
     }
     // same day
-    if (moment(x.date).format("YYYYMMDD") === date.format("YYYYMMDD")) {
+    if (dayjs(x.date).format("YYYYMMDD") === date.format("YYYYMMDD")) {
       return true
     }
 
@@ -24,7 +24,7 @@ export function filterPaymentsOnDate(payments: Payment[], date: Moment) {
     // repeating on days of month
     if (x.repeatsOnDaysOfMonth.length > 0) {
       // not yet
-      if (moment(x.date).isAfter(date)) {
+      if (dayjs(x.date).isAfter(date)) {
         return false
       }
 
@@ -39,18 +39,18 @@ export function filterPaymentsOnDate(payments: Payment[], date: Moment) {
     // repeating weekly
     if (x.repeatsWeekly !== null) {
       // not yet
-      if (moment(x.date).isAfter(date)) {
+      if (dayjs(x.date).isAfter(date)) {
         return false
       }
 
-      const cursor = moment(x.date)
+      let cursor = dayjs(x.date)
       while (!cursor.isAfter(date)) {
         const sameDate =
-          moment(cursor).format("YYYYMMDD") === date.format("YYYYMMDD")
+          dayjs(cursor).format("YYYYMMDD") === date.format("YYYYMMDD")
         if (sameDate) {
           return true
         }
-        cursor.add(x.repeatsWeekly, "weeks")
+        cursor = cursor.add(x.repeatsWeekly, "weeks")
       }
     }
 

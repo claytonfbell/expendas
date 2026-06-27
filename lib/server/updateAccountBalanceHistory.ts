@@ -1,4 +1,4 @@
-import moment from "moment"
+import dayjs from "../dayjs"
 import prisma from "./prisma"
 import {
   getAllTimeHighTickerPrice,
@@ -12,7 +12,7 @@ export async function updateAccountBalanceHistory(organizationId: number) {
     },
   })
 
-  const today = moment().tz("America/Los_Angeles").format("YYYY-MM-DD")
+  const today = dayjs().tz("America/Los_Angeles").format("YYYY-MM-DD")
   const existingRows = await prisma.accountBalanceHistory.findMany({
     where: {
       accountId: {

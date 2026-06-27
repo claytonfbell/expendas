@@ -1,5 +1,5 @@
 import { TaskGroup, TaskSchedule } from "@prisma/client"
-import moment from "moment"
+import dayjs from "../../../../../../lib/dayjs"
 import { NextApiResponse } from "next"
 import { requireOrganizationAuthentication } from "../../../../../../lib/requireAuthentication"
 import { buildResponse } from "../../../../../../lib/server/buildResponse"
@@ -24,7 +24,7 @@ async function handler(
 
     // GET
     if (req.method === "GET") {
-      const ago = moment()
+      const ago = dayjs()
         .subtract(7, "day")
         .startOf("day")
         .format("YYYY-MM-DD")

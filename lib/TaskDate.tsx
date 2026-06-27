@@ -15,7 +15,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material"
-import moment from "moment"
+import dayjs from "./dayjs"
 import { useEffect, useMemo, useState } from "react"
 import { TaskWithIncludes } from "../pages/api/organizations/[id]/tasks"
 import { TaskScheduleWithIncludes } from "../pages/api/organizations/[id]/tasks/schedules"
@@ -34,8 +34,8 @@ export function TaskDate({ date, tasks }: Props) {
     return tasks.filter((task) => task.date === date)
   }, [tasks, date])
 
-  const dateObject = moment(date, "YYYY-MM-DD")
-  const isToday = dateObject.isSame(moment(), "day")
+  const dateObject = dayjs(date, "YYYY-MM-DD")
+  const isToday = dateObject.isSame(dayjs(), "day")
 
   const uniqueTaskGroups = useMemo(() => {
     const groupsMap: Record<string, TaskWithIncludes[]> = {}
@@ -50,7 +50,7 @@ export function TaskDate({ date, tasks }: Props) {
   }, [filteredTasks])
 
   const allTasksCompleted = filteredTasks.every((task) => task.completed)
-  const isInThePast = dateObject.isBefore(moment(), "day")
+  const isInThePast = dateObject.isBefore(dayjs(), "day")
 
   const remainingTasks = useMemo(() => {
     if (isToday) {

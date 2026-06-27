@@ -11,7 +11,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material"
-import moment from "moment"
+import dayjs from "./dayjs"
 import prettyBytes from "pretty-bytes"
 import { useState } from "react"
 import { ReceiptWithIncludes } from "../pages/api/organizations/[id]/receipts"
@@ -61,11 +61,11 @@ export function Receipts() {
                 </TableCell>
                 <TableCell>
                   {receipt.date &&
-                    moment(receipt.date, "YYYY-MM-DD").format("ll")}
+                    dayjs(receipt.date, "YYYY-MM-DD").format("ll")}
                 </TableCell>
                 <TableCell>
                   {receipt.datePaid &&
-                    moment(receipt.datePaid, "YYYY-MM-DD").format("ll")}
+                    dayjs(receipt.datePaid, "YYYY-MM-DD").format("ll")}
                 </TableCell>
                 <TableCell>{receipt.account.name}</TableCell>
                 <TableCell>

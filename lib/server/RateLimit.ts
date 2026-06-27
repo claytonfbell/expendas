@@ -1,4 +1,4 @@
-import moment, { Moment } from "moment"
+import dayjs, { Dayjs } from "../dayjs"
 
 const hits: Hit[] = []
 
@@ -12,12 +12,12 @@ export class RateLimit {
   }
 
   isRateLimited(): boolean {
-    const now = moment()
+    const now = dayjs()
 
     // remove hits that are outside the longest time window
     const longestDurationMs = Math.max(...this.options.map((o) => o.durationMs))
     const timeAgo = now.clone().subtract(longestDurationMs, "milliseconds")
-    while (hits.length > 0 && hits[0].moment.isBefore(timeAgo)) {
+    while (hits.length > 0 && hits[0].dayjs.isBefore(timeAgo)) {
       hits.shift()
     }
 
@@ -26,7 +26,7 @@ export class RateLimit {
       const hitsInWindow = hits.filter(
         (hit) =>
           hit.name === this.name &&
-          hit.moment.isAfter(
+          hit.dayjs.isAfter(
             now.clone().subtract(option.durationMs, "milliseconds")
           )
       )
@@ -35,20 +35,20 @@ export class RateLimit {
           `Rate limit exceeded for ${this.name}: ${hitsInWindow.length} hits in the last ${option.durationMs} ms`
         )
         console.log(
-          hitsInWindow.map((hit) => hit.moment.toISOString()).join(", ")
+          hitsInWindow.map((hit) => hit.dayjs.toISOString()).join(", ")
         )
         return true
       }
     }
 
     // record the hit
-    hits.push({ name: this.name, moment: now })
+    hits.push({ name: this.name, dayjs: now })
     return false
   }
 }
 
 type Hit = {
-  moment: Moment
+  dayjs: Dayjs
   name: string
 }
 

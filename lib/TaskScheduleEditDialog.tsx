@@ -15,7 +15,7 @@ import {
   MultipleDatePicker,
   SelectBase,
 } from "material-ui-pack"
-import moment from "moment"
+import dayjs from "./dayjs"
 import { useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
 import { TaskScheduleWithIncludes } from "../pages/api/organizations/[id]/tasks/schedules"
@@ -106,7 +106,7 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
                   value={state.date}
                   onChange={(date) =>
                     handleUpdate({
-                      date: date ?? moment().format("YYYY-MM-DD"),
+                      date: date ?? dayjs().format("YYYY-MM-DD"),
                     })
                   }
                 />
@@ -156,7 +156,7 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
                         onChange={(checked) => {
                           handleUpdate({
                             repeatsOnDaysOfWeek: checked
-                              ? [moment(`${state.date} 00:00:00`).day()]
+                              ? [dayjs(`${state.date} 00:00:00`).day()]
                               : [],
                           })
                         }}
@@ -208,7 +208,7 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
                         onChange={(checked) => {
                           handleUpdate({
                             repeatsOnDaysOfMonth: checked
-                              ? [moment(`${state.date} 00:00:00`).date()]
+                              ? [dayjs(`${state.date} 00:00:00`).date()]
                               : [],
                           })
                         }}
@@ -252,7 +252,7 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
                         onChange={(checked) => {
                           handleUpdate({
                             repeatsOnMonthsOfYear: checked
-                              ? [moment(`${state.date} 00:00:00`).month()]
+                              ? [dayjs(`${state.date} 00:00:00`).month()]
                               : [],
                           })
                         }}
@@ -270,7 +270,7 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
                             (month) => (
                               <CheckboxBase
                                 key={month}
-                                label={moment().month(month).format("MMM")}
+                                label={dayjs().month(month).format("MMM")}
                                 value={state.repeatsOnMonthsOfYear.includes(
                                   month
                                 )}
@@ -350,7 +350,7 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
                             sx={{ marginBottom: 1 }}
                             key={date}
                             size="small"
-                            label={moment(`${date} 00:00:00`).format("l")}
+                            label={dayjs(`${date} 00:00:00`).format("l")}
                             onDelete={() => {
                               handleUpdate({
                                 repeatsOnDates: state.repeatsOnDates.filter(
@@ -433,7 +433,7 @@ export function displayTaskScheduleRepeatsSummary({
   repeatsOnDates,
 }: TaskScheduleWithIncludes) {
   if (!repeats) {
-    return moment(`${date} 00:00:00`).format("dddd - LL")
+    return dayjs(`${date} 00:00:00`).format("dddd - LL")
   }
   const parts: string[] = []
   if (
@@ -442,12 +442,12 @@ export function displayTaskScheduleRepeatsSummary({
     repeatsOnMonthsOfYear.length === 0 &&
     repeatsWeekly === null
   ) {
-    parts.push("Repeats daily after " + moment(`${date} 00:00:00`).format("LL"))
+    parts.push("Repeats daily after " + dayjs(`${date} 00:00:00`).format("LL"))
   } else {
     if (repeatsOnDaysOfWeek.length > 0) {
       parts.push(
         `Repeats on ${repeatsOnDaysOfWeek
-          .map((d) => moment().day(d).format("dddd"))
+          .map((d) => dayjs().day(d).format("dddd"))
           .join(", ")}`
       )
     }
@@ -468,7 +468,7 @@ export function displayTaskScheduleRepeatsSummary({
       parts.push(
         `Repeats in ${repeatsOnMonthsOfYear
           .sort()
-          .map((m) => moment().month(m).format("MMMM"))
+          .map((m) => dayjs().month(m).format("MMMM"))
           .join(", ")}`
       )
     }
@@ -478,14 +478,14 @@ export function displayTaskScheduleRepeatsSummary({
   }
   if (repeatsUntilDate !== null) {
     parts.push(
-      `Stops repeating ${moment(`${repeatsUntilDate} 00:00:00`).format("LL")}`
+      `Stops repeating ${dayjs(`${repeatsUntilDate} 00:00:00`).format("LL")}`
     )
   }
   if (repeatsOnDates.length > 0) {
     parts.push(
       `Also: ${repeatsOnDates
         .sort()
-        .map((d) => moment(`${d} 00:00:00`).format("LL"))
+        .map((d) => dayjs(`${d} 00:00:00`).format("LL"))
         .join(", ")}`
     )
   }

@@ -1,5 +1,5 @@
 import { Payment } from "@prisma/client"
-import moment from "moment"
+import dayjs from "../../../../../../lib/dayjs"
 import { NextApiResponse } from "next"
 import { requireOrganizationAuthentication } from "../../../../../../lib/requireAuthentication"
 import { buildResponse } from "../../../../../../lib/server/buildResponse"
@@ -35,10 +35,10 @@ async function handler(
 
       // GO FORWARDS
       const payments: Payment[] = []
-      let cursor = moment(date).tz("America/Los_Angeles")
+      let cursor = dayjs(date).tz("America/Los_Angeles")
       while (cursor.isBefore(endDate)) {
         payments.push(...filterPaymentsOnDate(allPayments, cursor))
-        cursor.add(1, "days")
+        cursor = cursor.add(1, "days")
       }
 
       // find existing items

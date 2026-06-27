@@ -1,4 +1,4 @@
-import moment from "moment-timezone"
+import dayjs from "../../../../../../lib/dayjs"
 import { NextApiResponse } from "next"
 import { TaskScheduleWithIncludes } from "."
 import { requireOrganizationAuthentication } from "../../../../../../lib/requireAuthentication"
@@ -9,7 +9,7 @@ import withSession, {
 } from "../../../../../../lib/server/session"
 import validate from "../../../../../../lib/server/validate"
 
-moment.tz.setDefault("America/Los_Angeles")
+dayjs.tz.setDefault("America/Los_Angeles")
 
 async function handler(
   req: NextIronRequest,
@@ -132,7 +132,7 @@ export async function scheduleTasksForSchedule(
   daysAhead: number
 ) {
   // this will populate task table with tasks
-  let startDate = moment().startOf("day")
+  let startDate = dayjs().startOf("day")
   // loop daysAhead into the future and create tasks for any dates that match the schedule
   for (let i = 0; i <= daysAhead; i++) {
     const date = startDate.clone().add(i, "days")
@@ -180,7 +180,7 @@ export async function scheduleTasksForSchedule(
       // check weekly repeats if specified
       if (taskSchedule.repeatsWeekly !== null) {
         const weeksSinceStart = date.diff(
-          moment(`${taskSchedule.date} 00:00:00`).startOf("day"),
+          dayjs(`${taskSchedule.date} 00:00:00`).startOf("day"),
           "weeks"
         )
         if (weeksSinceStart % taskSchedule.repeatsWeekly !== 0) {
@@ -192,7 +192,7 @@ export async function scheduleTasksForSchedule(
       if (taskSchedule.repeatsUntilDate) {
         if (
           date.isAfter(
-            moment(`${taskSchedule.repeatsUntilDate} 00:00:00`).endOf("day")
+            dayjs(`${taskSchedule.repeatsUntilDate} 00:00:00`).endOf("day")
           )
         ) {
           repeatsOnThisDate = false
@@ -210,7 +210,7 @@ export async function scheduleTasksForSchedule(
       // if this is the date on non repeating schedule, then it should be this specific date
       if (
         date.format("YYYY-MM-DD") ===
-        moment(`${taskSchedule.date} 00:00:00`).format("YYYY-MM-DD")
+        dayjs(`${taskSchedule.date} 00:00:00`).format("YYYY-MM-DD")
       ) {
         console.log("Non repeating schedule matches this date")
         repeatsOnThisDate = true

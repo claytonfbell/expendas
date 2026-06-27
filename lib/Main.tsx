@@ -8,7 +8,7 @@ import {
   useTheme,
 } from "@mui/material"
 import { Account, CarryOver, Payment } from "@prisma/client"
-import moment from "moment"
+import dayjs from "./dayjs"
 import React from "react"
 import { useStorageState } from "react-storage-hooks"
 import { AccountDialog } from "./AccountDialog"
@@ -107,13 +107,13 @@ export function Main() {
 
   // find endDate
   const endDate: string = dates
-    .filter((x) => moment(x).isAfter(date))
+    .filter((x) => dayjs(x).isAfter(date))
     .shift() as string
 
   // check if current cycle
-  const today = moment()
+  const today = dayjs()
   const isCurrentCycle =
-    !today.isBefore(moment(date)) && !today.isAfter(moment(endDate))
+    !today.isBefore(dayjs(date)) && !today.isAfter(dayjs(endDate))
 
   // find previous carryover
   const startingBalance = accounts.reduce((sum, account) => {

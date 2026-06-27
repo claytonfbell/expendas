@@ -4,7 +4,7 @@ import {
   RetirementPlanUser,
   User,
 } from "@prisma/client"
-import moment from "moment"
+import dayjs from "../dayjs"
 import prisma from "./prisma"
 
 export type ProjectionRow = {
@@ -70,11 +70,11 @@ export async function getRetirementPlanProjection(
       },
     })
 
-    const endMonth = moment(youngestUser.dateOfBirth)
+    const endMonth = dayjs(youngestUser.dateOfBirth)
       .add(100, "years")
       .startOf("month")
 
-    const month = moment().startOf("month")
+    let month = dayjs().startOf("month")
 
     // initial balances
     let prevRow: ProjectionRow = {
@@ -96,7 +96,7 @@ export async function getRetirementPlanProjection(
     }
 
     while (month.isBefore(endMonth)) {
-      month.add(1, "month")
+      month = month.add(1, "month")
 
       const accounts: ProjectionRowAccount[] = retirementAccounts.map(
         (account) => {
@@ -123,7 +123,7 @@ export async function getRetirementPlanProjection(
 
           const isAfterCoastDate =
             retirementPlan.coastDate !== null &&
-            month.isAfter(moment(`${retirementPlan.coastDate} 00:00:00`))
+            month.isAfter(dayjs(`${retirementPlan.coastDate} 00:00:00`))
 
           const contribution = isAfterCoastDate
             ? 0

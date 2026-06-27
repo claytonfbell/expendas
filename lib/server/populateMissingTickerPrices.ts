@@ -1,4 +1,4 @@
-import moment from "moment-timezone"
+import dayjs from "../dayjs"
 import prisma from "./prisma"
 import { RateLimit } from "./RateLimit"
 import { scrapeCurrentTickerPrice } from "./scrapeCurrentTickerPrice"
@@ -22,7 +22,7 @@ export async function populateMissingTickerPrices(ticker: Ticker) {
     where: {
       ticker: ticker,
       date: {
-        gte: moment().subtract(90, "days").format("YYYY-MM-DD"),
+        gte: dayjs().subtract(90, "days").format("YYYY-MM-DD"),
       },
       closed: true, // only consider closed prices, we want to replace any non-closed prices with massive.com prices
     },
@@ -32,7 +32,7 @@ export async function populateMissingTickerPrices(ticker: Ticker) {
   // fill the fiveMissingDates array with any missing dates in a row, starting from yesterday
   for (let i = 1; i < 90; i++) {
     // start from yesterday
-    const dateToCheckMoment = moment()
+    const dateToCheckMoment = dayjs()
       .tz("America/Los_Angeles")
       .subtract(i, "days")
 
@@ -128,9 +128,9 @@ export async function populateMissingTickerPrices(ticker: Ticker) {
     },
   ])
 
-  const today = moment().tz("America/Los_Angeles").format("YYYY-MM-DD")
+  const today = dayjs().tz("America/Los_Angeles").format("YYYY-MM-DD")
   // check if saturday or sunday, if so skip since market is closed and we won't get a price for today
-  const dayOfWeek = moment().tz("America/Los_Angeles").day()
+  const dayOfWeek = dayjs().tz("America/Los_Angeles").day()
   if (dayOfWeek === 0 || dayOfWeek === 6) {
     console.log("markets closed weekends, skipping scrape for today's price")
     return

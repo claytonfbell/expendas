@@ -1,9 +1,9 @@
 import humanizeDuration from "humanize-duration"
-import moment, { Moment } from "moment"
+import dayjs, { Dayjs } from "./dayjs"
 
-export function formatFromNow(dateTime: string | Date | Moment) {
-  const mom = moment(dateTime)
-  const timeDiff = mom.diff(moment())
+export function formatFromNow(dateTime: string | Date | Dayjs) {
+  const mom = dayjs(dateTime)
+  const timeDiff = mom.diff(dayjs())
 
   return `${timeDiff > 0 ? "in " : ""}${formatDuration(timeDiff)}${
     timeDiff < 0 ? " ago" : ""

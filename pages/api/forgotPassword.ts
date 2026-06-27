@@ -1,5 +1,5 @@
 // pages/api/login.ts
-import moment from "moment"
+import dayjs from "../../lib/dayjs"
 import { NextApiRequest, NextApiResponse } from "next"
 import { v4 as uuidv4 } from "uuid"
 import { ForgotPasswordRequest } from "../../lib/api/ForgotPasswordRequest"
@@ -37,7 +37,7 @@ async function handler(
         where: { id: user.id },
         data: {
           authCode: uuidv4(),
-          authCodeExpiresAt: moment().add(10, "minutes").toDate(),
+          authCodeExpiresAt: dayjs().add(10, "minutes").toDate(),
         },
       })
 
