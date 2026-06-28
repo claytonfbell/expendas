@@ -57,7 +57,4 @@ const theme: ThemeOptions = {
   },
 }
 
-export const FAILED_COLOR = "#cb8f0d"
-export const OK_COLOR = "#29ac47"
-
 export default theme

@@ -6,6 +6,7 @@ enum HttpStatus {
   MethodNotAllowed = 415,
 }
 
+// fallow-ignore-next-line unused-export -- base class for subclasses that form the public API
 export class HttpException {
   status: HttpStatus
   message: string
@@ -40,6 +41,7 @@ export class ForbiddenException extends HttpException {
   }
 }
 
+// fallow-ignore-next-line unused-export -- available exception variant for API handlers
 export class MethodNotAllowedException extends HttpException {
   constructor() {
     super(HttpStatus.BadRequest, "API Method Not Allowed")

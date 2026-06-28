@@ -4,7 +4,7 @@ import { Session, withIronSession } from "next-iron-session"
 
 // optionally add stronger typing for next-specific implementation
 export type NextIronRequest = NextApiRequest & { session: Session }
-export type NextIronHandler = (
+type NextIronHandler = (
   req: NextIronRequest,
   res: NextApiResponse
 ) => void | Promise<void>

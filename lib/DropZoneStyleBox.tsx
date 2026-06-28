@@ -1,6 +1,7 @@
 import Box, { BoxProps } from "@mui/material/Box"
 import { alpha, darken, styled } from "@mui/material/styles"
 
+// fallow-ignore-next-line unused-export -- named export is re-exported as default export
 export const DropZoneStyleBox: React.ComponentType<BoxProps> = styled(Box)(
   ({ theme }) => ({
     cursor: "pointer",

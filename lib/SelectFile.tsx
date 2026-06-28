@@ -10,7 +10,7 @@ import React, { useCallback, useState } from "react"
 import { useDropzone } from "react-dropzone"
 import DropZoneStyleBox from "./DropZoneStyleBox"
 
-export type ContentType =
+type ContentType =
   | "application/pdf"
   | "application/vnd.ms-excel"
   | "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -23,7 +23,7 @@ export type ContentType =
   | "text/rtf"
   | "text/xml"
 
-export interface FileInfo {
+interface FileInfo {
   name: string
   file: File
   base64: string

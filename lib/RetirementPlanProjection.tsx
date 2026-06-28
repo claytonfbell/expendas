@@ -330,7 +330,7 @@ export function fromNow(target: Dayjs) {
   return fromDate(now, target)
 }
 
-export function fromDate(date1: Dayjs, date2: Dayjs) {
+function fromDate(date1: Dayjs, date2: Dayjs) {
   const years = date2.diff(date1, "years")
   const months = date2.diff(date1, "months") % 12
   if (years >= 1) {

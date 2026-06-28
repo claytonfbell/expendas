@@ -325,7 +325,7 @@ export function useAddAccount() {
   })
 }
 
-export function useFetchAccount(organizationId: number, accountId: number) {
+function useFetchAccount(organizationId: number, accountId: number) {
   return useQuery<Account, RestError>({
     queryKey: ["accounts", organizationId, accountId],
     queryFn: () => api.fetchAccount(organizationId, accountId),
@@ -412,7 +412,7 @@ export function useAddPayment() {
   })
 }
 
-export function useFetchPayment(organizationId: number, paymentId: number) {
+function useFetchPayment(organizationId: number, paymentId: number) {
   return useQuery<PaymentWithIncludes, RestError>({
     queryKey: ["payments", organizationId, paymentId],
     queryFn: () => api.fetchPayment(organizationId, paymentId),

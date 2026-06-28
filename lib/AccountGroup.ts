@@ -13,21 +13,21 @@ export const assetsAccountTypes: AccountType[] = [
   "Car_Value",
 ]
 
-export const dailyAccountTypes: AccountType[] = [
+const dailyAccountTypes: AccountType[] = [
   "Cash",
   "Credit_Card",
   "Checking_Account",
   "Line_of_Credit",
 ]
 
-export const allAccountTypes: AccountType[] = [
+const allAccountTypes: AccountType[] = [
   ...loanAccountTypes,
   ...savingsInvestmentsAccountTypes,
   ...assetsAccountTypes,
   ...dailyAccountTypes,
 ]
 
-export const creditCardTypes: CreditCardType[] = [
+const creditCardTypes: CreditCardType[] = [
   "American_Express",
   "Discover",
   "Mastercard",
@@ -56,7 +56,7 @@ export const propertyGroup: AccountGroup = {
   types: ["Home_Market_Value", "Car_Value"],
 }
 
-export const accountGroups: AccountGroup[] = [
+const accountGroups: AccountGroup[] = [
   cashGroup,
   debtGroup,
   investmentGroup,

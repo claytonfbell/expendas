@@ -97,7 +97,3 @@ export interface RestError {
 
 // For silencing errors for promises
 // promise.catch(suppressError)
-export const suppressError = (err: RestError) => {
-  console.log(`Supporessed Error:`)
-  console.log(err)
-}
