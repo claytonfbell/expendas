@@ -6,9 +6,9 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material"
-import dayjs from "./dayjs"
 import { useMemo, useState } from "react"
 import { useFetchTasks } from "./api/api"
+import dayjs from "./dayjs"
 import { TaskDate } from "./TaskDate"
 
 export function TaskList() {
@@ -46,7 +46,7 @@ export function TaskList() {
     for (
       let date = firstDate.clone();
       date.isSameOrBefore(lastDate);
-      date.add(1, "day")
+      date = date.add(1, "day")
     ) {
       allDatesSet.add(date.format("YYYY-MM-DD"))
     }
