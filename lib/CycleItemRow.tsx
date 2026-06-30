@@ -1,6 +1,5 @@
 import { Box, Checkbox, Grid, Link, Tooltip, useTheme } from "@mui/material"
 import { Payment } from "@prisma/client"
-import clsx from "clsx"
 import { ChangeEvent } from "react"
 import { accountBoxStylesItem, accountBoxStylesRight } from "./AccountBox"
 import { AmountInputTool } from "./AmountInputTool"
@@ -26,7 +25,7 @@ export function CycleItemRow(props: Props) {
   return (
     <Box
       sx={accountBoxStylesItem(theme)}
-      className={clsx(item.isPaid ? "paid" : undefined)}
+      className={item.isPaid ? "paid" : undefined}
     >
       <Grid container>
         <Grid

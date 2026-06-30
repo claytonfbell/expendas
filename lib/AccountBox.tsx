@@ -13,7 +13,6 @@ import {
 } from "@mui/material"
 import { SxProps } from "@mui/system"
 import { Account, Payment } from "@prisma/client"
-import clsx from "clsx"
 import React, { useState } from "react"
 import { useDebounce } from "react-use"
 import { displayAccountType } from "./accountTypes"
@@ -196,7 +195,7 @@ export function AccountBox(props: AccountBoxProps) {
                 <Grid
                   size={{ xs: 4 }}
                   sx={accountBoxStylesRight(theme)}
-                  className={clsx("total")}
+                  className={"total"}
                 >
                   <Currency red animate value={endingBalance} />
                 </Grid>
