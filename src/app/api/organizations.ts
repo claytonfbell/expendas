@@ -1,9 +1,9 @@
-import { AddOrganizationRequest } from "../../../lib/api/AddOrganizationRequest"
-import { requireAuthentication } from "../../../lib/requireAuthentication"
-import { buildResponse } from "../../../lib/server/buildResponse"
-import { BadRequestException } from "../../../lib/server/HttpException"
-import prisma from "../../../lib/server/prisma"
-import validate from "../../../lib/server/validate"
+import { AddOrganizationRequest } from "../../components/api/AddOrganizationRequest"
+import { requireAuthentication } from "../../components/requireAuthentication"
+import { buildResponse } from "../../components/server/buildResponse"
+import { BadRequestException } from "../../components/server/HttpException"
+import prisma from "../../components/server/prisma"
+import validate from "../../components/server/validate"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const organizationInclude = {

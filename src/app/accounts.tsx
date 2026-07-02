@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { AccountManage } from "../../lib/AccountManage"
-import { Inside } from "../../lib/Inside"
+import { AccountManage } from "../components/AccountManage"
+import { Inside } from "../components/Inside"
 
 export const Route = createFileRoute("/accounts")({
   ssr: false,

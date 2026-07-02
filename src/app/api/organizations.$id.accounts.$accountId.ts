@@ -1,11 +1,11 @@
 import { TickerPrice } from "@prisma/client"
-import { AccountWithIncludes } from "../../../lib/AccountWithIncludes"
-import { requireOrganizationAuthentication } from "../../../lib/requireAuthentication"
-import { BadRequestException } from "../../../lib/server/HttpException"
-import { buildResponse } from "../../../lib/server/buildResponse"
-import prisma from "../../../lib/server/prisma"
-import { getLatestTickerPrice } from "../../../lib/server/tickerPrices"
-import validate from "../../../lib/server/validate"
+import { AccountWithIncludes } from "../../components/AccountWithIncludes"
+import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
+import { BadRequestException } from "../../components/server/HttpException"
+import { buildResponse } from "../../components/server/buildResponse"
+import prisma from "../../components/server/prisma"
+import { getLatestTickerPrice } from "../../components/server/tickerPrices"
+import validate from "../../components/server/validate"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/api/organizations/$id/accounts/$accountId")({

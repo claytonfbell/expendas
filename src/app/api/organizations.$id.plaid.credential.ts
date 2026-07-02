@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { PlaidLinkOnSuccessMetadata } from "react-plaid-link"
-import { requireOrganizationAuthentication } from "../../../lib/requireAuthentication"
-import { buildResponse } from "../../../lib/server/buildResponse"
+import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
+import { buildResponse } from "../../components/server/buildResponse"
 import {
   PLAID_ENVIRONMENT,
   getPlaidClient,
-} from "../../../lib/server/getPlaidClient"
-import prisma from "../../../lib/server/prisma"
+} from "../../components/server/getPlaidClient"
+import prisma from "../../components/server/prisma"
 
 type AddPlaidCredential = {
   public_token: string

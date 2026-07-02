@@ -1,11 +1,11 @@
 import { Payment } from "@prisma/client"
-import dayjs from "../../../lib/dayjs"
+import dayjs from "../../components/dayjs"
 import { createFileRoute } from "@tanstack/react-router"
-import { requireOrganizationAuthentication } from "../../../lib/requireAuthentication"
-import { buildResponse } from "../../../lib/server/buildResponse"
-import { filterPaymentsOnDate } from "../../../lib/server/filterPaymentsOnDate"
-import { getPaycheckDates } from "../../../lib/server/getPaycheckDates"
-import prisma from "../../../lib/server/prisma"
+import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
+import { buildResponse } from "../../components/server/buildResponse"
+import { filterPaymentsOnDate } from "../../components/server/filterPaymentsOnDate"
+import { getPaycheckDates } from "../../components/server/getPaycheckDates"
+import prisma from "../../components/server/prisma"
 
 export const Route = createFileRoute("/api/organizations/$id/dates/$date")({
   server: {

@@ -1,8 +1,8 @@
 import { Receipt } from "@prisma/client"
-import { requireOrganizationAuthentication } from "../../../lib/requireAuthentication"
-import { BadRequestException } from "../../../lib/server/HttpException"
-import { buildResponse } from "../../../lib/server/buildResponse"
-import prisma from "../../../lib/server/prisma"
+import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
+import { BadRequestException } from "../../components/server/HttpException"
+import { buildResponse } from "../../components/server/buildResponse"
+import prisma from "../../components/server/prisma"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/api/organizations/$id/receipts/$receiptId")({

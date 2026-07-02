@@ -2,9 +2,9 @@ import { createFileRoute } from "@tanstack/react-router"
 import { Form } from "material-ui-pack"
 import { useRouter } from "@tanstack/react-router"
 import { useState } from "react"
-import { useRegister } from "../../lib/api/api"
-import { RegisterRequest } from "../../lib/api/RegisterRequest"
-import { Outside } from "../../lib/Outside"
+import { useRegister } from "../components/api/api"
+import { RegisterRequest } from "../components/api/RegisterRequest"
+import { Outside } from "../components/Outside"
 
 export const Route = createFileRoute("/register")({
   ssr: false,

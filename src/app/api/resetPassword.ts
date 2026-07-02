@@ -1,12 +1,12 @@
 import CryptoJS from "crypto-js"
 const { SHA3 } = CryptoJS
-import dayjs from "../../../lib/dayjs"
-import { ResetPasswordRequest } from "../../../lib/api/ResetPasswordRequest"
-import { ResetPasswordResponse } from "../../../lib/api/ResetPasswordResponse"
-import { buildResponse } from "../../../lib/server/buildResponse"
-import { BadRequestException } from "../../../lib/server/HttpException"
-import prisma from "../../../lib/server/prisma"
-import validate from "../../../lib/server/validate"
+import dayjs from "../../components/dayjs"
+import { ResetPasswordRequest } from "../../components/api/ResetPasswordRequest"
+import { ResetPasswordResponse } from "../../components/api/ResetPasswordResponse"
+import { buildResponse } from "../../components/server/buildResponse"
+import { BadRequestException } from "../../components/server/HttpException"
+import prisma from "../../components/server/prisma"
+import validate from "../../components/server/validate"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/api/resetPassword")({

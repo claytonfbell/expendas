@@ -1,11 +1,11 @@
 import { Account } from "@prisma/client"
-import { requireOrganizationAuthentication } from "../../../lib/requireAuthentication"
-import { BadRequestException } from "../../../lib/server/HttpException"
-import { autoUpdateInvestmentAccountBalances } from "../../../lib/server/autoUpdateInvestmentAccountBalances"
-import { buildResponse } from "../../../lib/server/buildResponse"
-import prisma from "../../../lib/server/prisma"
-import { updateAccountBalanceHistory } from "../../../lib/server/updateAccountBalanceHistory"
-import validate from "../../../lib/server/validate"
+import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
+import { BadRequestException } from "../../components/server/HttpException"
+import { autoUpdateInvestmentAccountBalances } from "../../components/server/autoUpdateInvestmentAccountBalances"
+import { buildResponse } from "../../components/server/buildResponse"
+import prisma from "../../components/server/prisma"
+import { updateAccountBalanceHistory } from "../../components/server/updateAccountBalanceHistory"
+import validate from "../../components/server/validate"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/api/organizations/$id/accounts")({

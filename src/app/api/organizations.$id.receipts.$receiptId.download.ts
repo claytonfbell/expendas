@@ -1,8 +1,8 @@
-import { requireOrganizationAuthentication } from "../../../lib/requireAuthentication"
-import { BadRequestException } from "../../../lib/server/HttpException"
-import { buildResponse } from "../../../lib/server/buildResponse"
-import { getCloudFileStream } from "../../../lib/server/cloudFile"
-import prisma from "../../../lib/server/prisma"
+import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
+import { BadRequestException } from "../../components/server/HttpException"
+import { buildResponse } from "../../components/server/buildResponse"
+import { getCloudFileStream } from "../../components/server/cloudFile"
+import prisma from "../../components/server/prisma"
 import { createFileRoute } from "@tanstack/react-router"
 
 async function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {

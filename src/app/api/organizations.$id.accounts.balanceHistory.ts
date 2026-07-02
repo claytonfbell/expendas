@@ -1,7 +1,7 @@
-import dayjs from "../../../lib/dayjs"
-import { buildResponse } from "../../../lib/server/buildResponse"
-import prisma from "../../../lib/server/prisma"
-import { ReportRange } from "../../../lib/TrendsReportsTimeRangeSelect"
+import dayjs from "../../components/dayjs"
+import { buildResponse } from "../../components/server/buildResponse"
+import prisma from "../../components/server/prisma"
+import { ReportRange } from "../../components/TrendsReportsTimeRangeSelect"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/api/organizations/$id/accounts/balanceHistory")({

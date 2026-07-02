@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { CountryCode, Products } from "plaid"
-import { requireOrganizationAuthentication } from "../../../lib/requireAuthentication"
-import { buildResponse } from "../../../lib/server/buildResponse"
-import { getPlaidClient } from "../../../lib/server/getPlaidClient"
-import prisma from "../../../lib/server/prisma"
+import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
+import { buildResponse } from "../../components/server/buildResponse"
+import { getPlaidClient } from "../../components/server/getPlaidClient"
+import prisma from "../../components/server/prisma"
 
 export type LinkTokenRequest = {
   products?: Products[]

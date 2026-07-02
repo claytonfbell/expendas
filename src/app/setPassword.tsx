@@ -3,9 +3,9 @@ import { Alert } from "@mui/material"
 import { Form } from "material-ui-pack"
 import { useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
-import { useResetPassword } from "../../lib/api/api"
-import { ResetPasswordRequest } from "../../lib/api/ResetPasswordRequest"
-import { Outside } from "../../lib/Outside"
+import { useResetPassword } from "../components/api/api"
+import { ResetPasswordRequest } from "../components/api/ResetPasswordRequest"
+import { Outside } from "../components/Outside"
 
 export const Route = createFileRoute("/setPassword")({
   ssr: false,

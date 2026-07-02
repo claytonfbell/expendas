@@ -1,8 +1,8 @@
-import { RemoveUserRequest } from "../../../lib/api/RemoveUserRequest"
-import { requireAdminAuthentication } from "../../../lib/requireAuthentication"
-import { buildResponse } from "../../../lib/server/buildResponse"
-import { NotFoundException } from "../../../lib/server/HttpException"
-import prisma from "../../../lib/server/prisma"
+import { RemoveUserRequest } from "../../components/api/RemoveUserRequest"
+import { requireAdminAuthentication } from "../../components/requireAuthentication"
+import { buildResponse } from "../../components/server/buildResponse"
+import { NotFoundException } from "../../components/server/HttpException"
+import prisma from "../../components/server/prisma"
 import { organizationInclude } from "./organizations"
 import { createFileRoute } from "@tanstack/react-router"
 

@@ -1,12 +1,12 @@
 import CryptoJS from "crypto-js"
 const { SHA3 } = CryptoJS
-import { LoginRequest } from "../../../lib/api/LoginRequest"
-import { LoginResponse } from "../../../lib/api/LoginResponse"
-import { requireAuthentication } from "../../../lib/requireAuthentication"
-import { BadRequestException } from "../../../lib/server/HttpException"
-import { buildResponse } from "../../../lib/server/buildResponse"
-import prisma from "../../../lib/server/prisma"
-import validate from "../../../lib/server/validate"
+import { LoginRequest } from "../../components/api/LoginRequest"
+import { LoginResponse } from "../../components/api/LoginResponse"
+import { requireAuthentication } from "../../components/requireAuthentication"
+import { BadRequestException } from "../../components/server/HttpException"
+import { buildResponse } from "../../components/server/buildResponse"
+import prisma from "../../components/server/prisma"
+import validate from "../../components/server/validate"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/api/login")({

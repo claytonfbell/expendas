@@ -1,10 +1,10 @@
 import { Task } from "@prisma/client"
 import { createFileRoute } from "@tanstack/react-router"
-import dayjs from "../../../lib/dayjs"
-import { requireOrganizationAuthentication } from "../../../lib/requireAuthentication"
-import { buildResponse } from "../../../lib/server/buildResponse"
-import prisma from "../../../lib/server/prisma"
-import validate from "../../../lib/server/validate"
+import dayjs from "../../components/dayjs"
+import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
+import { buildResponse } from "../../components/server/buildResponse"
+import prisma from "../../components/server/prisma"
+import validate from "../../components/server/validate"
 import { TaskScheduleWithIncludes } from "./organizations.$id.tasks.schedules"
 
 dayjs.tz.setDefault("America/Los_Angeles")

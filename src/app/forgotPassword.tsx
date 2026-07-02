@@ -3,9 +3,9 @@ import { Form } from "material-ui-pack"
 import { useRouter, createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
 import ReactMarkdown from "react-markdown"
-import { useForgotPassword } from "../../lib/api/api"
-import { ForgotPasswordRequest } from "../../lib/api/ForgotPasswordRequest"
-import { Outside } from "../../lib/Outside"
+import { useForgotPassword } from "../components/api/api"
+import { ForgotPasswordRequest } from "../components/api/ForgotPasswordRequest"
+import { Outside } from "../components/Outside"
 
 export const Route = createFileRoute("/forgotPassword")({
   ssr: false,

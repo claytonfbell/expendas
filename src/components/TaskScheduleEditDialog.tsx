@@ -18,7 +18,7 @@ import {
 import dayjs from "./dayjs"
 import { useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
-import type { TaskScheduleWithIncludes } from "../src/app/api/organizations.$id.tasks.schedules"
+import type { TaskScheduleWithIncludes } from "../app/api/organizations.$id.tasks.schedules"
 import {
   useFetchTaskGroups,
   useRemoveTaskSchedule,

@@ -1,16 +1,16 @@
-import { OrganizationWithIncludes } from "../../../lib/api/api"
+import { OrganizationWithIncludes } from "../../components/api/api"
 import {
   requireAdminAuthentication,
   requireAuthentication,
-} from "../../../lib/requireAuthentication"
-import { buildResponse } from "../../../lib/server/buildResponse"
+} from "../../components/requireAuthentication"
+import { buildResponse } from "../../components/server/buildResponse"
 import {
   BadRequestException,
   ForbiddenException,
   NotFoundException,
-} from "../../../lib/server/HttpException"
-import prisma from "../../../lib/server/prisma"
-import validate from "../../../lib/server/validate"
+} from "../../components/server/HttpException"
+import prisma from "../../components/server/prisma"
+import validate from "../../components/server/validate"
 import { organizationInclude } from "./organizations"
 import { createFileRoute } from "@tanstack/react-router"
 

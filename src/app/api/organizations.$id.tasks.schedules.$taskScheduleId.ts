@@ -1,10 +1,10 @@
-import dayjs from "../../../lib/dayjs"
+import dayjs from "../../components/dayjs"
 import { createFileRoute } from "@tanstack/react-router"
 import { TaskScheduleWithIncludes } from "./taskScheduleTypes"
-import { requireOrganizationAuthentication } from "../../../lib/requireAuthentication"
-import { buildResponse } from "../../../lib/server/buildResponse"
-import prisma from "../../../lib/server/prisma"
-import validate from "../../../lib/server/validate"
+import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
+import { buildResponse } from "../../components/server/buildResponse"
+import prisma from "../../components/server/prisma"
+import validate from "../../components/server/validate"
 
 dayjs.tz.setDefault("America/Los_Angeles")
 

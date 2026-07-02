@@ -1,9 +1,9 @@
-import { buildResponse } from "../../../lib/server/buildResponse"
+import { buildResponse } from "../../components/server/buildResponse"
 import {
   getAllTimeHighTickerPrice,
   getLatestTickerPrice,
   getTwoYearLowTickerPrice,
-} from "../../../lib/server/tickerPrices"
+} from "../../components/server/tickerPrices"
 import { createFileRoute } from "@tanstack/react-router"
 
 export type TickerPriceResponse = {

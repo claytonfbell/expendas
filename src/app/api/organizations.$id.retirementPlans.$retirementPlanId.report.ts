@@ -1,16 +1,16 @@
 import { RetirementPlan, RetirementPlanUser, User } from "@prisma/client"
 import { createFileRoute } from "@tanstack/react-router"
-import dayjs, { Dayjs } from "../../../lib/dayjs"
-import { requireOrganizationAuthentication } from "../../../lib/requireAuthentication"
-import { adjustForInflation } from "../../../lib/server/adjustForInflation"
-import { buildResponse } from "../../../lib/server/buildResponse"
-import { getFiDateAndAmountsForRetirementPlan } from "../../../lib/server/getFiDateAndAmountsForRetirementPlan"
+import dayjs, { Dayjs } from "../../components/dayjs"
+import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
+import { adjustForInflation } from "../../components/server/adjustForInflation"
+import { buildResponse } from "../../components/server/buildResponse"
+import { getFiDateAndAmountsForRetirementPlan } from "../../components/server/getFiDateAndAmountsForRetirementPlan"
 import {
   getRetirementPlanProjection,
   ProjectionRow,
-} from "../../../lib/server/getRetirementPlanProjection"
-import prisma from "../../../lib/server/prisma"
-import validate from "../../../lib/server/validate"
+} from "../../components/server/getRetirementPlanProjection"
+import prisma from "../../components/server/prisma"
+import validate from "../../components/server/validate"
 
 export const Route = createFileRoute(
   "/api/organizations/$id/retirementPlans/$retirementPlanId/report"

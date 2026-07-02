@@ -14,7 +14,7 @@ import {
 import dayjs from "./dayjs"
 import prettyBytes from "pretty-bytes"
 import { useState } from "react"
-import type { ReceiptWithIncludes } from "../src/app/api/organizations.$id.receipts"
+import type { ReceiptWithIncludes } from "../app/api/organizations.$id.receipts"
 import { useFetchReceipts } from "./api/api"
 import rest from "./api/rest"
 import { ExpendasTable } from "./ExpendasTable"

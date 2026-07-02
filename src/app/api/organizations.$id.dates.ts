@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { requireOrganizationAuthentication } from "../../../lib/requireAuthentication"
-import { buildResponse } from "../../../lib/server/buildResponse"
-import { getPaycheckDates } from "../../../lib/server/getPaycheckDates"
-import prisma from "../../../lib/server/prisma"
+import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
+import { buildResponse } from "../../components/server/buildResponse"
+import { getPaycheckDates } from "../../components/server/getPaycheckDates"
+import prisma from "../../components/server/prisma"
 
 export const Route = createFileRoute("/api/organizations/$id/dates")({
   server: {

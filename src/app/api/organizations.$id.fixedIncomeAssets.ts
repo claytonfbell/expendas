@@ -1,8 +1,8 @@
 import { FixedIncomeAsset } from "@prisma/client"
 import { createFileRoute } from "@tanstack/react-router"
-import { requireOrganizationAuthentication } from "../../../lib/requireAuthentication"
-import { buildResponse } from "../../../lib/server/buildResponse"
-import prisma from "../../../lib/server/prisma"
+import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
+import { buildResponse } from "../../components/server/buildResponse"
+import prisma from "../../components/server/prisma"
 
 export const Route = createFileRoute(
   "/api/organizations/$id/fixedIncomeAssets"

@@ -1,8 +1,8 @@
 import dayjs from "dayjs"
 import Imap from "imap"
-import { requireOrganizationAuthentication } from "../../../lib/requireAuthentication"
-import { buildResponse } from "../../../lib/server/buildResponse"
-import prisma from "../../../lib/server/prisma"
+import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
+import { buildResponse } from "../../components/server/buildResponse"
+import prisma from "../../components/server/prisma"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute(

@@ -9,8 +9,8 @@ import {
 import { TaskGroupColor } from "@prisma/client"
 import { SelectBase } from "material-ui-pack"
 import { useEffect, useState } from "react"
-import type { TaskGroupCreateRequest } from "../src/app/api/organizations.$id.tasks.groups"
-import type { TaskGroupWithIncludes } from "../src/app/api/organizations.$id.tasks.groups.$taskGroupId"
+import type { TaskGroupCreateRequest } from "../app/api/organizations.$id.tasks.groups"
+import type { TaskGroupWithIncludes } from "../app/api/organizations.$id.tasks.groups.$taskGroupId"
 import { useAddTaskGroup } from "./api/api"
 import DisplayError from "./DisplayError"
 

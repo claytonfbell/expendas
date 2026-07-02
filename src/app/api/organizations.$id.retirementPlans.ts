@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { requireOrganizationAuthentication } from "../../../lib/requireAuthentication"
-import { retirementPlanTypes } from "../../../lib/retirementPlanTypes"
-import { buildResponse } from "../../../lib/server/buildResponse"
-import { BadRequestException } from "../../../lib/server/HttpException"
-import prisma from "../../../lib/server/prisma"
-import validate from "../../../lib/server/validate"
+import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
+import { retirementPlanTypes } from "../../components/retirementPlanTypes"
+import { buildResponse } from "../../components/server/buildResponse"
+import { BadRequestException } from "../../components/server/HttpException"
+import prisma from "../../components/server/prisma"
+import validate from "../../components/server/validate"
 
 export const Route = createFileRoute(
   "/api/organizations/$id/retirementPlans"

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { Inside } from "../../lib/Inside"
-import { RetirementPlans } from "../../lib/RetirementPlans"
+import { Inside } from "../components/Inside"
+import { RetirementPlans } from "../components/RetirementPlans"
 
 export const Route = createFileRoute("/retirement")({
   ssr: false,

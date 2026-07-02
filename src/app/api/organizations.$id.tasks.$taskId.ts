@@ -1,9 +1,9 @@
-import dayjs from "../../../lib/dayjs"
+import dayjs from "../../components/dayjs"
 import { createFileRoute } from "@tanstack/react-router"
 import { TaskWithIncludes } from "./organizations.$id.tasks"
-import { requireOrganizationAuthentication } from "../../../lib/requireAuthentication"
-import { buildResponse } from "../../../lib/server/buildResponse"
-import prisma from "../../../lib/server/prisma"
+import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
+import { buildResponse } from "../../components/server/buildResponse"
+import prisma from "../../components/server/prisma"
 
 export const Route = createFileRoute("/api/organizations/$id/tasks/$taskId")({
   server: {

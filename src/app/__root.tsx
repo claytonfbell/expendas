@@ -9,8 +9,8 @@ import CssBaseline from "@mui/material/CssBaseline"
 import { ThemeProvider } from "@mui/material/styles"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { DarkModeProvider, useDarkMode } from "material-ui-pack"
-import createEmotionCache from "../../lib/createEmotionCache"
-import theme, { PRIMARY_COLOR } from "../../lib/theme"
+import createEmotionCache from "../components/createEmotionCache"
+import theme, { PRIMARY_COLOR } from "../components/theme"
 
 const clientSideEmotionCache = createEmotionCache()
 const queryClient = new QueryClient({

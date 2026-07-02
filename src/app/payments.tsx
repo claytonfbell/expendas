@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { Inside } from "../../lib/Inside"
-import { PaymentManage } from "../../lib/PaymentManage"
+import { Inside } from "../components/Inside"
+import { PaymentManage } from "../components/PaymentManage"
 
 export const Route = createFileRoute("/payments")({
   ssr: false,
