@@ -9,8 +9,8 @@ import {
 } from "@mui/material"
 import { Form, SubmitButton, TextField } from "material-ui-pack"
 import { useState } from "react"
-import { AddOrganizationRequest } from "./api/AddOrganizationRequest"
-import { useAddOrganization } from "./api/api"
+import { AddOrganizationRequestData } from "./api/types/AddOrganizationRequestData"
+import { useAddOrganization } from "./api/hooks/useAddOrganization"
 import DisplayError from "./DisplayError"
 import { useGlobalState } from "./GlobalStateProvider"
 import { Title } from "./Title"
@@ -21,7 +21,7 @@ interface Props {
 }
 
 export function AddOrganizationDialog(props: Props) {
-  const [state, setState] = useState<AddOrganizationRequest>({
+  const [state, setState] = useState<AddOrganizationRequestData>({
     name: "",
   })
 

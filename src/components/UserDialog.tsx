@@ -9,7 +9,7 @@ import {
 import { User } from "@prisma/client"
 import { CurrencyFieldBase, DatePickerBase } from "material-ui-pack"
 import { useEffect, useState } from "react"
-import { useUpdateUser } from "./api/api"
+import { useUpdateUser } from "./api/hooks/useUpdateUser"
 import DisplayError from "./DisplayError"
 
 interface Props {

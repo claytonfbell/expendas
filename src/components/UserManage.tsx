@@ -17,13 +17,11 @@ import {
 } from "@mui/material"
 import { CheckboxBase, Form, SubmitButton, TextField } from "material-ui-pack"
 import React, { useState } from "react"
-import { AddUserRequest } from "./api/AddUserRequest"
-import {
-  OrganizationWithIncludes,
-  useAddUser,
-  useCheckLogin,
-  useRemoveUser,
-} from "./api/api"
+import { AddUserRequestData } from "./api/types/AddUserRequestData"
+import { OrganizationWithIncludes } from "../OrganizationWithIncludes"
+import { useAddUser } from "./api/hooks/useAddUser"
+import { useCheckLogin } from "./api/hooks/useCheckLogin"
+import { useRemoveUser } from "./api/hooks/useRemoveUser"
 import ConfirmDialog from "./ConfirmDialog"
 import DisplayError from "./DisplayError"
 import { Title } from "./Title"
@@ -52,7 +50,7 @@ export function UserManage(props: Props) {
   } = useRemoveUser()
 
   const [showAddUser, setShowAddUser] = useState(false)
-  const [addUserState, setAddUserState] = useState<AddUserRequest>({
+  const [addUserState, setAddUserState] = useState<AddUserRequestData>({
     email: "",
     organizationId,
   })

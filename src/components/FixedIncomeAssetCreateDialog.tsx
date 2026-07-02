@@ -22,7 +22,8 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react"
 import type { NewFixedIncomeAssetRequestBody } from "../app/api/organizations.$id.fixedIncomeAssets"
 import { displayAccountBucket } from "./accountBuckets"
-import { useAddFixedIncomeAsset, useFetchAccounts } from "./api/api"
+import { useAddFixedIncomeAsset } from "./api/hooks/useAddFixedIncomeAsset"
+import { useFetchAccounts } from "./api/hooks/useFetchAccounts"
 import DisplayError from "./DisplayError"
 import {
   allFixedIncomeAssetTypes,

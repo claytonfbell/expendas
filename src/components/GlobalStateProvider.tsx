@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from "react"
 import { useStorageState } from "react-storage-hooks"
 import { useDebounce } from "react-use"
-import { useFetchOrganizations } from "./api/api"
+import { useFetchOrganizations } from "./api/hooks/useFetchOrganizations"
 import { GlobalStateContext, GlobalStateContextType } from "./GlobalStateContext"
 import type { OrganizationWithIncludes } from "./OrganizationWithIncludes"
 

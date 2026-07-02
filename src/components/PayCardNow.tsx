@@ -2,7 +2,8 @@
 import { Button } from "@mui/material"
 import { Account } from "@prisma/client"
 import dayjs from "./dayjs"
-import { useFetchAccounts, useFetchItems } from "./api/api"
+import { useFetchAccounts } from "./api/hooks/useFetchAccounts"
+import { useFetchItems } from "./api/hooks/useFetchItems"
 import { formatMoney } from "./formatMoney"
 import { PaymentForm } from "./PaymentForm"
 

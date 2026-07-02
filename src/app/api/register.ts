@@ -1,7 +1,7 @@
 import CryptoJS from "crypto-js"
 const { SHA3 } = CryptoJS
-import { LoginResponse } from "../../components/api/LoginResponse"
-import { RegisterRequest } from "../../components/api/RegisterRequest"
+import { LoginResponseData } from "../../components/api/types/LoginResponseData"
+import { RegisterRequestData } from "../../components/api/types/RegisterRequestData"
 import { BadRequestException } from "../../components/server/HttpException"
 import { buildResponse } from "../../components/server/buildResponse"
 import prisma from "../../components/server/prisma"
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/api/register")({
         email = "",
         password,
         organization,
-      }: RegisterRequest = await request.json()
+      }: RegisterRequestData = await request.json()
 
       email = email.toLowerCase()
 
@@ -71,7 +71,7 @@ export const Route = createFileRoute("/api/register")({
 
       session.user = user
 
-      const data: LoginResponse = { user, isSuperAdmin: false }
+      const data: LoginResponseData = { user, isSuperAdmin: false }
       return data
     })
   },

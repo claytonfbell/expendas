@@ -1,7 +1,7 @@
 import CryptoJS from "crypto-js"
 const { SHA3 } = CryptoJS
-import { LoginRequest } from "../../components/api/LoginRequest"
-import { LoginResponse } from "../../components/api/LoginResponse"
+import { LoginRequestData } from "../../components/api/types/LoginRequestData"
+import { LoginResponseData } from "../../components/api/types/LoginResponseData"
 import { requireAuthentication } from "../../components/requireAuthentication"
 import { BadRequestException } from "../../components/server/HttpException"
 import { buildResponse } from "../../components/server/buildResponse"
@@ -14,7 +14,7 @@ export const Route = createFileRoute("/api/login")({
     handlers: {
   POST: async ({ request }) => {
     return buildResponse(request, async (session) => {
-      let { email = "", password }: LoginRequest = await request.json()
+      let { email = "", password }: LoginRequestData = await request.json()
       email = email.toLowerCase()
 
       validate({ email }).email()
@@ -35,7 +35,7 @@ export const Route = createFileRoute("/api/login")({
 
       session.user = user
 
-      const data: LoginResponse = {
+      const data: LoginResponseData = {
         user,
         isSuperAdmin: user.id === Number(process.env.SUPER_ADMIN_USER_ID),
       }
@@ -45,7 +45,7 @@ export const Route = createFileRoute("/api/login")({
   GET: async ({ request }) => {
     return buildResponse(request, async (session) => {
       const user = await requireAuthentication(session, prisma)
-      const data: LoginResponse = {
+      const data: LoginResponseData = {
         user,
         isSuperAdmin: user.id === Number(process.env.SUPER_ADMIN_USER_ID),
       }

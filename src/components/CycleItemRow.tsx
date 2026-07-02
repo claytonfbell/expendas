@@ -3,7 +3,7 @@ import { Payment } from "@prisma/client"
 import { ChangeEvent } from "react"
 import { accountBoxStylesItem, accountBoxStylesRight } from "./AccountBoxStyles"
 import { AmountInputTool } from "./AmountInputTool"
-import { useUpdateItem } from "./api/api"
+import { useUpdateItem } from "./api/hooks/useUpdateItem"
 import { ItemWithIncludes } from "./ItemWithIncludes"
 
 type Props = {

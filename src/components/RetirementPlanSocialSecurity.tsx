@@ -12,11 +12,9 @@ import { RetirementPlan } from "@prisma/client"
 import { SelectBase } from "material-ui-pack"
 import dayjs from "./dayjs"
 import { useEffect, useMemo, useState } from "react"
-import {
-  useFetchOrganization,
-  useFetchRetirementPlanUsers,
-  useUpdateRetirementPlanUsers,
-} from "./api/api"
+import { useFetchOrganization } from "./api/hooks/useFetchOrganization"
+import { useFetchRetirementPlanUsers } from "./api/hooks/useFetchRetirementPlanUsers"
+import { useUpdateRetirementPlanUsers } from "./api/hooks/useUpdateRetirementPlanUsers"
 import DisplayError from "./DisplayError"
 import { formatMoney } from "./formatMoney"
 import { useGlobalState } from "./GlobalStateProvider"

@@ -24,11 +24,9 @@ import dayjs, { Dayjs } from "./dayjs"
 import React, { useMemo } from "react"
 import { accountBuckets, displayAccountBucket } from "./accountBuckets"
 import AnimatedCounter from "./AnimatedCounter"
-import {
-  useFetchAccounts,
-  useFetchRetirementPlanReport,
-  useFetchRetirementPlanUsers,
-} from "./api/api"
+import { useFetchAccounts } from "./api/hooks/useFetchAccounts"
+import { useFetchRetirementPlanReport } from "./api/hooks/useFetchRetirementPlanReport"
+import { useFetchRetirementPlanUsers } from "./api/hooks/useFetchRetirementPlanUsers"
 import { BottomStatusBar } from "./BottomStatusBar"
 import { ExpendasTable } from "./ExpendasTable"
 import { formatMoney } from "./formatMoney"

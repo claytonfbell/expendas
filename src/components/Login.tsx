@@ -2,12 +2,12 @@ import { Box } from "@mui/material"
 import { Form, TextField } from "material-ui-pack"
 import { useRouter } from "@tanstack/react-router"
 import { useState } from "react"
-import { useLogin } from "./api/api"
-import { LoginRequest } from "./api/LoginRequest"
+import { useLogin } from "./api/hooks/useLogin"
+import { LoginRequestData } from "./api/types/LoginRequestData"
 import { Link } from "./Link"
 
 export function Login() {
-  const [state, setState] = useState<LoginRequest>({
+  const [state, setState] = useState<LoginRequestData>({
     email: "",
     password: "",
   })

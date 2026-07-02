@@ -2,8 +2,8 @@ import { createFileRoute } from "@tanstack/react-router"
 import { Form } from "material-ui-pack"
 import { useRouter } from "@tanstack/react-router"
 import { useState } from "react"
-import { useRegister } from "../components/api/api"
-import { RegisterRequest } from "../components/api/RegisterRequest"
+import { useRegister } from "../components/api/hooks/useRegister"
+import { RegisterRequestData } from "../components/api/types/RegisterRequestData"
 import { Outside } from "../components/Outside"
 
 export const Route = createFileRoute("/register")({
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/register")({
 })
 
 function Register() {
-  const [state, setState] = useState<RegisterRequest>({
+  const [state, setState] = useState<RegisterRequestData>({
     email: "",
     firstName: "",
     lastName: "",

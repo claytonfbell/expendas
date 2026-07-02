@@ -34,11 +34,9 @@ import { investmentGroup } from "./AccountGroup"
 import { AccountWithIncludes } from "./AccountWithIncludes"
 import { AmountInputTool } from "./AmountInputTool"
 import AnimatedCounter from "./AnimatedCounter"
-import {
-  useFetchAccounts,
-  useFetchTickerPrices,
-  useUpdateAccount,
-} from "./api/api"
+import { useFetchAccounts } from "./api/hooks/useFetchAccounts"
+import { useFetchTickerPrices } from "./api/hooks/useFetchTickerPrices"
+import { useUpdateAccount } from "./api/hooks/useUpdateAccount"
 import { GlidePathRebalanceSchedule } from "./AssetAllocationGlidePath/GlidePathRebalanceSchedule"
 import { getTargetEquityPercentageWithGlidePaths } from "./AssetAllocationGlidePath/glidePaths"
 import { useAllRebalanceDates } from "./AssetAllocationGlidePath/useAllRebalanceDates"

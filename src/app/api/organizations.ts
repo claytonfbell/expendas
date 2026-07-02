@@ -1,4 +1,4 @@
-import { AddOrganizationRequest } from "../../components/api/AddOrganizationRequest"
+import { AddOrganizationRequestData } from "../../components/api/types/AddOrganizationRequestData"
 import { requireAuthentication } from "../../components/requireAuthentication"
 import { buildResponse } from "../../components/server/buildResponse"
 import { BadRequestException } from "../../components/server/HttpException"
@@ -46,7 +46,7 @@ export const Route = createFileRoute("/api/organizations")({
   POST: async ({ request }) => {
     return buildResponse(request, async (session) => {
       const user = await requireAuthentication(session, prisma)
-      const { name }: AddOrganizationRequest = await request.json()
+      const { name }: AddOrganizationRequestData = await request.json()
       validate({ name }).notEmpty()
 
       const exists = await prisma.organization.findFirst({

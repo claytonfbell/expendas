@@ -9,7 +9,8 @@ import {
 import { SelectBase } from "material-ui-pack"
 import { useRouter } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
-import { useAddRetirementPlan, useFetchRetirementPlans } from "./api/api"
+import { useAddRetirementPlan } from "./api/hooks/useAddRetirementPlan"
+import { useFetchRetirementPlans } from "./api/hooks/useFetchRetirementPlans"
 import DisplayError from "./DisplayError"
 
 interface Props {

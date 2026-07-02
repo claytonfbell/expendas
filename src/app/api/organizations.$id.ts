@@ -1,4 +1,4 @@
-import { OrganizationWithIncludes } from "../../components/api/api"
+import { OrganizationWithIncludes } from "../../components/OrganizationWithIncludes"
 import {
   requireAdminAuthentication,
   requireAuthentication,

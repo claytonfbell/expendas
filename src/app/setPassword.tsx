@@ -3,8 +3,8 @@ import { Alert } from "@mui/material"
 import { Form } from "material-ui-pack"
 import { useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
-import { useResetPassword } from "../components/api/api"
-import { ResetPasswordRequest } from "../components/api/ResetPasswordRequest"
+import { useResetPassword } from "../components/api/hooks/useResetPassword"
+import { ResetPasswordRequestData } from "../components/api/types/ResetPasswordRequestData"
 import { Outside } from "../components/Outside"
 
 export const Route = createFileRoute("/setPassword")({
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/setPassword")({
 function SetPassword() {
   const { authCode } = Route.useSearch()
   const router = Route.useRouter()
-  const [state, setState] = useState<ResetPasswordRequest>({
+  const [state, setState] = useState<ResetPasswordRequestData>({
     password: "",
     authCode: "",
   })

@@ -3,8 +3,8 @@ import { Form } from "material-ui-pack"
 import { useRouter, createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
 import ReactMarkdown from "react-markdown"
-import { useForgotPassword } from "../components/api/api"
-import { ForgotPasswordRequest } from "../components/api/ForgotPasswordRequest"
+import { useForgotPassword } from "../components/api/hooks/useForgotPassword"
+import { ForgotPasswordRequestData } from "../components/api/types/ForgotPasswordRequestData"
 import { Outside } from "../components/Outside"
 
 export const Route = createFileRoute("/forgotPassword")({
@@ -14,7 +14,7 @@ export const Route = createFileRoute("/forgotPassword")({
 })
 
 function ForgotPassword() {
-  const [state, setState] = useState<ForgotPasswordRequest>({
+  const [state, setState] = useState<ForgotPasswordRequestData>({
     email: "",
   })
 

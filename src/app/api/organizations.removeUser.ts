@@ -1,4 +1,4 @@
-import { RemoveUserRequest } from "../../components/api/RemoveUserRequest"
+import { RemoveUserRequestData } from "../../components/api/types/RemoveUserRequestData"
 import { requireAdminAuthentication } from "../../components/requireAuthentication"
 import { buildResponse } from "../../components/server/buildResponse"
 import { NotFoundException } from "../../components/server/HttpException"
@@ -11,7 +11,7 @@ export const Route = createFileRoute("/api/organizations/removeUser")({
     handlers: {
   POST: async ({ request, params }) => {
     return buildResponse(request, async (session) => {
-      let { organizationId, userId }: RemoveUserRequest = await request.json()
+      let { organizationId, userId }: RemoveUserRequestData = await request.json()
       const user = await requireAdminAuthentication(session, prisma, organizationId)
       const organizations = await prisma.organization.findMany({
         where: {

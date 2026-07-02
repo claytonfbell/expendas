@@ -1,7 +1,7 @@
 import dayjs from "../../components/dayjs"
 import { v4 as uuidv4 } from "uuid"
-import { ForgotPasswordRequest } from "../../components/api/ForgotPasswordRequest"
-import { ForgotPasswordResponse } from "../../components/api/ForgotPasswordResponse"
+import { ForgotPasswordRequestData } from "../../components/api/types/ForgotPasswordRequestData"
+import { ForgotPasswordResponseData } from "../../components/api/types/ForgotPasswordResponseData"
 import { buildResponse } from "../../components/server/buildResponse"
 import { BadRequestException } from "../../components/server/HttpException"
 import prisma from "../../components/server/prisma"
@@ -14,7 +14,7 @@ export const Route = createFileRoute("/api/forgotPassword")({
     handlers: {
   POST: async ({ request }) => {
     return buildResponse(request, async () => {
-      let { email = "" }: ForgotPasswordRequest = await request.json()
+      let { email = "" }: ForgotPasswordRequestData = await request.json()
       email = email.toLowerCase()
 
       validate({ email }).email()
@@ -45,7 +45,7 @@ export const Route = createFileRoute("/api/forgotPassword")({
           console.error(error)
         })
 
-      const response: ForgotPasswordResponse = {
+      const response: ForgotPasswordResponseData = {
         message: "Check your email for a link to reset your password.",
       }
       return response

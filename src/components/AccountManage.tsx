@@ -26,13 +26,13 @@ import ConfirmDialog from "./ConfirmDialog"
 import { Currency } from "./Currency"
 import { useGlobalState } from "./GlobalStateProvider"
 import { displayAccountType } from "./accountTypes"
-import { useCheckLogin, useFetchAccounts, useRemoveAccount } from "./api/api"
-import {
-  useCreateLinkToken,
-  useCreatePlaidCredential,
-  useRefreshPlaidAccounts,
-} from "./api/plaid-api"
-import { useScrapeEmailsFromFidelityAndUpdateBalances } from "./api/useScrapeEmailsFromFidelityAndUpdateBalances"
+import { useCheckLogin } from "./api/hooks/useCheckLogin"
+import { useFetchAccounts } from "./api/hooks/useFetchAccounts"
+import { useRemoveAccount } from "./api/hooks/useRemoveAccount"
+import { useScrapeEmailsFromFidelityAndUpdateBalances } from "./api/hooks/useScrapeEmailsFromFidelityAndUpdateBalances"
+import { useCreateLinkToken } from "./api/hooks/useCreateLinkToken"
+import { useCreatePlaidCredential } from "./api/hooks/useCreatePlaidCredential"
+import { useRefreshPlaidAccounts } from "./api/hooks/useRefreshPlaidAccounts"
 import { displayCreditCardType } from "./creditCardTypes"
 
 export function AccountManage() {

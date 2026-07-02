@@ -13,7 +13,8 @@ import {
   TaskScheduleCreateRequest,
   TaskScheduleWithIncludes,
 } from "../app/api/organizations.$id.tasks.schedules"
-import { useAddTaskSchedule, useFetchTaskGroups } from "./api/api"
+import { useAddTaskSchedule } from "./api/hooks/useAddTaskSchedule"
+import { useFetchTaskGroups } from "./api/hooks/useFetchTaskGroups"
 import DisplayError from "./DisplayError"
 
 const defaultState: TaskScheduleCreateRequest = {

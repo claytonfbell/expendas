@@ -1,6 +1,6 @@
 import { User } from "@prisma/client"
 
-export interface LoginResponse {
+export interface LoginResponseData {
   user: User
   isSuperAdmin: boolean
 }

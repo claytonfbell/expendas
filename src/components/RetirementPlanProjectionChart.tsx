@@ -12,10 +12,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
-import {
-  useFetchRetirementPlanReport,
-  useFetchRetirementPlanUsers,
-} from "./api/api"
+import { useFetchRetirementPlanReport } from "./api/hooks/useFetchRetirementPlanReport"
+import { useFetchRetirementPlanUsers } from "./api/hooks/useFetchRetirementPlanUsers"
 import { formatMoney } from "./formatMoney"
 import { fromNow } from "./RetirementPlanProjection"
 import {

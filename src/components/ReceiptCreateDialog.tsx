@@ -17,7 +17,8 @@ import {
   ReceiptWithIncludes,
 } from "../app/api/organizations.$id.receipts"
 import { displayAccountType } from "./accountTypes"
-import { useAddReceipt, useFetchAccounts } from "./api/api"
+import { useAddReceipt } from "./api/hooks/useAddReceipt"
+import { useFetchAccounts } from "./api/hooks/useFetchAccounts"
 import DisplayError from "./DisplayError"
 import { displayReceiptType, receiptTypes } from "./receiptTypes"
 import { SelectFile } from "./SelectFile"

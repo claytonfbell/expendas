@@ -1,7 +1,7 @@
 import React from "react"
 import { useDebounce } from "react-use"
 import { AccountWithIncludes } from "./AccountWithIncludes"
-import { useUpdateAccount } from "./api/api"
+import { useUpdateAccount } from "./api/hooks/useUpdateAccount"
 import { ItemWithIncludes } from "./ItemWithIncludes"
 
 interface Props {

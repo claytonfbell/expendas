@@ -14,7 +14,7 @@ import {
 import { DarkModeToggle } from "material-ui-pack"
 import { useRouter, Link as TanStackLink } from "@tanstack/react-router"
 import React, { useEffect, useState } from "react"
-import { useCheckLogin } from "./api/api"
+import { useCheckLogin } from "./api/hooks/useCheckLogin"
 import { BreadcrumbLink, ExpendasBreadcrumbs } from "./ExpendasBreadcrumbs"
 import { ExpendasErrorBoundary } from "./ExpendasErrorBoundary"
 import { GlobalStateProvider } from "./GlobalStateProvider"

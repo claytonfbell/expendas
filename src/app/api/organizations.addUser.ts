@@ -1,6 +1,6 @@
 import dayjs from "../../components/dayjs"
 import { v4 as uuidv4 } from "uuid"
-import { AddUserRequest } from "../../components/api/AddUserRequest"
+import { AddUserRequestData } from "../../components/api/types/AddUserRequestData"
 import { requireAdminAuthentication } from "../../components/requireAuthentication"
 import { buildResponse } from "../../components/server/buildResponse"
 import { NotFoundException } from "../../components/server/HttpException"
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/api/organizations/addUser")({
     handlers: {
   POST: async ({ request, params }) => {
     return buildResponse(request, async (session) => {
-      let { organizationId, email = "" }: AddUserRequest = await request.json()
+      let { organizationId, email = "" }: AddUserRequestData = await request.json()
       email = email.toLowerCase()
       const user = await requireAdminAuthentication(session, prisma, organizationId)
       const organizations = await prisma.organization.findMany({

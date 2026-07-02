@@ -1,4 +1,4 @@
-export interface AddUserRequest {
+export interface AddUserRequestData {
   organizationId: number
   email: string
 }

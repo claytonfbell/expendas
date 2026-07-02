@@ -19,11 +19,9 @@ import dayjs from "./dayjs"
 import { useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
 import type { TaskScheduleWithIncludes } from "../app/api/organizations.$id.tasks.schedules"
-import {
-  useFetchTaskGroups,
-  useRemoveTaskSchedule,
-  useUpdateTaskSchedule,
-} from "./api/api"
+import { useFetchTaskGroups } from "./api/hooks/useFetchTaskGroups"
+import { useRemoveTaskSchedule } from "./api/hooks/useRemoveTaskSchedule"
+import { useUpdateTaskSchedule } from "./api/hooks/useUpdateTaskSchedule"
 import ConfirmDialog from "./ConfirmDialog"
 
 interface Props {

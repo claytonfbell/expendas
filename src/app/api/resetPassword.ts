@@ -1,8 +1,8 @@
 import CryptoJS from "crypto-js"
 const { SHA3 } = CryptoJS
 import dayjs from "../../components/dayjs"
-import { ResetPasswordRequest } from "../../components/api/ResetPasswordRequest"
-import { ResetPasswordResponse } from "../../components/api/ResetPasswordResponse"
+import { ResetPasswordRequestData } from "../../components/api/types/ResetPasswordRequestData"
+import { ResetPasswordResponseData } from "../../components/api/types/ResetPasswordResponseData"
 import { buildResponse } from "../../components/server/buildResponse"
 import { BadRequestException } from "../../components/server/HttpException"
 import prisma from "../../components/server/prisma"
@@ -14,7 +14,7 @@ export const Route = createFileRoute("/api/resetPassword")({
     handlers: {
   POST: async ({ request }) => {
     return buildResponse(request, async () => {
-      let { password = "", authCode = "" }: ResetPasswordRequest =
+      let { password = "", authCode = "" }: ResetPasswordRequestData =
         await request.json()
 
       validate({ password }).strongPassword()
@@ -43,7 +43,7 @@ export const Route = createFileRoute("/api/resetPassword")({
         },
       })
 
-      const response: ResetPasswordResponse = {
+      const response: ResetPasswordResponseData = {
         message: "Your new password has been saved.",
       }
       return response

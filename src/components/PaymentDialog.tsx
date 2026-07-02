@@ -37,12 +37,10 @@ import ReactMarkdown from "react-markdown"
 import DisplayError from "./DisplayError"
 import { PaymentForm } from "./PaymentForm"
 import { displayAccountType } from "./accountTypes"
-import {
-  useAddPayment,
-  useFetchAccounts,
-  useRemovePayment,
-  useUpdatePayment,
-} from "./api/api"
+import { useAddPayment } from "./api/hooks/useAddPayment"
+import { useFetchAccounts } from "./api/hooks/useFetchAccounts"
+import { useRemovePayment } from "./api/hooks/useRemovePayment"
+import { useUpdatePayment } from "./api/hooks/useUpdatePayment"
 import { RestError } from "./api/rest"
 import { getRepeatingPaymentFeedback } from "./getRepeatingPaymentFeedback"
 

@@ -10,7 +10,7 @@ import { TaskGroupColor } from "@prisma/client"
 import { CheckboxBase, SelectBase } from "material-ui-pack"
 import { useEffect, useState } from "react"
 import type { TaskGroupWithIncludes } from "../app/api/organizations.$id.tasks.groups.$taskGroupId"
-import { useUpdateTaskGroup } from "./api/api"
+import { useUpdateTaskGroup } from "./api/hooks/useUpdateTaskGroup"
 import { useGlobalState } from "./GlobalStateProvider"
 import { taskGroupColors } from "./TaskGroupCreateDialog"
 

@@ -1,14 +1,15 @@
-import {
-  Outlet,
-  createRootRoute,
-  HeadContent,
-  Scripts,
-} from "@tanstack/react-router"
 import { CacheProvider } from "@emotion/react"
 import CssBaseline from "@mui/material/CssBaseline"
 import { ThemeProvider } from "@mui/material/styles"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import {
+  createRootRoute,
+  HeadContent,
+  Outlet,
+  Scripts,
+} from "@tanstack/react-router"
 import { DarkModeProvider, useDarkMode } from "material-ui-pack"
+import rest from "../components/api/rest"
 import createEmotionCache from "../components/createEmotionCache"
 import theme, { PRIMARY_COLOR } from "../components/theme"
 
@@ -16,6 +17,8 @@ const clientSideEmotionCache = createEmotionCache()
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: true } },
 })
+
+rest.setBaseURL("/api")
 
 export const Route = createRootRoute({
   head: () => ({

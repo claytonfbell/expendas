@@ -7,7 +7,7 @@ import {
   useTheme,
 } from "@mui/material"
 import { useMemo, useState } from "react"
-import { useFetchTasks } from "./api/api"
+import { useFetchTasks } from "./api/hooks/useFetchTasks"
 import dayjs from "./dayjs"
 import { TaskDate } from "./TaskDate"
 

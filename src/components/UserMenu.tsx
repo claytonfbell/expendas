@@ -11,7 +11,7 @@ import MenuItem from "@mui/material/MenuItem"
 import { useRouter } from "@tanstack/react-router"
 import React, { useState } from "react"
 import { AddOrganizationDialog } from "./AddOrganizationDialog"
-import { useLogout } from "./api/api"
+import { useLogout } from "./api/hooks/useLogout"
 import { useGlobalState } from "./GlobalStateProvider"
 import { OrganizationDialog } from "./OrganizationDialog"
 

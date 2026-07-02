@@ -11,7 +11,7 @@ import {
   YAxis,
 } from "recharts"
 import AnimatedCounter from "./AnimatedCounter"
-import { useFetchAccountsWithBalanceHistory } from "./api/api"
+import { useFetchAccountsWithBalanceHistory } from "./api/hooks/useFetchAccountsWithBalanceHistory"
 import { BottomStatusBar } from "./BottomStatusBar"
 import { useGlobalState } from "./GlobalStateProvider"
 import {

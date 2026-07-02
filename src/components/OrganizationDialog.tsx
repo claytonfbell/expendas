@@ -9,12 +9,10 @@ import {
 import { Form, TextField } from "material-ui-pack"
 import { useEffect, useState } from "react"
 import { useStorageState } from "react-storage-hooks"
-import {
-  OrganizationWithIncludes,
-  useFetchOrganization,
-  useRemoveOrganization,
-  useUpdateOrganization,
-} from "./api/api"
+import { OrganizationWithIncludes } from "../OrganizationWithIncludes"
+import { useFetchOrganization } from "./api/hooks/useFetchOrganization"
+import { useRemoveOrganization } from "./api/hooks/useRemoveOrganization"
+import { useUpdateOrganization } from "./api/hooks/useUpdateOrganization"
 import ConfirmDialog from "./ConfirmDialog"
 import DisplayError from "./DisplayError"
 import { Title } from "./Title"

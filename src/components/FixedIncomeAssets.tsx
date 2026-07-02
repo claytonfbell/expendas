@@ -10,20 +10,18 @@ import {
   Typography,
 } from "@mui/material"
 import { FixedIncomeAssetType } from "@prisma/client"
-import dayjs from "./dayjs"
 import { useMemo, useState } from "react"
 import { AccountBucketChip } from "./AccountBucketChip"
 import { AmountInputTool } from "./AmountInputTool"
 import AnimatedCounter from "./AnimatedCounter"
-import {
-  FixedIncomeAssetWithIncludes,
-  useFetchFixedIncomeAssets,
-  useRemoveFixedIncomeAsset,
-  useUpdateFixedIncomeAsset,
-} from "./api/api"
+import { useFetchFixedIncomeAssets } from "./api/hooks/useFetchFixedIncomeAssets"
+import { useRemoveFixedIncomeAsset } from "./api/hooks/useRemoveFixedIncomeAsset"
+import { useUpdateFixedIncomeAsset } from "./api/hooks/useUpdateFixedIncomeAsset"
+import { FixedIncomeAssetWithIncludesData } from "./api/types/FixedIncomeAssetWithIncludes"
 import { BottomStatusBar } from "./BottomStatusBar"
 import ConfirmDialog from "./ConfirmDialog"
 import { Currency } from "./Currency"
+import dayjs from "./dayjs"
 import { ExpendasTable } from "./ExpendasTable"
 import { FixedIncomeAssetCreateDialog } from "./FixedIncomeAssetCreateDialog"
 import { displayFixedIncomeAssetType } from "./fixedIncomeAssetTypes"
@@ -265,7 +263,7 @@ export function FixedIncomeAssets() {
 }
 
 type AssetWithCalculations = {
-  asset: FixedIncomeAssetWithIncludes
+  asset: FixedIncomeAssetWithIncludesData
   calculatedApr: number | null
   calculatedGains: number | null
   daysLeft: number | null
@@ -280,7 +278,7 @@ function FixedIncomeAssetRow({
   const { mutateAsync: updateFixedIncomeAsset, status: updateStatus } =
     useUpdateFixedIncomeAsset()
 
-  function handleUpdate(changes: Partial<FixedIncomeAssetWithIncludes>) {
+  function handleUpdate(changes: Partial<FixedIncomeAssetWithIncludesData>) {
     return updateFixedIncomeAsset({ ...asset, ...changes })
   }
 

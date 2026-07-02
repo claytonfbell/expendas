@@ -4,11 +4,9 @@ import { CurrencyFieldBase } from "material-ui-pack"
 import { useEffect, useMemo, useState } from "react"
 import { displayAccountBucket } from "./accountBuckets"
 import { AccountWithIncludes } from "./AccountWithIncludes"
-import {
-  useFetchAccounts,
-  useFetchRetirementPlanContributions,
-  useUpdateRetirementPlanContributions,
-} from "./api/api"
+import { useFetchAccounts } from "./api/hooks/useFetchAccounts"
+import { useFetchRetirementPlanContributions } from "./api/hooks/useFetchRetirementPlanContributions"
+import { useUpdateRetirementPlanContributions } from "./api/hooks/useUpdateRetirementPlanContributions"
 import DisplayError from "./DisplayError"
 import { formatMoney } from "./formatMoney"
 import { RetirementPlanSection } from "./RetirementPlanSection"
