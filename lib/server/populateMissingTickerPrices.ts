@@ -2,12 +2,7 @@ import dayjs from "../dayjs"
 import prisma from "./prisma"
 import { RateLimit } from "./RateLimit"
 import { scrapeCurrentTickerPrice } from "./scrapeCurrentTickerPrice"
-
-/**
- * VOO = S&P INDEX
- * FBND = TOTAL BOND INDEX
- * */
-export type Ticker = "VOO" | "FBND"
+export type { Ticker } from "./tickerTypes"
 
 export async function populateMissingTickerPrices(ticker: Ticker) {
   // try and find up to five missing dates in row that need to be fetched from the massive.com API and populated in the database

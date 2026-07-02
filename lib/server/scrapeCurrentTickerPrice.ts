@@ -1,4 +1,4 @@
-import { Ticker } from "./populateMissingTickerPrices"
+import { Ticker } from "./tickerTypes"
 
 export async function scrapeCurrentTickerPrice(
   ticker: Ticker

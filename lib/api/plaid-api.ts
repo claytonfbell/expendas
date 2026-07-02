@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { PlaidLinkOnSuccessMetadata } from "react-plaid-link"
 import type { LinkTokenRequest } from "../../src/app/api/organizations.$id.plaid.linkToken"
-import { useGlobalState } from "../GlobalStateProvider"
+import { useGlobalState } from "../GlobalStateContext"
 import rest, { RestError } from "./rest"
 
 interface CreateLinkTokenResponse {

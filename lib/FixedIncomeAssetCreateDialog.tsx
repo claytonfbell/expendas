@@ -27,7 +27,7 @@ import DisplayError from "./DisplayError"
 import {
   allFixedIncomeAssetTypes,
   displayFixedIncomeAssetType,
-} from "./FixedIncomeAssets"
+} from "./fixedIncomeAssetTypes"
 
 const defaultState: NewFixedIncomeAssetRequestBody = {
   accountId: null,

@@ -1,6 +1,6 @@
 import dayjs from "../../../lib/dayjs"
 import { createFileRoute } from "@tanstack/react-router"
-import { TaskScheduleWithIncludes } from "./organizations.$id.tasks.schedules"
+import { TaskScheduleWithIncludes } from "./taskScheduleTypes"
 import { requireOrganizationAuthentication } from "../../../lib/requireAuthentication"
 import { buildResponse } from "../../../lib/server/buildResponse"
 import prisma from "../../../lib/server/prisma"
@@ -174,6 +174,7 @@ export const Route = createFileRoute(
   }
 })
 
+// fallow-ignore-next-line complexity -- temporary migration debt: high cyclomatic + cognitive complexity in scheduler
 export async function scheduleTasksForSchedule(
   taskSchedule: TaskScheduleWithIncludes,
   daysAhead: number

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useGlobalState } from "../GlobalStateProvider"
+import { useGlobalState } from "../GlobalStateContext"
 import rest, { RestError } from "./rest"
 
 interface ScrapeEmailsFromFidelityAndUpdateBalancesResponse {

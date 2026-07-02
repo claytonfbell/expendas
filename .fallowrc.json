@@ -1,0 +1,25 @@
+{
+  "ignoreDependencies": [
+    ".prisma"
+  ],
+  "ignoreExports": [
+    {
+      "file": "src/app/**/*.{ts,tsx}",
+      "exports": ["Route"]
+    }
+  ],
+  "duplicates": {
+    "minOccurrences": 3,
+    "ignore": [
+      "src/routeTree.gen.ts"
+    ]
+  },
+  "health": {
+    "maxCyclomatic": 20,
+    "maxCognitive": 35,
+    "maxCrap": 500,
+    "ignore": [
+      "src/routeTree.gen.ts"
+    ]
+  }
+}

@@ -1,23 +1,13 @@
 import React, { useEffect, useMemo } from "react"
 import { useStorageState } from "react-storage-hooks"
 import { useDebounce } from "react-use"
-import { OrganizationWithIncludes, useFetchOrganizations } from "./api/api"
+import { useFetchOrganizations } from "./api/api"
+import { GlobalStateContext, GlobalStateContextType } from "./GlobalStateContext"
+import type { OrganizationWithIncludes } from "./OrganizationWithIncludes"
 
-type ContextType = {
-  organizationId: number | null
-  setOrganizationId: React.Dispatch<React.SetStateAction<number | null>>
-  organization: OrganizationWithIncludes | null
-  organizations: OrganizationWithIncludes[] | undefined
-}
+export { useGlobalState } from "./GlobalStateContext"
 
-const Context = React.createContext<ContextType | undefined>(undefined)
-export function useGlobalState() {
-  const context = React.useContext(Context)
-  if (!context) {
-    throw new Error(`useGlobalState must be used within a GlobalStateProvider`)
-  }
-  return context
-}
+type ContextType = GlobalStateContextType
 
 export function GlobalStateProvider(props: any) {
   const [organizationId, setOrganizationId] = useStorageState<number | null>(
@@ -70,5 +60,5 @@ export function GlobalStateProvider(props: any) {
     [organization, organizationId, organizations, setOrganizationId]
   )
 
-  return <Context.Provider value={value} {...props} />
+  return <GlobalStateContext.Provider value={value} {...props} />
 }

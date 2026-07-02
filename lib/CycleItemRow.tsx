@@ -1,7 +1,7 @@
 import { Box, Checkbox, Grid, Link, Tooltip, useTheme } from "@mui/material"
 import { Payment } from "@prisma/client"
 import { ChangeEvent } from "react"
-import { accountBoxStylesItem, accountBoxStylesRight } from "./AccountBox"
+import { accountBoxStylesItem, accountBoxStylesRight } from "./AccountBoxStyles"
 import { AmountInputTool } from "./AmountInputTool"
 import { useUpdateItem } from "./api/api"
 import { ItemWithIncludes } from "./ItemWithIncludes"

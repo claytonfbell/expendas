@@ -27,7 +27,7 @@ import {
   AccountWithBalanceHistory,
   AccountWithIncludes,
 } from "../AccountWithIncludes"
-import { useGlobalState } from "../GlobalStateProvider"
+import { useGlobalState } from "../GlobalStateContext"
 import { ItemWithIncludes } from "../ItemWithIncludes"
 import { PaymentWithIncludes } from "../PaymentWithIncludes"
 import { ReportRange } from "../TrendsReportsTimeRangeSelect"
@@ -45,13 +45,9 @@ import rest, { RestError } from "./rest"
 
 rest.setBaseURL(`/api`)
 
-export type OrganizationWithIncludes = Organization & {
-  users: UsersOnOrganizationsWithUser[]
-}
+export type { OrganizationWithIncludes } from "../OrganizationWithIncludes"
 
-type UsersOnOrganizationsWithUser = UsersOnOrganizations & {
-  user: User
-}
+import type { OrganizationWithIncludes } from "../OrganizationWithIncludes"
 
 const api = {
   forgotPassword: (req: ForgotPasswordRequest) =>

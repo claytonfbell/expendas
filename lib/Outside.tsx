@@ -25,7 +25,6 @@ export function Outside(props: Props) {
         spacing={2}
         sx={{
           maxWidth: 400,
-          minHeight: 800,
         }}
       >
         <Stack

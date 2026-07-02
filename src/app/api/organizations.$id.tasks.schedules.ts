@@ -1,4 +1,3 @@
-import { TaskGroup, TaskSchedule } from "@prisma/client"
 import dayjs from "../../../lib/dayjs"
 import { createFileRoute } from "@tanstack/react-router"
 import { requireOrganizationAuthentication } from "../../../lib/requireAuthentication"
@@ -6,6 +5,7 @@ import { buildResponse } from "../../../lib/server/buildResponse"
 import prisma from "../../../lib/server/prisma"
 import validate from "../../../lib/server/validate"
 import { scheduleTasksForSchedule } from "./organizations.$id.tasks.schedules.$taskScheduleId"
+export type { TaskScheduleCreateRequest, TaskScheduleWithIncludes } from "./taskScheduleTypes"
 
 export const Route = createFileRoute("/api/organizations/$id/tasks/schedules")({
   server: {
@@ -104,13 +104,3 @@ export const Route = createFileRoute("/api/organizations/$id/tasks/schedules")({
   }
 })
 
-export type TaskScheduleCreateRequest = Omit<
-  TaskSchedule,
-  "id" | "taskGroupId" | "createdByUserId"
-> & {
-  taskGroupId: number | null
-}
-
-export type TaskScheduleWithIncludes = TaskSchedule & {
-  taskGroup: TaskGroup
-}
