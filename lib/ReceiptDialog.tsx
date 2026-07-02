@@ -9,7 +9,7 @@ import {
 import { ReceiptType } from "@prisma/client"
 import { CurrencyFieldBase, DatePickerBase, SelectBase } from "material-ui-pack"
 import { useEffect, useState } from "react"
-import { ReceiptWithIncludes } from "../pages/api/organizations/[id]/receipts"
+import type { ReceiptWithIncludes } from "../src/app/api/organizations.$id.receipts"
 import { displayAccountType } from "./accountTypes"
 import { useFetchAccounts, useRemoveReceipt, useUpdateReceipt } from "./api/api"
 import ConfirmDialog from "./ConfirmDialog"

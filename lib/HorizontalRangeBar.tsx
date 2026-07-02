@@ -3,7 +3,8 @@ import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp"
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord"
 import { Divider, Stack, SvgIconProps, Typography } from "@mui/material"
 import React from "react"
-import { useMeasure } from "react-use"
+import * as reactUse from 'react-use'
+const { useMeasure } = reactUse
 import { formatMoney } from "./formatMoney"
 
 interface Props {

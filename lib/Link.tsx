@@ -1,5 +1,5 @@
 import { Link as MUILink } from "@mui/material"
-import NextLink from "next/link"
+import { Link as TanStackLink } from "@tanstack/react-router"
 import React from "react"
 
 interface Props {
@@ -14,8 +14,8 @@ export function Link(props: Props) {
       color="inherit"
       style={{ cursor: "pointer" }}
       onClick={props.onClick}
-      component={props.href !== undefined ? NextLink : "a"}
-      href={props.href}
+      component={props.href !== undefined ? TanStackLink : "a"}
+      to={props.href}
     >
       {props.children}
     </MUILink>

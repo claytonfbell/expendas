@@ -20,7 +20,7 @@ import {
   SelectBase,
 } from "material-ui-pack"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { NewFixedIncomeAssetRequestBody } from "../pages/api/organizations/[id]/fixedIncomeAssets/index"
+import type { NewFixedIncomeAssetRequestBody } from "../src/app/api/organizations.$id.fixedIncomeAssets"
 import { displayAccountBucket } from "./accountBuckets"
 import { useAddFixedIncomeAsset, useFetchAccounts } from "./api/api"
 import DisplayError from "./DisplayError"

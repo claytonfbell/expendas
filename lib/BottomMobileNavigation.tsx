@@ -1,7 +1,6 @@
 import { ButtonBase, Stack } from "@mui/material"
 import { alpha } from "@mui/material/styles"
-import NextLink from "next/link"
-import { useRouter } from "next/router"
+import { useRouter, Link as TanStackLink } from "@tanstack/react-router"
 import { navigationLinks } from "./TopNavigation"
 
 export function BottomMobileNavigation() {
@@ -18,12 +17,12 @@ export function BottomMobileNavigation() {
       }}
     >
       {navigationLinks.map((link) => {
-        const isSelected = router.pathname === link.href
+        const isSelected = router.state.location.pathname === link.href
         return (
           <ButtonBase
             key={link.href}
-            component={NextLink}
-            href={link.href}
+            component={TanStackLink}
+            to={link.href}
             style={{ flex: 1 }}
             focusRipple
             sx={{

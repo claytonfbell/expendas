@@ -1,24 +1,15 @@
-// this file is a wrapper with defaults to be used in both API routes and `getServerSideProps` functions
-import { NextApiRequest, NextApiResponse } from "next"
-import { Session, withIronSession } from "next-iron-session"
+import { SessionOptions } from "iron-session"
+import { User } from "@prisma/client"
 
-// optionally add stronger typing for next-specific implementation
-export type NextIronRequest = NextApiRequest & { session: Session }
-type NextIronHandler = (
-  req: NextIronRequest,
-  res: NextApiResponse
-) => void | Promise<void>
+export interface SessionData {
+  user?: User
+}
 
-const withSession = (handler: NextIronHandler) =>
-  withIronSession(handler, {
-    password:
-      process.env.SECRET_COOKIE_PASSWORD || "GzPWLYyiDT8Rx6NAn@rrNm-oR2LxH3ow",
-    cookieName: "expendas-session",
-    cookieOptions: {
-      // the next line allows to use the session in non-https environments like
-      // Next.js dev mode (http://localhost:3000)
-      secure: process.env.NODE_ENV === "production",
-    },
-  })
-
-export default withSession
+export const sessionOptions: SessionOptions = {
+  password:
+    process.env.SECRET_COOKIE_PASSWORD || "GzPWLYyiDT8Rx6NAn@rrNm-oR2LxH3ow",
+  cookieName: "expendas-session",
+  cookieOptions: {
+    secure: process.env.NODE_ENV === "production",
+  },
+}

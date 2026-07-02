@@ -15,6 +15,7 @@ WORKDIR /app
 
 ADD .npmrc package.json package-lock.json ./
 RUN npm install --production=false
+
 # Setup production node_modules
 FROM base as production-deps
 
@@ -34,7 +35,6 @@ WORKDIR /app
 COPY --from=deps /app/node_modules /app/node_modules
 
 ADD prisma .
-#RUN npx prisma migrate deploy
 RUN npx prisma generate
 
 ADD . .
@@ -50,11 +50,9 @@ WORKDIR /app
 
 COPY --from=production-deps /app/node_modules /app/node_modules
 COPY --from=build /app/node_modules/.prisma /app/node_modules/.prisma
-COPY --from=build /app/.next /app/.next
+COPY --from=build /app/.output /app/.output
 COPY --from=build /app/public /app/public
-COPY --from=build /app/.npmrc ./.npmrc
 COPY --from=build /app/package.json ./package.json
-COPY --from=build /app/next.config.js ./
 COPY --from=build /app/.env ./
 
 ADD . .

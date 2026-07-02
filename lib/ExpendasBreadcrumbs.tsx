@@ -1,6 +1,6 @@
 import Breadcrumbs from "@mui/material/Breadcrumbs"
 import Typography from "@mui/material/Typography"
-import { useRouter } from "next/dist/client/router"
+import { useRouter } from "@tanstack/react-router"
 import React from "react"
 import { Link } from "./Link"
 
@@ -16,7 +16,10 @@ interface Props {
 export function ExpendasBreadcrumbs(props: Props) {
   const router = useRouter()
   const links = [
-    { label: "Expendas", href: router.pathname !== "/" ? "/" : undefined },
+    {
+      label: "Expendas",
+      href: router.state.location.pathname !== "/" ? "/" : undefined,
+    },
     ...props.links,
   ]
 

@@ -11,7 +11,7 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/system"
 import React, { KeyboardEvent, useEffect, useState } from "react"
-import useDebounce from "react-use/lib/useDebounce"
+import { useDebounce } from "react-use"
 
 type Props = {
   value: number

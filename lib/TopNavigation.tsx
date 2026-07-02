@@ -10,8 +10,7 @@ import ShowChartIcon from "@mui/icons-material/ShowChart"
 import ShowChartOutlinedIcon from "@mui/icons-material/ShowChartOutlined"
 import { Button, Stack, useMediaQuery } from "@mui/material"
 import { alpha, useTheme } from "@mui/material/styles"
-import { useRouter } from "next/dist/client/router"
-import NextLink from "next/link"
+import { useRouter, Link as TanStackLink } from "@tanstack/react-router"
 import React from "react"
 
 type NavigationLink = {
@@ -68,12 +67,12 @@ export function TopNavigation() {
         }}
       >
         {navigationLinks.map((link) => {
-          const isSelected = router.pathname === link.href
+          const isSelected = router.state.location.pathname === link.href
           return (
             <Button
               key={link.href}
-              LinkComponent={NextLink}
-              href={link.href}
+              LinkComponent={TanStackLink}
+              to={link.href}
               startIcon={isSelected ? <link.ActiveIcon /> : <link.Icon />}
               disableElevation
               sx={{

@@ -1,0 +1,58 @@
+import { Alert } from "@mui/material"
+import { Form } from "material-ui-pack"
+import { useRouter, createFileRoute } from "@tanstack/react-router"
+import { useState } from "react"
+import ReactMarkdown from "react-markdown"
+import { useForgotPassword } from "../../lib/api/api"
+import { ForgotPasswordRequest } from "../../lib/api/ForgotPasswordRequest"
+import { Outside } from "../../lib/Outside"
+
+export const Route = createFileRoute("/forgotPassword")({
+  ssr: false,
+  loader: async () => true,
+  component: ForgotPassword,
+})
+
+function ForgotPassword() {
+  const [state, setState] = useState<ForgotPasswordRequest>({
+    email: "",
+  })
+
+  const { mutateAsync: forgotPassword, isPending, error } = useForgotPassword()
+  const [message, setMessage] = useState<string>()
+
+  function handleSubmit() {
+    forgotPassword(state).then((data) => setMessage(data?.message))
+  }
+
+  const router = useRouter()
+
+  return (
+    <Outside title="Forgot Password">
+      {message !== undefined ? (
+        <Alert color="success">
+          <ReactMarkdown>{message}</ReactMarkdown>
+        </Alert>
+      ) : null}
+
+      <Form
+        buttons
+        error={error?.message}
+        busy={isPending}
+        state={state}
+        setState={setState}
+        onSubmit={handleSubmit}
+        submitLabel="Send Link to Setup Password"
+        onCancel={() => router.navigate({ to: "/" })}
+        cancelLabel="Go Back"
+        schema={{
+          email: "email",
+        }}
+        layout={{
+          submitButton: { xs: 12 },
+          cancelButton: { xs: 12 },
+        }}
+      />
+    </Outside>
+  )
+}

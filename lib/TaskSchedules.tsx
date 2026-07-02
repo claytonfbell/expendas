@@ -12,7 +12,7 @@ import {
 } from "@mui/material"
 import { useState } from "react"
 import ReactMarkdown from "react-markdown"
-import { TaskScheduleWithIncludes } from "../pages/api/organizations/[id]/tasks/schedules"
+import type { TaskScheduleWithIncludes } from "../src/app/api/organizations.$id.tasks.schedules"
 import { useFetchTaskSchedules, useRemoveTaskSchedule } from "./api/api"
 import ConfirmDialog from "./ConfirmDialog"
 import { ExpendasTable } from "./ExpendasTable"

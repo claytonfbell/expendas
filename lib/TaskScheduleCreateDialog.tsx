@@ -12,7 +12,7 @@ import { useEffect, useState } from "react"
 import {
   TaskScheduleCreateRequest,
   TaskScheduleWithIncludes,
-} from "../pages/api/organizations/[id]/tasks/schedules"
+} from "../src/app/api/organizations.$id.tasks.schedules"
 import { useAddTaskSchedule, useFetchTaskGroups } from "./api/api"
 import DisplayError from "./DisplayError"
 

@@ -1,5 +1,7 @@
-import qs from "querystring"
-import "whatwg-fetch"
+const qs = {
+  stringify: (obj: Record<string, string>) =>
+    new URLSearchParams(obj).toString(),
+}
 
 // prototype.js library causes problems
 // https://stackoverflow.com/questions/710586/json-stringify-array-bizarreness-with-prototype-js

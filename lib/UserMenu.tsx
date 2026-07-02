@@ -8,7 +8,7 @@ import SettingsIcon from "@mui/icons-material/Settings"
 import { Button, ListItemIcon } from "@mui/material"
 import Menu from "@mui/material/Menu"
 import MenuItem from "@mui/material/MenuItem"
-import { useRouter } from "next/dist/client/router"
+import { useRouter } from "@tanstack/react-router"
 import React, { useState } from "react"
 import { AddOrganizationDialog } from "./AddOrganizationDialog"
 import { useLogout } from "./api/api"
@@ -83,21 +83,27 @@ export function UserMenu() {
           Add Organization
         </MenuItem>
 
-        <MenuItem onClick={menuClick(() => router.push(`/accounts`))}>
+        <MenuItem
+          onClick={menuClick(() => router.navigate({ to: "/accounts" }))}
+        >
           <ListItemIcon>
             <AccountBalanceIcon />
           </ListItemIcon>
           Accounts
         </MenuItem>
 
-        <MenuItem onClick={menuClick(() => router.push(`/payments`))}>
+        <MenuItem
+          onClick={menuClick(() => router.navigate({ to: "/payments" }))}
+        >
           <ListItemIcon>
             <PaymentsIcon />
           </ListItemIcon>
           Payments
         </MenuItem>
 
-        <MenuItem onClick={menuClick(() => router.push(`/receipts`))}>
+        <MenuItem
+          onClick={menuClick(() => router.navigate({ to: "/receipts" }))}
+        >
           <ListItemIcon>
             <ReceiptLongIcon />
           </ListItemIcon>

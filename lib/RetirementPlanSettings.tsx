@@ -8,7 +8,7 @@ import {
 } from "material-ui-pack"
 import { useEffect, useState } from "react"
 import { useDebounce } from "react-use"
-import { RetirementPlanUpdateRequest } from "../pages/api/organizations/[id]/retirementPlans/[retirementPlanId]"
+import type { RetirementPlanUpdateRequest } from "../src/app/api/organizations.$id.retirementPlans.$retirementPlanId"
 import { useDeleteRetirementPlan, useUpdateRetirementPlan } from "./api/api"
 import ConfirmDialog from "./ConfirmDialog"
 import DisplayError from "./DisplayError"

@@ -15,7 +15,7 @@ import { useState } from "react"
 import {
   ReceiptCreateRequest,
   ReceiptWithIncludes,
-} from "../pages/api/organizations/[id]/receipts"
+} from "../src/app/api/organizations.$id.receipts"
 import { displayAccountType } from "./accountTypes"
 import { useAddReceipt, useFetchAccounts } from "./api/api"
 import DisplayError from "./DisplayError"

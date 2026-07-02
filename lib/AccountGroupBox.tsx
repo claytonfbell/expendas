@@ -11,7 +11,8 @@ import {
   useTheme,
 } from "@mui/material"
 import { Account, Payment } from "@prisma/client"
-import { MD5 } from "crypto-js"
+import CryptoJS from "crypto-js"
+const { MD5 } = CryptoJS
 import { useStorageState } from "react-storage-hooks"
 import { AccountBox } from "./AccountBox"
 import { AccountGroup } from "./AccountGroup"

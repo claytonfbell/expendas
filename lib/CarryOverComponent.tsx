@@ -1,5 +1,5 @@
 import React from "react"
-import useDebounce from "react-use/lib/useDebounce"
+import { useDebounce } from "react-use"
 import { AccountWithIncludes } from "./AccountWithIncludes"
 import { useUpdateAccount } from "./api/api"
 import { ItemWithIncludes } from "./ItemWithIncludes"

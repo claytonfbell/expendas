@@ -11,18 +11,18 @@ import {
   UsersOnOrganizations,
 } from "@prisma/client"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { NewFixedIncomeAssetRequestBody } from "../../pages/api/organizations/[id]/fixedIncomeAssets"
-import {
+import type { NewFixedIncomeAssetRequestBody } from "../../src/app/api/organizations.$id.fixedIncomeAssets"
+import type {
   ReceiptCreateRequest,
   ReceiptWithIncludes,
-} from "../../pages/api/organizations/[id]/receipts"
-import { RetirementPlanReportResponse } from "../../pages/api/organizations/[id]/retirementPlans/[retirementPlanId]/report"
-import { TaskWithIncludes } from "../../pages/api/organizations/[id]/tasks"
-import { TaskGroupCreateRequest } from "../../pages/api/organizations/[id]/tasks/groups"
-import { TaskGroupWithIncludes } from "../../pages/api/organizations/[id]/tasks/groups/[taskGroupId]"
-import { TaskScheduleWithIncludes } from "../../pages/api/organizations/[id]/tasks/schedules"
-import { TaskScheduleCreateRequest } from "../../pages/api/organizations/[id]/tasks/schedules/index"
-import { TickerPriceResponse } from "../../pages/api/tickerPrices"
+} from "../../src/app/api/organizations.$id.receipts"
+import type { RetirementPlanReportResponse } from "../../src/app/api/organizations.$id.retirementPlans.$retirementPlanId.report"
+import type { TaskWithIncludes } from "../../src/app/api/organizations.$id.tasks"
+import type { TaskGroupCreateRequest } from "../../src/app/api/organizations.$id.tasks.groups"
+import type { TaskGroupWithIncludes } from "../../src/app/api/organizations.$id.tasks.groups.$taskGroupId"
+import type { TaskScheduleWithIncludes } from "../../src/app/api/organizations.$id.tasks.schedules"
+import type { TaskScheduleCreateRequest } from "../../src/app/api/organizations.$id.tasks.schedules"
+import type { TickerPriceResponse } from "../../src/app/api/tickerPrices"
 import {
   AccountWithBalanceHistory,
   AccountWithIncludes,

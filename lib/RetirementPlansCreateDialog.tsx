@@ -7,7 +7,7 @@ import {
   TextField,
 } from "@mui/material"
 import { SelectBase } from "material-ui-pack"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
 import { useAddRetirementPlan, useFetchRetirementPlans } from "./api/api"
 import DisplayError from "./DisplayError"
@@ -39,7 +39,7 @@ export function RetirementPlansCreateDialog({ open, onClose }: Props) {
 
   const { data: retirementPlans } = useFetchRetirementPlans()
 
-  const { replace } = useRouter()
+  const router = useRouter()
 
   return (
     <>
@@ -52,7 +52,10 @@ export function RetirementPlansCreateDialog({ open, onClose }: Props) {
               e.preventDefault()
               addRetirementPlan(state).then((newPlan) => {
                 onClose()
-                replace(`?retirementPlanId=${newPlan.id}`)
+                router.navigate({
+                  search: { retirementPlanId: newPlan.id },
+                  replace: true,
+                })
                 return newPlan
               })
             }}

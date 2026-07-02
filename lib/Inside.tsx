@@ -12,8 +12,7 @@ import {
   Tooltip,
 } from "@mui/material"
 import { DarkModeToggle } from "material-ui-pack"
-import { useRouter } from "next/dist/client/router"
-import NextLink from "next/link"
+import { useRouter, Link as TanStackLink } from "@tanstack/react-router"
 import React, { useEffect, useState } from "react"
 import { useCheckLogin } from "./api/api"
 import { BreadcrumbLink, ExpendasBreadcrumbs } from "./ExpendasBreadcrumbs"
@@ -47,7 +46,7 @@ export function Inside(props: Props) {
   const [bodyHeight, setBodyHeight] = useState<number>(0)
   useEffect(() => {
     setBodyHeight(document.body.clientHeight)
-  }, [size, router.pathname, timer])
+  }, [size, router.state.location.pathname, timer])
   const fixedFooter = (size.height || 0) > bodyHeight
 
   return (
@@ -77,7 +76,7 @@ export function Inside(props: Props) {
                   width: "100%",
                 }}
               >
-                <ButtonBase focusRipple component={NextLink} href="/">
+                <ButtonBase focusRipple component={TanStackLink} to="/">
                   <LogoComponent height={28} />
                 </ButtonBase>
 
@@ -91,7 +90,7 @@ export function Inside(props: Props) {
                 >
                   <DarkModeToggle variant="icon" />
 
-                  <IconButton component={NextLink} href="/tasks">
+                  <IconButton component={TanStackLink} to="/tasks">
                     <AddTaskIcon />
                   </IconButton>
 

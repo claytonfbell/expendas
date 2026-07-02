@@ -3,13 +3,13 @@ import {
   ForbiddenException,
   UnauthorizedException,
 } from "./server/HttpException"
-import { NextIronRequest } from "./server/session"
+import { SessionData } from "./server/session"
 
 export async function requireAuthentication(
-  req: NextIronRequest,
+  session: SessionData,
   prisma: PrismaClient
 ) {
-  const sessionUser: User | null | undefined = req.session.get("user")
+  const sessionUser: User | null | undefined = session.user
 
   if (sessionUser !== null && sessionUser !== undefined) {
     const user = await prisma.user.findUnique({
@@ -26,11 +26,11 @@ export async function requireAuthentication(
 }
 
 export async function requireAdminAuthentication(
-  req: NextIronRequest,
+  session: SessionData,
   prisma: PrismaClient,
   organizationId: number
 ) {
-  const user = await requireAuthentication(req, prisma)
+  const user = await requireAuthentication(session, prisma)
   const admin = await prisma.usersOnOrganizations.findFirst({
     where: { isAdmin: true, userId: user.id, organizationId },
   })
@@ -41,11 +41,11 @@ export async function requireAdminAuthentication(
 }
 
 export async function requireOrganizationAuthentication(
-  req: NextIronRequest,
+  session: SessionData,
   prisma: PrismaClient,
   organizationId: number
 ) {
-  const user = await requireAuthentication(req, prisma)
+  const user = await requireAuthentication(session, prisma)
   const userOnOrganization = await prisma.usersOnOrganizations.findFirst({
     where: { userId: user.id, organizationId },
   })

@@ -1,6 +1,6 @@
 import { Box } from "@mui/material"
 import { Form, TextField } from "material-ui-pack"
-import { useRouter } from "next/dist/client/router"
+import { useRouter } from "@tanstack/react-router"
 import { useState } from "react"
 import { useLogin } from "./api/api"
 import { LoginRequest } from "./api/LoginRequest"
@@ -29,7 +29,7 @@ export function Login() {
       setState={setState}
       onSubmit={handleSubmit}
       submitLabel="Login"
-      onCancel={() => router.push("/register")}
+      onCancel={() => router.navigate({ to: "/register" })}
       cancelLabel="Create New Account"
       schema={{
         email: "email",
