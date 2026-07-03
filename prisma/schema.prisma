@@ -34,6 +34,7 @@ model User {
     createdTaskSchedules    TaskSchedule[]
     closedTasks             Task[] @relation(name: "closedTasks")
     completedTasks          Task[] @relation(name: "completedTasks")
+    taxRecords              TaxRecord[]
 
     @@index([authCode], map: "User.authCode_index")
 }
@@ -266,6 +267,7 @@ model OrganizationCloudFile {
     name            String  @db.VarChar(255) // name given by user when uploading, doesn't have to be unique
     useCase         OrganizationCloudFileUseCase
     receipts        Receipt[]
+    taxRecords      TaxRecord[]
     @@unique([cloudFileId, useCase, organizationId], map: "OrganizationCloudFile.cloudFileId_useCase_organizationId_unique")
 }
 
@@ -283,6 +285,17 @@ model Receipt {
     receiptType             ReceiptType
 }
 
+model TaxRecord {
+    id                      Int     @id @default(autoincrement())
+    organizationCloudFileId Int
+    organizationCloudFile   OrganizationCloudFile @relation(fields: [organizationCloudFileId], references: [id], onDelete: Cascade)
+    userId                  Int
+    user                    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    taxYear                 String  @db.VarChar(4)
+    notes                   String? @db.VarChar(255)
+    taxRecordType           TaxRecordType
+}
+
 enum RetirementPlanType {
     Lean
     Traditional
@@ -292,11 +305,22 @@ enum RetirementPlanType {
 
 enum OrganizationCloudFileUseCase {
     Receipt
+    TaxRecord
 }
 
 enum ReceiptType {
     HSA_Eligible
     Charity
+    Other
+}
+
+enum TaxRecordType {
+    Federal
+    Federal_State
+    State
+    Local
+    Property
+    Estimated
     Other
 }
 

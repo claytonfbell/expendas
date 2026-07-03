@@ -1,4 +1,5 @@
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance"
+import AccountTreeIcon from "@mui/icons-material/AccountTree"
 import AddIcon from "@mui/icons-material/Add"
 import CheckIcon from "@mui/icons-material/Check"
 import ExitToAppIcon from "@mui/icons-material/ExitToApp"
@@ -108,6 +109,15 @@ export function UserMenu() {
             <ReceiptLongIcon />
           </ListItemIcon>
           Receipts
+        </MenuItem>
+
+        <MenuItem
+          onClick={menuClick(() => router.navigate({ to: "/taxes" }))}
+        >
+          <ListItemIcon>
+            <AccountTreeIcon />
+          </ListItemIcon>
+          Tax Records
         </MenuItem>
 
         <MenuItem onClick={menuClick(() => logout())}>

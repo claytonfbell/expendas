@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './app/__root'
 import { Route as TrendsRouteImport } from './app/trends'
+import { Route as TaxesRouteImport } from './app/taxes'
 import { Route as TasksRouteImport } from './app/tasks'
 import { Route as SetPasswordRouteImport } from './app/setPassword'
 import { Route as RetirementRouteImport } from './app/retirement'
@@ -30,6 +31,7 @@ import { Route as ApiForgotPasswordRouteImport } from './app/api/forgotPassword'
 import { Route as ApiOrganizationsRemoveUserRouteImport } from './app/api/organizations.removeUser'
 import { Route as ApiOrganizationsAddUserRouteImport } from './app/api/organizations.addUser'
 import { Route as ApiOrganizationsIdRouteImport } from './app/api/organizations.$id'
+import { Route as ApiOrganizationsIdTaxRecordsRouteImport } from './app/api/organizations.$id.taxRecords'
 import { Route as ApiOrganizationsIdTasksRouteImport } from './app/api/organizations.$id.tasks'
 import { Route as ApiOrganizationsIdScrapeEmailRouteImport } from './app/api/organizations.$id.scrapeEmail'
 import { Route as ApiOrganizationsIdRetirementPlansRouteImport } from './app/api/organizations.$id.retirementPlans'
@@ -39,6 +41,7 @@ import { Route as ApiOrganizationsIdFixedIncomeAssetsRouteImport } from './app/a
 import { Route as ApiOrganizationsIdDatesRouteImport } from './app/api/organizations.$id.dates'
 import { Route as ApiOrganizationsIdAccountsRouteImport } from './app/api/organizations.$id.accounts'
 import { Route as ApiOrganizationsIdUsersUserIdRouteImport } from './app/api/organizations.$id.users.$userId'
+import { Route as ApiOrganizationsIdTaxRecordsTaxRecordIdRouteImport } from './app/api/organizations.$id.taxRecords.$taxRecordId'
 import { Route as ApiOrganizationsIdTasksSchedulesRouteImport } from './app/api/organizations.$id.tasks.schedules'
 import { Route as ApiOrganizationsIdTasksGroupsRouteImport } from './app/api/organizations.$id.tasks.groups'
 import { Route as ApiOrganizationsIdTasksTaskIdRouteImport } from './app/api/organizations.$id.tasks.$taskId'
@@ -53,6 +56,7 @@ import { Route as ApiOrganizationsIdFixedIncomeAssetsFixedIncomeAssetIdRouteImpo
 import { Route as ApiOrganizationsIdDatesDateRouteImport } from './app/api/organizations.$id.dates.$date'
 import { Route as ApiOrganizationsIdAccountsBalanceHistoryRouteImport } from './app/api/organizations.$id.accounts.balanceHistory'
 import { Route as ApiOrganizationsIdAccountsAccountIdRouteImport } from './app/api/organizations.$id.accounts.$accountId'
+import { Route as ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRouteImport } from './app/api/organizations.$id.taxRecords.$taxRecordId.download'
 import { Route as ApiOrganizationsIdTasksSchedulesTaskScheduleIdRouteImport } from './app/api/organizations.$id.tasks.schedules.$taskScheduleId'
 import { Route as ApiOrganizationsIdTasksGroupsTaskGroupIdRouteImport } from './app/api/organizations.$id.tasks.groups.$taskGroupId'
 import { Route as ApiOrganizationsIdRetirementPlansRetirementPlanIdUsersRouteImport } from './app/api/organizations.$id.retirementPlans.$retirementPlanId.users'
@@ -63,6 +67,11 @@ import { Route as ApiOrganizationsIdReceiptsReceiptIdDownloadRouteImport } from 
 const TrendsRoute = TrendsRouteImport.update({
   id: '/trends',
   path: '/trends',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TaxesRoute = TaxesRouteImport.update({
+  id: '/taxes',
+  path: '/taxes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TasksRoute = TasksRouteImport.update({
@@ -166,6 +175,12 @@ const ApiOrganizationsIdRoute = ApiOrganizationsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => ApiOrganizationsRoute,
 } as any)
+const ApiOrganizationsIdTaxRecordsRoute =
+  ApiOrganizationsIdTaxRecordsRouteImport.update({
+    id: '/taxRecords',
+    path: '/taxRecords',
+    getParentRoute: () => ApiOrganizationsIdRoute,
+  } as any)
 const ApiOrganizationsIdTasksRoute = ApiOrganizationsIdTasksRouteImport.update({
   id: '/tasks',
   path: '/tasks',
@@ -217,6 +232,12 @@ const ApiOrganizationsIdUsersUserIdRoute =
     id: '/users/$userId',
     path: '/users/$userId',
     getParentRoute: () => ApiOrganizationsIdRoute,
+  } as any)
+const ApiOrganizationsIdTaxRecordsTaxRecordIdRoute =
+  ApiOrganizationsIdTaxRecordsTaxRecordIdRouteImport.update({
+    id: '/$taxRecordId',
+    path: '/$taxRecordId',
+    getParentRoute: () => ApiOrganizationsIdTaxRecordsRoute,
   } as any)
 const ApiOrganizationsIdTasksSchedulesRoute =
   ApiOrganizationsIdTasksSchedulesRouteImport.update({
@@ -302,6 +323,12 @@ const ApiOrganizationsIdAccountsAccountIdRoute =
     path: '/$accountId',
     getParentRoute: () => ApiOrganizationsIdAccountsRoute,
   } as any)
+const ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute =
+  ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRouteImport.update({
+    id: '/download',
+    path: '/download',
+    getParentRoute: () => ApiOrganizationsIdTaxRecordsTaxRecordIdRoute,
+  } as any)
 const ApiOrganizationsIdTasksSchedulesTaskScheduleIdRoute =
   ApiOrganizationsIdTasksSchedulesTaskScheduleIdRouteImport.update({
     id: '/$taskScheduleId',
@@ -356,6 +383,7 @@ export interface FileRoutesByFullPath {
   '/retirement': typeof RetirementRoute
   '/setPassword': typeof SetPasswordRoute
   '/tasks': typeof TasksRoute
+  '/taxes': typeof TaxesRoute
   '/trends': typeof TrendsRoute
   '/api/forgotPassword': typeof ApiForgotPasswordRoute
   '/api/login': typeof ApiLoginRoute
@@ -374,6 +402,7 @@ export interface FileRoutesByFullPath {
   '/api/organizations/$id/retirementPlans': typeof ApiOrganizationsIdRetirementPlansRouteWithChildren
   '/api/organizations/$id/scrapeEmail': typeof ApiOrganizationsIdScrapeEmailRoute
   '/api/organizations/$id/tasks': typeof ApiOrganizationsIdTasksRouteWithChildren
+  '/api/organizations/$id/taxRecords': typeof ApiOrganizationsIdTaxRecordsRouteWithChildren
   '/api/organizations/$id/accounts/$accountId': typeof ApiOrganizationsIdAccountsAccountIdRoute
   '/api/organizations/$id/accounts/balanceHistory': typeof ApiOrganizationsIdAccountsBalanceHistoryRoute
   '/api/organizations/$id/dates/$date': typeof ApiOrganizationsIdDatesDateRoute
@@ -388,6 +417,7 @@ export interface FileRoutesByFullPath {
   '/api/organizations/$id/tasks/$taskId': typeof ApiOrganizationsIdTasksTaskIdRoute
   '/api/organizations/$id/tasks/groups': typeof ApiOrganizationsIdTasksGroupsRouteWithChildren
   '/api/organizations/$id/tasks/schedules': typeof ApiOrganizationsIdTasksSchedulesRouteWithChildren
+  '/api/organizations/$id/taxRecords/$taxRecordId': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdRouteWithChildren
   '/api/organizations/$id/users/$userId': typeof ApiOrganizationsIdUsersUserIdRoute
   '/api/organizations/$id/receipts/$receiptId/download': typeof ApiOrganizationsIdReceiptsReceiptIdDownloadRoute
   '/api/organizations/$id/retirementPlans/$retirementPlanId/contributions': typeof ApiOrganizationsIdRetirementPlansRetirementPlanIdContributionsRoute
@@ -395,6 +425,7 @@ export interface FileRoutesByFullPath {
   '/api/organizations/$id/retirementPlans/$retirementPlanId/users': typeof ApiOrganizationsIdRetirementPlansRetirementPlanIdUsersRoute
   '/api/organizations/$id/tasks/groups/$taskGroupId': typeof ApiOrganizationsIdTasksGroupsTaskGroupIdRoute
   '/api/organizations/$id/tasks/schedules/$taskScheduleId': typeof ApiOrganizationsIdTasksSchedulesTaskScheduleIdRoute
+  '/api/organizations/$id/taxRecords/$taxRecordId/download': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -408,6 +439,7 @@ export interface FileRoutesByTo {
   '/retirement': typeof RetirementRoute
   '/setPassword': typeof SetPasswordRoute
   '/tasks': typeof TasksRoute
+  '/taxes': typeof TaxesRoute
   '/trends': typeof TrendsRoute
   '/api/forgotPassword': typeof ApiForgotPasswordRoute
   '/api/login': typeof ApiLoginRoute
@@ -426,6 +458,7 @@ export interface FileRoutesByTo {
   '/api/organizations/$id/retirementPlans': typeof ApiOrganizationsIdRetirementPlansRouteWithChildren
   '/api/organizations/$id/scrapeEmail': typeof ApiOrganizationsIdScrapeEmailRoute
   '/api/organizations/$id/tasks': typeof ApiOrganizationsIdTasksRouteWithChildren
+  '/api/organizations/$id/taxRecords': typeof ApiOrganizationsIdTaxRecordsRouteWithChildren
   '/api/organizations/$id/accounts/$accountId': typeof ApiOrganizationsIdAccountsAccountIdRoute
   '/api/organizations/$id/accounts/balanceHistory': typeof ApiOrganizationsIdAccountsBalanceHistoryRoute
   '/api/organizations/$id/dates/$date': typeof ApiOrganizationsIdDatesDateRoute
@@ -440,6 +473,7 @@ export interface FileRoutesByTo {
   '/api/organizations/$id/tasks/$taskId': typeof ApiOrganizationsIdTasksTaskIdRoute
   '/api/organizations/$id/tasks/groups': typeof ApiOrganizationsIdTasksGroupsRouteWithChildren
   '/api/organizations/$id/tasks/schedules': typeof ApiOrganizationsIdTasksSchedulesRouteWithChildren
+  '/api/organizations/$id/taxRecords/$taxRecordId': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdRouteWithChildren
   '/api/organizations/$id/users/$userId': typeof ApiOrganizationsIdUsersUserIdRoute
   '/api/organizations/$id/receipts/$receiptId/download': typeof ApiOrganizationsIdReceiptsReceiptIdDownloadRoute
   '/api/organizations/$id/retirementPlans/$retirementPlanId/contributions': typeof ApiOrganizationsIdRetirementPlansRetirementPlanIdContributionsRoute
@@ -447,6 +481,7 @@ export interface FileRoutesByTo {
   '/api/organizations/$id/retirementPlans/$retirementPlanId/users': typeof ApiOrganizationsIdRetirementPlansRetirementPlanIdUsersRoute
   '/api/organizations/$id/tasks/groups/$taskGroupId': typeof ApiOrganizationsIdTasksGroupsTaskGroupIdRoute
   '/api/organizations/$id/tasks/schedules/$taskScheduleId': typeof ApiOrganizationsIdTasksSchedulesTaskScheduleIdRoute
+  '/api/organizations/$id/taxRecords/$taxRecordId/download': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -461,6 +496,7 @@ export interface FileRoutesById {
   '/retirement': typeof RetirementRoute
   '/setPassword': typeof SetPasswordRoute
   '/tasks': typeof TasksRoute
+  '/taxes': typeof TaxesRoute
   '/trends': typeof TrendsRoute
   '/api/forgotPassword': typeof ApiForgotPasswordRoute
   '/api/login': typeof ApiLoginRoute
@@ -479,6 +515,7 @@ export interface FileRoutesById {
   '/api/organizations/$id/retirementPlans': typeof ApiOrganizationsIdRetirementPlansRouteWithChildren
   '/api/organizations/$id/scrapeEmail': typeof ApiOrganizationsIdScrapeEmailRoute
   '/api/organizations/$id/tasks': typeof ApiOrganizationsIdTasksRouteWithChildren
+  '/api/organizations/$id/taxRecords': typeof ApiOrganizationsIdTaxRecordsRouteWithChildren
   '/api/organizations/$id/accounts/$accountId': typeof ApiOrganizationsIdAccountsAccountIdRoute
   '/api/organizations/$id/accounts/balanceHistory': typeof ApiOrganizationsIdAccountsBalanceHistoryRoute
   '/api/organizations/$id/dates/$date': typeof ApiOrganizationsIdDatesDateRoute
@@ -493,6 +530,7 @@ export interface FileRoutesById {
   '/api/organizations/$id/tasks/$taskId': typeof ApiOrganizationsIdTasksTaskIdRoute
   '/api/organizations/$id/tasks/groups': typeof ApiOrganizationsIdTasksGroupsRouteWithChildren
   '/api/organizations/$id/tasks/schedules': typeof ApiOrganizationsIdTasksSchedulesRouteWithChildren
+  '/api/organizations/$id/taxRecords/$taxRecordId': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdRouteWithChildren
   '/api/organizations/$id/users/$userId': typeof ApiOrganizationsIdUsersUserIdRoute
   '/api/organizations/$id/receipts/$receiptId/download': typeof ApiOrganizationsIdReceiptsReceiptIdDownloadRoute
   '/api/organizations/$id/retirementPlans/$retirementPlanId/contributions': typeof ApiOrganizationsIdRetirementPlansRetirementPlanIdContributionsRoute
@@ -500,6 +538,7 @@ export interface FileRoutesById {
   '/api/organizations/$id/retirementPlans/$retirementPlanId/users': typeof ApiOrganizationsIdRetirementPlansRetirementPlanIdUsersRoute
   '/api/organizations/$id/tasks/groups/$taskGroupId': typeof ApiOrganizationsIdTasksGroupsTaskGroupIdRoute
   '/api/organizations/$id/tasks/schedules/$taskScheduleId': typeof ApiOrganizationsIdTasksSchedulesTaskScheduleIdRoute
+  '/api/organizations/$id/taxRecords/$taxRecordId/download': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -515,6 +554,7 @@ export interface FileRouteTypes {
     | '/retirement'
     | '/setPassword'
     | '/tasks'
+    | '/taxes'
     | '/trends'
     | '/api/forgotPassword'
     | '/api/login'
@@ -533,6 +573,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/retirementPlans'
     | '/api/organizations/$id/scrapeEmail'
     | '/api/organizations/$id/tasks'
+    | '/api/organizations/$id/taxRecords'
     | '/api/organizations/$id/accounts/$accountId'
     | '/api/organizations/$id/accounts/balanceHistory'
     | '/api/organizations/$id/dates/$date'
@@ -547,6 +588,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/tasks/$taskId'
     | '/api/organizations/$id/tasks/groups'
     | '/api/organizations/$id/tasks/schedules'
+    | '/api/organizations/$id/taxRecords/$taxRecordId'
     | '/api/organizations/$id/users/$userId'
     | '/api/organizations/$id/receipts/$receiptId/download'
     | '/api/organizations/$id/retirementPlans/$retirementPlanId/contributions'
@@ -554,6 +596,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/retirementPlans/$retirementPlanId/users'
     | '/api/organizations/$id/tasks/groups/$taskGroupId'
     | '/api/organizations/$id/tasks/schedules/$taskScheduleId'
+    | '/api/organizations/$id/taxRecords/$taxRecordId/download'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -567,6 +610,7 @@ export interface FileRouteTypes {
     | '/retirement'
     | '/setPassword'
     | '/tasks'
+    | '/taxes'
     | '/trends'
     | '/api/forgotPassword'
     | '/api/login'
@@ -585,6 +629,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/retirementPlans'
     | '/api/organizations/$id/scrapeEmail'
     | '/api/organizations/$id/tasks'
+    | '/api/organizations/$id/taxRecords'
     | '/api/organizations/$id/accounts/$accountId'
     | '/api/organizations/$id/accounts/balanceHistory'
     | '/api/organizations/$id/dates/$date'
@@ -599,6 +644,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/tasks/$taskId'
     | '/api/organizations/$id/tasks/groups'
     | '/api/organizations/$id/tasks/schedules'
+    | '/api/organizations/$id/taxRecords/$taxRecordId'
     | '/api/organizations/$id/users/$userId'
     | '/api/organizations/$id/receipts/$receiptId/download'
     | '/api/organizations/$id/retirementPlans/$retirementPlanId/contributions'
@@ -606,6 +652,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/retirementPlans/$retirementPlanId/users'
     | '/api/organizations/$id/tasks/groups/$taskGroupId'
     | '/api/organizations/$id/tasks/schedules/$taskScheduleId'
+    | '/api/organizations/$id/taxRecords/$taxRecordId/download'
   id:
     | '__root__'
     | '/'
@@ -619,6 +666,7 @@ export interface FileRouteTypes {
     | '/retirement'
     | '/setPassword'
     | '/tasks'
+    | '/taxes'
     | '/trends'
     | '/api/forgotPassword'
     | '/api/login'
@@ -637,6 +685,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/retirementPlans'
     | '/api/organizations/$id/scrapeEmail'
     | '/api/organizations/$id/tasks'
+    | '/api/organizations/$id/taxRecords'
     | '/api/organizations/$id/accounts/$accountId'
     | '/api/organizations/$id/accounts/balanceHistory'
     | '/api/organizations/$id/dates/$date'
@@ -651,6 +700,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/tasks/$taskId'
     | '/api/organizations/$id/tasks/groups'
     | '/api/organizations/$id/tasks/schedules'
+    | '/api/organizations/$id/taxRecords/$taxRecordId'
     | '/api/organizations/$id/users/$userId'
     | '/api/organizations/$id/receipts/$receiptId/download'
     | '/api/organizations/$id/retirementPlans/$retirementPlanId/contributions'
@@ -658,6 +708,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/retirementPlans/$retirementPlanId/users'
     | '/api/organizations/$id/tasks/groups/$taskGroupId'
     | '/api/organizations/$id/tasks/schedules/$taskScheduleId'
+    | '/api/organizations/$id/taxRecords/$taxRecordId/download'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -672,6 +723,7 @@ export interface RootRouteChildren {
   RetirementRoute: typeof RetirementRoute
   SetPasswordRoute: typeof SetPasswordRoute
   TasksRoute: typeof TasksRoute
+  TaxesRoute: typeof TaxesRoute
   TrendsRoute: typeof TrendsRoute
   ApiForgotPasswordRoute: typeof ApiForgotPasswordRoute
   ApiLoginRoute: typeof ApiLoginRoute
@@ -688,6 +740,13 @@ declare module '@tanstack/react-router' {
       path: '/trends'
       fullPath: '/trends'
       preLoaderRoute: typeof TrendsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/taxes': {
+      id: '/taxes'
+      path: '/taxes'
+      fullPath: '/taxes'
+      preLoaderRoute: typeof TaxesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tasks': {
@@ -830,6 +889,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiOrganizationsIdRouteImport
       parentRoute: typeof ApiOrganizationsRoute
     }
+    '/api/organizations/$id/taxRecords': {
+      id: '/api/organizations/$id/taxRecords'
+      path: '/taxRecords'
+      fullPath: '/api/organizations/$id/taxRecords'
+      preLoaderRoute: typeof ApiOrganizationsIdTaxRecordsRouteImport
+      parentRoute: typeof ApiOrganizationsIdRoute
+    }
     '/api/organizations/$id/tasks': {
       id: '/api/organizations/$id/tasks'
       path: '/tasks'
@@ -892,6 +958,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/organizations/$id/users/$userId'
       preLoaderRoute: typeof ApiOrganizationsIdUsersUserIdRouteImport
       parentRoute: typeof ApiOrganizationsIdRoute
+    }
+    '/api/organizations/$id/taxRecords/$taxRecordId': {
+      id: '/api/organizations/$id/taxRecords/$taxRecordId'
+      path: '/$taxRecordId'
+      fullPath: '/api/organizations/$id/taxRecords/$taxRecordId'
+      preLoaderRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdRouteImport
+      parentRoute: typeof ApiOrganizationsIdTaxRecordsRoute
     }
     '/api/organizations/$id/tasks/schedules': {
       id: '/api/organizations/$id/tasks/schedules'
@@ -990,6 +1063,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/organizations/$id/accounts/$accountId'
       preLoaderRoute: typeof ApiOrganizationsIdAccountsAccountIdRouteImport
       parentRoute: typeof ApiOrganizationsIdAccountsRoute
+    }
+    '/api/organizations/$id/taxRecords/$taxRecordId/download': {
+      id: '/api/organizations/$id/taxRecords/$taxRecordId/download'
+      path: '/download'
+      fullPath: '/api/organizations/$id/taxRecords/$taxRecordId/download'
+      preLoaderRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRouteImport
+      parentRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdRoute
     }
     '/api/organizations/$id/tasks/schedules/$taskScheduleId': {
       id: '/api/organizations/$id/tasks/schedules/$taskScheduleId'
@@ -1214,6 +1294,36 @@ const ApiOrganizationsIdTasksRouteWithChildren =
     ApiOrganizationsIdTasksRouteChildren,
   )
 
+interface ApiOrganizationsIdTaxRecordsTaxRecordIdRouteChildren {
+  ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute
+}
+
+const ApiOrganizationsIdTaxRecordsTaxRecordIdRouteChildren: ApiOrganizationsIdTaxRecordsTaxRecordIdRouteChildren =
+  {
+    ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute:
+      ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute,
+  }
+
+const ApiOrganizationsIdTaxRecordsTaxRecordIdRouteWithChildren =
+  ApiOrganizationsIdTaxRecordsTaxRecordIdRoute._addFileChildren(
+    ApiOrganizationsIdTaxRecordsTaxRecordIdRouteChildren,
+  )
+
+interface ApiOrganizationsIdTaxRecordsRouteChildren {
+  ApiOrganizationsIdTaxRecordsTaxRecordIdRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdRouteWithChildren
+}
+
+const ApiOrganizationsIdTaxRecordsRouteChildren: ApiOrganizationsIdTaxRecordsRouteChildren =
+  {
+    ApiOrganizationsIdTaxRecordsTaxRecordIdRoute:
+      ApiOrganizationsIdTaxRecordsTaxRecordIdRouteWithChildren,
+  }
+
+const ApiOrganizationsIdTaxRecordsRouteWithChildren =
+  ApiOrganizationsIdTaxRecordsRoute._addFileChildren(
+    ApiOrganizationsIdTaxRecordsRouteChildren,
+  )
+
 interface ApiOrganizationsIdRouteChildren {
   ApiOrganizationsIdAccountsRoute: typeof ApiOrganizationsIdAccountsRouteWithChildren
   ApiOrganizationsIdDatesRoute: typeof ApiOrganizationsIdDatesRouteWithChildren
@@ -1223,6 +1333,7 @@ interface ApiOrganizationsIdRouteChildren {
   ApiOrganizationsIdRetirementPlansRoute: typeof ApiOrganizationsIdRetirementPlansRouteWithChildren
   ApiOrganizationsIdScrapeEmailRoute: typeof ApiOrganizationsIdScrapeEmailRoute
   ApiOrganizationsIdTasksRoute: typeof ApiOrganizationsIdTasksRouteWithChildren
+  ApiOrganizationsIdTaxRecordsRoute: typeof ApiOrganizationsIdTaxRecordsRouteWithChildren
   ApiOrganizationsIdItemsItemIdRoute: typeof ApiOrganizationsIdItemsItemIdRoute
   ApiOrganizationsIdPlaidAccountsRoute: typeof ApiOrganizationsIdPlaidAccountsRoute
   ApiOrganizationsIdPlaidCredentialRoute: typeof ApiOrganizationsIdPlaidCredentialRoute
@@ -1241,6 +1352,8 @@ const ApiOrganizationsIdRouteChildren: ApiOrganizationsIdRouteChildren = {
     ApiOrganizationsIdRetirementPlansRouteWithChildren,
   ApiOrganizationsIdScrapeEmailRoute: ApiOrganizationsIdScrapeEmailRoute,
   ApiOrganizationsIdTasksRoute: ApiOrganizationsIdTasksRouteWithChildren,
+  ApiOrganizationsIdTaxRecordsRoute:
+    ApiOrganizationsIdTaxRecordsRouteWithChildren,
   ApiOrganizationsIdItemsItemIdRoute: ApiOrganizationsIdItemsItemIdRoute,
   ApiOrganizationsIdPlaidAccountsRoute: ApiOrganizationsIdPlaidAccountsRoute,
   ApiOrganizationsIdPlaidCredentialRoute:
@@ -1279,6 +1392,7 @@ const rootRouteChildren: RootRouteChildren = {
   RetirementRoute: RetirementRoute,
   SetPasswordRoute: SetPasswordRoute,
   TasksRoute: TasksRoute,
+  TaxesRoute: TaxesRoute,
   TrendsRoute: TrendsRoute,
   ApiForgotPasswordRoute: ApiForgotPasswordRoute,
   ApiLoginRoute: ApiLoginRoute,

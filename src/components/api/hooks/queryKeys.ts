@@ -15,5 +15,6 @@ export const QUERY_KEYS = {
   TASK_SCHEDULES: "taskSchedules",
   TASKS: "tasks",
   RECEIPTS: "receipts",
+  TAX_RECORDS: "taxRecords",
   TICKER_PRICES: "tickerPrices",
 } as const
