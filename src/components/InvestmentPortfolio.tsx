@@ -58,7 +58,7 @@ type Data = {
 export function InvestmentPortfolio() {
   const theme = useTheme()
   const { organization } = useGlobalState()
-  const { data: unfiltered = [] } = useFetchAccounts()
+  const { data: unfiltered } = useFetchAccounts()
   const accounts = unfiltered.filter((x) =>
     investmentGroup.types.includes(x.accountType)
   )
@@ -96,37 +96,29 @@ export function InvestmentPortfolio() {
   const fixed = accounts.reduce((a, b) => a + (b.totalFixedIncome || 0), 0)
   const total = equity + fixed
 
+  if (total === 0) {
+    return null
+  }
+
   const { mutateAsync: updateAccount } = useUpdateAccount()
 
   const [selectedAccount, setSelectedAccount] = useState<AccountWithIncludes>()
 
   const { data: tickerPrices } = useFetchTickerPrices()
   const marketHighEquity = React.useMemo(() => {
-    if (tickerPrices) {
-      return (equity / tickerPrices.currentPrice) * tickerPrices.allTimeHigh
-    }
-    return undefined
+    return (equity / tickerPrices.currentPrice) * tickerPrices.allTimeHigh
   }, [equity, tickerPrices])
 
   const marketHighTotal = React.useMemo(() => {
-    if (marketHighEquity) {
-      return marketHighEquity + fixed
-    }
-    return undefined
+    return marketHighEquity + fixed
   }, [marketHighEquity, fixed])
 
   const marketTwoYearLowEquity = React.useMemo(() => {
-    if (tickerPrices) {
-      return (equity / tickerPrices.currentPrice) * tickerPrices.twoYearLow
-    }
-    return undefined
+    return (equity / tickerPrices.currentPrice) * tickerPrices.twoYearLow
   }, [equity, tickerPrices])
 
   const marketTwoYearLowTotal = React.useMemo(() => {
-    if (marketTwoYearLowEquity) {
-      return marketTwoYearLowEquity + fixed
-    }
-    return undefined
+    return marketTwoYearLowEquity + fixed
   }, [marketTwoYearLowEquity, fixed])
 
   const maxWidth = 250

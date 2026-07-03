@@ -9,6 +9,7 @@ import {
   Scripts,
 } from "@tanstack/react-router"
 import { DarkModeProvider, useDarkMode } from "material-ui-pack"
+import React, { Suspense } from "react"
 import rest from "../components/api/rest"
 import createEmotionCache from "../components/createEmotionCache"
 import theme, { PRIMARY_COLOR } from "../components/theme"
@@ -52,7 +53,9 @@ function RootLayout() {
             <DarkModeProvider>
               <MyThemeProvider>
                 <CssBaseline />
-                <Outlet />
+                <Suspense fallback={null}>
+                  <Outlet />
+                </Suspense>
               </MyThemeProvider>
             </DarkModeProvider>
           </QueryClientProvider>

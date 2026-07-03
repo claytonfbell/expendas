@@ -60,5 +60,9 @@ export function GlobalStateProvider(props: any) {
     [organization, organizationId, organizations, setOrganizationId]
   )
 
-  return <GlobalStateContext.Provider value={value} {...props} />
+  return (
+    <GlobalStateContext.Provider value={value}>
+      {organizationId !== null ? props.children : null}
+    </GlobalStateContext.Provider>
+  )
 }
