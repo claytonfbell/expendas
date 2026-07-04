@@ -44,6 +44,7 @@ import {
   ReportRange,
   TrendsReportsTimeRangeSelect,
 } from "./TrendsReportsTimeRangeSelect"
+import { StatBox } from "./StatBox"
 
 dayjs.extend(isoWeek)
 dayjs.extend(weekOfYear)
@@ -78,6 +79,8 @@ function displayReason(reason: MealsOutReason): string {
       return "Family"
     case "Travel":
       return "Travel"
+    case "Away_from_Home":
+      return "Away from Home"
     case "Out_and_About":
       return "Out and About"
     case "Stress":
@@ -86,6 +89,35 @@ function displayReason(reason: MealsOutReason): string {
       return "Other"
     default:
       return reason
+  }
+}
+
+function getColorForMealReason(reason: MealsOutReason): string {
+  switch (reason) {
+    case "Date_Night":
+      return "#e91e63"
+    case "Friends":
+      return "#009688"
+    case "Lazy":
+      return "#9e9e9e"
+    case "No_Groceries":
+      return "#ff9800"
+    case "Celebration":
+      return "#fdd835"
+    case "Family":
+      return "#4caf50"
+    case "Travel":
+      return "#3f51b5"
+    case "Away_from_Home":
+      return "#2196f3"
+    case "Out_and_About":
+      return "#00bcd4"
+    case "Stress":
+      return "#f44336"
+    case "Other":
+      return "#795548"
+    default:
+      return "#757575"
   }
 }
 
@@ -363,7 +395,7 @@ export function MealsOut() {
     })
     return Array.from(byReason.entries())
       .sort(([, a], [, b]) => b.total - a.total)
-      .slice(0, 2)
+      .slice(0, 4)
       .map(([reason, data]) => ({
         reason,
         total: data.total,
@@ -423,25 +455,14 @@ export function MealsOut() {
         </Stack>
 
         {stats && (
-          <Stack direction="row" spacing={2}>
+          <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: "wrap" }}>
             {stats.map((stat) => (
-              <Stack
+              <StatBox
                 key={stat.label}
-                sx={{
-                  flex: 1,
-                  border: 1,
-                  borderColor: "divider",
-                  borderRadius: 1,
-                  padding: 2,
-                  alignItems: "center",
-                }}
-              >
-                <Typography variant="h6">{stat.label}</Typography>
-                <Typography variant="h4">{stat.count}</Typography>
-                <Typography variant="body1" color="text.secondary">
-                  {formatMoney(stat.total)}
-                </Typography>
-              </Stack>
+                title={stat.label}
+                value={stat.count}
+                subtitle={formatMoney(stat.total)}
+              />
             ))}
           </Stack>
         )}
@@ -451,27 +472,20 @@ export function MealsOut() {
             <Typography variant="h6" color="text.secondary">
               Top Reasons ({selectedRange})
             </Typography>
-            <Stack direction="row" spacing={2}>
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{ flexWrap: "wrap" }}
+              useFlexGap
+            >
               {reasonStats.map((rs) => (
-                <Stack
+                <StatBox
                   key={rs.reason}
-                  sx={{
-                    flex: 1,
-                    border: 1,
-                    borderColor: "divider",
-                    borderRadius: 1,
-                    padding: 2,
-                    alignItems: "center",
-                  }}
-                >
-                  <Typography variant="subtitle1">
-                    {displayReason(rs.reason)}
-                  </Typography>
-                  <Typography variant="h4">{rs.count}</Typography>
-                  <Typography variant="body1" color="text.secondary">
-                    {formatMoney(rs.total)}
-                  </Typography>
-                </Stack>
+                  title={displayReason(rs.reason)}
+                  titleColor={getColorForMealReason(rs.reason)}
+                  value={rs.count}
+                  subtitle={formatMoney(rs.total)}
+                />
               ))}
             </Stack>
           </Stack>
@@ -534,7 +548,7 @@ export function MealsOut() {
                 <TableCell>{dayjs(mealOut.date).format("ddd ll")}</TableCell>
                 <TableCell>{mealOut.merchant}</TableCell>
                 <TableCell>{formatMoney(mealOut.amount)}</TableCell>
-                <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>
+                <TableCell sx={{ display: { xs: "none", md: "table-cell" }, color: getColorForMealReason(mealOut.reason), fontWeight: "bold" }}>
                   {displayReason(mealOut.reason)}
                 </TableCell>
                 <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>
