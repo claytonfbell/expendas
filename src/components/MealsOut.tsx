@@ -40,6 +40,7 @@ import ConfirmDialog from "./ConfirmDialog"
 import DisplayError from "./DisplayError"
 import { ExpendasTable } from "./ExpendasTable"
 import { formatMoney } from "./formatMoney"
+import { MoneyTextField } from "./MoneyTextField"
 import { StatBox } from "./StatBox"
 import {
   ReportRange,
@@ -232,6 +233,17 @@ function MealOutDialog({
               label="Amount"
               inPennies
               autoDecimal={false}
+              value={form.amount}
+              onChange={(value) =>
+                setForm((prev) => ({
+                  ...prev,
+                  amount: value ?? 0,
+                }))
+              }
+            />
+            <MoneyTextField
+              label="Amount"
+              unit="cents"
               value={form.amount}
               onChange={(value) =>
                 setForm((prev) => ({
