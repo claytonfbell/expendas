@@ -47,6 +47,7 @@ const reasonOptions: MealsOutReason[] = [
   "Family",
   "Travel",
   "Out_and_About",
+  "Stress",
   "Other",
 ]
 
@@ -68,6 +69,8 @@ function displayReason(reason: MealsOutReason): string {
       return "Travel"
     case "Out_and_About":
       return "Out and About"
+    case "Stress":
+      return "Stress"
     case "Other":
       return "Other"
     default:
