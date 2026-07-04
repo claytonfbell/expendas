@@ -377,7 +377,10 @@ export function MealsOut() {
               <Tooltip
                 formatter={(value, name) => {
                   if (name === "total")
-                    return [formatMoney((value as number) * 100), "Amount Spent"]
+                    return [
+                      formatMoney((value as number) * 100),
+                      "Amount Spent",
+                    ]
                   return [value, "Count"]
                 }}
               />
@@ -415,7 +418,7 @@ export function MealsOut() {
           <TableBody>
             {mealsOut?.map((mealOut) => (
               <TableRow key={mealOut.id}>
-                <TableCell>{mealOut.date}</TableCell>
+                <TableCell>{dayjs(mealOut.date).format("ddd ll")}</TableCell>
                 <TableCell>{mealOut.merchant}</TableCell>
                 <TableCell>{formatMoney(mealOut.amount)}</TableCell>
                 <TableCell>{displayReason(mealOut.reason)}</TableCell>
