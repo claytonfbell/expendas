@@ -3,6 +3,10 @@ import { alpha } from "@mui/material/styles"
 import { useRouter, Link as TanStackLink } from "@tanstack/react-router"
 import { navigationLinks } from "./TopNavigation"
 
+const bottomNavigationLinks = navigationLinks.filter(
+  (link) => link.href !== "/mealsOut"
+)
+
 export function BottomMobileNavigation() {
   const router = useRouter()
   return (
@@ -16,7 +20,7 @@ export function BottomMobileNavigation() {
         backgroundColor: (theme) => theme.palette.background.default,
       }}
     >
-      {navigationLinks.map((link) => {
+      {bottomNavigationLinks.map((link) => {
         const isSelected = router.state.location.pathname === link.href
         return (
           <ButtonBase
