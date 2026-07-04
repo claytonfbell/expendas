@@ -44,6 +44,7 @@ import { Route as ApiOrganizationsIdDatesRouteImport } from './app/api/organizat
 import { Route as ApiOrganizationsIdAccountsRouteImport } from './app/api/organizations.$id.accounts'
 import { Route as ApiOrganizationsIdUsersUserIdRouteImport } from './app/api/organizations.$id.users.$userId'
 import { Route as ApiOrganizationsIdTaxRecordsTaxRecordIdRouteImport } from './app/api/organizations.$id.taxRecords.$taxRecordId'
+import { Route as ApiOrganizationsIdTasksStatsRouteImport } from './app/api/organizations.$id.tasks.stats'
 import { Route as ApiOrganizationsIdTasksSchedulesRouteImport } from './app/api/organizations.$id.tasks.schedules'
 import { Route as ApiOrganizationsIdTasksGroupsRouteImport } from './app/api/organizations.$id.tasks.groups'
 import { Route as ApiOrganizationsIdTasksTaskIdRouteImport } from './app/api/organizations.$id.tasks.$taskId'
@@ -253,6 +254,12 @@ const ApiOrganizationsIdTaxRecordsTaxRecordIdRoute =
     path: '/$taxRecordId',
     getParentRoute: () => ApiOrganizationsIdTaxRecordsRoute,
   } as any)
+const ApiOrganizationsIdTasksStatsRoute =
+  ApiOrganizationsIdTasksStatsRouteImport.update({
+    id: '/stats',
+    path: '/stats',
+    getParentRoute: () => ApiOrganizationsIdTasksRoute,
+  } as any)
 const ApiOrganizationsIdTasksSchedulesRoute =
   ApiOrganizationsIdTasksSchedulesRouteImport.update({
     id: '/schedules',
@@ -440,6 +447,7 @@ export interface FileRoutesByFullPath {
   '/api/organizations/$id/tasks/$taskId': typeof ApiOrganizationsIdTasksTaskIdRoute
   '/api/organizations/$id/tasks/groups': typeof ApiOrganizationsIdTasksGroupsRouteWithChildren
   '/api/organizations/$id/tasks/schedules': typeof ApiOrganizationsIdTasksSchedulesRouteWithChildren
+  '/api/organizations/$id/tasks/stats': typeof ApiOrganizationsIdTasksStatsRoute
   '/api/organizations/$id/taxRecords/$taxRecordId': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdRouteWithChildren
   '/api/organizations/$id/users/$userId': typeof ApiOrganizationsIdUsersUserIdRoute
   '/api/organizations/$id/receipts/$receiptId/download': typeof ApiOrganizationsIdReceiptsReceiptIdDownloadRoute
@@ -499,6 +507,7 @@ export interface FileRoutesByTo {
   '/api/organizations/$id/tasks/$taskId': typeof ApiOrganizationsIdTasksTaskIdRoute
   '/api/organizations/$id/tasks/groups': typeof ApiOrganizationsIdTasksGroupsRouteWithChildren
   '/api/organizations/$id/tasks/schedules': typeof ApiOrganizationsIdTasksSchedulesRouteWithChildren
+  '/api/organizations/$id/tasks/stats': typeof ApiOrganizationsIdTasksStatsRoute
   '/api/organizations/$id/taxRecords/$taxRecordId': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdRouteWithChildren
   '/api/organizations/$id/users/$userId': typeof ApiOrganizationsIdUsersUserIdRoute
   '/api/organizations/$id/receipts/$receiptId/download': typeof ApiOrganizationsIdReceiptsReceiptIdDownloadRoute
@@ -559,6 +568,7 @@ export interface FileRoutesById {
   '/api/organizations/$id/tasks/$taskId': typeof ApiOrganizationsIdTasksTaskIdRoute
   '/api/organizations/$id/tasks/groups': typeof ApiOrganizationsIdTasksGroupsRouteWithChildren
   '/api/organizations/$id/tasks/schedules': typeof ApiOrganizationsIdTasksSchedulesRouteWithChildren
+  '/api/organizations/$id/tasks/stats': typeof ApiOrganizationsIdTasksStatsRoute
   '/api/organizations/$id/taxRecords/$taxRecordId': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdRouteWithChildren
   '/api/organizations/$id/users/$userId': typeof ApiOrganizationsIdUsersUserIdRoute
   '/api/organizations/$id/receipts/$receiptId/download': typeof ApiOrganizationsIdReceiptsReceiptIdDownloadRoute
@@ -620,6 +630,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/tasks/$taskId'
     | '/api/organizations/$id/tasks/groups'
     | '/api/organizations/$id/tasks/schedules'
+    | '/api/organizations/$id/tasks/stats'
     | '/api/organizations/$id/taxRecords/$taxRecordId'
     | '/api/organizations/$id/users/$userId'
     | '/api/organizations/$id/receipts/$receiptId/download'
@@ -679,6 +690,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/tasks/$taskId'
     | '/api/organizations/$id/tasks/groups'
     | '/api/organizations/$id/tasks/schedules'
+    | '/api/organizations/$id/tasks/stats'
     | '/api/organizations/$id/taxRecords/$taxRecordId'
     | '/api/organizations/$id/users/$userId'
     | '/api/organizations/$id/receipts/$receiptId/download'
@@ -738,6 +750,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/tasks/$taskId'
     | '/api/organizations/$id/tasks/groups'
     | '/api/organizations/$id/tasks/schedules'
+    | '/api/organizations/$id/tasks/stats'
     | '/api/organizations/$id/taxRecords/$taxRecordId'
     | '/api/organizations/$id/users/$userId'
     | '/api/organizations/$id/receipts/$receiptId/download'
@@ -1018,6 +1031,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/organizations/$id/taxRecords/$taxRecordId'
       preLoaderRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdRouteImport
       parentRoute: typeof ApiOrganizationsIdTaxRecordsRoute
+    }
+    '/api/organizations/$id/tasks/stats': {
+      id: '/api/organizations/$id/tasks/stats'
+      path: '/stats'
+      fullPath: '/api/organizations/$id/tasks/stats'
+      preLoaderRoute: typeof ApiOrganizationsIdTasksStatsRouteImport
+      parentRoute: typeof ApiOrganizationsIdTasksRoute
     }
     '/api/organizations/$id/tasks/schedules': {
       id: '/api/organizations/$id/tasks/schedules'
@@ -1353,6 +1373,7 @@ interface ApiOrganizationsIdTasksRouteChildren {
   ApiOrganizationsIdTasksTaskIdRoute: typeof ApiOrganizationsIdTasksTaskIdRoute
   ApiOrganizationsIdTasksGroupsRoute: typeof ApiOrganizationsIdTasksGroupsRouteWithChildren
   ApiOrganizationsIdTasksSchedulesRoute: typeof ApiOrganizationsIdTasksSchedulesRouteWithChildren
+  ApiOrganizationsIdTasksStatsRoute: typeof ApiOrganizationsIdTasksStatsRoute
 }
 
 const ApiOrganizationsIdTasksRouteChildren: ApiOrganizationsIdTasksRouteChildren =
@@ -1362,6 +1383,7 @@ const ApiOrganizationsIdTasksRouteChildren: ApiOrganizationsIdTasksRouteChildren
       ApiOrganizationsIdTasksGroupsRouteWithChildren,
     ApiOrganizationsIdTasksSchedulesRoute:
       ApiOrganizationsIdTasksSchedulesRouteWithChildren,
+    ApiOrganizationsIdTasksStatsRoute: ApiOrganizationsIdTasksStatsRoute,
   }
 
 const ApiOrganizationsIdTasksRouteWithChildren =

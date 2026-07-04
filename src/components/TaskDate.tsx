@@ -394,6 +394,7 @@ function QuickAddTaskSchedule({
           taskGroupId,
           description: null,
           autoClose: false,
+          showStats: false,
           repeats: false,
           repeatsUntilDate: null,
           repeatsOnDaysOfWeek: [],

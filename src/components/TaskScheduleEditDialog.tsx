@@ -130,6 +130,12 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
                 />
 
                 <CheckboxBase
+                  label="Show Stats"
+                  value={state.showStats}
+                  onChange={(showStats) => handleUpdate({ showStats })}
+                />
+
+                <CheckboxBase
                   label="Repeats"
                   value={state.repeats}
                   onChange={(repeats) => handleUpdate({ repeats })}

@@ -73,7 +73,7 @@ export const Route = createFileRoute("/api/organizations/$id/tasks/schedules")({
       )
 
       const requestBody: TaskScheduleCreateRequest = await request.json()
-      const { name, taskGroupId, autoClose, date } = requestBody
+      const { name, taskGroupId, autoClose, showStats, date } = requestBody
 
       validate({ name }).notEmpty()
 
@@ -86,6 +86,7 @@ export const Route = createFileRoute("/api/organizations/$id/tasks/schedules")({
           name,
           taskGroupId,
           autoClose,
+          showStats,
           createdByUserId: user.id,
           date,
         },

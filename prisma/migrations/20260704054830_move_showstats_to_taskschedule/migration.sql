@@ -1,0 +1,2 @@
+ALTER TABLE "Task" DROP COLUMN "showStats";
+ALTER TABLE "TaskSchedule" ADD COLUMN "showStats" BOOLEAN NOT NULL DEFAULT false;

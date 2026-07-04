@@ -5,6 +5,7 @@ import { useState } from "react"
 import { TaskGroups } from "./TaskGroups"
 import { TaskList } from "./TaskList"
 import { TaskSchedules } from "./TaskSchedules"
+import { TaskStats } from "./TaskStats"
 
 export function Tasks() {
   const [open, setOpen] = useState(false)
@@ -15,6 +16,7 @@ export function Tasks() {
 
   return (
     <Stack>
+      <TaskStats />
       <Stack
         sx={{
           alignItems: "end",

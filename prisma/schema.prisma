@@ -232,6 +232,7 @@ model TaskSchedule {
     repeatsOnMonthsOfYear   Int[] // filter so only specified months are included
     repeatsWeekly           Int? // 1 = every week, 2 = every 2 weeks, etc. starting from date field
     repeatsOnDates          String[] // additional specific dates YYYY-MM-DD (ignore other filters)
+    showStats               Boolean @default(false)
     tasks                   Task[]
 }
 

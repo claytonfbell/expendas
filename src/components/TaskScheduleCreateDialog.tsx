@@ -30,6 +30,7 @@ const defaultState: TaskScheduleCreateRequest = {
   repeatsWeekly: null,
   repeatsOnDates: [],
   autoClose: false,
+  showStats: false,
 }
 
 interface Props {
