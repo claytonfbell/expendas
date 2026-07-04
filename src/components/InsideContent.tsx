@@ -1,0 +1,177 @@
+import AddTaskIcon from "@mui/icons-material/AddTask"
+import GitHubIcon from "@mui/icons-material/GitHub"
+import {
+  AppBar,
+  Box,
+  ButtonBase,
+  Container,
+  CssBaseline,
+  IconButton,
+  Stack,
+  Toolbar,
+  Tooltip,
+} from "@mui/material"
+import { Link as TanStackLink, useRouter } from "@tanstack/react-router"
+import { DarkModeToggle } from "material-ui-pack"
+import React, { useEffect, useState } from "react"
+import { useCheckLogin } from "./api/hooks/useCheckLogin"
+import { BreadcrumbLink, ExpendasBreadcrumbs } from "./ExpendasBreadcrumbs"
+import { ExpendasErrorBoundary } from "./ExpendasErrorBoundary"
+import { GlobalStateProvider } from "./GlobalStateProvider"
+import { Login } from "./Login"
+import { LogoComponent } from "./LogoComponent"
+import { Outside } from "./Outside"
+import { TopNavigation } from "./TopNavigation"
+import { UserMenu } from "./UserMenu"
+
+interface Props {
+  title: string
+  children: React.ReactNode
+  breadcrumbs: BreadcrumbLink[]
+}
+
+export function InsideContent(props: Props) {
+  const { data: loginResponse, status } = useCheckLogin()
+
+  // timer
+  const [timer, setTimer] = useState(0)
+  useEffect(() => {
+    const t = setInterval(() => setTimer((prev) => prev + 1), 100)
+    return () => clearInterval(t)
+  }, [])
+
+  // fix the footer if short page
+  const router = useRouter()
+  const size = useWindowSize()
+  const [bodyHeight, setBodyHeight] = useState<number>(0)
+  useEffect(() => {
+    setBodyHeight(document.body.clientHeight)
+  }, [size, router.state.location.pathname, timer])
+  const fixedFooter = (size.height || 0) > bodyHeight
+
+  return (
+    <>
+      <CssBaseline />
+      {status === "error" ? (
+        <Outside title="Login">
+          <Login />
+        </Outside>
+      ) : status === "pending" ? (
+        <></>
+      ) : (
+        <GlobalStateProvider>
+          <AppBar
+            position="static"
+            color="default"
+            sx={{
+              backgroundColor: (theme) => theme.palette.background.paper,
+            }}
+            variant="outlined"
+          >
+            <Toolbar>
+              <Stack
+                direction="row"
+                spacing={2}
+                sx={{
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  width: "100%",
+                }}
+              >
+                <ButtonBase focusRipple component={TanStackLink} to="/">
+                  <LogoComponent height={28} />
+                </ButtonBase>
+
+                <TopNavigation />
+
+                <Stack
+                  direction="row"
+                  sx={{
+                    alignItems: "center",
+                  }}
+                >
+                  <DarkModeToggle variant="icon" />
+
+                  <IconButton component={TanStackLink} to="/tasks">
+                    <AddTaskIcon />
+                  </IconButton>
+
+                  <Stack
+                    sx={{
+                      display: { xs: "none", lg: "block" },
+                    }}
+                  >
+                    <Tooltip title="github.com/claytonfbell/expendas">
+                      <IconButton href="https://github.com/claytonfbell/expendas">
+                        <GitHubIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Stack>
+                  <UserMenu />
+                </Stack>
+              </Stack>
+            </Toolbar>
+          </AppBar>
+
+          <Container
+            maxWidth="xl"
+            style={{
+              marginTop: 24,
+              paddingBottom: 120,
+            }}
+          >
+            <Box
+              sx={{
+                marginBottom: 2,
+              }}
+            >
+              {props.breadcrumbs.length > 0 ? (
+                <ExpendasBreadcrumbs links={props.breadcrumbs} />
+              ) : null}
+            </Box>
+            <main>
+              <ExpendasErrorBoundary>{props.children}</ExpendasErrorBoundary>
+            </main>
+            <footer
+              style={
+                fixedFooter
+                  ? {
+                      position: "fixed",
+                      bottom: 120,
+                    }
+                  : {
+                      marginTop: 148,
+                      marginBottom: 148,
+                    }
+              }
+            ></footer>
+          </Container>
+        </GlobalStateProvider>
+      )}
+    </>
+  )
+}
+
+interface Size {
+  width: number | undefined
+  height: number | undefined
+}
+
+function useWindowSize(): Size {
+  const [windowSize, setWindowSize] = useState<Size>({
+    width: undefined,
+    height: undefined,
+  })
+  useEffect(() => {
+    function handleResize() {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      })
+    }
+    window.addEventListener("resize", handleResize)
+    handleResize()
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+  return windowSize
+}
