@@ -40,11 +40,11 @@ import ConfirmDialog from "./ConfirmDialog"
 import DisplayError from "./DisplayError"
 import { ExpendasTable } from "./ExpendasTable"
 import { formatMoney } from "./formatMoney"
+import { StatBox } from "./StatBox"
 import {
   ReportRange,
   TrendsReportsTimeRangeSelect,
 } from "./TrendsReportsTimeRangeSelect"
-import { StatBox } from "./StatBox"
 
 dayjs.extend(isoWeek)
 dayjs.extend(weekOfYear)
@@ -230,11 +230,13 @@ function MealOutDialog({
             />
             <CurrencyFieldBase
               label="Amount"
-              value={form.amount / 100}
+              inPennies
+              autoDecimal={false}
+              value={form.amount}
               onChange={(value) =>
                 setForm((prev) => ({
                   ...prev,
-                  amount: Math.round((value ?? 0) * 100),
+                  amount: value ?? 0,
                 }))
               }
             />
@@ -455,7 +457,12 @@ export function MealsOut() {
         </Stack>
 
         {stats && (
-          <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: "wrap" }}>
+          <Stack
+            direction="row"
+            spacing={2}
+            useFlexGap
+            sx={{ flexWrap: "wrap" }}
+          >
             {stats.map((stat) => (
               <StatBox
                 key={stat.label}
@@ -548,7 +555,13 @@ export function MealsOut() {
                 <TableCell>{dayjs(mealOut.date).format("ddd ll")}</TableCell>
                 <TableCell>{mealOut.merchant}</TableCell>
                 <TableCell>{formatMoney(mealOut.amount)}</TableCell>
-                <TableCell sx={{ display: { xs: "none", md: "table-cell" }, color: getColorForMealReason(mealOut.reason), fontWeight: "bold" }}>
+                <TableCell
+                  sx={{
+                    display: { xs: "none", md: "table-cell" },
+                    color: getColorForMealReason(mealOut.reason),
+                    fontWeight: "bold",
+                  }}
+                >
                   {displayReason(mealOut.reason)}
                 </TableCell>
                 <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>
