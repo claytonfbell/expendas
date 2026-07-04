@@ -40,6 +40,7 @@ import { Route as ApiOrganizationsIdReceiptsRouteImport } from './app/api/organi
 import { Route as ApiOrganizationsIdPaymentsRouteImport } from './app/api/organizations.$id.payments'
 import { Route as ApiOrganizationsIdMealsOutRouteImport } from './app/api/organizations.$id.mealsOut'
 import { Route as ApiOrganizationsIdFixedIncomeAssetsRouteImport } from './app/api/organizations.$id.fixedIncomeAssets'
+import { Route as ApiOrganizationsIdExportRouteImport } from './app/api/organizations.$id.export'
 import { Route as ApiOrganizationsIdDatesRouteImport } from './app/api/organizations.$id.dates'
 import { Route as ApiOrganizationsIdAccountsRouteImport } from './app/api/organizations.$id.accounts'
 import { Route as ApiOrganizationsIdUsersUserIdRouteImport } from './app/api/organizations.$id.users.$userId'
@@ -231,6 +232,12 @@ const ApiOrganizationsIdFixedIncomeAssetsRoute =
   ApiOrganizationsIdFixedIncomeAssetsRouteImport.update({
     id: '/fixedIncomeAssets',
     path: '/fixedIncomeAssets',
+    getParentRoute: () => ApiOrganizationsIdRoute,
+  } as any)
+const ApiOrganizationsIdExportRoute =
+  ApiOrganizationsIdExportRouteImport.update({
+    id: '/export',
+    path: '/export',
     getParentRoute: () => ApiOrganizationsIdRoute,
   } as any)
 const ApiOrganizationsIdDatesRoute = ApiOrganizationsIdDatesRouteImport.update({
@@ -438,6 +445,7 @@ export interface FileRoutesByFullPath {
   '/api/organizations/removeUser': typeof ApiOrganizationsRemoveUserRoute
   '/api/organizations/$id/accounts': typeof ApiOrganizationsIdAccountsRouteWithChildren
   '/api/organizations/$id/dates': typeof ApiOrganizationsIdDatesRouteWithChildren
+  '/api/organizations/$id/export': typeof ApiOrganizationsIdExportRoute
   '/api/organizations/$id/fixedIncomeAssets': typeof ApiOrganizationsIdFixedIncomeAssetsRouteWithChildren
   '/api/organizations/$id/mealsOut': typeof ApiOrganizationsIdMealsOutRouteWithChildren
   '/api/organizations/$id/payments': typeof ApiOrganizationsIdPaymentsRouteWithChildren
@@ -500,6 +508,7 @@ export interface FileRoutesByTo {
   '/api/organizations/removeUser': typeof ApiOrganizationsRemoveUserRoute
   '/api/organizations/$id/accounts': typeof ApiOrganizationsIdAccountsRouteWithChildren
   '/api/organizations/$id/dates': typeof ApiOrganizationsIdDatesRouteWithChildren
+  '/api/organizations/$id/export': typeof ApiOrganizationsIdExportRoute
   '/api/organizations/$id/fixedIncomeAssets': typeof ApiOrganizationsIdFixedIncomeAssetsRouteWithChildren
   '/api/organizations/$id/mealsOut': typeof ApiOrganizationsIdMealsOutRouteWithChildren
   '/api/organizations/$id/payments': typeof ApiOrganizationsIdPaymentsRouteWithChildren
@@ -563,6 +572,7 @@ export interface FileRoutesById {
   '/api/organizations/removeUser': typeof ApiOrganizationsRemoveUserRoute
   '/api/organizations/$id/accounts': typeof ApiOrganizationsIdAccountsRouteWithChildren
   '/api/organizations/$id/dates': typeof ApiOrganizationsIdDatesRouteWithChildren
+  '/api/organizations/$id/export': typeof ApiOrganizationsIdExportRoute
   '/api/organizations/$id/fixedIncomeAssets': typeof ApiOrganizationsIdFixedIncomeAssetsRouteWithChildren
   '/api/organizations/$id/mealsOut': typeof ApiOrganizationsIdMealsOutRouteWithChildren
   '/api/organizations/$id/payments': typeof ApiOrganizationsIdPaymentsRouteWithChildren
@@ -627,6 +637,7 @@ export interface FileRouteTypes {
     | '/api/organizations/removeUser'
     | '/api/organizations/$id/accounts'
     | '/api/organizations/$id/dates'
+    | '/api/organizations/$id/export'
     | '/api/organizations/$id/fixedIncomeAssets'
     | '/api/organizations/$id/mealsOut'
     | '/api/organizations/$id/payments'
@@ -689,6 +700,7 @@ export interface FileRouteTypes {
     | '/api/organizations/removeUser'
     | '/api/organizations/$id/accounts'
     | '/api/organizations/$id/dates'
+    | '/api/organizations/$id/export'
     | '/api/organizations/$id/fixedIncomeAssets'
     | '/api/organizations/$id/mealsOut'
     | '/api/organizations/$id/payments'
@@ -751,6 +763,7 @@ export interface FileRouteTypes {
     | '/api/organizations/removeUser'
     | '/api/organizations/$id/accounts'
     | '/api/organizations/$id/dates'
+    | '/api/organizations/$id/export'
     | '/api/organizations/$id/fixedIncomeAssets'
     | '/api/organizations/$id/mealsOut'
     | '/api/organizations/$id/payments'
@@ -1028,6 +1041,13 @@ declare module '@tanstack/react-router' {
       path: '/fixedIncomeAssets'
       fullPath: '/api/organizations/$id/fixedIncomeAssets'
       preLoaderRoute: typeof ApiOrganizationsIdFixedIncomeAssetsRouteImport
+      parentRoute: typeof ApiOrganizationsIdRoute
+    }
+    '/api/organizations/$id/export': {
+      id: '/api/organizations/$id/export'
+      path: '/export'
+      fullPath: '/api/organizations/$id/export'
+      preLoaderRoute: typeof ApiOrganizationsIdExportRouteImport
       parentRoute: typeof ApiOrganizationsIdRoute
     }
     '/api/organizations/$id/dates': {
@@ -1470,6 +1490,7 @@ const ApiOrganizationsIdTaxRecordsRouteWithChildren =
 interface ApiOrganizationsIdRouteChildren {
   ApiOrganizationsIdAccountsRoute: typeof ApiOrganizationsIdAccountsRouteWithChildren
   ApiOrganizationsIdDatesRoute: typeof ApiOrganizationsIdDatesRouteWithChildren
+  ApiOrganizationsIdExportRoute: typeof ApiOrganizationsIdExportRoute
   ApiOrganizationsIdFixedIncomeAssetsRoute: typeof ApiOrganizationsIdFixedIncomeAssetsRouteWithChildren
   ApiOrganizationsIdMealsOutRoute: typeof ApiOrganizationsIdMealsOutRouteWithChildren
   ApiOrganizationsIdPaymentsRoute: typeof ApiOrganizationsIdPaymentsRouteWithChildren
@@ -1488,6 +1509,7 @@ interface ApiOrganizationsIdRouteChildren {
 const ApiOrganizationsIdRouteChildren: ApiOrganizationsIdRouteChildren = {
   ApiOrganizationsIdAccountsRoute: ApiOrganizationsIdAccountsRouteWithChildren,
   ApiOrganizationsIdDatesRoute: ApiOrganizationsIdDatesRouteWithChildren,
+  ApiOrganizationsIdExportRoute: ApiOrganizationsIdExportRoute,
   ApiOrganizationsIdFixedIncomeAssetsRoute:
     ApiOrganizationsIdFixedIncomeAssetsRouteWithChildren,
   ApiOrganizationsIdMealsOutRoute: ApiOrganizationsIdMealsOutRouteWithChildren,

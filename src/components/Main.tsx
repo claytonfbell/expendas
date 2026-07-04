@@ -88,7 +88,7 @@ export function Main() {
           (x) =>
             includeSettled ||
             x.balance !== 0 ||
-            items.filter((y) => y.payment.accountId === x.id).length > 0
+            items.filter((y) => y.payment?.accountId === x.id).length > 0
         )
         // resort numerically
         .sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance)),
@@ -131,7 +131,7 @@ export function Main() {
   const endingBalance = items
     .filter((x) => !x.isPaid)
     .filter(
-      (x) => accounts.filter((y) => y.id === x.payment.account.id).length > 0
+      (x) => accounts.filter((y) => y.id === x.payment?.account?.id).length > 0
     )
     .reduce((sum, x) => sum + x.amount, startingBalance)
 
@@ -293,7 +293,7 @@ export function Main() {
         <CarryOverComponent
           key={account.id}
           account={account}
-          items={items.filter((x) => x.payment.account.id === account.id)}
+          items={items.filter((x) => x.payment?.account?.id === account.id)}
           date={date}
           endDate={endDate}
           isCurrentCycle={isCurrentCycle}

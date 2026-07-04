@@ -46,7 +46,7 @@ export function AccountGroupBox(props: Props) {
     .sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance))
 
   const cycleItems = (props.cycleItems || []).filter((x) =>
-    accounts.map((y) => y.id).includes(x.payment.account.id)
+    accounts.map((y) => y.id).includes(x.payment?.account?.id)
   )
 
   // find previous carryover

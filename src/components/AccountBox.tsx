@@ -39,7 +39,7 @@ export function AccountBox(props: AccountBoxProps) {
   const { account, date, isCurrentCycle } = props
 
   const cycleItems = (props.cycleItems || []).filter(
-    (x) => x.payment.account.id === account.id
+    (x) => x.payment?.account?.id === account.id
   )
 
   // find previous carryover
