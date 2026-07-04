@@ -41,6 +41,7 @@ import DisplayError from "./DisplayError"
 import { ExpendasTable } from "./ExpendasTable"
 import { formatMoney } from "./formatMoney"
 import { StatBox } from "./StatBox"
+import { StatBoxContainer } from "./StatBoxContainer"
 import {
   ReportRange,
   TrendsReportsTimeRangeSelect,
@@ -459,12 +460,7 @@ export function MealsOut() {
         </Stack>
 
         {stats && (
-          <Stack
-            direction="row"
-            spacing={2}
-            useFlexGap
-            sx={{ flexWrap: "wrap" }}
-          >
+          <StatBoxContainer>
             {stats.map((stat) => (
               <StatBox
                 key={stat.label}
@@ -473,7 +469,7 @@ export function MealsOut() {
                 subtitle={formatMoney(stat.total)}
               />
             ))}
-          </Stack>
+          </StatBoxContainer>
         )}
 
         {reasonStats && reasonStats.length > 0 && (
@@ -481,12 +477,7 @@ export function MealsOut() {
             <Typography variant="h6" color="text.secondary">
               Top Reasons ({selectedRange})
             </Typography>
-            <Stack
-              direction="row"
-              spacing={2}
-              sx={{ flexWrap: "wrap" }}
-              useFlexGap
-            >
+            <StatBoxContainer>
               {reasonStats.map((rs) => (
                 <StatBox
                   key={rs.reason}
@@ -496,7 +487,7 @@ export function MealsOut() {
                   subtitle={formatMoney(rs.total)}
                 />
               ))}
-            </Stack>
+            </StatBoxContainer>
           </Stack>
         )}
 

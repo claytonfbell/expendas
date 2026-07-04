@@ -1,7 +1,8 @@
-import { Stack, useTheme } from "@mui/material"
+import { useTheme } from "@mui/material"
 import { useFetchTaskStats } from "./api/hooks/useFetchTaskStats"
 import { getHexColorForTaskGroupColor } from "./TaskGroupChip"
 import { StatBox } from "./StatBox"
+import { StatBoxContainer } from "./StatBoxContainer"
 
 export function TaskStats() {
   const { data: stats } = useFetchTaskStats()
@@ -12,15 +13,7 @@ export function TaskStats() {
   }
 
   return (
-    <Stack
-      direction="row"
-      spacing={2}
-      sx={{
-        flexWrap: "wrap",
-        paddingY: 2,
-      }}
-      useFlexGap
-    >
+    <StatBoxContainer sx={{ paddingY: 2 }}>
       {stats.map((stat) => (
         <StatBox
           key={`${stat.groupName}-${stat.name}`}
@@ -30,6 +23,6 @@ export function TaskStats() {
           subtitle="Past 30 Days"
         />
       ))}
-    </Stack>
+    </StatBoxContainer>
   )
 }
