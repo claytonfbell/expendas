@@ -18,6 +18,9 @@ import {
 import Autocomplete from "@mui/material/Autocomplete"
 import type { MealsOut, MealsOutReason } from "@prisma/client"
 import dayjs from "dayjs"
+import dayOfYear from "dayjs/plugin/dayOfYear"
+import isoWeek from "dayjs/plugin/isoWeek"
+import weekOfYear from "dayjs/plugin/weekOfYear"
 import { CurrencyFieldBase, DatePickerBase, SelectBase } from "material-ui-pack"
 import { useEffect, useMemo, useState } from "react"
 import {
@@ -37,6 +40,14 @@ import ConfirmDialog from "./ConfirmDialog"
 import DisplayError from "./DisplayError"
 import { ExpendasTable } from "./ExpendasTable"
 import { formatMoney } from "./formatMoney"
+import {
+  ReportRange,
+  TrendsReportsTimeRangeSelect,
+} from "./TrendsReportsTimeRangeSelect"
+
+dayjs.extend(isoWeek)
+dayjs.extend(weekOfYear)
+dayjs.extend(dayOfYear)
 
 const reasonOptions: MealsOutReason[] = [
   "Date_Night",
@@ -177,11 +188,11 @@ function MealOutDialog({
             <DisplayError error={error} />
             <DatePickerBase
               label="Date"
-              value={form.date ? dayjs(form.date).format("YYYY-MM-DD") : null}
+              value={form.date ? dayjs(form.date) : null}
               onChange={(value) =>
                 setForm((prev) => ({
                   ...prev,
-                  date: value ? value : "",
+                  date: value ? value.format("YYYY-MM-DD") : "",
                 }))
               }
             />
@@ -278,6 +289,15 @@ export function MealsOut() {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editMealOut, setEditMealOut] = useState<MealsOut | null>(null)
 
+  const [selectedRange, setSelectedRange] = useState<ReportRange>(() => {
+    const stored = localStorage.getItem("MealsOut.selectedRange")
+    return stored ? (stored as ReportRange) : "YTD"
+  })
+
+  useEffect(() => {
+    localStorage.setItem("MealsOut.selectedRange", selectedRange)
+  }, [selectedRange])
+
   const now = dayjs()
 
   const stats = useMemo(() => {
@@ -298,23 +318,58 @@ export function MealsOut() {
     })
   }, [mealsOut, now])
 
-  const chartData = useMemo(() => {
+  const filteredMeals = useMemo(() => {
     if (!mealsOut) return []
-    const sorted = [...mealsOut].sort((a, b) => a.date.localeCompare(b.date))
-    const byMonth = new Map<string, { count: number; total: number }>()
+    if (selectedRange === "ALL") return mealsOut
+
+    let cutoff: dayjs.Dayjs
+    switch (selectedRange) {
+      case "1W":
+        cutoff = now.subtract(7, "day")
+        break
+      case "1M":
+        cutoff = now.subtract(1, "month")
+        break
+      case "3M":
+        cutoff = now.subtract(3, "month")
+        break
+      case "6M":
+        cutoff = now.subtract(6, "month")
+        break
+      case "YTD":
+        cutoff = now.startOf("year")
+        break
+      case "1Y":
+        cutoff = now.subtract(1, "year")
+        break
+      case "2Y":
+        cutoff = now.subtract(2, "year")
+        break
+      default:
+        cutoff = now.subtract(30, "day")
+    }
+    const cutoffStr = cutoff.format("YYYY-MM-DD")
+    return mealsOut.filter((m) => m.date >= cutoffStr)
+  }, [mealsOut, selectedRange, now])
+
+  const chartData = useMemo(() => {
+    if (!filteredMeals.length) return []
+    const sorted = [...filteredMeals].sort((a, b) => a.date.localeCompare(b.date))
+    const byWeek = new Map<string, number>()
     sorted.forEach((m) => {
-      const month = m.date.substring(0, 7)
-      const existing = byMonth.get(month) || { count: 0, total: 0 }
-      existing.count++
-      existing.total += m.amount
-      byMonth.set(month, existing)
+      const d = dayjs(m.date)
+      const year = d.isoWeekYear()
+      const week = d.isoWeek()
+      const key = `${year}-W${String(week).padStart(2, "0")}`
+      byWeek.set(key, (byWeek.get(key) || 0) + m.amount)
     })
-    return Array.from(byMonth.entries()).map(([month, data]) => ({
-      month,
-      count: data.count,
-      total: data.total / 100,
-    }))
-  }, [mealsOut])
+    return Array.from(byWeek.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([week, total]) => ({
+        week,
+        total: total / 100,
+      }))
+  }, [filteredMeals])
 
   const handleEdit = (mealOut: MealsOut) => {
     setEditMealOut(mealOut)
@@ -371,40 +426,39 @@ export function MealsOut() {
         )}
 
         {chartData.length > 0 && (
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis yAxisId="left" tickFormatter={(v) => `$${v}`} />
-              <YAxis yAxisId="right" orientation="right" />
-              <Tooltip
-                formatter={(value, name) => {
-                  if (name === "total")
-                    return [
-                      formatMoney((value as number) * 100),
-                      "Amount Spent",
-                    ]
-                  return [value, "Count"]
-                }}
+          <>
+            <Stack
+              sx={{
+                alignItems: "center",
+              }}
+            >
+              <TrendsReportsTimeRangeSelect
+                value={selectedRange}
+                onChange={setSelectedRange}
               />
-              <Line
-                yAxisId="left"
-                type="monotone"
-                dataKey="total"
-                stroke="#1976d2"
-                name="Amount Spent"
-                strokeWidth={2}
-              />
-              <Line
-                yAxisId="right"
-                type="monotone"
-                dataKey="count"
-                stroke="#2e7d32"
-                name="Count"
-                strokeWidth={2}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+            </Stack>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="week" />
+                <YAxis tickFormatter={(v) => `$${v}`} />
+                <Tooltip
+                  formatter={(value: number) => [
+                    formatMoney(value * 100),
+                    "Amount Spent",
+                  ]}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="total"
+                  stroke="#1976d2"
+                  name="Amount Spent"
+                  strokeWidth={2}
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </>
         )}
 
         <ExpendasTable>
