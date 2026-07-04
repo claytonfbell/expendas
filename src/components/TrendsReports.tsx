@@ -1,6 +1,8 @@
 import { Stack, Typography, useMediaQuery, useTheme } from "@mui/material"
+import TrendingDownIcon from "@mui/icons-material/TrendingDown"
+import TrendingUpIcon from "@mui/icons-material/TrendingUp"
 import dayjs from "./dayjs"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import {
   CartesianGrid,
   Legend,
@@ -105,18 +107,58 @@ export function TrendsReports() {
   const latestDataPoint =
     investmentData.length > 0 ? investmentData[investmentData.length - 1] : null
 
+  const savingsChange = useMemo(() => {
+    if (investmentData.length < 2) return null
+    const first = investmentData[0].balance
+    const last = investmentData[investmentData.length - 1].balance
+    if (first === 0) return null
+    return ((last - first) / first) * 100
+  }, [investmentData])
+
   return (
     <>
       <Stack spacing={3}>
         <Stack
+          direction="row"
           sx={{
             alignItems: "center",
+            justifyContent: "center",
+            position: "relative",
           }}
         >
           <TrendsReportsTimeRangeSelect
             value={selectedRange}
             onChange={setSelectedRange}
           />
+          {savingsChange !== null && (
+            <Stack
+              direction="row"
+              sx={{
+                alignItems: "center",
+                position: "absolute",
+                right: 0,
+                color:
+                  savingsChange >= 0
+                    ? "success.main"
+                    : "error.main",
+              }}
+            >
+              {savingsChange >= 0 ? (
+                <TrendingUpIcon fontSize="small" />
+              ) : (
+                <TrendingDownIcon fontSize="small" />
+              )}
+              <Typography
+                variant="body1"
+                sx={{
+                  fontWeight: "bold",
+                  color: "inherit",
+                }}
+              >
+                {Math.abs(savingsChange).toFixed(1)}%
+              </Typography>
+            </Stack>
+          )}
         </Stack>
         <Stack>
           <LineChart
