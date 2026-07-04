@@ -410,8 +410,8 @@ export function MealsOut() {
               <TableCell>Date</TableCell>
               <TableCell>Merchant</TableCell>
               <TableCell>Amount</TableCell>
-              <TableCell>Reason</TableCell>
-              <TableCell>Notes</TableCell>
+              <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>Reason</TableCell>
+              <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>Notes</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -421,8 +421,8 @@ export function MealsOut() {
                 <TableCell>{dayjs(mealOut.date).format("ddd ll")}</TableCell>
                 <TableCell>{mealOut.merchant}</TableCell>
                 <TableCell>{formatMoney(mealOut.amount)}</TableCell>
-                <TableCell>{displayReason(mealOut.reason)}</TableCell>
-                <TableCell>{mealOut.notes ?? ""}</TableCell>
+                <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>{displayReason(mealOut.reason)}</TableCell>
+                <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>{mealOut.notes ?? ""}</TableCell>
                 <TableCell align="right">
                   <Stack direction="row" sx={{ justifyContent: "flex-end" }}>
                     <IconButton
