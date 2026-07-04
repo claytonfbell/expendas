@@ -147,7 +147,6 @@ function MealOutDialog({
   }, [mealsOut])
 
   const handleSubmit = async () => {
-    if (!form.reason) return
     if (isEditing && mealOut) {
       await updateMealOut({
         id: mealOut.id,
@@ -189,6 +188,7 @@ function MealOutDialog({
             <DatePickerBase
               label="Date"
               value={form.date || null}
+              required
               onChange={(value) =>
                 setForm((prev) => ({
                   ...prev,
@@ -364,7 +364,11 @@ export function MealsOut() {
     return Array.from(byReason.entries())
       .sort(([, a], [, b]) => b.total - a.total)
       .slice(0, 2)
-      .map(([reason, data]) => ({ reason, total: data.total, count: data.count }))
+      .map(([reason, data]) => ({
+        reason,
+        total: data.total,
+        count: data.count,
+      }))
   }, [filteredMeals])
 
   const chartData = useMemo(() => {

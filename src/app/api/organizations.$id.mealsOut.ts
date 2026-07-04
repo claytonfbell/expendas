@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
 import { buildResponse } from "../../components/server/buildResponse"
 import prisma from "../../components/server/prisma"
+import validate from "../../components/server/validate"
 
 export const Route = createFileRoute(
   "/api/organizations/$id/mealsOut"
@@ -33,6 +34,12 @@ export const Route = createFileRoute(
             organizationId
           )
           const body: MealsOutCreateRequest = await request.json()
+
+          validate({ date: body.date }).notEmpty()
+          validate({ amount: body.amount }).notEmpty()
+          validate({ merchant: body.merchant }).notEmpty()
+          validate({ reason: body.reason }).notEmpty()
+
           const mealOut = await prisma.mealsOut.create({
             data: {
               organizationId,

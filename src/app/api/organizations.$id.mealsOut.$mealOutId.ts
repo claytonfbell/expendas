@@ -4,6 +4,7 @@ import { requireOrganizationAuthentication } from "../../components/requireAuthe
 import { BadRequestException } from "../../components/server/HttpException"
 import { buildResponse } from "../../components/server/buildResponse"
 import prisma from "../../components/server/prisma"
+import validate from "../../components/server/validate"
 
 export const Route = createFileRoute(
   "/api/organizations/$id/mealsOut/$mealOutId"
@@ -38,6 +39,12 @@ export const Route = createFileRoute(
             organizationId
           )
           const body: MealsOut = await request.json()
+
+          validate({ date: body.date }).notEmpty()
+          validate({ amount: body.amount }).notEmpty()
+          validate({ merchant: body.merchant }).notEmpty()
+          validate({ reason: body.reason }).notEmpty()
+
           await prisma.mealsOut.update({
             data: {
               date: body.date,
