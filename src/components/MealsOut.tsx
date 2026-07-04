@@ -352,6 +352,21 @@ export function MealsOut() {
     return mealsOut.filter((m) => m.date >= cutoffStr)
   }, [mealsOut, selectedRange, now])
 
+  const reasonStats = useMemo(() => {
+    if (!filteredMeals.length) return null
+    const byReason = new Map<MealsOutReason, { count: number; total: number }>()
+    filteredMeals.forEach((m) => {
+      const existing = byReason.get(m.reason) || { count: 0, total: 0 }
+      existing.count++
+      existing.total += m.amount
+      byReason.set(m.reason, existing)
+    })
+    return Array.from(byReason.entries())
+      .sort(([, a], [, b]) => b.total - a.total)
+      .slice(0, 3)
+      .map(([reason, data]) => ({ reason, total: data.total, count: data.count }))
+  }, [filteredMeals])
+
   const chartData = useMemo(() => {
     if (!filteredMeals.length) return []
     const sorted = [...filteredMeals].sort((a, b) =>
@@ -424,6 +439,37 @@ export function MealsOut() {
                 </Typography>
               </Stack>
             ))}
+          </Stack>
+        )}
+
+        {reasonStats && reasonStats.length > 0 && (
+          <Stack spacing={1}>
+            <Typography variant="h6" color="text.secondary">
+              Top Reasons ({selectedRange})
+            </Typography>
+            <Stack direction="row" spacing={2}>
+              {reasonStats.map((rs) => (
+                <Stack
+                  key={rs.reason}
+                  sx={{
+                    flex: 1,
+                    border: 1,
+                    borderColor: "divider",
+                    borderRadius: 1,
+                    padding: 2,
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography variant="subtitle1">
+                    {displayReason(rs.reason)}
+                  </Typography>
+                  <Typography variant="h4">{rs.count}</Typography>
+                  <Typography variant="body1" color="text.secondary">
+                    {formatMoney(rs.total)}
+                  </Typography>
+                </Stack>
+              ))}
+            </Stack>
           </Stack>
         )}
 
