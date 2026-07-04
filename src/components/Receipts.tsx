@@ -1,7 +1,7 @@
 import DownloadIcon from "@mui/icons-material/Download"
 import EditIcon from "@mui/icons-material/Edit"
+import OpenInNewIcon from "@mui/icons-material/OpenInNew"
 import {
-  Button,
   IconButton,
   Link,
   Stack,
@@ -48,7 +48,7 @@ export function Receipts() {
               <TableCell>Date Paid</TableCell>
               <TableCell>Account</TableCell>
               <TableCell>File</TableCell>
-              <TableCell align="right">Download</TableCell>
+              <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -69,15 +69,10 @@ export function Receipts() {
                 </TableCell>
                 <TableCell>{receipt.account.name}</TableCell>
                 <TableCell>
-                  <Button
-                    startIcon={<DownloadIcon />}
-                    size="small"
-                    component={Link}
-                    href={`${rest.baseURL}/organizations/${receipt.account.organizationId}/receipts/${receipt.id}/download`}
-                  >
+                  <Typography variant="body2">
                     {receipt.organizationCloudFile.name} (
                     {prettyBytes(receipt.organizationCloudFile.cloudFile.size)})
-                  </Button>
+                  </Typography>
                 </TableCell>
                 <TableCell align="right">
                   <Stack
@@ -86,6 +81,21 @@ export function Receipts() {
                       justifyContent: "flex-end",
                     }}
                   >
+                    <IconButton
+                      size="small"
+                      component={Link}
+                      href={`${rest.baseURL}/organizations/${receipt.account.organizationId}/receipts/${receipt.id}/open`}
+                      target="_blank"
+                    >
+                      <OpenInNewIcon />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      component={Link}
+                      href={`${rest.baseURL}/organizations/${receipt.account.organizationId}/receipts/${receipt.id}/download`}
+                    >
+                      <DownloadIcon />
+                    </IconButton>
                     <IconButton
                       size="small"
                       onClick={() => setReceipt(receipt)}
@@ -109,6 +119,7 @@ export function Receipts() {
                   ) ?? 0
                 )}
               </TableCell>
+              <TableCell></TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>

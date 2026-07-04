@@ -60,12 +60,14 @@ import { Route as ApiOrganizationsIdFixedIncomeAssetsFixedIncomeAssetIdRouteImpo
 import { Route as ApiOrganizationsIdDatesDateRouteImport } from './app/api/organizations.$id.dates.$date'
 import { Route as ApiOrganizationsIdAccountsBalanceHistoryRouteImport } from './app/api/organizations.$id.accounts.balanceHistory'
 import { Route as ApiOrganizationsIdAccountsAccountIdRouteImport } from './app/api/organizations.$id.accounts.$accountId'
+import { Route as ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRouteImport } from './app/api/organizations.$id.taxRecords.$taxRecordId.open'
 import { Route as ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRouteImport } from './app/api/organizations.$id.taxRecords.$taxRecordId.download'
 import { Route as ApiOrganizationsIdTasksSchedulesTaskScheduleIdRouteImport } from './app/api/organizations.$id.tasks.schedules.$taskScheduleId'
 import { Route as ApiOrganizationsIdTasksGroupsTaskGroupIdRouteImport } from './app/api/organizations.$id.tasks.groups.$taskGroupId'
 import { Route as ApiOrganizationsIdRetirementPlansRetirementPlanIdUsersRouteImport } from './app/api/organizations.$id.retirementPlans.$retirementPlanId.users'
 import { Route as ApiOrganizationsIdRetirementPlansRetirementPlanIdReportRouteImport } from './app/api/organizations.$id.retirementPlans.$retirementPlanId.report'
 import { Route as ApiOrganizationsIdRetirementPlansRetirementPlanIdContributionsRouteImport } from './app/api/organizations.$id.retirementPlans.$retirementPlanId.contributions'
+import { Route as ApiOrganizationsIdReceiptsReceiptIdOpenRouteImport } from './app/api/organizations.$id.receipts.$receiptId.open'
 import { Route as ApiOrganizationsIdReceiptsReceiptIdDownloadRouteImport } from './app/api/organizations.$id.receipts.$receiptId.download'
 
 const TrendsRoute = TrendsRouteImport.update({
@@ -350,6 +352,12 @@ const ApiOrganizationsIdAccountsAccountIdRoute =
     path: '/$accountId',
     getParentRoute: () => ApiOrganizationsIdAccountsRoute,
   } as any)
+const ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRoute =
+  ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRouteImport.update({
+    id: '/open',
+    path: '/open',
+    getParentRoute: () => ApiOrganizationsIdTaxRecordsTaxRecordIdRoute,
+  } as any)
 const ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute =
   ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRouteImport.update({
     id: '/download',
@@ -391,6 +399,12 @@ const ApiOrganizationsIdRetirementPlansRetirementPlanIdContributionsRoute =
         ApiOrganizationsIdRetirementPlansRetirementPlanIdRoute,
     } as any,
   )
+const ApiOrganizationsIdReceiptsReceiptIdOpenRoute =
+  ApiOrganizationsIdReceiptsReceiptIdOpenRouteImport.update({
+    id: '/open',
+    path: '/open',
+    getParentRoute: () => ApiOrganizationsIdReceiptsReceiptIdRoute,
+  } as any)
 const ApiOrganizationsIdReceiptsReceiptIdDownloadRoute =
   ApiOrganizationsIdReceiptsReceiptIdDownloadRouteImport.update({
     id: '/download',
@@ -451,12 +465,14 @@ export interface FileRoutesByFullPath {
   '/api/organizations/$id/taxRecords/$taxRecordId': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdRouteWithChildren
   '/api/organizations/$id/users/$userId': typeof ApiOrganizationsIdUsersUserIdRoute
   '/api/organizations/$id/receipts/$receiptId/download': typeof ApiOrganizationsIdReceiptsReceiptIdDownloadRoute
+  '/api/organizations/$id/receipts/$receiptId/open': typeof ApiOrganizationsIdReceiptsReceiptIdOpenRoute
   '/api/organizations/$id/retirementPlans/$retirementPlanId/contributions': typeof ApiOrganizationsIdRetirementPlansRetirementPlanIdContributionsRoute
   '/api/organizations/$id/retirementPlans/$retirementPlanId/report': typeof ApiOrganizationsIdRetirementPlansRetirementPlanIdReportRoute
   '/api/organizations/$id/retirementPlans/$retirementPlanId/users': typeof ApiOrganizationsIdRetirementPlansRetirementPlanIdUsersRoute
   '/api/organizations/$id/tasks/groups/$taskGroupId': typeof ApiOrganizationsIdTasksGroupsTaskGroupIdRoute
   '/api/organizations/$id/tasks/schedules/$taskScheduleId': typeof ApiOrganizationsIdTasksSchedulesTaskScheduleIdRoute
   '/api/organizations/$id/taxRecords/$taxRecordId/download': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute
+  '/api/organizations/$id/taxRecords/$taxRecordId/open': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -511,12 +527,14 @@ export interface FileRoutesByTo {
   '/api/organizations/$id/taxRecords/$taxRecordId': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdRouteWithChildren
   '/api/organizations/$id/users/$userId': typeof ApiOrganizationsIdUsersUserIdRoute
   '/api/organizations/$id/receipts/$receiptId/download': typeof ApiOrganizationsIdReceiptsReceiptIdDownloadRoute
+  '/api/organizations/$id/receipts/$receiptId/open': typeof ApiOrganizationsIdReceiptsReceiptIdOpenRoute
   '/api/organizations/$id/retirementPlans/$retirementPlanId/contributions': typeof ApiOrganizationsIdRetirementPlansRetirementPlanIdContributionsRoute
   '/api/organizations/$id/retirementPlans/$retirementPlanId/report': typeof ApiOrganizationsIdRetirementPlansRetirementPlanIdReportRoute
   '/api/organizations/$id/retirementPlans/$retirementPlanId/users': typeof ApiOrganizationsIdRetirementPlansRetirementPlanIdUsersRoute
   '/api/organizations/$id/tasks/groups/$taskGroupId': typeof ApiOrganizationsIdTasksGroupsTaskGroupIdRoute
   '/api/organizations/$id/tasks/schedules/$taskScheduleId': typeof ApiOrganizationsIdTasksSchedulesTaskScheduleIdRoute
   '/api/organizations/$id/taxRecords/$taxRecordId/download': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute
+  '/api/organizations/$id/taxRecords/$taxRecordId/open': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -572,12 +590,14 @@ export interface FileRoutesById {
   '/api/organizations/$id/taxRecords/$taxRecordId': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdRouteWithChildren
   '/api/organizations/$id/users/$userId': typeof ApiOrganizationsIdUsersUserIdRoute
   '/api/organizations/$id/receipts/$receiptId/download': typeof ApiOrganizationsIdReceiptsReceiptIdDownloadRoute
+  '/api/organizations/$id/receipts/$receiptId/open': typeof ApiOrganizationsIdReceiptsReceiptIdOpenRoute
   '/api/organizations/$id/retirementPlans/$retirementPlanId/contributions': typeof ApiOrganizationsIdRetirementPlansRetirementPlanIdContributionsRoute
   '/api/organizations/$id/retirementPlans/$retirementPlanId/report': typeof ApiOrganizationsIdRetirementPlansRetirementPlanIdReportRoute
   '/api/organizations/$id/retirementPlans/$retirementPlanId/users': typeof ApiOrganizationsIdRetirementPlansRetirementPlanIdUsersRoute
   '/api/organizations/$id/tasks/groups/$taskGroupId': typeof ApiOrganizationsIdTasksGroupsTaskGroupIdRoute
   '/api/organizations/$id/tasks/schedules/$taskScheduleId': typeof ApiOrganizationsIdTasksSchedulesTaskScheduleIdRoute
   '/api/organizations/$id/taxRecords/$taxRecordId/download': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute
+  '/api/organizations/$id/taxRecords/$taxRecordId/open': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -634,12 +654,14 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/taxRecords/$taxRecordId'
     | '/api/organizations/$id/users/$userId'
     | '/api/organizations/$id/receipts/$receiptId/download'
+    | '/api/organizations/$id/receipts/$receiptId/open'
     | '/api/organizations/$id/retirementPlans/$retirementPlanId/contributions'
     | '/api/organizations/$id/retirementPlans/$retirementPlanId/report'
     | '/api/organizations/$id/retirementPlans/$retirementPlanId/users'
     | '/api/organizations/$id/tasks/groups/$taskGroupId'
     | '/api/organizations/$id/tasks/schedules/$taskScheduleId'
     | '/api/organizations/$id/taxRecords/$taxRecordId/download'
+    | '/api/organizations/$id/taxRecords/$taxRecordId/open'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -694,12 +716,14 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/taxRecords/$taxRecordId'
     | '/api/organizations/$id/users/$userId'
     | '/api/organizations/$id/receipts/$receiptId/download'
+    | '/api/organizations/$id/receipts/$receiptId/open'
     | '/api/organizations/$id/retirementPlans/$retirementPlanId/contributions'
     | '/api/organizations/$id/retirementPlans/$retirementPlanId/report'
     | '/api/organizations/$id/retirementPlans/$retirementPlanId/users'
     | '/api/organizations/$id/tasks/groups/$taskGroupId'
     | '/api/organizations/$id/tasks/schedules/$taskScheduleId'
     | '/api/organizations/$id/taxRecords/$taxRecordId/download'
+    | '/api/organizations/$id/taxRecords/$taxRecordId/open'
   id:
     | '__root__'
     | '/'
@@ -754,12 +778,14 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/taxRecords/$taxRecordId'
     | '/api/organizations/$id/users/$userId'
     | '/api/organizations/$id/receipts/$receiptId/download'
+    | '/api/organizations/$id/receipts/$receiptId/open'
     | '/api/organizations/$id/retirementPlans/$retirementPlanId/contributions'
     | '/api/organizations/$id/retirementPlans/$retirementPlanId/report'
     | '/api/organizations/$id/retirementPlans/$retirementPlanId/users'
     | '/api/organizations/$id/tasks/groups/$taskGroupId'
     | '/api/organizations/$id/tasks/schedules/$taskScheduleId'
     | '/api/organizations/$id/taxRecords/$taxRecordId/download'
+    | '/api/organizations/$id/taxRecords/$taxRecordId/open'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1144,6 +1170,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiOrganizationsIdAccountsAccountIdRouteImport
       parentRoute: typeof ApiOrganizationsIdAccountsRoute
     }
+    '/api/organizations/$id/taxRecords/$taxRecordId/open': {
+      id: '/api/organizations/$id/taxRecords/$taxRecordId/open'
+      path: '/open'
+      fullPath: '/api/organizations/$id/taxRecords/$taxRecordId/open'
+      preLoaderRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRouteImport
+      parentRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdRoute
+    }
     '/api/organizations/$id/taxRecords/$taxRecordId/download': {
       id: '/api/organizations/$id/taxRecords/$taxRecordId/download'
       path: '/download'
@@ -1185,6 +1218,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/organizations/$id/retirementPlans/$retirementPlanId/contributions'
       preLoaderRoute: typeof ApiOrganizationsIdRetirementPlansRetirementPlanIdContributionsRouteImport
       parentRoute: typeof ApiOrganizationsIdRetirementPlansRetirementPlanIdRoute
+    }
+    '/api/organizations/$id/receipts/$receiptId/open': {
+      id: '/api/organizations/$id/receipts/$receiptId/open'
+      path: '/open'
+      fullPath: '/api/organizations/$id/receipts/$receiptId/open'
+      preLoaderRoute: typeof ApiOrganizationsIdReceiptsReceiptIdOpenRouteImport
+      parentRoute: typeof ApiOrganizationsIdReceiptsReceiptIdRoute
     }
     '/api/organizations/$id/receipts/$receiptId/download': {
       id: '/api/organizations/$id/receipts/$receiptId/download'
@@ -1275,12 +1315,15 @@ const ApiOrganizationsIdPaymentsRouteWithChildren =
 
 interface ApiOrganizationsIdReceiptsReceiptIdRouteChildren {
   ApiOrganizationsIdReceiptsReceiptIdDownloadRoute: typeof ApiOrganizationsIdReceiptsReceiptIdDownloadRoute
+  ApiOrganizationsIdReceiptsReceiptIdOpenRoute: typeof ApiOrganizationsIdReceiptsReceiptIdOpenRoute
 }
 
 const ApiOrganizationsIdReceiptsReceiptIdRouteChildren: ApiOrganizationsIdReceiptsReceiptIdRouteChildren =
   {
     ApiOrganizationsIdReceiptsReceiptIdDownloadRoute:
       ApiOrganizationsIdReceiptsReceiptIdDownloadRoute,
+    ApiOrganizationsIdReceiptsReceiptIdOpenRoute:
+      ApiOrganizationsIdReceiptsReceiptIdOpenRoute,
   }
 
 const ApiOrganizationsIdReceiptsReceiptIdRouteWithChildren =
@@ -1393,12 +1436,15 @@ const ApiOrganizationsIdTasksRouteWithChildren =
 
 interface ApiOrganizationsIdTaxRecordsTaxRecordIdRouteChildren {
   ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute
+  ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRoute
 }
 
 const ApiOrganizationsIdTaxRecordsTaxRecordIdRouteChildren: ApiOrganizationsIdTaxRecordsTaxRecordIdRouteChildren =
   {
     ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute:
       ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute,
+    ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRoute:
+      ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRoute,
   }
 
 const ApiOrganizationsIdTaxRecordsTaxRecordIdRouteWithChildren =
