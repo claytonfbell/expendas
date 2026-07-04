@@ -188,11 +188,11 @@ function MealOutDialog({
             <DisplayError error={error} />
             <DatePickerBase
               label="Date"
-              value={form.date ? dayjs(form.date) : null}
+              value={form.date || null}
               onChange={(value) =>
                 setForm((prev) => ({
                   ...prev,
-                  date: value ? value.format("YYYY-MM-DD") : "",
+                  date: value ?? "",
                 }))
               }
             />
@@ -354,7 +354,9 @@ export function MealsOut() {
 
   const chartData = useMemo(() => {
     if (!filteredMeals.length) return []
-    const sorted = [...filteredMeals].sort((a, b) => a.date.localeCompare(b.date))
+    const sorted = [...filteredMeals].sort((a, b) =>
+      a.date.localeCompare(b.date)
+    )
     const byWeek = new Map<string, number>()
     sorted.forEach((m) => {
       const d = dayjs(m.date)
@@ -443,8 +445,8 @@ export function MealsOut() {
                 <XAxis dataKey="week" />
                 <YAxis tickFormatter={(v) => `$${v}`} />
                 <Tooltip
-                  formatter={(value: number) => [
-                    formatMoney(value * 100),
+                  formatter={(value) => [
+                    formatMoney(Number(value) * 100),
                     "Amount Spent",
                   ]}
                 />
@@ -467,8 +469,12 @@ export function MealsOut() {
               <TableCell>Date</TableCell>
               <TableCell>Merchant</TableCell>
               <TableCell>Amount</TableCell>
-              <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>Reason</TableCell>
-              <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>Notes</TableCell>
+              <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>
+                Reason
+              </TableCell>
+              <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>
+                Notes
+              </TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -478,8 +484,12 @@ export function MealsOut() {
                 <TableCell>{dayjs(mealOut.date).format("ddd ll")}</TableCell>
                 <TableCell>{mealOut.merchant}</TableCell>
                 <TableCell>{formatMoney(mealOut.amount)}</TableCell>
-                <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>{displayReason(mealOut.reason)}</TableCell>
-                <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>{mealOut.notes ?? ""}</TableCell>
+                <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>
+                  {displayReason(mealOut.reason)}
+                </TableCell>
+                <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>
+                  {mealOut.notes ?? ""}
+                </TableCell>
                 <TableCell align="right">
                   <Stack direction="row" sx={{ justifyContent: "flex-end" }}>
                     <IconButton
