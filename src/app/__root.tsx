@@ -1,4 +1,5 @@
 import { CacheProvider } from "@emotion/react"
+import { CircularProgress, Stack } from "@mui/material"
 import CssBaseline from "@mui/material/CssBaseline"
 import { ThemeProvider } from "@mui/material/styles"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
@@ -53,7 +54,19 @@ function RootLayout() {
             <DarkModeProvider>
               <MyThemeProvider>
                 <CssBaseline />
-                <Suspense fallback={null}>
+                <Suspense
+                  fallback={
+                    <Stack
+                      sx={{
+                        height: "100vh",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <CircularProgress size={256} />
+                    </Stack>
+                  }
+                >
                   <Outlet />
                 </Suspense>
               </MyThemeProvider>
