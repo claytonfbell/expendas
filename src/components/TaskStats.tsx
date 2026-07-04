@@ -34,8 +34,10 @@ export function TaskStats() {
           }}
         >
           <Typography
+            noWrap
             variant="subtitle1"
             sx={{
+              maxWidth: "100%",
               color: getHexColorForTaskGroupColor(
                 stat.color,
                 theme.palette.mode
