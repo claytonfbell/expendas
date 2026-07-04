@@ -363,7 +363,7 @@ export function MealsOut() {
     })
     return Array.from(byReason.entries())
       .sort(([, a], [, b]) => b.total - a.total)
-      .slice(0, 3)
+      .slice(0, 2)
       .map(([reason, data]) => ({ reason, total: data.total, count: data.count }))
   }, [filteredMeals])
 
