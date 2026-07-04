@@ -1,6 +1,7 @@
 {
   "ignoreDependencies": [
-    ".prisma"
+    ".prisma",
+    "@emotion/styled"
   ],
   "ignoreExports": [
     {
