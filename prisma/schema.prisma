@@ -16,6 +16,7 @@ model Organization {
     taskGroups      TaskGroup[]
     targetEquityPercentage Int                 @default(9000) // 90%
     cloudFiles      OrganizationCloudFile[]
+    mealsOut        MealsOut[]
 }
 
 model User {
@@ -296,6 +297,17 @@ model TaxRecord {
     taxRecordType           TaxRecordType
 }
 
+model MealsOut {
+    id              Int              @id @default(autoincrement())
+    organizationId  Int
+    date            String
+    amount          Int
+    merchant        String           @db.VarChar(255)
+    reason          MealsOutReason
+    notes           String?          @db.VarChar(255)
+    organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
 enum RetirementPlanType {
     Lean
     Traditional
@@ -321,6 +333,19 @@ enum TaxRecordType {
     Local
     Property
     Estimated
+    Other
+}
+
+enum MealsOutReason {
+    Date_Night
+    Friends
+    Lazy
+    No_Groceries
+    Celebration
+    Family
+    Travel
+    Away_from_Home
+    Out_and_About
     Other
 }
 

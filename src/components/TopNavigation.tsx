@@ -8,6 +8,8 @@ import SavingsIcon from "@mui/icons-material/Savings"
 import SavingsOutlinedIcon from "@mui/icons-material/SavingsOutlined"
 import ShowChartIcon from "@mui/icons-material/ShowChart"
 import ShowChartOutlinedIcon from "@mui/icons-material/ShowChartOutlined"
+import RestaurantIcon from "@mui/icons-material/Restaurant"
+import RestaurantOutlinedIcon from "@mui/icons-material/RestaurantOutlined"
 import { Button, Stack, useMediaQuery } from "@mui/material"
 import { alpha, useTheme } from "@mui/material/styles"
 import { useRouter, Link as TanStackLink } from "@tanstack/react-router"
@@ -49,6 +51,12 @@ export const navigationLinks: NavigationLink[] = [
     href: "/retirement",
     ActiveIcon: SavingsIcon,
     Icon: SavingsOutlinedIcon,
+  },
+  {
+    label: "Meals Out",
+    href: "/mealsOut",
+    ActiveIcon: RestaurantIcon,
+    Icon: RestaurantOutlinedIcon,
   },
 ]
 

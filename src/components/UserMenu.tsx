@@ -5,6 +5,7 @@ import CheckIcon from "@mui/icons-material/Check"
 import ExitToAppIcon from "@mui/icons-material/ExitToApp"
 import PaymentsIcon from "@mui/icons-material/Payments"
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong"
+import RestaurantIcon from "@mui/icons-material/Restaurant"
 import SettingsIcon from "@mui/icons-material/Settings"
 import { Button, ListItemIcon } from "@mui/material"
 import Menu from "@mui/material/Menu"
@@ -118,6 +119,15 @@ export function UserMenu() {
             <AccountTreeIcon />
           </ListItemIcon>
           Tax Records
+        </MenuItem>
+
+        <MenuItem
+          onClick={menuClick(() => router.navigate({ to: "/mealsOut" }))}
+        >
+          <ListItemIcon>
+            <RestaurantIcon />
+          </ListItemIcon>
+          Meals Out
         </MenuItem>
 
         <MenuItem onClick={menuClick(() => logout())}>

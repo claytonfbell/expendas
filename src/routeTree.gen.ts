@@ -17,6 +17,7 @@ import { Route as RetirementRouteImport } from './app/retirement'
 import { Route as RegisterRouteImport } from './app/register'
 import { Route as ReceiptsRouteImport } from './app/receipts'
 import { Route as PaymentsRouteImport } from './app/payments'
+import { Route as MealsOutRouteImport } from './app/mealsOut'
 import { Route as InvestmentsRouteImport } from './app/investments'
 import { Route as ForgotPasswordRouteImport } from './app/forgotPassword'
 import { Route as FixedIncomeRouteImport } from './app/fixedIncome'
@@ -37,6 +38,7 @@ import { Route as ApiOrganizationsIdScrapeEmailRouteImport } from './app/api/org
 import { Route as ApiOrganizationsIdRetirementPlansRouteImport } from './app/api/organizations.$id.retirementPlans'
 import { Route as ApiOrganizationsIdReceiptsRouteImport } from './app/api/organizations.$id.receipts'
 import { Route as ApiOrganizationsIdPaymentsRouteImport } from './app/api/organizations.$id.payments'
+import { Route as ApiOrganizationsIdMealsOutRouteImport } from './app/api/organizations.$id.mealsOut'
 import { Route as ApiOrganizationsIdFixedIncomeAssetsRouteImport } from './app/api/organizations.$id.fixedIncomeAssets'
 import { Route as ApiOrganizationsIdDatesRouteImport } from './app/api/organizations.$id.dates'
 import { Route as ApiOrganizationsIdAccountsRouteImport } from './app/api/organizations.$id.accounts'
@@ -51,6 +53,7 @@ import { Route as ApiOrganizationsIdPlaidLinkTokenRouteImport } from './app/api/
 import { Route as ApiOrganizationsIdPlaidCredentialRouteImport } from './app/api/organizations.$id.plaid.credential'
 import { Route as ApiOrganizationsIdPlaidAccountsRouteImport } from './app/api/organizations.$id.plaid.accounts'
 import { Route as ApiOrganizationsIdPaymentsPaymentIdRouteImport } from './app/api/organizations.$id.payments.$paymentId'
+import { Route as ApiOrganizationsIdMealsOutMealOutIdRouteImport } from './app/api/organizations.$id.mealsOut.$mealOutId'
 import { Route as ApiOrganizationsIdItemsItemIdRouteImport } from './app/api/organizations.$id.items.$itemId'
 import { Route as ApiOrganizationsIdFixedIncomeAssetsFixedIncomeAssetIdRouteImport } from './app/api/organizations.$id.fixedIncomeAssets.$fixedIncomeAssetId'
 import { Route as ApiOrganizationsIdDatesDateRouteImport } from './app/api/organizations.$id.dates.$date'
@@ -102,6 +105,11 @@ const ReceiptsRoute = ReceiptsRouteImport.update({
 const PaymentsRoute = PaymentsRouteImport.update({
   id: '/payments',
   path: '/payments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MealsOutRoute = MealsOutRouteImport.update({
+  id: '/mealsOut',
+  path: '/mealsOut',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InvestmentsRoute = InvestmentsRouteImport.update({
@@ -210,6 +218,12 @@ const ApiOrganizationsIdPaymentsRoute =
     path: '/payments',
     getParentRoute: () => ApiOrganizationsIdRoute,
   } as any)
+const ApiOrganizationsIdMealsOutRoute =
+  ApiOrganizationsIdMealsOutRouteImport.update({
+    id: '/mealsOut',
+    path: '/mealsOut',
+    getParentRoute: () => ApiOrganizationsIdRoute,
+  } as any)
 const ApiOrganizationsIdFixedIncomeAssetsRoute =
   ApiOrganizationsIdFixedIncomeAssetsRouteImport.update({
     id: '/fixedIncomeAssets',
@@ -292,6 +306,12 @@ const ApiOrganizationsIdPaymentsPaymentIdRoute =
     id: '/$paymentId',
     path: '/$paymentId',
     getParentRoute: () => ApiOrganizationsIdPaymentsRoute,
+  } as any)
+const ApiOrganizationsIdMealsOutMealOutIdRoute =
+  ApiOrganizationsIdMealsOutMealOutIdRouteImport.update({
+    id: '/$mealOutId',
+    path: '/$mealOutId',
+    getParentRoute: () => ApiOrganizationsIdMealsOutRoute,
   } as any)
 const ApiOrganizationsIdItemsItemIdRoute =
   ApiOrganizationsIdItemsItemIdRouteImport.update({
@@ -377,6 +397,7 @@ export interface FileRoutesByFullPath {
   '/fixedIncome': typeof FixedIncomeRoute
   '/forgotPassword': typeof ForgotPasswordRoute
   '/investments': typeof InvestmentsRoute
+  '/mealsOut': typeof MealsOutRoute
   '/payments': typeof PaymentsRoute
   '/receipts': typeof ReceiptsRoute
   '/register': typeof RegisterRoute
@@ -397,6 +418,7 @@ export interface FileRoutesByFullPath {
   '/api/organizations/$id/accounts': typeof ApiOrganizationsIdAccountsRouteWithChildren
   '/api/organizations/$id/dates': typeof ApiOrganizationsIdDatesRouteWithChildren
   '/api/organizations/$id/fixedIncomeAssets': typeof ApiOrganizationsIdFixedIncomeAssetsRouteWithChildren
+  '/api/organizations/$id/mealsOut': typeof ApiOrganizationsIdMealsOutRouteWithChildren
   '/api/organizations/$id/payments': typeof ApiOrganizationsIdPaymentsRouteWithChildren
   '/api/organizations/$id/receipts': typeof ApiOrganizationsIdReceiptsRouteWithChildren
   '/api/organizations/$id/retirementPlans': typeof ApiOrganizationsIdRetirementPlansRouteWithChildren
@@ -408,6 +430,7 @@ export interface FileRoutesByFullPath {
   '/api/organizations/$id/dates/$date': typeof ApiOrganizationsIdDatesDateRoute
   '/api/organizations/$id/fixedIncomeAssets/$fixedIncomeAssetId': typeof ApiOrganizationsIdFixedIncomeAssetsFixedIncomeAssetIdRoute
   '/api/organizations/$id/items/$itemId': typeof ApiOrganizationsIdItemsItemIdRoute
+  '/api/organizations/$id/mealsOut/$mealOutId': typeof ApiOrganizationsIdMealsOutMealOutIdRoute
   '/api/organizations/$id/payments/$paymentId': typeof ApiOrganizationsIdPaymentsPaymentIdRoute
   '/api/organizations/$id/plaid/accounts': typeof ApiOrganizationsIdPlaidAccountsRoute
   '/api/organizations/$id/plaid/credential': typeof ApiOrganizationsIdPlaidCredentialRoute
@@ -433,6 +456,7 @@ export interface FileRoutesByTo {
   '/fixedIncome': typeof FixedIncomeRoute
   '/forgotPassword': typeof ForgotPasswordRoute
   '/investments': typeof InvestmentsRoute
+  '/mealsOut': typeof MealsOutRoute
   '/payments': typeof PaymentsRoute
   '/receipts': typeof ReceiptsRoute
   '/register': typeof RegisterRoute
@@ -453,6 +477,7 @@ export interface FileRoutesByTo {
   '/api/organizations/$id/accounts': typeof ApiOrganizationsIdAccountsRouteWithChildren
   '/api/organizations/$id/dates': typeof ApiOrganizationsIdDatesRouteWithChildren
   '/api/organizations/$id/fixedIncomeAssets': typeof ApiOrganizationsIdFixedIncomeAssetsRouteWithChildren
+  '/api/organizations/$id/mealsOut': typeof ApiOrganizationsIdMealsOutRouteWithChildren
   '/api/organizations/$id/payments': typeof ApiOrganizationsIdPaymentsRouteWithChildren
   '/api/organizations/$id/receipts': typeof ApiOrganizationsIdReceiptsRouteWithChildren
   '/api/organizations/$id/retirementPlans': typeof ApiOrganizationsIdRetirementPlansRouteWithChildren
@@ -464,6 +489,7 @@ export interface FileRoutesByTo {
   '/api/organizations/$id/dates/$date': typeof ApiOrganizationsIdDatesDateRoute
   '/api/organizations/$id/fixedIncomeAssets/$fixedIncomeAssetId': typeof ApiOrganizationsIdFixedIncomeAssetsFixedIncomeAssetIdRoute
   '/api/organizations/$id/items/$itemId': typeof ApiOrganizationsIdItemsItemIdRoute
+  '/api/organizations/$id/mealsOut/$mealOutId': typeof ApiOrganizationsIdMealsOutMealOutIdRoute
   '/api/organizations/$id/payments/$paymentId': typeof ApiOrganizationsIdPaymentsPaymentIdRoute
   '/api/organizations/$id/plaid/accounts': typeof ApiOrganizationsIdPlaidAccountsRoute
   '/api/organizations/$id/plaid/credential': typeof ApiOrganizationsIdPlaidCredentialRoute
@@ -490,6 +516,7 @@ export interface FileRoutesById {
   '/fixedIncome': typeof FixedIncomeRoute
   '/forgotPassword': typeof ForgotPasswordRoute
   '/investments': typeof InvestmentsRoute
+  '/mealsOut': typeof MealsOutRoute
   '/payments': typeof PaymentsRoute
   '/receipts': typeof ReceiptsRoute
   '/register': typeof RegisterRoute
@@ -510,6 +537,7 @@ export interface FileRoutesById {
   '/api/organizations/$id/accounts': typeof ApiOrganizationsIdAccountsRouteWithChildren
   '/api/organizations/$id/dates': typeof ApiOrganizationsIdDatesRouteWithChildren
   '/api/organizations/$id/fixedIncomeAssets': typeof ApiOrganizationsIdFixedIncomeAssetsRouteWithChildren
+  '/api/organizations/$id/mealsOut': typeof ApiOrganizationsIdMealsOutRouteWithChildren
   '/api/organizations/$id/payments': typeof ApiOrganizationsIdPaymentsRouteWithChildren
   '/api/organizations/$id/receipts': typeof ApiOrganizationsIdReceiptsRouteWithChildren
   '/api/organizations/$id/retirementPlans': typeof ApiOrganizationsIdRetirementPlansRouteWithChildren
@@ -521,6 +549,7 @@ export interface FileRoutesById {
   '/api/organizations/$id/dates/$date': typeof ApiOrganizationsIdDatesDateRoute
   '/api/organizations/$id/fixedIncomeAssets/$fixedIncomeAssetId': typeof ApiOrganizationsIdFixedIncomeAssetsFixedIncomeAssetIdRoute
   '/api/organizations/$id/items/$itemId': typeof ApiOrganizationsIdItemsItemIdRoute
+  '/api/organizations/$id/mealsOut/$mealOutId': typeof ApiOrganizationsIdMealsOutMealOutIdRoute
   '/api/organizations/$id/payments/$paymentId': typeof ApiOrganizationsIdPaymentsPaymentIdRoute
   '/api/organizations/$id/plaid/accounts': typeof ApiOrganizationsIdPlaidAccountsRoute
   '/api/organizations/$id/plaid/credential': typeof ApiOrganizationsIdPlaidCredentialRoute
@@ -548,6 +577,7 @@ export interface FileRouteTypes {
     | '/fixedIncome'
     | '/forgotPassword'
     | '/investments'
+    | '/mealsOut'
     | '/payments'
     | '/receipts'
     | '/register'
@@ -568,6 +598,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/accounts'
     | '/api/organizations/$id/dates'
     | '/api/organizations/$id/fixedIncomeAssets'
+    | '/api/organizations/$id/mealsOut'
     | '/api/organizations/$id/payments'
     | '/api/organizations/$id/receipts'
     | '/api/organizations/$id/retirementPlans'
@@ -579,6 +610,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/dates/$date'
     | '/api/organizations/$id/fixedIncomeAssets/$fixedIncomeAssetId'
     | '/api/organizations/$id/items/$itemId'
+    | '/api/organizations/$id/mealsOut/$mealOutId'
     | '/api/organizations/$id/payments/$paymentId'
     | '/api/organizations/$id/plaid/accounts'
     | '/api/organizations/$id/plaid/credential'
@@ -604,6 +636,7 @@ export interface FileRouteTypes {
     | '/fixedIncome'
     | '/forgotPassword'
     | '/investments'
+    | '/mealsOut'
     | '/payments'
     | '/receipts'
     | '/register'
@@ -624,6 +657,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/accounts'
     | '/api/organizations/$id/dates'
     | '/api/organizations/$id/fixedIncomeAssets'
+    | '/api/organizations/$id/mealsOut'
     | '/api/organizations/$id/payments'
     | '/api/organizations/$id/receipts'
     | '/api/organizations/$id/retirementPlans'
@@ -635,6 +669,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/dates/$date'
     | '/api/organizations/$id/fixedIncomeAssets/$fixedIncomeAssetId'
     | '/api/organizations/$id/items/$itemId'
+    | '/api/organizations/$id/mealsOut/$mealOutId'
     | '/api/organizations/$id/payments/$paymentId'
     | '/api/organizations/$id/plaid/accounts'
     | '/api/organizations/$id/plaid/credential'
@@ -660,6 +695,7 @@ export interface FileRouteTypes {
     | '/fixedIncome'
     | '/forgotPassword'
     | '/investments'
+    | '/mealsOut'
     | '/payments'
     | '/receipts'
     | '/register'
@@ -680,6 +716,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/accounts'
     | '/api/organizations/$id/dates'
     | '/api/organizations/$id/fixedIncomeAssets'
+    | '/api/organizations/$id/mealsOut'
     | '/api/organizations/$id/payments'
     | '/api/organizations/$id/receipts'
     | '/api/organizations/$id/retirementPlans'
@@ -691,6 +728,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/dates/$date'
     | '/api/organizations/$id/fixedIncomeAssets/$fixedIncomeAssetId'
     | '/api/organizations/$id/items/$itemId'
+    | '/api/organizations/$id/mealsOut/$mealOutId'
     | '/api/organizations/$id/payments/$paymentId'
     | '/api/organizations/$id/plaid/accounts'
     | '/api/organizations/$id/plaid/credential'
@@ -717,6 +755,7 @@ export interface RootRouteChildren {
   FixedIncomeRoute: typeof FixedIncomeRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   InvestmentsRoute: typeof InvestmentsRoute
+  MealsOutRoute: typeof MealsOutRoute
   PaymentsRoute: typeof PaymentsRoute
   ReceiptsRoute: typeof ReceiptsRoute
   RegisterRoute: typeof RegisterRoute
@@ -789,6 +828,13 @@ declare module '@tanstack/react-router' {
       path: '/payments'
       fullPath: '/payments'
       preLoaderRoute: typeof PaymentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mealsOut': {
+      id: '/mealsOut'
+      path: '/mealsOut'
+      fullPath: '/mealsOut'
+      preLoaderRoute: typeof MealsOutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/investments': {
@@ -931,6 +977,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiOrganizationsIdPaymentsRouteImport
       parentRoute: typeof ApiOrganizationsIdRoute
     }
+    '/api/organizations/$id/mealsOut': {
+      id: '/api/organizations/$id/mealsOut'
+      path: '/mealsOut'
+      fullPath: '/api/organizations/$id/mealsOut'
+      preLoaderRoute: typeof ApiOrganizationsIdMealsOutRouteImport
+      parentRoute: typeof ApiOrganizationsIdRoute
+    }
     '/api/organizations/$id/fixedIncomeAssets': {
       id: '/api/organizations/$id/fixedIncomeAssets'
       path: '/fixedIncomeAssets'
@@ -1028,6 +1081,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/organizations/$id/payments/$paymentId'
       preLoaderRoute: typeof ApiOrganizationsIdPaymentsPaymentIdRouteImport
       parentRoute: typeof ApiOrganizationsIdPaymentsRoute
+    }
+    '/api/organizations/$id/mealsOut/$mealOutId': {
+      id: '/api/organizations/$id/mealsOut/$mealOutId'
+      path: '/$mealOutId'
+      fullPath: '/api/organizations/$id/mealsOut/$mealOutId'
+      preLoaderRoute: typeof ApiOrganizationsIdMealsOutMealOutIdRouteImport
+      parentRoute: typeof ApiOrganizationsIdMealsOutRoute
     }
     '/api/organizations/$id/items/$itemId': {
       id: '/api/organizations/$id/items/$itemId'
@@ -1161,6 +1221,21 @@ const ApiOrganizationsIdFixedIncomeAssetsRouteChildren: ApiOrganizationsIdFixedI
 const ApiOrganizationsIdFixedIncomeAssetsRouteWithChildren =
   ApiOrganizationsIdFixedIncomeAssetsRoute._addFileChildren(
     ApiOrganizationsIdFixedIncomeAssetsRouteChildren,
+  )
+
+interface ApiOrganizationsIdMealsOutRouteChildren {
+  ApiOrganizationsIdMealsOutMealOutIdRoute: typeof ApiOrganizationsIdMealsOutMealOutIdRoute
+}
+
+const ApiOrganizationsIdMealsOutRouteChildren: ApiOrganizationsIdMealsOutRouteChildren =
+  {
+    ApiOrganizationsIdMealsOutMealOutIdRoute:
+      ApiOrganizationsIdMealsOutMealOutIdRoute,
+  }
+
+const ApiOrganizationsIdMealsOutRouteWithChildren =
+  ApiOrganizationsIdMealsOutRoute._addFileChildren(
+    ApiOrganizationsIdMealsOutRouteChildren,
   )
 
 interface ApiOrganizationsIdPaymentsRouteChildren {
@@ -1328,6 +1403,7 @@ interface ApiOrganizationsIdRouteChildren {
   ApiOrganizationsIdAccountsRoute: typeof ApiOrganizationsIdAccountsRouteWithChildren
   ApiOrganizationsIdDatesRoute: typeof ApiOrganizationsIdDatesRouteWithChildren
   ApiOrganizationsIdFixedIncomeAssetsRoute: typeof ApiOrganizationsIdFixedIncomeAssetsRouteWithChildren
+  ApiOrganizationsIdMealsOutRoute: typeof ApiOrganizationsIdMealsOutRouteWithChildren
   ApiOrganizationsIdPaymentsRoute: typeof ApiOrganizationsIdPaymentsRouteWithChildren
   ApiOrganizationsIdReceiptsRoute: typeof ApiOrganizationsIdReceiptsRouteWithChildren
   ApiOrganizationsIdRetirementPlansRoute: typeof ApiOrganizationsIdRetirementPlansRouteWithChildren
@@ -1346,6 +1422,7 @@ const ApiOrganizationsIdRouteChildren: ApiOrganizationsIdRouteChildren = {
   ApiOrganizationsIdDatesRoute: ApiOrganizationsIdDatesRouteWithChildren,
   ApiOrganizationsIdFixedIncomeAssetsRoute:
     ApiOrganizationsIdFixedIncomeAssetsRouteWithChildren,
+  ApiOrganizationsIdMealsOutRoute: ApiOrganizationsIdMealsOutRouteWithChildren,
   ApiOrganizationsIdPaymentsRoute: ApiOrganizationsIdPaymentsRouteWithChildren,
   ApiOrganizationsIdReceiptsRoute: ApiOrganizationsIdReceiptsRouteWithChildren,
   ApiOrganizationsIdRetirementPlansRoute:
@@ -1386,6 +1463,7 @@ const rootRouteChildren: RootRouteChildren = {
   FixedIncomeRoute: FixedIncomeRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   InvestmentsRoute: InvestmentsRoute,
+  MealsOutRoute: MealsOutRoute,
   PaymentsRoute: PaymentsRoute,
   ReceiptsRoute: ReceiptsRoute,
   RegisterRoute: RegisterRoute,
