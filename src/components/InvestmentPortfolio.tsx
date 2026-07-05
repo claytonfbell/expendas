@@ -12,6 +12,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Tooltip,
   Typography,
   useMediaQuery,
   useTheme,
@@ -25,7 +26,7 @@ import {
   BarChart,
   CartesianGrid,
   ResponsiveContainer,
-  Tooltip,
+  Tooltip as RechartTooltip,
   XAxis,
   YAxis,
 } from "recharts"
@@ -236,7 +237,7 @@ ${toReachMessage}`
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis hide />
-              <Tooltip
+              <RechartTooltip
                 content={<CustomTooltip />}
                 isAnimationActive={false}
                 // label="name"
@@ -288,6 +289,11 @@ ${toReachMessage}`
                     const tickers = [
                       ...new Set(account.assets.map((a) => a.ticker)),
                     ]
+                    const tickerBalances: Record<string, number> = {}
+                    account.assets.forEach((a) => {
+                      tickerBalances[a.ticker] =
+                        (tickerBalances[a.ticker] || 0) + a.balance
+                    })
                     return (
                       <TableRow key={account.id} hover>
                         <TableCell>
@@ -305,12 +311,16 @@ ${toReachMessage}`
                         <TableCell>
                           <Stack direction="row" spacing={0.5}>
                             {tickers.map((ticker) => (
-                              <Chip
+                              <Tooltip
                                 key={ticker}
-                                label={getTickerDisplayName(ticker)}
-                                size="small"
-                                variant="outlined"
-                              />
+                                title={formatMoney(tickerBalances[ticker] || 0)}
+                              >
+                                <Chip
+                                  label={getTickerDisplayName(ticker)}
+                                  size="small"
+                                  variant="outlined"
+                                />
+                              </Tooltip>
                             ))}
                           </Stack>
                         </TableCell>
