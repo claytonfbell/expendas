@@ -22,19 +22,20 @@ import {
   usePlaidLink,
 } from "react-plaid-link"
 import { AccountDialog } from "./AccountDialog"
+import { AccountWithIncludes } from "./AccountWithIncludes"
 import { AssetDialog } from "./AssetDialog"
+import { BottomStatusBar } from "./BottomStatusBar"
 import ConfirmDialog from "./ConfirmDialog"
 import { Currency } from "./Currency"
 import { useGlobalState } from "./GlobalStateProvider"
-import { AccountWithIncludes } from "./AccountWithIncludes"
 import { displayAccountType } from "./accountTypes"
 import { useCheckLogin } from "./api/hooks/useCheckLogin"
-import { useFetchAccounts } from "./api/hooks/useFetchAccounts"
-import { useRemoveAccount } from "./api/hooks/useRemoveAccount"
-import { useScrapeEmailsFromFidelityAndUpdateBalances } from "./api/hooks/useScrapeEmailsFromFidelityAndUpdateBalances"
 import { useCreateLinkToken } from "./api/hooks/useCreateLinkToken"
 import { useCreatePlaidCredential } from "./api/hooks/useCreatePlaidCredential"
+import { useFetchAccounts } from "./api/hooks/useFetchAccounts"
 import { useRefreshPlaidAccounts } from "./api/hooks/useRefreshPlaidAccounts"
+import { useRemoveAccount } from "./api/hooks/useRemoveAccount"
+import { useScrapeEmailsFromFidelityAndUpdateBalances } from "./api/hooks/useScrapeEmailsFromFidelityAndUpdateBalances"
 import { displayCreditCardType } from "./creditCardTypes"
 
 export function AccountManage() {
@@ -45,7 +46,8 @@ export function AccountManage() {
   const { mutateAsync: removeAccount, error: removeError } = useRemoveAccount()
   const [accountToRemove, setAccountToRemove] = useState<Account>()
   const [accountToUpdate, setAccountToUpdate] = useState<Account>()
-  const [accountForAssets, setAccountForAssets] = useState<AccountWithIncludes>()
+  const [accountForAssets, setAccountForAssets] =
+    useState<AccountWithIncludes>()
   function handleDelete() {
     if (accountToRemove !== undefined) {
       removeAccount(accountToRemove)
@@ -274,6 +276,8 @@ export function AccountManage() {
         onAccept={handleDelete}
         message="Are you sure you want to delete account?"
       />
+
+      <BottomStatusBar />
     </>
   )
 }

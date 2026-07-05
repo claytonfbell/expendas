@@ -1,4 +1,3 @@
-import AddTaskIcon from "@mui/icons-material/AddTask"
 import GitHubIcon from "@mui/icons-material/GitHub"
 import {
   AppBar,
@@ -12,7 +11,6 @@ import {
   Tooltip,
 } from "@mui/material"
 import { Link as TanStackLink, useRouter } from "@tanstack/react-router"
-import { DarkModeToggle } from "material-ui-pack"
 import React, { useEffect, useState } from "react"
 import { useCheckLogin } from "./api/hooks/useCheckLogin"
 import { BreadcrumbLink, ExpendasBreadcrumbs } from "./ExpendasBreadcrumbs"
@@ -90,11 +88,6 @@ export function InsideContent(props: Props) {
                     alignItems: "center",
                   }}
                 >
-                  <DarkModeToggle variant="icon" />
-
-                  <IconButton component={TanStackLink} to="/tasks">
-                    <AddTaskIcon />
-                  </IconButton>
 
                   <Stack
                     sx={{

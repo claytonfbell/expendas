@@ -3,38 +3,39 @@ import React from "react"
 import { BottomMobileNavigation } from "./BottomMobileNavigation"
 
 interface Props {
-  children: React.ReactNode
+  children?: React.ReactNode
 }
 
 export function BottomStatusBar({ children }: Props) {
   const theme = useTheme()
   return (
-    <>
-      <Box
-        sx={{
-          backgroundColor: theme.palette.primary.main,
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          width: `100vw`,
-
-          fontSize: 20,
-
-          paddingTop: 1,
-          color: theme.palette.primary.contrastText,
-          [theme.breakpoints.up("sm")]: {
-            fontSize: 24,
-          },
-          "& .right": {
-            textAlign: "right",
-          },
-          zIndex: theme.zIndex.appBar - 1,
-          borderTop: `1px solid ${theme.palette.divider}`,
-        }}
-      >
+    <Box
+      sx={{
+        backgroundColor: theme.palette.primary.main,
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        width: `100vw`,
+        fontSize: 20,
+        color: theme.palette.primary.contrastText,
+        [theme.breakpoints.up("sm")]: {
+          fontSize: 24,
+        },
+        "& .right": {
+          textAlign: "right",
+        },
+        zIndex: theme.zIndex.appBar - 1,
+        borderTop:
+          children !== undefined
+            ? `1px solid ${theme.palette.divider}`
+            : undefined,
+      }}
+    >
+      {children !== undefined && (
         <Container
           maxWidth="xl"
           sx={{
+            marginTop: 1,
             paddingBottom: 1,
           }}
         >
@@ -49,8 +50,8 @@ export function BottomStatusBar({ children }: Props) {
             {children}
           </Box>
         </Container>
-        <BottomMobileNavigation />
-      </Box>
-    </>
+      )}
+      <BottomMobileNavigation />
+    </Box>
   )
 }

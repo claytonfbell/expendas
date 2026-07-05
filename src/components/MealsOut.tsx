@@ -26,6 +26,7 @@ import {
   YAxis,
 } from "recharts"
 import { useFetchMealsOut } from "./api/hooks/useFetchMealsOut"
+import { BottomStatusBar } from "./BottomStatusBar"
 import { ExpendasTable } from "./ExpendasTable"
 import { formatMoney } from "./formatMoney"
 import {
@@ -307,6 +308,8 @@ export function MealsOut() {
         }}
         mealOut={editMealOut}
       />
+
+      <BottomStatusBar />
     </>
   )
 }

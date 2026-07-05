@@ -1,10 +1,11 @@
 import { Box, Button } from "@mui/material"
 import { Payment } from "@prisma/client"
 import { ResponsiveTable } from "material-ui-pack"
-import React, { useState } from "react"
+import { useState } from "react"
 import { displayAccountType } from "./accountTypes"
 import { useFetchPayments } from "./api/hooks/useFetchPayments"
 import { useRemovePayment } from "./api/hooks/useRemovePayment"
+import { BottomStatusBar } from "./BottomStatusBar"
 import ConfirmDialog from "./ConfirmDialog"
 import { Currency } from "./Currency"
 import DisplayError from "./DisplayError"
@@ -109,6 +110,8 @@ export function PaymentManage() {
         onAccept={handleDelete}
         message="Are you sure you want to delete payment?"
       />
+
+      <BottomStatusBar />
     </>
   )
 }

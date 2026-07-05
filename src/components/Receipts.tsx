@@ -11,12 +11,13 @@ import {
   TableRow,
   Typography,
 } from "@mui/material"
-import dayjs from "./dayjs"
 import prettyBytes from "pretty-bytes"
 import { useState } from "react"
 import type { ReceiptWithIncludes } from "../app/api/organizations.$id.receipts"
 import { useFetchReceipts } from "./api/hooks/useFetchReceipts"
 import rest from "./api/rest"
+import { BottomStatusBar } from "./BottomStatusBar"
+import dayjs from "./dayjs"
 import { ExpendasTable } from "./ExpendasTable"
 import { formatMoney } from "./formatMoney"
 import { ReceiptCreateDialog } from "./ReceiptCreateDialog"
@@ -129,6 +130,8 @@ export function Receipts() {
         </ExpendasTable>
       </Stack>
       <ReceiptDialog receipt={receipt} onClose={() => setReceipt(null)} />
+
+      <BottomStatusBar />
     </>
   )
 }

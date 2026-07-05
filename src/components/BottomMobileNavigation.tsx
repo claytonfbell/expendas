@@ -1,10 +1,10 @@
 import { ButtonBase, Stack } from "@mui/material"
 import { alpha } from "@mui/material/styles"
 import { useRouter, Link as TanStackLink } from "@tanstack/react-router"
-import { navigationLinks } from "./TopNavigation"
+import { navigationLinks } from "./navigationLinks"
 
-const bottomNavigationLinks = navigationLinks.filter(
-  (link) => link.href !== "/mealsOut"
+const bottomNavigationLinks = navigationLinks.filter((link) =>
+  link.navs.includes("bottom-mobile")
 )
 
 export function BottomMobileNavigation() {

@@ -15,10 +15,10 @@ import prettyBytes from "pretty-bytes"
 import { useState } from "react"
 import type { TaxRecordWithIncludes } from "../app/api/organizations.$id.taxRecords"
 import { useFetchTaxRecords } from "./api/hooks/useFetchTaxRecords"
-import { useGlobalState } from "./GlobalStateContext"
 import rest from "./api/rest"
+import { BottomStatusBar } from "./BottomStatusBar"
 import { ExpendasTable } from "./ExpendasTable"
-import { formatMoney } from "./formatMoney"
+import { useGlobalState } from "./GlobalStateContext"
 import { TaxRecordCreateDialog } from "./TaxRecordCreateDialog"
 import { TaxRecordDialog } from "./TaxRecordDialog"
 import { displayTaxRecordType } from "./taxRecordTypes"
@@ -26,8 +26,7 @@ import { displayTaxRecordType } from "./taxRecordTypes"
 export function TaxRecords() {
   const { data: taxRecords } = useFetchTaxRecords()
   const { organizationId } = useGlobalState()
-  const [taxRecord, setTaxRecord] =
-    useState<TaxRecordWithIncludes | null>(null)
+  const [taxRecord, setTaxRecord] = useState<TaxRecordWithIncludes | null>(null)
   return (
     <>
       <Stack spacing={2}>
@@ -100,8 +99,7 @@ export function TaxRecords() {
                   </Stack>
                 </TableCell>
               </TableRow>
-))}
-
+            ))}
           </TableBody>
         </ExpendasTable>
       </Stack>
@@ -109,6 +107,8 @@ export function TaxRecords() {
         taxRecord={taxRecord}
         onClose={() => setTaxRecord(null)}
       />
+
+      <BottomStatusBar />
     </>
   )
 }

@@ -1,25 +1,26 @@
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance"
-import AccountTreeIcon from "@mui/icons-material/AccountTree"
 import AddIcon from "@mui/icons-material/Add"
+import Brightness4Icon from "@mui/icons-material/Brightness4"
+import Brightness7Icon from "@mui/icons-material/Brightness7"
 import CheckIcon from "@mui/icons-material/Check"
 import ExitToAppIcon from "@mui/icons-material/ExitToApp"
-import PaymentsIcon from "@mui/icons-material/Payments"
-import ReceiptLongIcon from "@mui/icons-material/ReceiptLong"
-import RestaurantIcon from "@mui/icons-material/Restaurant"
 import SettingsIcon from "@mui/icons-material/Settings"
-import { Button, ListItemIcon } from "@mui/material"
+import { Button, ListItemIcon, useMediaQuery } from "@mui/material"
+import { useTheme } from "@mui/material/styles"
 import Menu from "@mui/material/Menu"
 import MenuItem from "@mui/material/MenuItem"
 import { useRouter } from "@tanstack/react-router"
+import { useDarkMode } from "material-ui-pack"
 import React, { useState } from "react"
 import { AddOrganizationDialog } from "./AddOrganizationDialog"
 import { useLogout } from "./api/hooks/useLogout"
 import { useGlobalState } from "./GlobalStateProvider"
+import { navigationLinks } from "./navigationLinks"
 import { OrganizationDialog } from "./OrganizationDialog"
 
 export function UserMenu() {
   const { mutateAsync: logout } = useLogout()
   const router = useRouter()
+  const { darkMode, toggleDarkMode } = useDarkMode()
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
@@ -41,6 +42,15 @@ export function UserMenu() {
     handleClose()
     action()
   }
+
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
+
+  const userMenuLinks = navigationLinks.filter((link) =>
+    isMobile
+      ? !link.navs.includes("bottom-mobile")
+      : !link.navs.includes("top-desktop")
+  )
 
   return (
     <>
@@ -85,49 +95,23 @@ export function UserMenu() {
           Add Organization
         </MenuItem>
 
-        <MenuItem
-          onClick={menuClick(() => router.navigate({ to: "/accounts" }))}
-        >
-          <ListItemIcon>
-            <AccountBalanceIcon />
-          </ListItemIcon>
-          Accounts
-        </MenuItem>
+        {userMenuLinks.map((link) => (
+          <MenuItem
+            key={link.href}
+            onClick={menuClick(() => router.navigate({ to: link.href }))}
+          >
+            <ListItemIcon>
+              <link.Icon />
+            </ListItemIcon>
+            {link.label}
+          </MenuItem>
+        ))}
 
-        <MenuItem
-          onClick={menuClick(() => router.navigate({ to: "/payments" }))}
-        >
+        <MenuItem onClick={() => toggleDarkMode(!darkMode)}>
           <ListItemIcon>
-            <PaymentsIcon />
+            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
           </ListItemIcon>
-          Payments
-        </MenuItem>
-
-        <MenuItem
-          onClick={menuClick(() => router.navigate({ to: "/receipts" }))}
-        >
-          <ListItemIcon>
-            <ReceiptLongIcon />
-          </ListItemIcon>
-          Receipts
-        </MenuItem>
-
-        <MenuItem
-          onClick={menuClick(() => router.navigate({ to: "/taxes" }))}
-        >
-          <ListItemIcon>
-            <AccountTreeIcon />
-          </ListItemIcon>
-          Tax Records
-        </MenuItem>
-
-        <MenuItem
-          onClick={menuClick(() => router.navigate({ to: "/mealsOut" }))}
-        >
-          <ListItemIcon>
-            <RestaurantIcon />
-          </ListItemIcon>
-          Meals Out
+          Appearance
         </MenuItem>
 
         <MenuItem onClick={menuClick(() => logout())}>
