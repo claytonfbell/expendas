@@ -58,7 +58,7 @@ export async function populateMissingTickerPrices(ticker: Ticker) {
       //   max: 5,
       //   durationMs: 60 * 60 * 1000, // 1 hour
       max: 10,
-      durationMs: 60 * 5 * 1000, // 5 minutes
+      durationMs: 60 * 1 * 1000, // 1 minute
     },
   ])
   let keepGoing = true
