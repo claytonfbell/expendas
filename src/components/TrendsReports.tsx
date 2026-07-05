@@ -1,6 +1,5 @@
 import { Stack, Typography, useMediaQuery, useTheme } from "@mui/material"
-import TrendingDownIcon from "@mui/icons-material/TrendingDown"
-import TrendingUpIcon from "@mui/icons-material/TrendingUp"
+import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import dayjs from "./dayjs"
 import { useEffect, useMemo, useState } from "react"
 import {
@@ -144,9 +143,15 @@ export function TrendsReports() {
               }}
             >
               {savingsChange >= 0 ? (
-                <TrendingUpIcon fontSize="small" />
+                <PlayArrowIcon
+                  fontSize="small"
+                  sx={{ transform: "rotate(-90deg)" }}
+                />
               ) : (
-                <TrendingDownIcon fontSize="small" />
+                <PlayArrowIcon
+                  fontSize="small"
+                  sx={{ transform: "rotate(90deg)" }}
+                />
               )}
               <Typography
                 variant="body1"

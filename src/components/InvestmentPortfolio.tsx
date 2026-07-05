@@ -1,9 +1,9 @@
+import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import {
   Alert,
   alpha,
   Box,
   Button,
-  Chip,
   Grid,
   lighten,
   Stack,
@@ -12,7 +12,6 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Tooltip,
   Typography,
   useMediaQuery,
   useTheme,
@@ -25,24 +24,24 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  ResponsiveContainer,
   Tooltip as RechartTooltip,
+  ResponsiveContainer,
   XAxis,
   YAxis,
 } from "recharts"
 import { AccountBucketChip } from "./AccountBucketChip"
 import { displayAccountBucket } from "./accountBuckets"
-import { AssetDialog } from "./AssetDialog"
 import { investmentGroup } from "./AccountGroup"
 import { AccountWithIncludes } from "./AccountWithIncludes"
-import { AmountInput } from "./AmountInput"
 import AnimatedCounter from "./AnimatedCounter"
+import { TickerChip } from "./TickerChip"
 import { useFetchAccounts } from "./api/hooks/useFetchAccounts"
 import { useFetchTickerPrices } from "./api/hooks/useFetchTickerPrices"
 import { useUpdateAsset } from "./api/hooks/useUpdateAsset"
 import { GlidePathRebalanceSchedule } from "./AssetAllocationGlidePath/GlidePathRebalanceSchedule"
 import { getTargetEquityPercentageWithGlidePaths } from "./AssetAllocationGlidePath/glidePaths"
 import { useAllRebalanceDates } from "./AssetAllocationGlidePath/useAllRebalanceDates"
+import { AssetDialog } from "./AssetDialog"
 import { BottomStatusBar } from "./BottomStatusBar"
 import { Currency } from "./Currency"
 import { ExpendasTable } from "./ExpendasTable"
@@ -50,7 +49,6 @@ import { formatMoney, formatPercentage } from "./formatMoney"
 import { useGlobalState } from "./GlobalStateProvider"
 import { HorizontalRangeBar } from "./HorizontalRangeBar"
 import { Percentage } from "./Percentage"
-import { getTickerDisplayName } from "./tickerDisplayNames"
 
 type Data = {
   name: AccountBucket
@@ -100,10 +98,7 @@ export function InvestmentPortfolio() {
       bucket: x.bucket,
     }))
 
-  const equity = accounts.reduce(
-    (a, b) => a + b.balance - getFixedIncome(b),
-    0
-  )
+  const equity = accounts.reduce((a, b) => a + b.balance - getFixedIncome(b), 0)
   const fixed = accounts.reduce((a, b) => a + getFixedIncome(b), 0)
   const total = equity + fixed
 
@@ -113,10 +108,13 @@ export function InvestmentPortfolio() {
 
   const [selectedAccount, setSelectedAccount] = useState<AccountWithIncludes>()
   const { mutateAsync: updateAsset } = useUpdateAsset()
-  const [editingKey, setEditingKey] = useState<string | null>(null)
 
   const allTickers = useMemo(() => {
-    return [...new Set(accounts.flatMap((a) => a.assets.map((asset) => asset.ticker)))]
+    return [
+      ...new Set(
+        accounts.flatMap((a) => a.assets.map((asset) => asset.ticker))
+      ),
+    ]
   }, [accounts])
 
   const { data: tickerPrices } = useFetchTickerPrices(allTickers)
@@ -128,7 +126,8 @@ export function InvestmentPortfolio() {
           .filter((a) => a.assetType === "Equity")
           .reduce((assetSum, asset) => {
             const prices = tickerPrices[asset.ticker]
-            if (!prices || prices.currentPrice === 0) return assetSum + asset.balance
+            if (!prices || prices.currentPrice === 0)
+              return assetSum + asset.balance
             return (
               assetSum +
               Math.round(
@@ -152,7 +151,8 @@ export function InvestmentPortfolio() {
           .filter((a) => a.assetType === "Equity")
           .reduce((assetSum, asset) => {
             const prices = tickerPrices[asset.ticker]
-            if (!prices || prices.currentPrice === 0) return assetSum + asset.balance
+            if (!prices || prices.currentPrice === 0)
+              return assetSum + asset.balance
             return (
               assetSum +
               Math.round(
@@ -290,14 +290,17 @@ ${toReachMessage}`
                   .map((account) => {
                     const fixedInc = getFixedIncome(account)
                     const equityVal = account.balance - fixedInc
-                    const tickers = [
-                      ...new Set(account.assets.map((a) => a.ticker)),
-                    ]
                     const tickerBalances: Record<string, number> = {}
                     account.assets.forEach((a) => {
                       tickerBalances[a.ticker] =
                         (tickerBalances[a.ticker] || 0) + a.balance
                     })
+                    const tickers = [
+                      ...new Set(account.assets.map((a) => a.ticker)),
+                    ].sort(
+                      (a, b) =>
+                        (tickerBalances[b] || 0) - (tickerBalances[a] || 0)
+                    )
                     return (
                       <TableRow key={account.id} hover>
                         <TableCell>
@@ -315,42 +318,28 @@ ${toReachMessage}`
                         <TableCell>
                           <Stack direction="row" spacing={0.5}>
                             {tickers.map((ticker) => {
-                              const editKey = `${account.id}-${ticker}`
-                              if (editingKey === editKey) {
-                                return (
-                                  <AmountInput
-                                    key={ticker}
-                                    value={tickerBalances[ticker] || 0}
-                                    onChange={(newBalance) => {
-                                      const asset = account.assets.find(
-                                        (a) => a.ticker === ticker
-                                      )
-                                      if (asset) {
-                                        updateAsset({
-                                          assetId: asset.id,
-                                          accountId: account.id,
-                                          ticker: asset.ticker,
-                                          assetType: asset.assetType,
-                                          currentBalance: newBalance,
-                                        })
-                                      }
-                                      setEditingKey(null)
-                                    }}
-                                  />
-                                )
-                              }
+                              const asset = account.assets.find(
+                                (a) => a.ticker === ticker
+                              )
                               return (
-                                <Tooltip
+                                <TickerChip
                                   key={ticker}
-                                  title={formatMoney(tickerBalances[ticker] || 0)}
-                                >
-                                  <Chip
-                                    label={getTickerDisplayName(ticker)}
-                                    size="small"
-                                    variant="outlined"
-                                    onClick={() => setEditingKey(editKey)}
-                                  />
-                                </Tooltip>
+                                  ticker={ticker}
+                                  balance={tickerBalances[ticker] || 0}
+                                  assetType={asset?.assetType || "Equity"}
+                                  prices={tickerPrices[ticker]}
+                                  onChange={(newBalance) => {
+                                    if (asset) {
+                                      updateAsset({
+                                        assetId: asset.id,
+                                        accountId: account.id,
+                                        ticker: asset.ticker,
+                                        assetType: asset.assetType,
+                                        currentBalance: newBalance,
+                                      })
+                                    }
+                                  }}
+                                />
                               )
                             })}
                           </Stack>

@@ -9,6 +9,7 @@ import { createFileRoute } from "@tanstack/react-router"
 
 export type TickerPriceData = {
   currentPrice: number
+  previousPrice: number
   allTimeHigh: number
   twoYearLow: number
 }
@@ -37,6 +38,11 @@ export const Route = createFileRoute("/api/tickerPrices")({
             const currentPrice = await getLatestTickerPrice(ticker).then(
               (price) => price?.price ?? 0
             )
+            const previousPrice = await prisma.tickerPrice.findFirst({
+              where: { ticker, price: { gt: 0 } },
+              orderBy: { date: "desc" },
+              skip: 1,
+            }).then((price) => price?.price ?? currentPrice)
             const allTimeHigh = await getAllTimeHighTickerPrice(ticker).then(
               (price) => price?.price ?? 0
             )
@@ -44,7 +50,7 @@ export const Route = createFileRoute("/api/tickerPrices")({
               (price) => price?.price ?? 0
             )
 
-            response[ticker] = { currentPrice, allTimeHigh, twoYearLow }
+            response[ticker] = { currentPrice, previousPrice, allTimeHigh, twoYearLow }
           }
 
           return response

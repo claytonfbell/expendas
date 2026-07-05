@@ -54,6 +54,13 @@ const theme: ThemeOptions = {
         },
       },
     },
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          fontSize: "1rem",
+        },
+      },
+    },
   },
 }
 
