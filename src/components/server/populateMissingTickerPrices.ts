@@ -47,7 +47,7 @@ export async function populateMissingTickerPrices(ticker: Ticker) {
     if (!found) {
       fiveMissingDates.push(dateToCheck)
     }
-    if (fiveMissingDates.length >= 5) {
+    if (fiveMissingDates.length >= 10) {
       break
     }
   }
