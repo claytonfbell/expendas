@@ -35,9 +35,11 @@ import { displayAccountBucket } from "./accountBuckets"
 import { AssetDialog } from "./AssetDialog"
 import { investmentGroup } from "./AccountGroup"
 import { AccountWithIncludes } from "./AccountWithIncludes"
+import { AmountInput } from "./AmountInput"
 import AnimatedCounter from "./AnimatedCounter"
 import { useFetchAccounts } from "./api/hooks/useFetchAccounts"
 import { useFetchTickerPrices } from "./api/hooks/useFetchTickerPrices"
+import { useUpdateAsset } from "./api/hooks/useUpdateAsset"
 import { GlidePathRebalanceSchedule } from "./AssetAllocationGlidePath/GlidePathRebalanceSchedule"
 import { getTargetEquityPercentageWithGlidePaths } from "./AssetAllocationGlidePath/glidePaths"
 import { useAllRebalanceDates } from "./AssetAllocationGlidePath/useAllRebalanceDates"
@@ -110,6 +112,8 @@ export function InvestmentPortfolio() {
   }
 
   const [selectedAccount, setSelectedAccount] = useState<AccountWithIncludes>()
+  const { mutateAsync: updateAsset } = useUpdateAsset()
+  const [editingKey, setEditingKey] = useState<string | null>(null)
 
   const allTickers = useMemo(() => {
     return [...new Set(accounts.flatMap((a) => a.assets.map((asset) => asset.ticker)))]
@@ -310,18 +314,45 @@ ${toReachMessage}`
                         </TableCell>
                         <TableCell>
                           <Stack direction="row" spacing={0.5}>
-                            {tickers.map((ticker) => (
-                              <Tooltip
-                                key={ticker}
-                                title={formatMoney(tickerBalances[ticker] || 0)}
-                              >
-                                <Chip
-                                  label={getTickerDisplayName(ticker)}
-                                  size="small"
-                                  variant="outlined"
-                                />
-                              </Tooltip>
-                            ))}
+                            {tickers.map((ticker) => {
+                              const editKey = `${account.id}-${ticker}`
+                              if (editingKey === editKey) {
+                                return (
+                                  <AmountInput
+                                    key={ticker}
+                                    value={tickerBalances[ticker] || 0}
+                                    onChange={(newBalance) => {
+                                      const asset = account.assets.find(
+                                        (a) => a.ticker === ticker
+                                      )
+                                      if (asset) {
+                                        updateAsset({
+                                          assetId: asset.id,
+                                          accountId: account.id,
+                                          ticker: asset.ticker,
+                                          assetType: asset.assetType,
+                                          currentBalance: newBalance,
+                                        })
+                                      }
+                                      setEditingKey(null)
+                                    }}
+                                  />
+                                )
+                              }
+                              return (
+                                <Tooltip
+                                  key={ticker}
+                                  title={formatMoney(tickerBalances[ticker] || 0)}
+                                >
+                                  <Chip
+                                    label={getTickerDisplayName(ticker)}
+                                    size="small"
+                                    variant="outlined"
+                                    onClick={() => setEditingKey(editKey)}
+                                  />
+                                </Tooltip>
+                              )
+                            })}
                           </Stack>
                         </TableCell>
                         <TableCell align="right">
