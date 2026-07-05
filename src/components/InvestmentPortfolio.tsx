@@ -2,6 +2,8 @@ import {
   Alert,
   alpha,
   Box,
+  Button,
+  Chip,
   Grid,
   lighten,
   Stack,
@@ -29,14 +31,12 @@ import {
 } from "recharts"
 import { AccountBucketChip } from "./AccountBucketChip"
 import { displayAccountBucket } from "./accountBuckets"
-import { AccountDialog } from "./AccountDialog"
+import { AssetDialog } from "./AssetDialog"
 import { investmentGroup } from "./AccountGroup"
 import { AccountWithIncludes } from "./AccountWithIncludes"
-import { AmountInputTool } from "./AmountInputTool"
 import AnimatedCounter from "./AnimatedCounter"
 import { useFetchAccounts } from "./api/hooks/useFetchAccounts"
 import { useFetchTickerPrices } from "./api/hooks/useFetchTickerPrices"
-import { useUpdateAccount } from "./api/hooks/useUpdateAccount"
 import { GlidePathRebalanceSchedule } from "./AssetAllocationGlidePath/GlidePathRebalanceSchedule"
 import { getTargetEquityPercentageWithGlidePaths } from "./AssetAllocationGlidePath/glidePaths"
 import { useAllRebalanceDates } from "./AssetAllocationGlidePath/useAllRebalanceDates"
@@ -47,12 +47,19 @@ import { formatMoney, formatPercentage } from "./formatMoney"
 import { useGlobalState } from "./GlobalStateProvider"
 import { HorizontalRangeBar } from "./HorizontalRangeBar"
 import { Percentage } from "./Percentage"
+import { getTickerDisplayName } from "./tickerDisplayNames"
 
 type Data = {
   name: AccountBucket
   equity: number
   fixed: number
   bucket: AccountBucket | null
+}
+
+function getFixedIncome(account: AccountWithIncludes): number {
+  return account.assets
+    .filter((a) => a.assetType === "Fixed_Income")
+    .reduce((sum, a) => sum + a.balance, 0)
 }
 
 export function InvestmentPortfolio() {
@@ -65,12 +72,13 @@ export function InvestmentPortfolio() {
   const data = accounts
     .sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance))
     .map((x) => {
-      const equity = x.balance - (x.totalFixedIncome || 0)
+      const fixedInc = getFixedIncome(x)
+      const equity = x.balance - fixedInc
       return {
         name: x.accountBucket || "After_Tax",
         bucket: x.accountBucket,
         equity,
-        fixed: x.totalFixedIncome || 0,
+        fixed: fixedInc,
       }
     })
     .reduce((a: Data[], b) => {
@@ -90,32 +98,66 @@ export function InvestmentPortfolio() {
     }))
 
   const equity = accounts.reduce(
-    (a, b) => a + b.balance - (b.totalFixedIncome || 0),
+    (a, b) => a + b.balance - getFixedIncome(b),
     0
   )
-  const fixed = accounts.reduce((a, b) => a + (b.totalFixedIncome || 0), 0)
+  const fixed = accounts.reduce((a, b) => a + getFixedIncome(b), 0)
   const total = equity + fixed
 
   if (total === 0) {
     return null
   }
 
-  const { mutateAsync: updateAccount } = useUpdateAccount()
-
   const [selectedAccount, setSelectedAccount] = useState<AccountWithIncludes>()
 
-  const { data: tickerPrices } = useFetchTickerPrices()
+  const allTickers = useMemo(() => {
+    return [...new Set(accounts.flatMap((a) => a.assets.map((asset) => asset.ticker)))]
+  }, [accounts])
+
+  const { data: tickerPrices } = useFetchTickerPrices(allTickers)
   const marketHighEquity = React.useMemo(() => {
-    return (equity / tickerPrices.currentPrice) * tickerPrices.allTimeHigh
-  }, [equity, tickerPrices])
+    return accounts.reduce((sum, account) => {
+      return (
+        sum +
+        account.assets
+          .filter((a) => a.assetType === "Equity")
+          .reduce((assetSum, asset) => {
+            const prices = tickerPrices[asset.ticker]
+            if (!prices || prices.currentPrice === 0) return assetSum + asset.balance
+            return (
+              assetSum +
+              Math.round(
+                (asset.balance / prices.currentPrice) * prices.allTimeHigh
+              )
+            )
+          }, 0)
+      )
+    }, 0)
+  }, [accounts, tickerPrices])
 
   const marketHighTotal = React.useMemo(() => {
     return marketHighEquity + fixed
   }, [marketHighEquity, fixed])
 
   const marketTwoYearLowEquity = React.useMemo(() => {
-    return (equity / tickerPrices.currentPrice) * tickerPrices.twoYearLow
-  }, [equity, tickerPrices])
+    return accounts.reduce((sum, account) => {
+      return (
+        sum +
+        account.assets
+          .filter((a) => a.assetType === "Equity")
+          .reduce((assetSum, asset) => {
+            const prices = tickerPrices[asset.ticker]
+            if (!prices || prices.currentPrice === 0) return assetSum + asset.balance
+            return (
+              assetSum +
+              Math.round(
+                (asset.balance / prices.currentPrice) * prices.twoYearLow
+              )
+            )
+          }, 0)
+      )
+    }, 0)
+  }, [accounts, tickerPrices])
 
   const marketTwoYearLowTotal = React.useMemo(() => {
     return marketTwoYearLowEquity + fixed
@@ -231,6 +273,7 @@ ${toReachMessage}`
                 <TableRow>
                   <TableCell sx={{ maxWidth }}>Account</TableCell>
                   <TableCell sx={{ maxWidth }}>Retirement Bucket</TableCell>
+                  <TableCell sx={{ maxWidth }}>Investments</TableCell>
                   <TableCell align="right">Equity</TableCell>
                   <TableCell align="right">Fixed Income</TableCell>
                   <TableCell align="right">Total</TableCell>
@@ -240,47 +283,58 @@ ${toReachMessage}`
                 {accounts
                   .filter((x) => x.balance > 0)
                   .map((account) => {
-                    const equity =
-                      account.balance - (account.totalFixedIncome || 0)
-                    const fixed = account.totalFixedIncome || 0
+                    const fixedInc = getFixedIncome(account)
+                    const equityVal = account.balance - fixedInc
+                    const tickers = [
+                      ...new Set(account.assets.map((a) => a.ticker)),
+                    ]
                     return (
                       <TableRow key={account.id} hover>
-                        <TableCell>{account.name}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant="text"
+                            size="small"
+                            onClick={() => setSelectedAccount(account)}
+                          >
+                            {account.name}
+                          </Button>
+                        </TableCell>
                         <TableCell>
                           <AccountBucketChip bucket={account.accountBucket} />
                         </TableCell>
-                        <TableCell align="right">
-                          <Currency value={equity} />
+                        <TableCell>
+                          <Stack direction="row" spacing={0.5}>
+                            {tickers.map((ticker) => (
+                              <Chip
+                                key={ticker}
+                                label={getTickerDisplayName(ticker)}
+                                size="small"
+                                variant="outlined"
+                              />
+                            ))}
+                          </Stack>
                         </TableCell>
                         <TableCell align="right">
-                          <AmountInputTool
-                            enabled
-                            value={fixed}
-                            onChange={(totalFixedIncome) => {
-                              updateAccount({ ...account, totalFixedIncome })
-                            }}
-                          />
+                          <Currency value={equityVal} />
                         </TableCell>
                         <TableCell align="right">
-                          <AmountInputTool
-                            enabled
-                            value={account.balance}
-                            onChange={(balance) => {
-                              updateAccount({ ...account, balance })
-                            }}
-                          />
+                          <Currency value={fixedInc} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <Currency value={account.balance} />
                         </TableCell>
                       </TableRow>
                     )
                   })}
                 <TableRow>
-                  <TableCell colSpan={5}>&nbsp;</TableCell>
+                  <TableCell colSpan={6}>&nbsp;</TableCell>
                 </TableRow>
               </TableBody>
               <TableHead>
                 <TableRow>
                   <TableCell></TableCell>
                   <TableCell sx={{ maxWidth }}>Retirement Bucket</TableCell>
+                  <TableCell></TableCell>
                   <TableCell align="right">Equity</TableCell>
                   <TableCell align="right">Fixed Income</TableCell>
                   <TableCell align="right">Total</TableCell>
@@ -293,6 +347,7 @@ ${toReachMessage}`
                     <TableCell>
                       <AccountBucketChip bucket={row.bucket} />
                     </TableCell>
+                    <TableCell></TableCell>
                     <TableCell align="right">
                       <Currency value={row.equity} />
                     </TableCell>
@@ -307,7 +362,7 @@ ${toReachMessage}`
 
                 {/* total row */}
                 <TableRow hover>
-                  <TableCell colSpan={2}></TableCell>
+                  <TableCell colSpan={3}></TableCell>
                   <TableCell align="right">
                     <strong>
                       <Currency value={equity} />
@@ -326,13 +381,14 @@ ${toReachMessage}`
                 </TableRow>
 
                 <TableRow>
-                  <TableCell colSpan={5}>&nbsp;</TableCell>
+                  <TableCell colSpan={6}>&nbsp;</TableCell>
                 </TableRow>
 
                 {/* percentage row */}
                 <TableRow hover>
                   <TableCell></TableCell>
                   <TableCell>Current Allocation</TableCell>
+                  <TableCell></TableCell>
                   <TableCell
                     align="right"
                     sx={{
@@ -362,6 +418,7 @@ ${toReachMessage}`
                 <TableRow hover>
                   <TableCell></TableCell>
                   <TableCell>Target Allocation</TableCell>
+                  <TableCell></TableCell>
                   <TableCell align="right">
                     <StyledSpan
                       sx={{
@@ -405,6 +462,7 @@ ${toReachMessage}`
                 <TableRow hover>
                   <TableCell></TableCell>
                   <TableCell>Target Amounts</TableCell>
+                  <TableCell></TableCell>
                   <TableCell align="right">
                     <Currency value={total * targetEquityPercentage} />
                   </TableCell>
@@ -482,7 +540,7 @@ ${toReachMessage}`
           </Stack>
         </Stack>
       </BottomStatusBar>
-      <AccountDialog
+      <AssetDialog
         account={selectedAccount}
         onClose={() => setSelectedAccount(undefined)}
       />

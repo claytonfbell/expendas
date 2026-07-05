@@ -1,14 +1,13 @@
 import dayjs from "../dayjs"
 import prisma from "./prisma"
-import {
-  getAllTimeHighTickerPrice,
-  getTwoYearLowTickerPrice,
-} from "./tickerPrices"
 
 export async function updateAccountBalanceHistory(organizationId: number) {
   const accounts = await prisma.account.findMany({
     where: {
       organizationId,
+    },
+    include: {
+      assets: true,
     },
   })
 
@@ -25,22 +24,51 @@ export async function updateAccountBalanceHistory(organizationId: number) {
     existingRows.map((row) => [row.accountId, row])
   )
 
-  const marketHighPrice = (await getAllTimeHighTickerPrice("VOO"))!.price
-  const marketLowPrice = (await getTwoYearLowTickerPrice("VOO"))!.price
+  const allTickers = [
+    ...new Set(
+      accounts.flatMap((a) => a.assets.map((asset) => asset.ticker))
+    ),
+  ]
+
+  const tickerHighs = new Map<string, number>()
+  const tickerLows = new Map<string, number>()
+
+  for (const ticker of allTickers) {
+    const allTimeHigh = await prisma.tickerPrice.findFirst({
+      where: { ticker, price: { gt: 0 } },
+      orderBy: { price: "desc" },
+    })
+    if (allTimeHigh) tickerHighs.set(ticker, allTimeHigh.price)
+
+    const twoYearsAgo = dayjs().subtract(2, "years").format("YYYY-MM-DD")
+    const twoYearLow = await prisma.tickerPrice.findFirst({
+      where: { ticker, date: { gte: twoYearsAgo }, price: { gt: 0 } },
+      orderBy: { price: "asc" },
+    })
+    if (twoYearLow) tickerLows.set(ticker, twoYearLow.price)
+  }
 
   for (const account of accounts) {
-    // calculate marketHigh and marketLow
-    const fixedIncome = account.totalFixedIncome ?? 0
-    const currentPrice = account.tickerPrice ?? 0
-    const shares = (account.balance - fixedIncome) / currentPrice
-    const marketHigh =
-      account.accountType === "Investment"
-        ? Math.round(shares * marketHighPrice + fixedIncome)
-        : null
-    const marketLow =
-      account.accountType === "Investment"
-        ? Math.round(shares * marketLowPrice + fixedIncome)
-        : null
+    let marketHigh: number | null = null
+    let marketLow: number | null = null
+
+    if (account.accountType === "Investment" && account.assets.length > 0) {
+      marketHigh = account.assets.reduce((sum, asset) => {
+        const highPrice = tickerHighs.get(asset.ticker)
+        if (highPrice && asset.tickerPrice > 0) {
+          return sum + Math.round((asset.balance / asset.tickerPrice) * highPrice)
+        }
+        return sum + asset.balance
+      }, 0)
+
+      marketLow = account.assets.reduce((sum, asset) => {
+        const lowPrice = tickerLows.get(asset.ticker)
+        if (lowPrice && asset.tickerPrice > 0) {
+          return sum + Math.round((asset.balance / asset.tickerPrice) * lowPrice)
+        }
+        return sum + asset.balance
+      }, 0)
+    }
 
     console.log(
       `account ${account.id}: marketHigh: ${marketHigh}, marketLow: ${marketLow}`
@@ -54,7 +82,6 @@ export async function updateAccountBalanceHistory(organizationId: number) {
         },
         data: {
           balance: account.balance,
-          fixedIncome: account.totalFixedIncome ?? 0,
           marketHigh,
           marketLow,
         },
@@ -64,7 +91,6 @@ export async function updateAccountBalanceHistory(organizationId: number) {
         data: {
           accountId: account.id,
           balance: account.balance,
-          fixedIncome: account.totalFixedIncome ?? 0,
           marketHigh,
           marketLow,
           date: today,

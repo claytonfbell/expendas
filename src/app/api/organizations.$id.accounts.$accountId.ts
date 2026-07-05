@@ -1,10 +1,8 @@
-import { TickerPrice } from "@prisma/client"
 import { AccountWithIncludes } from "../../components/AccountWithIncludes"
 import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
 import { BadRequestException } from "../../components/server/HttpException"
 import { buildResponse } from "../../components/server/buildResponse"
 import prisma from "../../components/server/prisma"
-import { getLatestTickerPrice } from "../../components/server/tickerPrices"
 import validate from "../../components/server/validate"
 import { createFileRoute } from "@tanstack/react-router"
 
@@ -61,7 +59,6 @@ export const Route = createFileRoute("/api/organizations/$id/accounts/$accountId
         balance,
         creditCardType,
         carryOver,
-        totalFixedIncome,
       }: AccountWithIncludes = await request.json()
       validate({ name }).notEmpty()
       validate({ accountType }).notEmpty()
@@ -88,18 +85,6 @@ export const Route = createFileRoute("/api/organizations/$id/accounts/$accountId
 
       // passed validation
 
-      // if its an investment account - stick it to current tickerPrice
-      let latestVooPrice: TickerPrice | null = null
-      if (accountType === "Investment") {
-        latestVooPrice = await getLatestTickerPrice("VOO")
-      }
-
-      // if its a traditional account - assume all fixed income is FBND and stick it to current price
-      let latestFbndPrice: TickerPrice | null = null
-      if (accountBucket === "Traditional") {
-        latestFbndPrice = await getLatestTickerPrice("FBND")
-      }
-
       const updatedAccount = await prisma.account.update({
         data: {
           name,
@@ -107,11 +92,6 @@ export const Route = createFileRoute("/api/organizations/$id/accounts/$accountId
           accountBucket,
           balance,
           creditCardType,
-          totalFixedIncome,
-          tickerPrice: latestVooPrice ? latestVooPrice.price : null,
-          fixedIncomeTickerPrice: latestFbndPrice
-            ? latestFbndPrice.price
-            : null,
         },
         where: { id: accountId },
       })
@@ -141,7 +121,7 @@ export const Route = createFileRoute("/api/organizations/$id/accounts/$accountId
         where: {
           id: accountId,
         },
-        include: { carryOver: true },
+        include: { carryOver: true, assets: true },
       })
     })
   },

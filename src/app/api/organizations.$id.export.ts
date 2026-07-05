@@ -120,12 +120,9 @@ export const Route = createFileRoute("/api/organizations/$id/export")({
                 accountType: true,
                 balance: true,
                 creditCardType: true,
-                totalFixedIncome: true,
                 accountBucket: true,
                 plaidCredentialId: true,
                 plaidAccountId: true,
-                tickerPrice: true,
-                fixedIncomeTickerPrice: true,
               },
             }),
             prisma.payment.findMany({

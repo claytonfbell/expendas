@@ -70,7 +70,6 @@ model Account {
     accountType       AccountType
     balance           Int
     creditCardType    CreditCardType?
-    totalFixedIncome  Int?
     organization      Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
     carryOver         CarryOver[]
     payments          Payment[]
@@ -78,12 +77,11 @@ model Account {
     plaidCredentialId Int?
     plaidCredential   PlaidCredential? @relation(fields: [plaidCredentialId], references: [id])
     plaidAccountId    String?          @db.VarChar(255)
-    tickerPrice       Int?
-    fixedIncomeTickerPrice   Int?
     balanceHistory              AccountBalanceHistory[]
     retirementPlanContributions RetirementPlanContribution[]
     fixedIncomeAssets           FixedIncomeAsset[]
     receipts                    Receipt[]
+    assets                      Asset[]
 }
 
 model Payment {
@@ -137,13 +135,22 @@ model AccountBalanceHistory {
     id          Int     @id @default(autoincrement())
     accountId   Int
     balance     Int
-    fixedIncome Int     @default(0)
     marketHigh  Int?
     marketLow   Int?
     date        String
     account     Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
     @@unique([accountId, date], map: "AccountBalanceHistory.accountId_date_unique")
+}
+
+model Asset {
+    id           Int       @id @default(autoincrement())
+    accountId    Int
+    ticker       String    @db.VarChar(255)
+    tickerPrice  Int
+    balance      Int
+    assetType    AssetType
+    account      Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
 }
 
 model RetirementPlan {
@@ -406,6 +413,11 @@ enum PlaidEnvironment {
 }
 
 
+
+enum AssetType {
+    Equity
+    Fixed_Income
+}
 
 // run in development
 // npx prisma migrate dev --name init

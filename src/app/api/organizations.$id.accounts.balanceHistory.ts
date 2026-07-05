@@ -23,7 +23,6 @@ export const Route = createFileRoute("/api/organizations/$id/accounts/balanceHis
             select: {
               id: true,
               balance: true,
-              fixedIncome: true,
               marketHigh: true,
               marketLow: true,
               date: true,

@@ -1,1 +1,1 @@
-export type Ticker = "VOO" | "FBND"
+export type Ticker = string

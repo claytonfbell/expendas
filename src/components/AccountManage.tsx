@@ -22,9 +22,11 @@ import {
   usePlaidLink,
 } from "react-plaid-link"
 import { AccountDialog } from "./AccountDialog"
+import { AssetDialog } from "./AssetDialog"
 import ConfirmDialog from "./ConfirmDialog"
 import { Currency } from "./Currency"
 import { useGlobalState } from "./GlobalStateProvider"
+import { AccountWithIncludes } from "./AccountWithIncludes"
 import { displayAccountType } from "./accountTypes"
 import { useCheckLogin } from "./api/hooks/useCheckLogin"
 import { useFetchAccounts } from "./api/hooks/useFetchAccounts"
@@ -43,6 +45,7 @@ export function AccountManage() {
   const { mutateAsync: removeAccount, error: removeError } = useRemoveAccount()
   const [accountToRemove, setAccountToRemove] = useState<Account>()
   const [accountToUpdate, setAccountToUpdate] = useState<Account>()
+  const [accountForAssets, setAccountForAssets] = useState<AccountWithIncludes>()
   function handleDelete() {
     if (accountToRemove !== undefined) {
       removeAccount(accountToRemove)
@@ -219,6 +222,19 @@ export function AccountManage() {
                 return <Currency value={account.balance} red />
               },
             },
+            {
+              label: "Assets",
+              render: (account) =>
+                account.accountType === "Investment" ? (
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() => setAccountForAssets(account)}
+                  >
+                    Manage Assets
+                  </Button>
+                ) : null,
+            },
           ]}
         />
       </Stack>
@@ -234,13 +250,10 @@ export function AccountManage() {
             accountType: "Checking_Account",
             balance: 0,
             creditCardType: null,
-            totalFixedIncome: 0,
             accountBucket: "After_Tax",
             plaidCredentialId: null,
             plaidAccountId: null,
-            tickerPrice: null,
-            fixedIncomeTickerPrice: null,
-          })
+          } as Account)
         }
       >
         Add Account
@@ -248,6 +261,11 @@ export function AccountManage() {
       <AccountDialog
         account={accountToUpdate}
         onClose={() => setAccountToUpdate(undefined)}
+      />
+
+      <AssetDialog
+        account={accountForAssets}
+        onClose={() => setAccountForAssets(undefined)}
       />
 
       <ConfirmDialog

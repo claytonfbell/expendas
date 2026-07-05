@@ -1,85 +1,64 @@
 import prisma from "./prisma"
 import { getLatestTickerPrice } from "./tickerPrices"
+import { recalculateAccountBalance } from "./recalculateAccountBalance"
 
 export async function autoUpdateInvestmentAccountBalances() {
   console.log("Running autoUpdateInvestmentAccountBalances")
-  const latestVooPrice = await getLatestTickerPrice("VOO")
-  const latestFbndPrice = await getLatestTickerPrice("FBND")
 
-  // get investment accounts
   const investmentAccounts = await prisma.account.findMany({
     where: {
       accountType: "Investment",
-      tickerPrice: {
-        gt: 0,
-      },
+    },
+    include: {
+      assets: true,
     },
   })
 
-  // 401k and Traditional IRA accounts hold FBND for fixed income,
-  // so we want to update those fixed income blances also
-  const traditionalAccounts = investmentAccounts.filter(
-    (account) => account.accountBucket === "Traditional"
+  const accountsWithAssets = investmentAccounts.filter(
+    (account) => account.assets.length > 0
   )
 
   console.log(
-    `Found ${investmentAccounts.length} investment accounts with ticker prices`
+    `Found ${accountsWithAssets.length} investment accounts with assets`
   )
 
-  for (const account of investmentAccounts) {
-    console.log(`checking account ${account.id} for ticker price updates...`)
-    if (
-      account.tickerPrice &&
-      latestVooPrice &&
-      (account.tickerPrice !== latestVooPrice.price ||
-        (latestFbndPrice &&
-          account.accountBucket === "Traditional" &&
-          account.fixedIncomeTickerPrice !== latestFbndPrice.price))
-    ) {
-      console.log(`updating account ${account.id} with new ticker price...`)
+  const allTickers = [
+    ...new Set(
+      accountsWithAssets.flatMap((a) => a.assets.map((asset) => asset.ticker))
+    ),
+  ]
 
-      // update totalFixedIncome for traditional accounts
-      let newTotalFixedIncome = account.totalFixedIncome
-      if (
-        account.totalFixedIncome &&
-        account.totalFixedIncome > 0 &&
-        account.accountBucket === "Traditional" &&
-        account.fixedIncomeTickerPrice !== null &&
-        latestFbndPrice
-      ) {
-        const fixedIncomeShares =
-          account.totalFixedIncome / (account.fixedIncomeTickerPrice ?? 1)
-        newTotalFixedIncome = Math.round(
-          fixedIncomeShares * latestFbndPrice.price
+  const latestPrices = new Map<string, number>()
+  for (const ticker of allTickers) {
+    const price = await getLatestTickerPrice(ticker)
+    if (price) {
+      latestPrices.set(ticker, price.price)
+    }
+  }
+
+  for (const account of accountsWithAssets) {
+    let needsUpdate = false
+
+    for (const asset of account.assets) {
+      const newPrice = latestPrices.get(asset.ticker)
+      if (newPrice && asset.tickerPrice !== newPrice) {
+        const newBalance = Math.round(
+          (asset.balance / asset.tickerPrice) * newPrice
         )
+        await prisma.asset.update({
+          where: { id: asset.id },
+          data: {
+            tickerPrice: newPrice,
+            balance: newBalance,
+          },
+        })
+        needsUpdate = true
       }
+    }
 
-      // calculate number of shares based on old price
-      const equityBalance = account.balance - (newTotalFixedIncome ?? 0)
-      const numShares = equityBalance / account.tickerPrice
-      // calculate new balance based on latest price
-      const newBalance =
-        numShares * latestVooPrice.price + (newTotalFixedIncome ?? 0)
-
-      console.log("newTotalFixedIncome", newTotalFixedIncome)
-      await prisma.account.update({
-        where: {
-          id: account.id,
-        },
-        data: {
-          balance: Math.round(newBalance),
-          tickerPrice: latestVooPrice.price,
-          fixedIncomeTickerPrice:
-            account.accountBucket === "Traditional" && latestFbndPrice
-              ? latestFbndPrice.price
-              : null,
-          totalFixedIncome: newTotalFixedIncome,
-        },
-      })
-    } else {
-      //   console.log(
-      //     `skipping account ${account.id} because ticker price is already up to date`
-      //   )
+    if (needsUpdate) {
+      console.log(`Updating balance for account ${account.id}`)
+      await recalculateAccountBalance(account.id)
     }
   }
 }

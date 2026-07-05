@@ -3,6 +3,7 @@ import { Ticker } from "./tickerTypes"
 export async function scrapeCurrentTickerPrice(
   ticker: Ticker
 ): Promise<number | null> {
+  if (ticker === "CASH") return 100
   try {
     // from cnbc (yahoo and fideliety use javascript for anti-scraping)
     const url = `https://www.cnbc.com/quotes/${ticker}`

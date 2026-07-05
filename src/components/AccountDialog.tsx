@@ -1,17 +1,14 @@
 import {
-  Box,
   Dialog,
   DialogContent,
-  Grid,
   useMediaQuery,
   useTheme,
 } from "@mui/material"
 import { Account } from "@prisma/client"
 import { Form } from "material-ui-pack"
 import { useEffect, useState } from "react"
-import { debtGroup, investmentGroup } from "./AccountGroup"
+import { debtGroup } from "./AccountGroup"
 import { AccountWithIncludes } from "./AccountWithIncludes"
-import { Currency } from "./Currency"
 import { Title } from "./Title"
 import { accountBucketOptions } from "./accountBuckets"
 import { accountTypeOptions } from "./accountTypes"
@@ -110,54 +107,8 @@ export function AccountDialog(props: Props) {
                 state !== undefined &&
                 debtGroup.types.includes(state.accountType),
             },
-
-            ...(state?.accountType !== undefined &&
-            investmentGroup.types.includes(state?.accountType)
-              ? {
-                  totalFixedIncome: {
-                    type: "currency",
-                    inPennies: true,
-                    fullWidth: true,
-                  },
-                }
-              : {}),
           }}
-          layout={{
-            totalFixedIncome:
-              state === undefined
-                ? undefined
-                : {
-                    xs: 12,
-                    renderAfter: (
-                      <Grid size={12}>
-                        <Box
-                          sx={{
-                            paddingLeft: 2,
-                            paddingRight: 2,
-                            paddingBottom: 2,
-                          }}
-                        >
-                          <Grid
-                            container
-                            spacing={2}
-                            sx={{
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <Grid>Equity</Grid>
-                            <Grid>
-                              <Currency
-                                value={
-                                  state.balance - (state.totalFixedIncome || 0)
-                                }
-                              />
-                            </Grid>
-                          </Grid>
-                        </Box>
-                      </Grid>
-                    ),
-                  },
-          }}
+          layout={{}}
         />
 
         <br />
