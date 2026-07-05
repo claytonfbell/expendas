@@ -55,8 +55,10 @@ export async function populateMissingTickerPrices(ticker: Ticker) {
 
   const massiveRateLimit = new RateLimit(`massiveApi-${ticker}`, [
     {
-      max: 5,
-      durationMs: 60 * 60 * 1000, // 1 hour
+      //   max: 5,
+      //   durationMs: 60 * 60 * 1000, // 1 hour
+      max: 10,
+      durationMs: 60 * 5 * 1000, // 5 minutes
     },
   ])
   let keepGoing = true
