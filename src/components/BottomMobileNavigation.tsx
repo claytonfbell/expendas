@@ -1,6 +1,6 @@
 import { ButtonBase, Stack } from "@mui/material"
 import { alpha } from "@mui/material/styles"
-import { useRouter, Link as TanStackLink } from "@tanstack/react-router"
+import { Link as TanStackLink, useRouter } from "@tanstack/react-router"
 import { navigationLinks } from "./navigationLinks"
 
 const bottomNavigationLinks = navigationLinks.filter((link) =>
@@ -18,6 +18,7 @@ export function BottomMobileNavigation() {
         justifyContent: "stretch",
         alignItems: "start",
         backgroundColor: (theme) => theme.palette.background.default,
+        borderTop: (theme) => `1px solid ${theme.palette.divider}`,
       }}
     >
       {bottomNavigationLinks.map((link) => {
