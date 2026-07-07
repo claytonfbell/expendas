@@ -17,7 +17,7 @@ export function SuspenseWrapper({ children }: { children: React.ReactNode }) {
             spacing={2}
             sx={{ alignItems: "center", justifyContent: "center" }}
           >
-            <Typography>Loading...</Typography>
+            <Typography sx={{ fontWeight: "bold", fontSize: "1.5rem", opacity: 0.5 }}>LOADING</Typography>
             <CircularProgress size={128} />
           </Stack>
         </Stack>

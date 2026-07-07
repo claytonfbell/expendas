@@ -5,6 +5,7 @@ import { buildResponse } from "../../components/server/buildResponse"
 import prisma from "../../components/server/prisma"
 import validate from "../../components/server/validate"
 import { scheduleTasksForSchedule } from "./organizations.$id.tasks.schedules.$taskScheduleId"
+import type { TaskScheduleCreateRequest } from "./taskScheduleTypes"
 export type { TaskScheduleCreateRequest, TaskScheduleWithIncludes } from "./taskScheduleTypes"
 
 export const Route = createFileRoute("/api/organizations/$id/tasks/schedules")({
@@ -56,7 +57,7 @@ export const Route = createFileRoute("/api/organizations/$id/tasks/schedules")({
           taskGroup: true,
         },
         orderBy: {
-          date: "asc",
+          sortOrder: "asc",
         },
       })
 
@@ -81,12 +82,20 @@ export const Route = createFileRoute("/api/organizations/$id/tasks/schedules")({
         throw new Error("Task group ID is required")
       }
 
+      const maxSortOrder = await prisma.taskSchedule.findFirst({
+        where: { taskGroupId },
+        orderBy: { sortOrder: "desc" },
+        select: { sortOrder: true },
+      })
+      const nextSortOrder = (maxSortOrder?.sortOrder ?? -1) + 1
+
       const taskSchedule = await prisma.taskSchedule.create({
         data: {
           name,
           taskGroupId,
           autoClose,
           showStats,
+          sortOrder: nextSortOrder,
           createdByUserId: user.id,
           date,
         },

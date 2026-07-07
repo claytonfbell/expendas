@@ -209,6 +209,7 @@ model TaskGroup {
     organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
     name            String  @db.VarChar(255)
     color           TaskGroupColor
+    sortOrder       Int     @default(0)
     users           TaskGroupUser[]
     taskSchedules   TaskSchedule[]
 }
@@ -240,6 +241,7 @@ model TaskSchedule {
     repeatsWeekly           Int? // 1 = every week, 2 = every 2 weeks, etc. starting from date field
     repeatsOnDates          String[] // additional specific dates YYYY-MM-DD (ignore other filters)
     showStats               Boolean @default(false)
+    sortOrder               Int     @default(0)
     tasks                   Task[]
 }
 

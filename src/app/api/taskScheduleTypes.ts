@@ -2,7 +2,7 @@ import { TaskGroup, TaskSchedule } from "@prisma/client"
 
 export type TaskScheduleCreateRequest = Omit<
   TaskSchedule,
-  "id" | "taskGroupId" | "createdByUserId"
+  "id" | "taskGroupId" | "createdByUserId" | "sortOrder"
 > & {
   taskGroupId: number | null
 }

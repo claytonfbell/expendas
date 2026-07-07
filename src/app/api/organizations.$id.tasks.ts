@@ -91,13 +91,13 @@ export const Route = createFileRoute("/api/organizations/$id/tasks")({
               {
                 taskSchedule: {
                   taskGroup: {
-                    name: "asc",
+                    sortOrder: "asc",
                   },
                 },
               },
               {
                 taskSchedule: {
-                  name: "asc",
+                  sortOrder: "asc",
                 },
               },
             ],

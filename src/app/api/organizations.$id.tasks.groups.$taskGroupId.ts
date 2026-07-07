@@ -78,7 +78,7 @@ export const Route = createFileRoute(
         }
   
         const requestBody: TaskGroupWithIncludes = await request.json()
-        const { name, color, users } = requestBody
+        const { name, color, users, sortOrder } = requestBody
   
         validate({ name, color }).notEmpty()
   
@@ -104,6 +104,7 @@ export const Route = createFileRoute(
           data: {
             name,
             color,
+            sortOrder,
           },
           include: {
             users: {

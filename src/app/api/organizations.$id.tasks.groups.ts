@@ -33,6 +33,9 @@ export const Route = createFileRoute("/api/organizations/$id/tasks/groups")({
             },
           },
         },
+        orderBy: {
+          sortOrder: "asc",
+        },
       })
 
       return taskGroups
@@ -52,10 +55,18 @@ export const Route = createFileRoute("/api/organizations/$id/tasks/groups")({
 
       validate({ name, color }).notEmpty()
 
+      const maxSortOrder = await prisma.taskGroup.findFirst({
+        where: { organizationId },
+        orderBy: { sortOrder: "desc" },
+        select: { sortOrder: true },
+      })
+      const nextSortOrder = (maxSortOrder?.sortOrder ?? -1) + 1
+
       const taskGroup = await prisma.taskGroup.create({
         data: {
           name,
           color,
+          sortOrder: nextSortOrder,
           organizationId,
           users: {
             create: {
@@ -79,4 +90,4 @@ export const Route = createFileRoute("/api/organizations/$id/tasks/groups")({
   }
 })
 
-export type TaskGroupCreateRequest = Omit<TaskGroup, "id" | "organizationId">
+export type TaskGroupCreateRequest = Omit<TaskGroup, "id" | "organizationId" | "sortOrder">
