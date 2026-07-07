@@ -29,6 +29,7 @@ export const reasonOptions: MealsOutReason[] = [
   "Travel",
   "Out_and_About",
   "Stress",
+  "Housekeeper_Day",
   "Other",
 ]
 
@@ -54,6 +55,8 @@ export function displayReason(reason: MealsOutReason): string {
       return "Out and About"
     case "Stress":
       return "Stress"
+    case "Housekeeper_Day":
+      return "Housekeeper Day"
     case "Other":
       return "Other"
     default:
@@ -83,6 +86,8 @@ export function getColorForMealReason(reason: MealsOutReason): string {
       return "#00bcd4"
     case "Stress":
       return "#f44336"
+    case "Housekeeper_Day":
+      return "#8bc34a"
     case "Other":
       return "#795548"
     default:

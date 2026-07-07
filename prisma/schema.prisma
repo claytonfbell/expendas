@@ -357,6 +357,7 @@ enum MealsOutReason {
     Away_from_Home
     Out_and_About
     Stress
+    Housekeeper_Day
     Other
 }
 
