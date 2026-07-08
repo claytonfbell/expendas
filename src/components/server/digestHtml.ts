@@ -1,6 +1,20 @@
 import dayjs from "../dayjs"
 import prisma from "./prisma"
 
+const BASE_COLORS: Record<string, string> = {
+  Blue: "#0088b3",
+  Green: "#388e3c",
+  Red: "#d32f2f",
+  Yellow: "#d9c751",
+  Purple: "#7b1fa2",
+  Orange: "#f57c00",
+  Gray: "#616161",
+}
+
+function hexForColor(color: string): string {
+  return BASE_COLORS[color] ?? "#1976d2"
+}
+
 export async function generateDigestHtml(
   userId: number,
   organizationId: number
@@ -9,41 +23,52 @@ export async function generateDigestHtml(
   const todayStr = today.format("YYYY-MM-DD")
   const yesterdayStr = today.subtract(1, "day").format("YYYY-MM-DD")
 
-  const [accounts, tasks, yesterdayHistories] = await Promise.all([
-    prisma.account.findMany({
-      where: { organizationId },
-      select: { id: true, name: true, balance: true },
-    }),
-    prisma.task.findMany({
-      where: {
-        taskSchedule: {
-          taskGroup: {
-            organizationId,
-            users: { some: { userId } },
+  const [accounts, tasks, yesterdayHistories, latestMealOut] =
+    await Promise.all([
+      prisma.account.findMany({
+        where: { organizationId },
+        select: { id: true, name: true, balance: true, accountType: true },
+      }),
+      prisma.task.findMany({
+        where: {
+          taskSchedule: {
+            taskGroup: {
+              organizationId,
+              users: { some: { userId } },
+            },
+          },
+          date: todayStr,
+        },
+        include: {
+          taskSchedule: {
+            include: {
+              taskGroup: true,
+            },
           },
         },
-        date: todayStr,
-      },
-      include: {
-        taskSchedule: {
-          include: {
-            taskGroup: true,
-          },
+        orderBy: [
+          { taskSchedule: { taskGroup: { sortOrder: "asc" } } },
+          { taskSchedule: { sortOrder: "asc" } },
+        ],
+      }),
+      prisma.accountBalanceHistory.findMany({
+        where: {
+          account: { organizationId },
+          date: yesterdayStr,
         },
-      },
-      orderBy: [
-        { taskSchedule: { taskGroup: { sortOrder: "asc" } } },
-        { taskSchedule: { sortOrder: "asc" } },
-      ],
-    }),
-    prisma.accountBalanceHistory.findMany({
-      where: {
-        account: { organizationId },
-        date: yesterdayStr,
-      },
-      select: { accountId: true, balance: true },
-    }),
-  ])
+        select: { accountId: true, balance: true },
+      }),
+      prisma.mealsOut.findFirst({
+        where: { organizationId },
+        orderBy: { date: "desc" },
+        select: { date: true },
+      }),
+    ])
+
+  const savingsTypes = new Set(["CD", "Savings_Account", "Investment"])
+  const totalSavings = accounts
+    .filter((a) => savingsTypes.has(a.accountType))
+    .reduce((sum, a) => sum + a.balance, 0)
 
   const currentNetWorth = accounts.reduce((sum, a) => sum + a.balance, 0)
   const yesterdayMap = new Map(
@@ -55,11 +80,20 @@ export async function generateDigestHtml(
   )
   const change = currentNetWorth - yesterdayNetWorth
 
-  const groupTasksMap = new Map<string, typeof tasks>()
+  const daysSinceMealOut = latestMealOut
+    ? today.diff(dayjs(latestMealOut.date), "day")
+    : null
+
+  const groupTasksMap = new Map<string, { tasks: typeof tasks; color: string }>()
   for (const task of tasks) {
-    const groupName = task.taskSchedule.taskGroup.name
-    if (!groupTasksMap.has(groupName)) groupTasksMap.set(groupName, [])
-    groupTasksMap.get(groupName)!.push(task)
+    const key = task.taskSchedule.taskGroup.name
+    if (!groupTasksMap.has(key)) {
+      groupTasksMap.set(key, {
+        tasks: [],
+        color: hexForColor(task.taskSchedule.taskGroup.color),
+      })
+    }
+    groupTasksMap.get(key)!.tasks.push(task)
   }
 
   const centsToDollars = (cents: number) => {
@@ -70,9 +104,9 @@ export async function generateDigestHtml(
 
   const tasksHtml = [...groupTasksMap.entries()]
     .map(
-      ([groupName, groupTasks]) => `
+      ([groupName, { tasks: groupTasks, color }]) => `
         <tr>
-          <td style="padding: 8px 0 4px; font-size: 14px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #eee;">
+          <td style="padding: 8px 0 4px; font-size: 14px; font-weight: 700; color: ${color}; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #eee;">
             ${groupName}
           </td>
         </tr>
@@ -100,12 +134,15 @@ export async function generateDigestHtml(
 
   const formattedDate = today.format("dddd, MMMM D, YYYY")
 
+  const statBoxStyle =
+    "background-color: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 12px 16px; text-align: center;"
+
   return `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width" />
-  <title>Expendas Daily Digest</title>
+  <title>Expendas Daily</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #f4f6f8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f4f6f8;">
@@ -114,22 +151,46 @@ export async function generateDigestHtml(
         <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); overflow: hidden;">
           <tr>
             <td style="background: linear-gradient(135deg, #0088b3 0%, #005f8a 100%); padding: 32px 32px 28px; text-align: center;">
-              <h1 style="margin: 0 0 4px; font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: 0.02em;">Expendas Daily Digest</h1>
+              <h1 style="margin: 0 0 4px; font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: 0.02em;">Expendas Daily</h1>
               <p style="margin: 0; font-size: 14px; color: rgba(255,255,255,0.85);">${formattedDate}</p>
             </td>
           </tr>
 
           <tr>
-            <td style="padding: 28px 32px 24px;">
+            <td style="padding: 28px 32px 8px;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.08em; padding-bottom: 8px;">Net Worth</td>
                 </tr>
                 <tr>
-                  <td style="font-size: 32px; font-weight: 700; color: #1a1a2e; padding-bottom: 4px;">${centsToDollars(currentNetWorth)}</td>
+                  <td style="font-size: 32px; font-weight: 700; color: #1a1a2e; padding-bottom: 2px;">${centsToDollars(currentNetWorth)}</td>
                 </tr>
                 <tr>
-                  <td style="font-size: 14px; font-weight: 500; color: ${changeColor}; padding-bottom: 4px;">${changeLabel}</td>
+                  <td style="font-size: 14px; font-weight: 500; color: ${changeColor}; padding-bottom: 8px;">${changeLabel}</td>
+                </tr>
+                <tr>
+                  <td style="font-size: 13px; color: #666; padding-top: 4px; border-top: 1px dashed #e0e0e0;">
+                    Total Savings: <strong style="color: #1a1a2e;">${centsToDollars(totalSavings)}</strong>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding: 16px 32px 8px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="${statBoxStyle}">
+                    <span style="font-size: 12px; font-weight: 600; color: #0369a1; text-transform: uppercase; letter-spacing: 0.05em;">Days Since Last Meal Out</span>
+                    <br/>
+                    <span style="font-size: 28px; font-weight: 700; color: #0284c7; line-height: 1.4;">
+                      ${daysSinceMealOut !== null ? daysSinceMealOut : "—"}
+                    </span>
+                    <span style="font-size: 13px; color: #0369a1;">
+                      ${daysSinceMealOut === 1 ? "day" : "days"}
+                    </span>
+                  </td>
                 </tr>
               </table>
             </td>
