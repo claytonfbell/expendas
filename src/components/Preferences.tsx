@@ -267,13 +267,20 @@ export function Preferences() {
             </>
           ) : null}
 
-          <Box>
+          <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
             <Button
               variant="contained"
               onClick={handleSaveNotifications}
               disabled={isUpdating}
             >
               {isUpdating ? "Saving..." : "Save Notification Settings"}
+            </Button>
+            <Button
+              variant="outlined"
+              href="/api/email-digest-preview"
+              target="_blank"
+            >
+              Preview Digest Email
             </Button>
             {updateError ? (
               <Typography color="error" variant="caption" sx={{ ml: 2 }}>
