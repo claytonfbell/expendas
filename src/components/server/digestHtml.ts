@@ -156,7 +156,7 @@ export async function generateDigestHtml(
       ? `${savingsChangeArrow} ${centsToDollars(Math.abs(savingsChange))} from yesterday`
       : "No change from yesterday"
 
-  const formattedDate = today.format("dddd, MMMM D, YYYY")
+  const formattedDate = today.format("dddd, MMMM D, YYYY [at] h:mm A")
 
   const statBoxStyle =
     "background-color: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 12px 16px; text-align: center;"
