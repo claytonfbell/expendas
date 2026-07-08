@@ -69,11 +69,12 @@ export async function generateDigestHtml(
   const totalSavings = accounts
     .filter((a) => savingsTypes.has(a.accountType))
     .reduce((sum, a) => sum + a.balance, 0)
+  const yesterdaySavings = accounts
+    .filter((a) => savingsTypes.has(a.accountType))
+    .reduce((sum, a) => sum + (yesterdayMap.get(a.id) ?? a.balance), 0)
+  const savingsChange = totalSavings - yesterdaySavings
 
   const currentNetWorth = accounts.reduce((sum, a) => sum + a.balance, 0)
-  const yesterdayMap = new Map(
-    yesterdayHistories.map((h) => [h.accountId, h.balance])
-  )
   const yesterdayNetWorth = accounts.reduce(
     (sum, a) => sum + (yesterdayMap.get(a.id) ?? a.balance),
     0
@@ -125,11 +126,11 @@ export async function generateDigestHtml(
     )
     .join("")
 
-  const changeColor = change >= 0 ? "#16a34a" : "#dc2626"
-  const changeArrow = change >= 0 ? "▲" : "▼"
-  const changeLabel =
-    change !== 0
-      ? `${changeArrow} ${centsToDollars(Math.abs(change))} from yesterday`
+  const savingsChangeColor = savingsChange >= 0 ? "#16a34a" : "#dc2626"
+  const savingsChangeArrow = savingsChange >= 0 ? "▲" : "▼"
+  const savingsChangeLabel =
+    savingsChange !== 0
+      ? `${savingsChangeArrow} ${centsToDollars(Math.abs(savingsChange))} from yesterday`
       : "No change from yesterday"
 
   const formattedDate = today.format("dddd, MMMM D, YYYY")
@@ -166,12 +167,23 @@ export async function generateDigestHtml(
                   <td style="font-size: 32px; font-weight: 700; color: #1a1a2e; padding-bottom: 2px;">${centsToDollars(currentNetWorth)}</td>
                 </tr>
                 <tr>
-                  <td style="font-size: 14px; font-weight: 500; color: ${changeColor}; padding-bottom: 8px;">${changeLabel}</td>
+                  <td style="font-size: 14px; font-weight: 500; color: ${changeColor}; padding-bottom: 4px;">${changeLabel}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding: 8px 32px 8px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.08em; padding-bottom: 8px;">Total Savings</td>
                 </tr>
                 <tr>
-                  <td style="font-size: 13px; color: #666; padding-top: 4px; border-top: 1px dashed #e0e0e0;">
-                    Total Savings: <strong style="color: #1a1a2e;">${centsToDollars(totalSavings)}</strong>
-                  </td>
+                  <td style="font-size: 32px; font-weight: 700; color: #1a1a2e; padding-bottom: 2px;">${centsToDollars(totalSavings)}</td>
+                </tr>
+                <tr>
+                  <td style="font-size: 14px; font-weight: 500; color: ${savingsChangeColor}; padding-bottom: 4px;">${savingsChangeLabel}</td>
                 </tr>
               </table>
             </td>
