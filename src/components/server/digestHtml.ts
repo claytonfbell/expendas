@@ -121,7 +121,24 @@ export async function generateDigestHtml(
       }
       return { name: s.name, color: hexForColor(s.taskGroup.color), streak }
     })
-    .filter((s) => s.streak >= 7)
+    .filter((s) => s.streak >= 2)
+
+  const giphyUrl =
+    celebrations.length > 0
+      ? await (async () => {
+          try {
+            const tags = ["celebrate", "party", "lets+go"]
+            const tag = tags[Math.floor(Math.random() * tags.length)]
+            const res = await fetch(
+              `https://api.giphy.com/v1/gifs/random?api_key=${process.env.GIPHY_API_KEY}&tag=${tag}&rating=g`
+            )
+            const json = await res.json()
+            return json.data?.images?.fixed_height?.url ?? null
+          } catch {
+            return null
+          }
+        })()
+      : null
 
   const savingsTypes = new Set(["CD", "Savings_Account", "Investment"])
   const yesterdayMap = new Map(
@@ -215,6 +232,14 @@ export async function generateDigestHtml(
       ? `
           <tr>
             <td style="padding: 8px 32px;">
+              ${giphyUrl ? `
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="text-align: center; margin-bottom: 8px;">
+                <tr>
+                  <td style="text-align: center;">
+                    <img src="${giphyUrl}" alt="" style="display: inline-block; max-width: 100%; border-radius: 8px;" />
+                  </td>
+                </tr>
+              </table>` : ""}
               ${celebrations
                 .map(
                   (c) => `
