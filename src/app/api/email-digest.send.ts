@@ -24,7 +24,7 @@ export const Route = createFileRoute("/api/email-digest/send")({
 
           sgMail.setApiKey(process.env.SENDGRID_API_KEY || "")
           await sgMail.send({
-            to: user.email,
+            to: process.env.NODE_ENV !== "production" ? (process.env.DEV_OVERRIDE_EMAIL || "claytonfbell@gmail.com") : user.email,
             from: "noreply@expendas.com",
             subject: `${user.firstName}'s Expendas Daily`,
             text: "Your daily digest is available.",

@@ -9,13 +9,12 @@ export interface SendEmailArgs {
 }
 
 export function sendEmail({ to, subject, text }: SendEmailArgs) {
-  // send email
   sgMail.setApiKey(process.env.SENDGRID_API_KEY || "")
 
   const html = wrapWithTemplate(marked(text))
 
   const msg = {
-    to,
+    to: process.env.NODE_ENV !== "production" ? (process.env.DEV_OVERRIDE_EMAIL || "claytonfbell@gmail.com") : to,
     from: "noreply@expendas.com",
     subject,
     text,
