@@ -83,6 +83,12 @@ export async function generateDigestHtml(
     0
   )
   const change = currentNetWorth - yesterdayNetWorth
+  const changeColor = change >= 0 ? "#16a34a" : "#dc2626"
+  const changeArrow = change >= 0 ? "▲" : "▼"
+  const changeLabel =
+    change !== 0
+      ? `${changeArrow} ${centsToDollars(Math.abs(change))} from yesterday`
+      : "No change from yesterday"
 
   const daysSinceMealOut = latestMealOut
     ? today.diff(dayjs(latestMealOut.date), "day")
