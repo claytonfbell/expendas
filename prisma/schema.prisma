@@ -33,6 +33,7 @@ model User {
     receiveDigestEmails     Boolean          @default(true)
     digestEmailTimes        Int[]            @default([6, 18])
     digestEmailDays         Int[]            @default([0, 1, 2, 3, 4, 5, 6])
+    emailDigestLastSent     DateTime?
     retirementPlans   RetirementPlanUser[]
     taskGroups        TaskGroupUser[]
     createdTaskSchedules    TaskSchedule[]

@@ -13,11 +13,17 @@ export const Route = createFileRoute("/api/email-digest/scheduled-send")({
           const currentHour = now.getUTCHours()
           const currentDay = now.getUTCDay()
 
+          const sixtyMinutesAgo = new Date(now.getTime() - 60 * 60 * 1000)
+
           const users = await prisma.user.findMany({
             where: {
               receiveDigestEmails: true,
               digestEmailTimes: { has: currentHour },
               digestEmailDays: { has: currentDay },
+              OR: [
+                { emailDigestLastSent: null },
+                { emailDigestLastSent: { lt: sixtyMinutesAgo } },
+              ],
             },
           })
 
@@ -60,6 +66,11 @@ export const Route = createFileRoute("/api/email-digest/scheduled-send")({
                 subject: `${user.firstName || "User"}'s Expendas Daily`,
                 text: "Your daily digest is available.",
                 html,
+              })
+
+              await prisma.user.update({
+                where: { id: user.id },
+                data: { emailDigestLastSent: now },
               })
 
               results.push({ userId: user.id, email: user.email, sent: true })
