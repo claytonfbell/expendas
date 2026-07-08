@@ -54,10 +54,7 @@ COPY --from=build /app/.output /app/.output
 COPY --from=build /app/public /app/public
 COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/.env ./
-COPY --from=build /app/prisma /app/prisma
 
 ADD . .
-
-RUN npx prisma migrate deploy
 
 CMD ["npm", "run", "start"]
