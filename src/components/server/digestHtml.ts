@@ -209,11 +209,8 @@ export async function generateDigestHtml(
                   <td style="${statBoxStyle}">
                     <span style="font-size: 12px; font-weight: 600; color: #0369a1; text-transform: uppercase; letter-spacing: 0.05em;">Days Since Last Meal Out</span>
                     <br/>
-                    <span style="font-size: 28px; font-weight: 700; color: #0284c7; line-height: 1.4;">
+                    <span style="font-size: 56px; font-weight: 700; color: #0284c7; line-height: 1.2;">
                       ${daysSinceMealOut !== null ? daysSinceMealOut : "—"}
-                    </span>
-                    <span style="font-size: 13px; color: #0369a1;">
-                      ${daysSinceMealOut === 1 ? "day" : "days"}
                     </span>
                   </td>
                 </tr>
@@ -237,6 +234,13 @@ export async function generateDigestHtml(
                   </td>
                 </tr>
                 ${tasksHtml || `<tr><td style="padding: 16px 0; font-size: 15px; color: #999; font-style: italic;">No tasks scheduled for today.</td></tr>`}
+              </table>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="center" style="padding-top: 20px;">
+                    <a href="https://expendas.com/tasks" style="display: inline-block; padding: 10px 28px; font-size: 14px; font-weight: 600; color: #ffffff; text-decoration: none; background-color: #0088b3; border-radius: 6px;">Open Tasks</a>
+                  </td>
+                </tr>
               </table>
             </td>
           </tr>
