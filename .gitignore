@@ -39,3 +39,4 @@ yarn-error.log*
 sendgrid.env
 .fallow/
 .env.swp
+/run-production-migrations.sh
