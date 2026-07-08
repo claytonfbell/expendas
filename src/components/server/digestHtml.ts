@@ -29,64 +29,99 @@ export async function generateDigestHtml(
     .subtract(useTwoDaysAgo ? 2 : 1, "day")
     .format("YYYY-MM-DD")
 
-  const [accounts, tasks, yesterdayHistories, latestMealOut, maturingAssets] =
-    await Promise.all([
-      prisma.account.findMany({
-        where: { organizationId },
-        select: { id: true, name: true, balance: true, accountType: true },
-      }),
-      prisma.task.findMany({
-        where: {
-          taskSchedule: {
-            taskGroup: {
-              organizationId,
-              users: { some: { userId } },
-            },
-          },
-          date: todayStr,
-        },
-        include: {
-          taskSchedule: {
-            include: {
-              taskGroup: true,
-            },
+  const [
+    accounts,
+    tasks,
+    yesterdayHistories,
+    latestMealOut,
+    maturingAssets,
+    celebratableSchedules,
+  ] = await Promise.all([
+    prisma.account.findMany({
+      where: { organizationId },
+      select: { id: true, name: true, balance: true, accountType: true },
+    }),
+    prisma.task.findMany({
+      where: {
+        taskSchedule: {
+          taskGroup: {
+            organizationId,
+            users: { some: { userId } },
           },
         },
-        orderBy: [
-          { taskSchedule: { taskGroup: { sortOrder: "asc" } } },
-          { taskSchedule: { sortOrder: "asc" } },
-        ],
-      }),
-      prisma.accountBalanceHistory.findMany({
-        where: {
-          account: { organizationId },
-          date: yesterdayStr,
-        },
-        select: { accountId: true, balance: true },
-      }),
-      prisma.mealsOut.findFirst({
-        where: { organizationId },
-        orderBy: { date: "desc" },
-        select: { date: true, merchant: true, reason: true },
-      }),
-      prisma.fixedIncomeAsset.findMany({
-        where: {
-          account: { organizationId },
-          matureDate: {
-            not: null,
-            gte: todayStr,
-            lte: today.add(14, "day").format("YYYY-MM-DD"),
+        date: todayStr,
+      },
+      include: {
+        taskSchedule: {
+          include: {
+            taskGroup: true,
           },
         },
-        select: {
-          amount: true,
-          type: true,
-          institution: true,
-          matureDate: true,
+      },
+      orderBy: [
+        { taskSchedule: { taskGroup: { sortOrder: "asc" } } },
+        { taskSchedule: { sortOrder: "asc" } },
+      ],
+    }),
+    prisma.accountBalanceHistory.findMany({
+      where: {
+        account: { organizationId },
+        date: yesterdayStr,
+      },
+      select: { accountId: true, balance: true },
+    }),
+    prisma.mealsOut.findFirst({
+      where: { organizationId },
+      orderBy: { date: "desc" },
+      select: { date: true, merchant: true, reason: true },
+    }),
+    prisma.fixedIncomeAsset.findMany({
+      where: {
+        account: { organizationId },
+        matureDate: {
+          not: null,
+          gte: todayStr,
+          lte: today.add(14, "day").format("YYYY-MM-DD"),
         },
-        orderBy: { matureDate: "asc" },
-      }),
-    ])
+      },
+      select: {
+        amount: true,
+        type: true,
+        institution: true,
+        matureDate: true,
+      },
+      orderBy: { matureDate: "asc" },
+    }),
+    prisma.taskSchedule.findMany({
+      where: {
+        taskGroup: {
+          organizationId,
+          users: { some: { userId } },
+        },
+        showStats: true,
+      },
+      select: {
+        name: true,
+        taskGroup: { select: { color: true } },
+        tasks: {
+          where: { date: { lt: todayStr } },
+          orderBy: { date: "desc" },
+          select: { completed: true },
+        },
+      },
+    }),
+  ])
+
+  const celebrations = celebratableSchedules
+    .map((s) => {
+      let streak = 0
+      for (const t of s.tasks) {
+        if (t.completed) streak++
+        else break
+      }
+      return { name: s.name, color: hexForColor(s.taskGroup.color), streak }
+    })
+    .filter((s) => s.streak >= 7)
 
   const savingsTypes = new Set(["CD", "Savings_Account", "Investment"])
   const yesterdayMap = new Map(
@@ -175,10 +210,31 @@ export async function generateDigestHtml(
 
   const formattedDate = today.format("dddd, MMMM D, YYYY [at] h:mm A")
 
+  const celebrationsHtml =
+    celebrations.length > 0
+      ? `
+          <tr>
+            <td style="padding: 8px 32px;">
+              ${celebrations
+                .map(
+                  (c) => `
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background: linear-gradient(135deg, ${c.color}15, ${c.color}08); border: 2px solid ${c.color}40; border-radius: 12px; margin-bottom: 8px;">
+                <tr>
+                  <td style="padding: 14px 20px; text-align: center;">
+                    <span style="font-size: 28px;">🎉</span>
+                    <span style="display: block; font-size: 15px; font-weight: 700; color: ${c.color}; margin-top: 4px;">${c.name}</span>
+                    <span style="display: block; font-size: 13px; color: #555; margin-top: 2px;">${c.streak}-task streak!</span>
+                  </td>
+                </tr>
+              </table>`
+                )
+                .join("")}
+            </td>
+          </tr>`
+      : ""
+
   const typeLabel = (type: string) =>
-    type
-      .replace(/_/g, " ")
-      .replace(/\b\w/g, (c) => c.toUpperCase())
+    type.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
 
   const maturingHtml =
     maturingAssets.length > 0
@@ -301,11 +357,17 @@ export async function generateDigestHtml(
 
           ${maturingHtml}
 
-          ${!maturingHtml ? `<tr>
+          ${
+            !maturingHtml && !celebrationsHtml
+              ? `<tr>
             <td style="padding: 0 32px;">
               <hr style="border: none; border-top: 1px solid #e8eaed; margin: 0;" />
             </td>
-          </tr>` : ""}
+          </tr>`
+              : ""
+          }
+
+          ${celebrationsHtml}
 
           <tr>
             <td style="padding: 24px 32px 32px;">
