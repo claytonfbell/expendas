@@ -184,29 +184,32 @@ export async function generateDigestHtml(
             <td style="padding: 28px 32px 8px;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                 <tr>
-                  <td style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.08em; padding-bottom: 8px;">Net Worth</td>
-                </tr>
-                <tr>
-                  <td style="font-size: 32px; font-weight: 700; color: #1a1a2e; padding-bottom: 2px;">${centsToDollars(currentNetWorth)}</td>
-                </tr>
-                <tr>
-                  <td style="font-size: 14px; font-weight: 500; color: ${changeColor}; padding-bottom: 4px;">${changeLabel}</td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
-          <tr>
-            <td style="padding: 8px 32px 8px;">
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.08em; padding-bottom: 8px;">Total Savings</td>
-                </tr>
-                <tr>
-                  <td style="font-size: 32px; font-weight: 700; color: #1a1a2e; padding-bottom: 2px;">${centsToDollars(totalSavings)}</td>
-                </tr>
-                <tr>
-                  <td style="font-size: 14px; font-weight: 500; color: ${savingsChangeColor}; padding-bottom: 4px;">${savingsChangeLabel}</td>
+                  <td width="50%" style="vertical-align: top; padding-right: 12px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.08em; padding-bottom: 8px;">Net Worth</td>
+                      </tr>
+                      <tr>
+                        <td style="font-size: 32px; font-weight: 700; color: #1a1a2e; padding-bottom: 2px;">${centsToDollars(currentNetWorth)}</td>
+                      </tr>
+                      <tr>
+                        <td style="font-size: 14px; font-weight: 500; color: ${changeColor}; padding-bottom: 4px;">${changeLabel}</td>
+                      </tr>
+                    </table>
+                  </td>
+                  <td width="50%" style="vertical-align: top; padding-left: 12px; text-align: right;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.08em; padding-bottom: 8px; text-align: right;">Total Savings</td>
+                      </tr>
+                      <tr>
+                        <td style="font-size: 32px; font-weight: 700; color: #1a1a2e; padding-bottom: 2px; text-align: right;">${centsToDollars(totalSavings)}</td>
+                      </tr>
+                      <tr>
+                        <td style="font-size: 14px; font-weight: 500; color: ${savingsChangeColor}; padding-bottom: 4px; text-align: right;">${savingsChangeLabel}</td>
+                      </tr>
+                    </table>
+                  </td>
                 </tr>
               </table>
             </td>
