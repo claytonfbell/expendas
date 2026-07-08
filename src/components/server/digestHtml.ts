@@ -127,7 +127,13 @@ export async function generateDigestHtml(
     celebrations.length > 0
       ? await (async () => {
           try {
-            const tags = ["celebrate", "party", "lets+go"]
+            const tags = [
+              "celebrate", "party", "lets+go", "congrats", "awesome",
+              "amazing", "fantastic", "great-job", "well-done", "you-rock",
+              "victory", "success", "winning", "woohoo", "yay",
+              "fireworks", "cheers", "accomplishment", "proud", "nailed-it",
+              "crush-it", "achievement", "hooray",
+            ]
             const tag = tags[Math.floor(Math.random() * tags.length)]
             const res = await fetch(
               `https://api.giphy.com/v1/gifs/random?api_key=${process.env.GIPHY_API_KEY}&tag=${tag}&rating=g`
