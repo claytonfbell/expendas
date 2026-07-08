@@ -3,7 +3,7 @@ import { useGlobalState } from "../../GlobalStateContext"
 import rest, { RestError } from "../rest"
 import { QUERY_KEYS } from "./queryKeys"
 
-export interface DeleteAssetInput {
+interface DeleteAssetInput {
   assetId: number
   accountId: number
 }

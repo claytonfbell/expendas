@@ -19,7 +19,7 @@ import { useUpdateMealOut } from "./api/hooks/useUpdateMealOut"
 import ConfirmDialog from "./ConfirmDialog"
 import DisplayError from "./DisplayError"
 
-export const reasonOptions: MealsOutReason[] = [
+const reasonOptions: MealsOutReason[] = [
   "Date_Night",
   "Friends",
   "Lazy",
@@ -95,7 +95,7 @@ export function getColorForMealReason(reason: MealsOutReason): string {
   }
 }
 
-export interface MealOutFormData {
+interface MealOutFormData {
   date: string
   amount: number
   merchant: string

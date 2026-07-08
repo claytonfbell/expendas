@@ -4,7 +4,7 @@ import { useGlobalState } from "../../GlobalStateContext"
 import rest, { RestError } from "../rest"
 import { QUERY_KEYS } from "./queryKeys"
 
-export interface TaskStat {
+interface TaskStat {
   name: string
   groupName: string
   color: TaskGroupColor

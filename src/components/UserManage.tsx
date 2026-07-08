@@ -18,7 +18,7 @@ import {
 import { CheckboxBase, Form, SubmitButton, TextField } from "material-ui-pack"
 import React, { useState } from "react"
 import { AddUserRequestData } from "./api/types/AddUserRequestData"
-import { OrganizationWithIncludes } from "../OrganizationWithIncludes"
+import { OrganizationWithIncludes } from "./OrganizationWithIncludes"
 import { useAddUser } from "./api/hooks/useAddUser"
 import { useCheckLogin } from "./api/hooks/useCheckLogin"
 import { useRemoveUser } from "./api/hooks/useRemoveUser"

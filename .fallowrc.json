@@ -1,6 +1,9 @@
 {
   "ignoreDependencies": [
-    ".prisma"
+    ".prisma",
+    "@dnd-kit/helpers",
+    "@emotion/styled",
+    "archiver"
   ],
   "ignoreExports": [
     {
@@ -11,7 +14,12 @@
   "duplicates": {
     "minOccurrences": 3,
     "ignore": [
-      "src/routeTree.gen.ts"
+      "src/routeTree.gen.ts",
+      "src/components/api/hooks/useAdd*.ts",
+      "src/components/api/hooks/useUpdate*.ts",
+      "src/components/api/hooks/useReorder*.ts",
+      "src/app/api/organizations.*.receipts.*.ts",
+      "src/app/api/organizations.*.taxRecords.*.ts"
     ]
   },
   "health": {
