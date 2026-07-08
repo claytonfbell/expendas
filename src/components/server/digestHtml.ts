@@ -61,7 +61,7 @@ export async function generateDigestHtml(
       prisma.mealsOut.findFirst({
         where: { organizationId },
         orderBy: { date: "desc" },
-        select: { date: true },
+        select: { date: true, merchant: true, reason: true },
       }),
     ])
 
@@ -88,6 +88,10 @@ export async function generateDigestHtml(
 
   const daysSinceMealOut = latestMealOut
     ? today.diff(dayjs(latestMealOut.date), "day")
+    : null
+  const mealOutMerchant = latestMealOut?.merchant ?? null
+  const mealOutReason = latestMealOut?.reason
+    ? latestMealOut.reason.replace(/_/g, " ")
     : null
 
   const groupTasksMap = new Map<
@@ -212,6 +216,7 @@ export async function generateDigestHtml(
                     <span style="font-size: 56px; font-weight: 700; color: #0284c7; line-height: 1.2;">
                       ${daysSinceMealOut !== null ? daysSinceMealOut : "—"}
                     </span>
+                    ${mealOutMerchant ? `<br/><span style="font-size: 13px; color: #0369a1;">${mealOutMerchant}${mealOutReason ? ` (${mealOutReason})` : ""}</span>` : ""}
                   </td>
                 </tr>
               </table>
