@@ -36,8 +36,17 @@ model User {
     closedTasks             Task[] @relation(name: "closedTasks")
     completedTasks          Task[] @relation(name: "completedTasks")
     taxRecords              TaxRecord[]
+    apiKeys                 ApiKey[]
 
     @@index([authCode], map: "User.authCode_index")
+}
+
+model ApiKey {
+    id        Int      @id @default(autoincrement())
+    key       String   @unique(map: "ApiKey.key_unique") @db.VarChar(255)
+    userId    Int
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    createdAt DateTime @default(now())
 }
 
 model UsersOnOrganizations {

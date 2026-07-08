@@ -21,17 +21,22 @@ import { Route as MealsOutRouteImport } from './app/mealsOut'
 import { Route as InvestmentsRouteImport } from './app/investments'
 import { Route as ForgotPasswordRouteImport } from './app/forgotPassword'
 import { Route as FixedIncomeRouteImport } from './app/fixedIncome'
+import { Route as ApiKeysRouteImport } from './app/api-keys'
+import { Route as ApiDocsRouteImport } from './app/api-docs'
 import { Route as AccountsRouteImport } from './app/accounts'
 import { Route as IndexRouteImport } from './app/index'
 import { Route as ApiTickerPricesRouteImport } from './app/api/tickerPrices'
 import { Route as ApiResetPasswordRouteImport } from './app/api/resetPassword'
 import { Route as ApiRegisterRouteImport } from './app/api/register'
 import { Route as ApiOrganizationsRouteImport } from './app/api/organizations'
+import { Route as ApiOpenapiRouteImport } from './app/api/openapi'
 import { Route as ApiLoginRouteImport } from './app/api/login'
 import { Route as ApiForgotPasswordRouteImport } from './app/api/forgotPassword'
+import { Route as ApiApiKeysRouteImport } from './app/api/api-keys'
 import { Route as ApiOrganizationsRemoveUserRouteImport } from './app/api/organizations.removeUser'
 import { Route as ApiOrganizationsAddUserRouteImport } from './app/api/organizations.addUser'
 import { Route as ApiOrganizationsIdRouteImport } from './app/api/organizations.$id'
+import { Route as ApiApiKeysIdRouteImport } from './app/api/api-keys.$id'
 import { Route as ApiOrganizationsIdTaxRecordsRouteImport } from './app/api/organizations.$id.taxRecords'
 import { Route as ApiOrganizationsIdTasksRouteImport } from './app/api/organizations.$id.tasks'
 import { Route as ApiOrganizationsIdScrapeEmailRouteImport } from './app/api/organizations.$id.scrapeEmail'
@@ -136,6 +141,16 @@ const FixedIncomeRoute = FixedIncomeRouteImport.update({
   path: '/fixedIncome',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiKeysRoute = ApiKeysRouteImport.update({
+  id: '/api-keys',
+  path: '/api-keys',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDocsRoute = ApiDocsRouteImport.update({
+  id: '/api-docs',
+  path: '/api-docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AccountsRoute = AccountsRouteImport.update({
   id: '/accounts',
   path: '/accounts',
@@ -166,6 +181,11 @@ const ApiOrganizationsRoute = ApiOrganizationsRouteImport.update({
   path: '/api/organizations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiOpenapiRoute = ApiOpenapiRouteImport.update({
+  id: '/api/openapi',
+  path: '/api/openapi',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiLoginRoute = ApiLoginRouteImport.update({
   id: '/api/login',
   path: '/api/login',
@@ -174,6 +194,11 @@ const ApiLoginRoute = ApiLoginRouteImport.update({
 const ApiForgotPasswordRoute = ApiForgotPasswordRouteImport.update({
   id: '/api/forgotPassword',
   path: '/api/forgotPassword',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiApiKeysRoute = ApiApiKeysRouteImport.update({
+  id: '/api/api-keys',
+  path: '/api/api-keys',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiOrganizationsRemoveUserRoute =
@@ -191,6 +216,11 @@ const ApiOrganizationsIdRoute = ApiOrganizationsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => ApiOrganizationsRoute,
+} as any)
+const ApiApiKeysIdRoute = ApiApiKeysIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiApiKeysRoute,
 } as any)
 const ApiOrganizationsIdTaxRecordsRoute =
   ApiOrganizationsIdTaxRecordsRouteImport.update({
@@ -457,6 +487,8 @@ const ApiOrganizationsIdAccountsAccountIdAssetsAssetIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
+  '/api-docs': typeof ApiDocsRoute
+  '/api-keys': typeof ApiKeysRoute
   '/fixedIncome': typeof FixedIncomeRoute
   '/forgotPassword': typeof ForgotPasswordRoute
   '/investments': typeof InvestmentsRoute
@@ -469,12 +501,15 @@ export interface FileRoutesByFullPath {
   '/tasks': typeof TasksRoute
   '/taxes': typeof TaxesRoute
   '/trends': typeof TrendsRoute
+  '/api/api-keys': typeof ApiApiKeysRouteWithChildren
   '/api/forgotPassword': typeof ApiForgotPasswordRoute
   '/api/login': typeof ApiLoginRoute
+  '/api/openapi': typeof ApiOpenapiRoute
   '/api/organizations': typeof ApiOrganizationsRouteWithChildren
   '/api/register': typeof ApiRegisterRoute
   '/api/resetPassword': typeof ApiResetPasswordRoute
   '/api/tickerPrices': typeof ApiTickerPricesRoute
+  '/api/api-keys/$id': typeof ApiApiKeysIdRoute
   '/api/organizations/$id': typeof ApiOrganizationsIdRouteWithChildren
   '/api/organizations/addUser': typeof ApiOrganizationsAddUserRoute
   '/api/organizations/removeUser': typeof ApiOrganizationsRemoveUserRoute
@@ -525,6 +560,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
+  '/api-docs': typeof ApiDocsRoute
+  '/api-keys': typeof ApiKeysRoute
   '/fixedIncome': typeof FixedIncomeRoute
   '/forgotPassword': typeof ForgotPasswordRoute
   '/investments': typeof InvestmentsRoute
@@ -537,12 +574,15 @@ export interface FileRoutesByTo {
   '/tasks': typeof TasksRoute
   '/taxes': typeof TaxesRoute
   '/trends': typeof TrendsRoute
+  '/api/api-keys': typeof ApiApiKeysRouteWithChildren
   '/api/forgotPassword': typeof ApiForgotPasswordRoute
   '/api/login': typeof ApiLoginRoute
+  '/api/openapi': typeof ApiOpenapiRoute
   '/api/organizations': typeof ApiOrganizationsRouteWithChildren
   '/api/register': typeof ApiRegisterRoute
   '/api/resetPassword': typeof ApiResetPasswordRoute
   '/api/tickerPrices': typeof ApiTickerPricesRoute
+  '/api/api-keys/$id': typeof ApiApiKeysIdRoute
   '/api/organizations/$id': typeof ApiOrganizationsIdRouteWithChildren
   '/api/organizations/addUser': typeof ApiOrganizationsAddUserRoute
   '/api/organizations/removeUser': typeof ApiOrganizationsRemoveUserRoute
@@ -594,6 +634,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
+  '/api-docs': typeof ApiDocsRoute
+  '/api-keys': typeof ApiKeysRoute
   '/fixedIncome': typeof FixedIncomeRoute
   '/forgotPassword': typeof ForgotPasswordRoute
   '/investments': typeof InvestmentsRoute
@@ -606,12 +648,15 @@ export interface FileRoutesById {
   '/tasks': typeof TasksRoute
   '/taxes': typeof TaxesRoute
   '/trends': typeof TrendsRoute
+  '/api/api-keys': typeof ApiApiKeysRouteWithChildren
   '/api/forgotPassword': typeof ApiForgotPasswordRoute
   '/api/login': typeof ApiLoginRoute
+  '/api/openapi': typeof ApiOpenapiRoute
   '/api/organizations': typeof ApiOrganizationsRouteWithChildren
   '/api/register': typeof ApiRegisterRoute
   '/api/resetPassword': typeof ApiResetPasswordRoute
   '/api/tickerPrices': typeof ApiTickerPricesRoute
+  '/api/api-keys/$id': typeof ApiApiKeysIdRoute
   '/api/organizations/$id': typeof ApiOrganizationsIdRouteWithChildren
   '/api/organizations/addUser': typeof ApiOrganizationsAddUserRoute
   '/api/organizations/removeUser': typeof ApiOrganizationsRemoveUserRoute
@@ -664,6 +709,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/accounts'
+    | '/api-docs'
+    | '/api-keys'
     | '/fixedIncome'
     | '/forgotPassword'
     | '/investments'
@@ -676,12 +723,15 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/taxes'
     | '/trends'
+    | '/api/api-keys'
     | '/api/forgotPassword'
     | '/api/login'
+    | '/api/openapi'
     | '/api/organizations'
     | '/api/register'
     | '/api/resetPassword'
     | '/api/tickerPrices'
+    | '/api/api-keys/$id'
     | '/api/organizations/$id'
     | '/api/organizations/addUser'
     | '/api/organizations/removeUser'
@@ -732,6 +782,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/accounts'
+    | '/api-docs'
+    | '/api-keys'
     | '/fixedIncome'
     | '/forgotPassword'
     | '/investments'
@@ -744,12 +796,15 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/taxes'
     | '/trends'
+    | '/api/api-keys'
     | '/api/forgotPassword'
     | '/api/login'
+    | '/api/openapi'
     | '/api/organizations'
     | '/api/register'
     | '/api/resetPassword'
     | '/api/tickerPrices'
+    | '/api/api-keys/$id'
     | '/api/organizations/$id'
     | '/api/organizations/addUser'
     | '/api/organizations/removeUser'
@@ -800,6 +855,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/accounts'
+    | '/api-docs'
+    | '/api-keys'
     | '/fixedIncome'
     | '/forgotPassword'
     | '/investments'
@@ -812,12 +869,15 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/taxes'
     | '/trends'
+    | '/api/api-keys'
     | '/api/forgotPassword'
     | '/api/login'
+    | '/api/openapi'
     | '/api/organizations'
     | '/api/register'
     | '/api/resetPassword'
     | '/api/tickerPrices'
+    | '/api/api-keys/$id'
     | '/api/organizations/$id'
     | '/api/organizations/addUser'
     | '/api/organizations/removeUser'
@@ -869,6 +929,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountsRoute: typeof AccountsRoute
+  ApiDocsRoute: typeof ApiDocsRoute
+  ApiKeysRoute: typeof ApiKeysRoute
   FixedIncomeRoute: typeof FixedIncomeRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   InvestmentsRoute: typeof InvestmentsRoute
@@ -881,8 +943,10 @@ export interface RootRouteChildren {
   TasksRoute: typeof TasksRoute
   TaxesRoute: typeof TaxesRoute
   TrendsRoute: typeof TrendsRoute
+  ApiApiKeysRoute: typeof ApiApiKeysRouteWithChildren
   ApiForgotPasswordRoute: typeof ApiForgotPasswordRoute
   ApiLoginRoute: typeof ApiLoginRoute
+  ApiOpenapiRoute: typeof ApiOpenapiRoute
   ApiOrganizationsRoute: typeof ApiOrganizationsRouteWithChildren
   ApiRegisterRoute: typeof ApiRegisterRoute
   ApiResetPasswordRoute: typeof ApiResetPasswordRoute
@@ -975,6 +1039,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FixedIncomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api-keys': {
+      id: '/api-keys'
+      path: '/api-keys'
+      fullPath: '/api-keys'
+      preLoaderRoute: typeof ApiKeysRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api-docs': {
+      id: '/api-docs'
+      path: '/api-docs'
+      fullPath: '/api-docs'
+      preLoaderRoute: typeof ApiDocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/accounts': {
       id: '/accounts'
       path: '/accounts'
@@ -1017,6 +1095,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiOrganizationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/openapi': {
+      id: '/api/openapi'
+      path: '/api/openapi'
+      fullPath: '/api/openapi'
+      preLoaderRoute: typeof ApiOpenapiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/login': {
       id: '/api/login'
       path: '/api/login'
@@ -1029,6 +1114,13 @@ declare module '@tanstack/react-router' {
       path: '/api/forgotPassword'
       fullPath: '/api/forgotPassword'
       preLoaderRoute: typeof ApiForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/api-keys': {
+      id: '/api/api-keys'
+      path: '/api/api-keys'
+      fullPath: '/api/api-keys'
+      preLoaderRoute: typeof ApiApiKeysRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/organizations/removeUser': {
@@ -1051,6 +1143,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/organizations/$id'
       preLoaderRoute: typeof ApiOrganizationsIdRouteImport
       parentRoute: typeof ApiOrganizationsRoute
+    }
+    '/api/api-keys/$id': {
+      id: '/api/api-keys/$id'
+      path: '/$id'
+      fullPath: '/api/api-keys/$id'
+      preLoaderRoute: typeof ApiApiKeysIdRouteImport
+      parentRoute: typeof ApiApiKeysRoute
     }
     '/api/organizations/$id/taxRecords': {
       id: '/api/organizations/$id/taxRecords'
@@ -1355,6 +1454,18 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface ApiApiKeysRouteChildren {
+  ApiApiKeysIdRoute: typeof ApiApiKeysIdRoute
+}
+
+const ApiApiKeysRouteChildren: ApiApiKeysRouteChildren = {
+  ApiApiKeysIdRoute: ApiApiKeysIdRoute,
+}
+
+const ApiApiKeysRouteWithChildren = ApiApiKeysRoute._addFileChildren(
+  ApiApiKeysRouteChildren,
+)
 
 interface ApiOrganizationsIdAccountsAccountIdAssetsRouteChildren {
   ApiOrganizationsIdAccountsAccountIdAssetsAssetIdRoute: typeof ApiOrganizationsIdAccountsAccountIdAssetsAssetIdRoute
@@ -1689,6 +1800,8 @@ const ApiOrganizationsRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountsRoute: AccountsRoute,
+  ApiDocsRoute: ApiDocsRoute,
+  ApiKeysRoute: ApiKeysRoute,
   FixedIncomeRoute: FixedIncomeRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   InvestmentsRoute: InvestmentsRoute,
@@ -1701,8 +1814,10 @@ const rootRouteChildren: RootRouteChildren = {
   TasksRoute: TasksRoute,
   TaxesRoute: TaxesRoute,
   TrendsRoute: TrendsRoute,
+  ApiApiKeysRoute: ApiApiKeysRouteWithChildren,
   ApiForgotPasswordRoute: ApiForgotPasswordRoute,
   ApiLoginRoute: ApiLoginRoute,
+  ApiOpenapiRoute: ApiOpenapiRoute,
   ApiOrganizationsRoute: ApiOrganizationsRouteWithChildren,
   ApiRegisterRoute: ApiRegisterRoute,
   ApiResetPasswordRoute: ApiResetPasswordRoute,

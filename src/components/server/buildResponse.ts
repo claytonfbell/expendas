@@ -1,11 +1,36 @@
 import { getIronSession } from "iron-session"
 import { SessionData, sessionOptions } from "./session"
+import prisma from "./prisma"
 
 export async function buildResponse(
   request: Request,
   handler: (session: SessionData) => Promise<any>
 ): Promise<Response> {
   const tempRes = new Response()
+
+  const authHeader = request.headers.get("Authorization")
+  if (authHeader?.startsWith("Bearer ")) {
+    const apiKeyValue = authHeader.slice(7)
+    const apiKey = await prisma.apiKey.findUnique({
+      where: { key: apiKeyValue },
+      include: { user: true },
+    })
+    if (apiKey !== null) {
+      const session: SessionData = { user: apiKey.user }
+      try {
+        const result = await handler(session)
+        return bake(result, tempRes)
+      } catch (e: any) {
+        console.log(e)
+        const status = e.status || 500
+        return bake(
+          Response.json({ status, message: e.message }, { status }),
+          tempRes
+        )
+      }
+    }
+  }
+
   const session = await getIronSession<SessionData>(
     request,
     tempRes,

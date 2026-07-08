@@ -16,6 +16,7 @@ import SavingsIcon from "@mui/icons-material/Savings"
 import SavingsOutlinedIcon from "@mui/icons-material/SavingsOutlined"
 import ShowChartIcon from "@mui/icons-material/ShowChart"
 import ShowChartOutlinedIcon from "@mui/icons-material/ShowChartOutlined"
+import VpnKeyIcon from "@mui/icons-material/VpnKey"
 import React from "react"
 
 export type NavigationLink = {
@@ -106,6 +107,13 @@ export const navigationLinks: NavigationLink[] = [
     href: "/taxes",
     ActiveIcon: AccountTreeIcon,
     Icon: AccountTreeIcon,
+    navs: [],
+  },
+  {
+    label: "API Keys",
+    href: "/api-keys",
+    ActiveIcon: VpnKeyIcon,
+    Icon: VpnKeyIcon,
     navs: [],
   },
 ]
