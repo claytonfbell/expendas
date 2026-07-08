@@ -29,7 +29,7 @@ export async function generateDigestHtml(
     .subtract(useTwoDaysAgo ? 2 : 1, "day")
     .format("YYYY-MM-DD")
 
-  const [accounts, tasks, yesterdayHistories, latestMealOut] =
+  const [accounts, tasks, yesterdayHistories, latestMealOut, maturingAssets] =
     await Promise.all([
       prisma.account.findMany({
         where: { organizationId },
@@ -68,6 +68,23 @@ export async function generateDigestHtml(
         where: { organizationId },
         orderBy: { date: "desc" },
         select: { date: true, merchant: true, reason: true },
+      }),
+      prisma.fixedIncomeAsset.findMany({
+        where: {
+          account: { organizationId },
+          matureDate: {
+            not: null,
+            gte: todayStr,
+            lte: today.add(14, "day").format("YYYY-MM-DD"),
+          },
+        },
+        select: {
+          amount: true,
+          type: true,
+          institution: true,
+          matureDate: true,
+        },
+        orderBy: { matureDate: "asc" },
       }),
     ])
 
@@ -158,6 +175,56 @@ export async function generateDigestHtml(
 
   const formattedDate = today.format("dddd, MMMM D, YYYY [at] h:mm A")
 
+  const typeLabel = (type: string) =>
+    type
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase())
+
+  const maturingHtml =
+    maturingAssets.length > 0
+      ? `<tr>
+            <td style="padding: 0 32px;">
+              <hr style="border: none; border-top: 1px solid #e8eaed; margin: 0;" />
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 16px 32px 8px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.08em; padding-bottom: 12px;">
+                    Maturing Fixed Income Assets
+                  </td>
+                </tr>
+                ${maturingAssets
+                  .map(
+                    (a) => `
+                <tr>
+                  <td style="padding: 8px 12px; border: 1px solid #e8eaed; border-radius: 6px; margin-bottom: 6px; display: block;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="font-size: 13px; color: #555;">
+                          ${dayjs(a.matureDate).format("MMM D, YYYY")}
+                        </td>
+                        <td style="font-size: 13px; color: #555; text-align: center;">
+                          ${typeLabel(a.type)}
+                        </td>
+                        <td style="font-size: 13px; color: #555; text-align: center;">
+                          ${a.institution ?? "—"}
+                        </td>
+                        <td style="font-size: 15px; font-weight: 600; color: #1a1a2e; text-align: right;">
+                          ${centsToDollars(a.amount)}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>`
+                  )
+                  .join("")}
+              </table>
+            </td>
+          </tr>`
+      : ""
+
   const statBoxStyle =
     "background-color: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 12px 16px; text-align: center;"
 
@@ -232,11 +299,13 @@ export async function generateDigestHtml(
             </td>
           </tr>
 
-          <tr>
+          ${maturingHtml}
+
+          ${!maturingHtml ? `<tr>
             <td style="padding: 0 32px;">
               <hr style="border: none; border-top: 1px solid #e8eaed; margin: 0;" />
             </td>
-          </tr>
+          </tr>` : ""}
 
           <tr>
             <td style="padding: 24px 32px 32px;">
