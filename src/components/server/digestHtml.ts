@@ -19,9 +19,15 @@ export async function generateDigestHtml(
   userId: number,
   organizationId: number
 ): Promise<string> {
-  const today = dayjs()
+  const now = dayjs().tz("America/Los_Angeles")
+  const hour = now.hour()
+  const minute = now.minute()
+  const useTwoDaysAgo = hour < 6 || (hour === 6 && minute < 30)
+  const today = now
   const todayStr = today.format("YYYY-MM-DD")
-  const yesterdayStr = today.subtract(1, "day").format("YYYY-MM-DD")
+  const yesterdayStr = today
+    .subtract(useTwoDaysAgo ? 2 : 1, "day")
+    .format("YYYY-MM-DD")
 
   const [accounts, tasks, yesterdayHistories, latestMealOut] =
     await Promise.all([
