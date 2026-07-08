@@ -66,6 +66,9 @@ export async function generateDigestHtml(
     ])
 
   const savingsTypes = new Set(["CD", "Savings_Account", "Investment"])
+  const yesterdayMap = new Map(
+    yesterdayHistories.map((h) => [h.accountId, h.balance])
+  )
   const totalSavings = accounts
     .filter((a) => savingsTypes.has(a.accountType))
     .reduce((sum, a) => sum + a.balance, 0)
