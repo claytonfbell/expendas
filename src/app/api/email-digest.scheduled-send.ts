@@ -10,16 +10,11 @@ export const Route = createFileRoute("/api/email-digest/scheduled-send")({
       GET: async ({ request }) => {
         return buildResponse(request, async (_session) => {
           const now = new Date()
-          const currentHour = now.getUTCHours()
-          const currentDay = now.getUTCDay()
-
           const sixtyMinutesAgo = new Date(now.getTime() - 60 * 60 * 1000)
 
           const users = await prisma.user.findMany({
             where: {
               receiveDigestEmails: true,
-              digestEmailTimes: { has: currentHour },
-              digestEmailDays: { has: currentDay },
               OR: [
                 { emailDigestLastSent: null },
                 { emailDigestLastSent: { lt: sixtyMinutesAgo } },
@@ -36,6 +31,32 @@ export const Route = createFileRoute("/api/email-digest/scheduled-send")({
 
           for (const user of users) {
             try {
+              const formatter = new Intl.DateTimeFormat("en-US", {
+                timeZone: user.timeZone,
+                hour: "numeric",
+                hourCycle: "h23",
+                weekday: "short",
+              })
+              const parts = formatter.formatToParts(now)
+              const userHour = parseInt(
+                parts.find((p) => p.type === "hour")!.value
+              )
+              const userDay = [
+                "Sun",
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thu",
+                "Fri",
+                "Sat",
+              ].indexOf(parts.find((p) => p.type === "weekday")!.value)
+
+              if (
+                !user.digestEmailTimes.includes(userHour) ||
+                !user.digestEmailDays.includes(userDay)
+              ) {
+                continue
+              }
               const membership = await prisma.usersOnOrganizations.findFirst({
                 where: { userId: user.id },
                 orderBy: { organizationId: "asc" },

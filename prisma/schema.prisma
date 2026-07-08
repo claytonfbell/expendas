@@ -34,6 +34,7 @@ model User {
     digestEmailTimes        Int[]            @default([6, 18])
     digestEmailDays         Int[]            @default([0, 1, 2, 3, 4, 5, 6])
     emailDigestLastSent     DateTime?
+    timeZone                String               @default("America/Los_Angeles") @db.VarChar(255)
     retirementPlans   RetirementPlanUser[]
     taskGroups        TaskGroupUser[]
     createdTaskSchedules    TaskSchedule[]

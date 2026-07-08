@@ -7,5 +7,6 @@ export interface UserPreferencesResponseData {
     receiveDigestEmails: boolean
     digestEmailTimes: number[]
     digestEmailDays: number[]
+    timeZone: string
   }
 }

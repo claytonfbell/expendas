@@ -4,4 +4,5 @@ export interface UpdatePreferencesRequestData {
   receiveDigestEmails?: boolean
   digestEmailTimes?: number[]
   digestEmailDays?: number[]
+  timeZone?: string
 }

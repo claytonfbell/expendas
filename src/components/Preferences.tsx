@@ -69,6 +69,7 @@ export function Preferences() {
   const [receiveDigestEmails, setReceiveDigestEmails] = useState(true)
   const [digestEmailTimes, setDigestEmailTimes] = useState<number[]>([6, 18])
   const [digestEmailDays, setDigestEmailDays] = useState<number[]>([0, 1, 2, 3, 4, 5, 6])
+  const [timeZone, setTimeZone] = useState("America/Los_Angeles")
 
   const [currentPassword, setCurrentPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
@@ -81,6 +82,7 @@ export function Preferences() {
       setReceiveDigestEmails(preferences.user.receiveDigestEmails)
       setDigestEmailTimes(preferences.user.digestEmailTimes)
       setDigestEmailDays(preferences.user.digestEmailDays)
+      setTimeZone(preferences.user.timeZone)
     }
   }, [preferences])
 
@@ -101,6 +103,7 @@ export function Preferences() {
       receiveDigestEmails,
       digestEmailTimes: receiveDigestEmails ? digestEmailTimes : [],
       digestEmailDays: receiveDigestEmails ? digestEmailDays : [],
+      timeZone,
     })
   }
 
@@ -242,6 +245,20 @@ export function Preferences() {
                     <MenuItem key={day.value} value={day.value}>
                       <Checkbox checked={digestEmailDays.indexOf(day.value) > -1} />
                       <ListItemText primary={day.label} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl fullWidth>
+                <InputLabel>Time Zone</InputLabel>
+                <Select
+                  value={timeZone}
+                  onChange={(e) => setTimeZone(e.target.value)}
+                >
+                  {Intl.supportedValuesOf("timeZone").map((tz) => (
+                    <MenuItem key={tz} value={tz}>
+                      {tz}
                     </MenuItem>
                   ))}
                 </Select>

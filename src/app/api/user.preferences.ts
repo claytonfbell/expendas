@@ -21,6 +21,7 @@ export const Route = createFileRoute("/api/user/preferences")({
               receiveDigestEmails: user.receiveDigestEmails,
               digestEmailTimes: user.digestEmailTimes,
               digestEmailDays: user.digestEmailDays,
+              timeZone: user.timeZone,
             },
           }
         })
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/api/user/preferences")({
         return buildResponse(request, async (session) => {
           const user = await requireAuthentication(session, prisma)
           const body = await request.json()
-          const { firstName, lastName, receiveDigestEmails, digestEmailTimes, digestEmailDays } = body
+          const { firstName, lastName, receiveDigestEmails, digestEmailTimes, digestEmailDays, timeZone } = body
 
           if (firstName !== undefined) {
             validate({ firstName }).notNull().min(1)
@@ -46,6 +47,9 @@ export const Route = createFileRoute("/api/user/preferences")({
           if (digestEmailDays !== undefined) {
             validate({ digestEmailDays }).notNull()
           }
+          if (timeZone !== undefined) {
+            validate({ timeZone }).notNull()
+          }
 
           const updatedUser = await prisma.user.update({
             where: { id: user.id },
@@ -55,6 +59,7 @@ export const Route = createFileRoute("/api/user/preferences")({
               ...(receiveDigestEmails !== undefined && { receiveDigestEmails }),
               ...(digestEmailTimes !== undefined && { digestEmailTimes }),
               ...(digestEmailDays !== undefined && { digestEmailDays }),
+              ...(timeZone !== undefined && { timeZone }),
             },
           })
 
@@ -67,6 +72,7 @@ export const Route = createFileRoute("/api/user/preferences")({
               receiveDigestEmails: updatedUser.receiveDigestEmails,
               digestEmailTimes: updatedUser.digestEmailTimes,
               digestEmailDays: updatedUser.digestEmailDays,
+              timeZone: updatedUser.timeZone,
             },
           }
         })
