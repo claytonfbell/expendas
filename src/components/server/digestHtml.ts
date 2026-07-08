@@ -85,16 +85,15 @@ export async function generateDigestHtml(
   const change = currentNetWorth - yesterdayNetWorth
   const changeColor = change >= 0 ? "#16a34a" : "#dc2626"
   const changeArrow = change >= 0 ? "▲" : "▼"
-  const changeLabel =
-    change !== 0
-      ? `${changeArrow} ${centsToDollars(Math.abs(change))} from yesterday`
-      : "No change from yesterday"
 
   const daysSinceMealOut = latestMealOut
     ? today.diff(dayjs(latestMealOut.date), "day")
     : null
 
-  const groupTasksMap = new Map<string, { tasks: typeof tasks; color: string }>()
+  const groupTasksMap = new Map<
+    string,
+    { tasks: typeof tasks; color: string }
+  >()
   for (const task of tasks) {
     const key = task.taskSchedule.taskGroup.name
     if (!groupTasksMap.has(key)) {
@@ -108,9 +107,14 @@ export async function generateDigestHtml(
 
   const centsToDollars = (cents: number) => {
     const sign = cents < 0 ? "-" : ""
-    const abs = Math.abs(cents)
-    return `${sign}$${(abs / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+    const abs = Math.round(Math.abs(cents) / 100)
+    return `${sign}$${abs.toLocaleString()}`
   }
+
+  const changeLabel =
+    change !== 0
+      ? `${changeArrow} ${centsToDollars(Math.abs(change))} from yesterday`
+      : "No change from yesterday"
 
   const tasksHtml = [...groupTasksMap.entries()]
     .map(
