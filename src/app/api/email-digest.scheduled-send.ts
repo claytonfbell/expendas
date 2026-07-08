@@ -1,5 +1,6 @@
 import sgMail from "@sendgrid/mail"
 import { createFileRoute } from "@tanstack/react-router"
+import { autoUpdateInvestmentAccountBalances } from "../../components/server/autoUpdateInvestmentAccountBalances"
 import { buildResponse } from "../../components/server/buildResponse"
 import { generateDigestHtml } from "../../components/server/digestHtml"
 import prisma from "../../components/server/prisma"
@@ -9,6 +10,8 @@ export const Route = createFileRoute("/api/email-digest/scheduled-send")({
     handlers: {
       GET: async ({ request }) => {
         return buildResponse(request, async (_session) => {
+          await autoUpdateInvestmentAccountBalances()
+
           const now = new Date()
           const sixtyMinutesAgo = new Date(now.getTime() - 60 * 60 * 1000)
 
