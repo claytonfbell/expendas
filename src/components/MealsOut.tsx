@@ -2,6 +2,7 @@ import AddIcon from "@mui/icons-material/Add"
 import EditIcon from "@mui/icons-material/Edit"
 import {
   Button,
+  Chip,
   IconButton,
   Stack,
   TableBody,
@@ -9,6 +10,8 @@ import {
   TableHead,
   TableRow,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material"
 import type { MealsOut, MealsOutReason } from "@prisma/client"
 import dayjs from "dayjs"
@@ -46,6 +49,8 @@ dayjs.extend(weekOfYear)
 dayjs.extend(dayOfYear)
 
 export function MealsOut() {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
   const { data: mealsOut } = useFetchMealsOut()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editMealOut, setEditMealOut] = useState<MealsOut | null>(null)
@@ -269,8 +274,29 @@ export function MealsOut() {
           <TableBody>
             {mealsOut?.map((mealOut) => (
               <TableRow key={mealOut.id}>
-                <TableCell>{dayjs(mealOut.date).format("ddd ll")}</TableCell>
-                <TableCell>{mealOut.merchant}</TableCell>
+                <TableCell>
+                  {isMobile
+                    ? dayjs(mealOut.date).format("M/D/YYYY")
+                    : dayjs(mealOut.date).format("ddd ll")}
+                </TableCell>
+                <TableCell>
+                  <Stack>
+                    <Typography variant="body2">{mealOut.merchant}</Typography>
+                    {isMobile && (
+                      <Chip
+                        label={displayReason(mealOut.reason)}
+                        size="small"
+                        sx={{
+                          color: getColorForMealReason(mealOut.reason),
+                          borderColor: getColorForMealReason(mealOut.reason),
+                          alignSelf: "flex-start",
+                          mt: 0.5,
+                        }}
+                        variant="outlined"
+                      />
+                    )}
+                  </Stack>
+                </TableCell>
                 <TableCell>{formatMoney(mealOut.amount)}</TableCell>
                 <TableCell
                   sx={{
