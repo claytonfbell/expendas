@@ -59,6 +59,8 @@ const styles: Record<string, SxProps<Theme>> = {
   },
 }
 
+const TIMEZONES = Intl.supportedValuesOf("timeZone")
+
 export function Preferences() {
   const { data: preferences, isPending: isFetching } = useFetchPreferences()
   const { mutateAsync: updatePreferences, isPending: isUpdating, error: updateError } = useUpdatePreferences()
@@ -95,7 +97,7 @@ export function Preferences() {
   }
 
   function handleSaveProfile() {
-    updatePreferences({ firstName, lastName })
+    updatePreferences({ firstName, lastName, timeZone })
   }
 
   function handleSaveNotifications() {
@@ -135,6 +137,19 @@ export function Preferences() {
             onChange={(e) => setLastName(e.target.value)}
             fullWidth
           />
+          <FormControl fullWidth>
+            <InputLabel>Time Zone</InputLabel>
+            <Select
+              value={timeZone}
+              onChange={(e) => setTimeZone(e.target.value)}
+            >
+              {TIMEZONES.map((tz) => (
+                <MenuItem key={tz} value={tz}>
+                  {tz}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <Box>
             <Button
               variant="contained"
@@ -245,20 +260,6 @@ export function Preferences() {
                     <MenuItem key={day.value} value={day.value}>
                       <Checkbox checked={digestEmailDays.indexOf(day.value) > -1} />
                       <ListItemText primary={day.label} />
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              <FormControl fullWidth>
-                <InputLabel>Time Zone</InputLabel>
-                <Select
-                  value={timeZone}
-                  onChange={(e) => setTimeZone(e.target.value)}
-                >
-                  {Intl.supportedValuesOf("timeZone").map((tz) => (
-                    <MenuItem key={tz} value={tz}>
-                      {tz}
                     </MenuItem>
                   ))}
                 </Select>
