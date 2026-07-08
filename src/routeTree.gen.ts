@@ -32,10 +32,13 @@ import { Route as ApiOrganizationsRouteImport } from './app/api/organizations'
 import { Route as ApiOpenapiRouteImport } from './app/api/openapi'
 import { Route as ApiLoginRouteImport } from './app/api/login'
 import { Route as ApiForgotPasswordRouteImport } from './app/api/forgotPassword'
+import { Route as ApiEmailDigestPreviewRouteImport } from './app/api/email-digest-preview'
+import { Route as ApiEmailDigestRouteImport } from './app/api/email-digest'
 import { Route as ApiApiKeysRouteImport } from './app/api/api-keys'
 import { Route as ApiOrganizationsRemoveUserRouteImport } from './app/api/organizations.removeUser'
 import { Route as ApiOrganizationsAddUserRouteImport } from './app/api/organizations.addUser'
 import { Route as ApiOrganizationsIdRouteImport } from './app/api/organizations.$id'
+import { Route as ApiEmailDigestSendRouteImport } from './app/api/email-digest.send'
 import { Route as ApiApiKeysIdRouteImport } from './app/api/api-keys.$id'
 import { Route as ApiOrganizationsIdTaxRecordsRouteImport } from './app/api/organizations.$id.taxRecords'
 import { Route as ApiOrganizationsIdTasksRouteImport } from './app/api/organizations.$id.tasks'
@@ -196,6 +199,16 @@ const ApiForgotPasswordRoute = ApiForgotPasswordRouteImport.update({
   path: '/api/forgotPassword',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiEmailDigestPreviewRoute = ApiEmailDigestPreviewRouteImport.update({
+  id: '/api/email-digest-preview',
+  path: '/api/email-digest-preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiEmailDigestRoute = ApiEmailDigestRouteImport.update({
+  id: '/api/email-digest',
+  path: '/api/email-digest',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiApiKeysRoute = ApiApiKeysRouteImport.update({
   id: '/api/api-keys',
   path: '/api/api-keys',
@@ -216,6 +229,11 @@ const ApiOrganizationsIdRoute = ApiOrganizationsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => ApiOrganizationsRoute,
+} as any)
+const ApiEmailDigestSendRoute = ApiEmailDigestSendRouteImport.update({
+  id: '/send',
+  path: '/send',
+  getParentRoute: () => ApiEmailDigestRoute,
 } as any)
 const ApiApiKeysIdRoute = ApiApiKeysIdRouteImport.update({
   id: '/$id',
@@ -502,6 +520,8 @@ export interface FileRoutesByFullPath {
   '/taxes': typeof TaxesRoute
   '/trends': typeof TrendsRoute
   '/api/api-keys': typeof ApiApiKeysRouteWithChildren
+  '/api/email-digest': typeof ApiEmailDigestRouteWithChildren
+  '/api/email-digest-preview': typeof ApiEmailDigestPreviewRoute
   '/api/forgotPassword': typeof ApiForgotPasswordRoute
   '/api/login': typeof ApiLoginRoute
   '/api/openapi': typeof ApiOpenapiRoute
@@ -510,6 +530,7 @@ export interface FileRoutesByFullPath {
   '/api/resetPassword': typeof ApiResetPasswordRoute
   '/api/tickerPrices': typeof ApiTickerPricesRoute
   '/api/api-keys/$id': typeof ApiApiKeysIdRoute
+  '/api/email-digest/send': typeof ApiEmailDigestSendRoute
   '/api/organizations/$id': typeof ApiOrganizationsIdRouteWithChildren
   '/api/organizations/addUser': typeof ApiOrganizationsAddUserRoute
   '/api/organizations/removeUser': typeof ApiOrganizationsRemoveUserRoute
@@ -575,6 +596,8 @@ export interface FileRoutesByTo {
   '/taxes': typeof TaxesRoute
   '/trends': typeof TrendsRoute
   '/api/api-keys': typeof ApiApiKeysRouteWithChildren
+  '/api/email-digest': typeof ApiEmailDigestRouteWithChildren
+  '/api/email-digest-preview': typeof ApiEmailDigestPreviewRoute
   '/api/forgotPassword': typeof ApiForgotPasswordRoute
   '/api/login': typeof ApiLoginRoute
   '/api/openapi': typeof ApiOpenapiRoute
@@ -583,6 +606,7 @@ export interface FileRoutesByTo {
   '/api/resetPassword': typeof ApiResetPasswordRoute
   '/api/tickerPrices': typeof ApiTickerPricesRoute
   '/api/api-keys/$id': typeof ApiApiKeysIdRoute
+  '/api/email-digest/send': typeof ApiEmailDigestSendRoute
   '/api/organizations/$id': typeof ApiOrganizationsIdRouteWithChildren
   '/api/organizations/addUser': typeof ApiOrganizationsAddUserRoute
   '/api/organizations/removeUser': typeof ApiOrganizationsRemoveUserRoute
@@ -649,6 +673,8 @@ export interface FileRoutesById {
   '/taxes': typeof TaxesRoute
   '/trends': typeof TrendsRoute
   '/api/api-keys': typeof ApiApiKeysRouteWithChildren
+  '/api/email-digest': typeof ApiEmailDigestRouteWithChildren
+  '/api/email-digest-preview': typeof ApiEmailDigestPreviewRoute
   '/api/forgotPassword': typeof ApiForgotPasswordRoute
   '/api/login': typeof ApiLoginRoute
   '/api/openapi': typeof ApiOpenapiRoute
@@ -657,6 +683,7 @@ export interface FileRoutesById {
   '/api/resetPassword': typeof ApiResetPasswordRoute
   '/api/tickerPrices': typeof ApiTickerPricesRoute
   '/api/api-keys/$id': typeof ApiApiKeysIdRoute
+  '/api/email-digest/send': typeof ApiEmailDigestSendRoute
   '/api/organizations/$id': typeof ApiOrganizationsIdRouteWithChildren
   '/api/organizations/addUser': typeof ApiOrganizationsAddUserRoute
   '/api/organizations/removeUser': typeof ApiOrganizationsRemoveUserRoute
@@ -724,6 +751,8 @@ export interface FileRouteTypes {
     | '/taxes'
     | '/trends'
     | '/api/api-keys'
+    | '/api/email-digest'
+    | '/api/email-digest-preview'
     | '/api/forgotPassword'
     | '/api/login'
     | '/api/openapi'
@@ -732,6 +761,7 @@ export interface FileRouteTypes {
     | '/api/resetPassword'
     | '/api/tickerPrices'
     | '/api/api-keys/$id'
+    | '/api/email-digest/send'
     | '/api/organizations/$id'
     | '/api/organizations/addUser'
     | '/api/organizations/removeUser'
@@ -797,6 +827,8 @@ export interface FileRouteTypes {
     | '/taxes'
     | '/trends'
     | '/api/api-keys'
+    | '/api/email-digest'
+    | '/api/email-digest-preview'
     | '/api/forgotPassword'
     | '/api/login'
     | '/api/openapi'
@@ -805,6 +837,7 @@ export interface FileRouteTypes {
     | '/api/resetPassword'
     | '/api/tickerPrices'
     | '/api/api-keys/$id'
+    | '/api/email-digest/send'
     | '/api/organizations/$id'
     | '/api/organizations/addUser'
     | '/api/organizations/removeUser'
@@ -870,6 +903,8 @@ export interface FileRouteTypes {
     | '/taxes'
     | '/trends'
     | '/api/api-keys'
+    | '/api/email-digest'
+    | '/api/email-digest-preview'
     | '/api/forgotPassword'
     | '/api/login'
     | '/api/openapi'
@@ -878,6 +913,7 @@ export interface FileRouteTypes {
     | '/api/resetPassword'
     | '/api/tickerPrices'
     | '/api/api-keys/$id'
+    | '/api/email-digest/send'
     | '/api/organizations/$id'
     | '/api/organizations/addUser'
     | '/api/organizations/removeUser'
@@ -944,6 +980,8 @@ export interface RootRouteChildren {
   TaxesRoute: typeof TaxesRoute
   TrendsRoute: typeof TrendsRoute
   ApiApiKeysRoute: typeof ApiApiKeysRouteWithChildren
+  ApiEmailDigestRoute: typeof ApiEmailDigestRouteWithChildren
+  ApiEmailDigestPreviewRoute: typeof ApiEmailDigestPreviewRoute
   ApiForgotPasswordRoute: typeof ApiForgotPasswordRoute
   ApiLoginRoute: typeof ApiLoginRoute
   ApiOpenapiRoute: typeof ApiOpenapiRoute
@@ -1116,6 +1154,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/email-digest-preview': {
+      id: '/api/email-digest-preview'
+      path: '/api/email-digest-preview'
+      fullPath: '/api/email-digest-preview'
+      preLoaderRoute: typeof ApiEmailDigestPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/email-digest': {
+      id: '/api/email-digest'
+      path: '/api/email-digest'
+      fullPath: '/api/email-digest'
+      preLoaderRoute: typeof ApiEmailDigestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/api-keys': {
       id: '/api/api-keys'
       path: '/api/api-keys'
@@ -1143,6 +1195,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/organizations/$id'
       preLoaderRoute: typeof ApiOrganizationsIdRouteImport
       parentRoute: typeof ApiOrganizationsRoute
+    }
+    '/api/email-digest/send': {
+      id: '/api/email-digest/send'
+      path: '/send'
+      fullPath: '/api/email-digest/send'
+      preLoaderRoute: typeof ApiEmailDigestSendRouteImport
+      parentRoute: typeof ApiEmailDigestRoute
     }
     '/api/api-keys/$id': {
       id: '/api/api-keys/$id'
@@ -1465,6 +1524,18 @@ const ApiApiKeysRouteChildren: ApiApiKeysRouteChildren = {
 
 const ApiApiKeysRouteWithChildren = ApiApiKeysRoute._addFileChildren(
   ApiApiKeysRouteChildren,
+)
+
+interface ApiEmailDigestRouteChildren {
+  ApiEmailDigestSendRoute: typeof ApiEmailDigestSendRoute
+}
+
+const ApiEmailDigestRouteChildren: ApiEmailDigestRouteChildren = {
+  ApiEmailDigestSendRoute: ApiEmailDigestSendRoute,
+}
+
+const ApiEmailDigestRouteWithChildren = ApiEmailDigestRoute._addFileChildren(
+  ApiEmailDigestRouteChildren,
 )
 
 interface ApiOrganizationsIdAccountsAccountIdAssetsRouteChildren {
@@ -1815,6 +1886,8 @@ const rootRouteChildren: RootRouteChildren = {
   TaxesRoute: TaxesRoute,
   TrendsRoute: TrendsRoute,
   ApiApiKeysRoute: ApiApiKeysRouteWithChildren,
+  ApiEmailDigestRoute: ApiEmailDigestRouteWithChildren,
+  ApiEmailDigestPreviewRoute: ApiEmailDigestPreviewRoute,
   ApiForgotPasswordRoute: ApiForgotPasswordRoute,
   ApiLoginRoute: ApiLoginRoute,
   ApiOpenapiRoute: ApiOpenapiRoute,
