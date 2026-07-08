@@ -256,6 +256,8 @@ export async function generateDigestHtml(
                 Expendas &mdash; Financial management, simplified.
                 <br/>
                 <a href="https://expendas.com" style="color: #0088b3; text-decoration: none;">expendas.com</a>
+                &nbsp;&middot;&nbsp;
+                <a href="https://expendas.com/preferences" style="color: #0088b3; text-decoration: none;">Email Preferences</a>
               </p>
             </td>
           </tr>

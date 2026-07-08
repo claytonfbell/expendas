@@ -3,6 +3,7 @@ import Brightness4Icon from "@mui/icons-material/Brightness4"
 import Brightness7Icon from "@mui/icons-material/Brightness7"
 import CheckIcon from "@mui/icons-material/Check"
 import ExitToAppIcon from "@mui/icons-material/ExitToApp"
+import PersonIcon from "@mui/icons-material/Person"
 import SettingsIcon from "@mui/icons-material/Settings"
 import { Button, ListItemIcon, useMediaQuery } from "@mui/material"
 import { useTheme } from "@mui/material/styles"
@@ -106,6 +107,13 @@ export function UserMenu() {
             {link.label}
           </MenuItem>
         ))}
+
+        <MenuItem onClick={menuClick(() => router.navigate({ to: "/preferences" }))}>
+          <ListItemIcon>
+            <PersonIcon />
+          </ListItemIcon>
+          Preferences
+        </MenuItem>
 
         <MenuItem onClick={() => toggleDarkMode(!darkMode)}>
           <ListItemIcon>

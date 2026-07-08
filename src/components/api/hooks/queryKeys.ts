@@ -20,4 +20,5 @@ export const QUERY_KEYS = {
   TICKER_PRICES: "tickerPrices",
   ASSETS: "assets",
   API_KEYS: "apiKeys",
+  USER_PREFERENCES: "userPreferences",
 } as const

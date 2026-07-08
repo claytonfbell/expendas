@@ -16,6 +16,7 @@ import { Route as SetPasswordRouteImport } from './app/setPassword'
 import { Route as RetirementRouteImport } from './app/retirement'
 import { Route as RegisterRouteImport } from './app/register'
 import { Route as ReceiptsRouteImport } from './app/receipts'
+import { Route as PreferencesRouteImport } from './app/preferences'
 import { Route as PaymentsRouteImport } from './app/payments'
 import { Route as MealsOutRouteImport } from './app/mealsOut'
 import { Route as InvestmentsRouteImport } from './app/investments'
@@ -25,6 +26,7 @@ import { Route as ApiKeysRouteImport } from './app/api-keys'
 import { Route as ApiDocsRouteImport } from './app/api-docs'
 import { Route as AccountsRouteImport } from './app/accounts'
 import { Route as IndexRouteImport } from './app/index'
+import { Route as ApiUserRouteImport } from './app/api/user'
 import { Route as ApiTickerPricesRouteImport } from './app/api/tickerPrices'
 import { Route as ApiResetPasswordRouteImport } from './app/api/resetPassword'
 import { Route as ApiRegisterRouteImport } from './app/api/register'
@@ -35,10 +37,13 @@ import { Route as ApiForgotPasswordRouteImport } from './app/api/forgotPassword'
 import { Route as ApiEmailDigestPreviewRouteImport } from './app/api/email-digest-preview'
 import { Route as ApiEmailDigestRouteImport } from './app/api/email-digest'
 import { Route as ApiApiKeysRouteImport } from './app/api/api-keys'
+import { Route as ApiUserPreferencesRouteImport } from './app/api/user.preferences'
+import { Route as ApiUserPasswordRouteImport } from './app/api/user.password'
 import { Route as ApiOrganizationsRemoveUserRouteImport } from './app/api/organizations.removeUser'
 import { Route as ApiOrganizationsAddUserRouteImport } from './app/api/organizations.addUser'
 import { Route as ApiOrganizationsIdRouteImport } from './app/api/organizations.$id'
 import { Route as ApiEmailDigestSendRouteImport } from './app/api/email-digest.send'
+import { Route as ApiEmailDigestScheduledSendRouteImport } from './app/api/email-digest.scheduled-send'
 import { Route as ApiApiKeysIdRouteImport } from './app/api/api-keys.$id'
 import { Route as ApiOrganizationsIdTaxRecordsRouteImport } from './app/api/organizations.$id.taxRecords'
 import { Route as ApiOrganizationsIdTasksRouteImport } from './app/api/organizations.$id.tasks'
@@ -119,6 +124,11 @@ const ReceiptsRoute = ReceiptsRouteImport.update({
   path: '/receipts',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PreferencesRoute = PreferencesRouteImport.update({
+  id: '/preferences',
+  path: '/preferences',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PaymentsRoute = PaymentsRouteImport.update({
   id: '/payments',
   path: '/payments',
@@ -162,6 +172,11 @@ const AccountsRoute = AccountsRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiUserRoute = ApiUserRouteImport.update({
+  id: '/api/user',
+  path: '/api/user',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiTickerPricesRoute = ApiTickerPricesRouteImport.update({
@@ -214,6 +229,16 @@ const ApiApiKeysRoute = ApiApiKeysRouteImport.update({
   path: '/api/api-keys',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiUserPreferencesRoute = ApiUserPreferencesRouteImport.update({
+  id: '/preferences',
+  path: '/preferences',
+  getParentRoute: () => ApiUserRoute,
+} as any)
+const ApiUserPasswordRoute = ApiUserPasswordRouteImport.update({
+  id: '/password',
+  path: '/password',
+  getParentRoute: () => ApiUserRoute,
+} as any)
 const ApiOrganizationsRemoveUserRoute =
   ApiOrganizationsRemoveUserRouteImport.update({
     id: '/removeUser',
@@ -235,6 +260,12 @@ const ApiEmailDigestSendRoute = ApiEmailDigestSendRouteImport.update({
   path: '/send',
   getParentRoute: () => ApiEmailDigestRoute,
 } as any)
+const ApiEmailDigestScheduledSendRoute =
+  ApiEmailDigestScheduledSendRouteImport.update({
+    id: '/scheduled-send',
+    path: '/scheduled-send',
+    getParentRoute: () => ApiEmailDigestRoute,
+  } as any)
 const ApiApiKeysIdRoute = ApiApiKeysIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -512,6 +543,7 @@ export interface FileRoutesByFullPath {
   '/investments': typeof InvestmentsRoute
   '/mealsOut': typeof MealsOutRoute
   '/payments': typeof PaymentsRoute
+  '/preferences': typeof PreferencesRoute
   '/receipts': typeof ReceiptsRoute
   '/register': typeof RegisterRoute
   '/retirement': typeof RetirementRoute
@@ -529,11 +561,15 @@ export interface FileRoutesByFullPath {
   '/api/register': typeof ApiRegisterRoute
   '/api/resetPassword': typeof ApiResetPasswordRoute
   '/api/tickerPrices': typeof ApiTickerPricesRoute
+  '/api/user': typeof ApiUserRouteWithChildren
   '/api/api-keys/$id': typeof ApiApiKeysIdRoute
+  '/api/email-digest/scheduled-send': typeof ApiEmailDigestScheduledSendRoute
   '/api/email-digest/send': typeof ApiEmailDigestSendRoute
   '/api/organizations/$id': typeof ApiOrganizationsIdRouteWithChildren
   '/api/organizations/addUser': typeof ApiOrganizationsAddUserRoute
   '/api/organizations/removeUser': typeof ApiOrganizationsRemoveUserRoute
+  '/api/user/password': typeof ApiUserPasswordRoute
+  '/api/user/preferences': typeof ApiUserPreferencesRoute
   '/api/organizations/$id/accounts': typeof ApiOrganizationsIdAccountsRouteWithChildren
   '/api/organizations/$id/dates': typeof ApiOrganizationsIdDatesRouteWithChildren
   '/api/organizations/$id/export': typeof ApiOrganizationsIdExportRoute
@@ -588,6 +624,7 @@ export interface FileRoutesByTo {
   '/investments': typeof InvestmentsRoute
   '/mealsOut': typeof MealsOutRoute
   '/payments': typeof PaymentsRoute
+  '/preferences': typeof PreferencesRoute
   '/receipts': typeof ReceiptsRoute
   '/register': typeof RegisterRoute
   '/retirement': typeof RetirementRoute
@@ -605,11 +642,15 @@ export interface FileRoutesByTo {
   '/api/register': typeof ApiRegisterRoute
   '/api/resetPassword': typeof ApiResetPasswordRoute
   '/api/tickerPrices': typeof ApiTickerPricesRoute
+  '/api/user': typeof ApiUserRouteWithChildren
   '/api/api-keys/$id': typeof ApiApiKeysIdRoute
+  '/api/email-digest/scheduled-send': typeof ApiEmailDigestScheduledSendRoute
   '/api/email-digest/send': typeof ApiEmailDigestSendRoute
   '/api/organizations/$id': typeof ApiOrganizationsIdRouteWithChildren
   '/api/organizations/addUser': typeof ApiOrganizationsAddUserRoute
   '/api/organizations/removeUser': typeof ApiOrganizationsRemoveUserRoute
+  '/api/user/password': typeof ApiUserPasswordRoute
+  '/api/user/preferences': typeof ApiUserPreferencesRoute
   '/api/organizations/$id/accounts': typeof ApiOrganizationsIdAccountsRouteWithChildren
   '/api/organizations/$id/dates': typeof ApiOrganizationsIdDatesRouteWithChildren
   '/api/organizations/$id/export': typeof ApiOrganizationsIdExportRoute
@@ -665,6 +706,7 @@ export interface FileRoutesById {
   '/investments': typeof InvestmentsRoute
   '/mealsOut': typeof MealsOutRoute
   '/payments': typeof PaymentsRoute
+  '/preferences': typeof PreferencesRoute
   '/receipts': typeof ReceiptsRoute
   '/register': typeof RegisterRoute
   '/retirement': typeof RetirementRoute
@@ -682,11 +724,15 @@ export interface FileRoutesById {
   '/api/register': typeof ApiRegisterRoute
   '/api/resetPassword': typeof ApiResetPasswordRoute
   '/api/tickerPrices': typeof ApiTickerPricesRoute
+  '/api/user': typeof ApiUserRouteWithChildren
   '/api/api-keys/$id': typeof ApiApiKeysIdRoute
+  '/api/email-digest/scheduled-send': typeof ApiEmailDigestScheduledSendRoute
   '/api/email-digest/send': typeof ApiEmailDigestSendRoute
   '/api/organizations/$id': typeof ApiOrganizationsIdRouteWithChildren
   '/api/organizations/addUser': typeof ApiOrganizationsAddUserRoute
   '/api/organizations/removeUser': typeof ApiOrganizationsRemoveUserRoute
+  '/api/user/password': typeof ApiUserPasswordRoute
+  '/api/user/preferences': typeof ApiUserPreferencesRoute
   '/api/organizations/$id/accounts': typeof ApiOrganizationsIdAccountsRouteWithChildren
   '/api/organizations/$id/dates': typeof ApiOrganizationsIdDatesRouteWithChildren
   '/api/organizations/$id/export': typeof ApiOrganizationsIdExportRoute
@@ -743,6 +789,7 @@ export interface FileRouteTypes {
     | '/investments'
     | '/mealsOut'
     | '/payments'
+    | '/preferences'
     | '/receipts'
     | '/register'
     | '/retirement'
@@ -760,11 +807,15 @@ export interface FileRouteTypes {
     | '/api/register'
     | '/api/resetPassword'
     | '/api/tickerPrices'
+    | '/api/user'
     | '/api/api-keys/$id'
+    | '/api/email-digest/scheduled-send'
     | '/api/email-digest/send'
     | '/api/organizations/$id'
     | '/api/organizations/addUser'
     | '/api/organizations/removeUser'
+    | '/api/user/password'
+    | '/api/user/preferences'
     | '/api/organizations/$id/accounts'
     | '/api/organizations/$id/dates'
     | '/api/organizations/$id/export'
@@ -819,6 +870,7 @@ export interface FileRouteTypes {
     | '/investments'
     | '/mealsOut'
     | '/payments'
+    | '/preferences'
     | '/receipts'
     | '/register'
     | '/retirement'
@@ -836,11 +888,15 @@ export interface FileRouteTypes {
     | '/api/register'
     | '/api/resetPassword'
     | '/api/tickerPrices'
+    | '/api/user'
     | '/api/api-keys/$id'
+    | '/api/email-digest/scheduled-send'
     | '/api/email-digest/send'
     | '/api/organizations/$id'
     | '/api/organizations/addUser'
     | '/api/organizations/removeUser'
+    | '/api/user/password'
+    | '/api/user/preferences'
     | '/api/organizations/$id/accounts'
     | '/api/organizations/$id/dates'
     | '/api/organizations/$id/export'
@@ -895,6 +951,7 @@ export interface FileRouteTypes {
     | '/investments'
     | '/mealsOut'
     | '/payments'
+    | '/preferences'
     | '/receipts'
     | '/register'
     | '/retirement'
@@ -912,11 +969,15 @@ export interface FileRouteTypes {
     | '/api/register'
     | '/api/resetPassword'
     | '/api/tickerPrices'
+    | '/api/user'
     | '/api/api-keys/$id'
+    | '/api/email-digest/scheduled-send'
     | '/api/email-digest/send'
     | '/api/organizations/$id'
     | '/api/organizations/addUser'
     | '/api/organizations/removeUser'
+    | '/api/user/password'
+    | '/api/user/preferences'
     | '/api/organizations/$id/accounts'
     | '/api/organizations/$id/dates'
     | '/api/organizations/$id/export'
@@ -972,6 +1033,7 @@ export interface RootRouteChildren {
   InvestmentsRoute: typeof InvestmentsRoute
   MealsOutRoute: typeof MealsOutRoute
   PaymentsRoute: typeof PaymentsRoute
+  PreferencesRoute: typeof PreferencesRoute
   ReceiptsRoute: typeof ReceiptsRoute
   RegisterRoute: typeof RegisterRoute
   RetirementRoute: typeof RetirementRoute
@@ -989,6 +1051,7 @@ export interface RootRouteChildren {
   ApiRegisterRoute: typeof ApiRegisterRoute
   ApiResetPasswordRoute: typeof ApiResetPasswordRoute
   ApiTickerPricesRoute: typeof ApiTickerPricesRoute
+  ApiUserRoute: typeof ApiUserRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -1040,6 +1103,13 @@ declare module '@tanstack/react-router' {
       path: '/receipts'
       fullPath: '/receipts'
       preLoaderRoute: typeof ReceiptsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/preferences': {
+      id: '/preferences'
+      path: '/preferences'
+      fullPath: '/preferences'
+      preLoaderRoute: typeof PreferencesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/payments': {
@@ -1103,6 +1173,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/user': {
+      id: '/api/user'
+      path: '/api/user'
+      fullPath: '/api/user'
+      preLoaderRoute: typeof ApiUserRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/tickerPrices': {
@@ -1175,6 +1252,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiApiKeysRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/user/preferences': {
+      id: '/api/user/preferences'
+      path: '/preferences'
+      fullPath: '/api/user/preferences'
+      preLoaderRoute: typeof ApiUserPreferencesRouteImport
+      parentRoute: typeof ApiUserRoute
+    }
+    '/api/user/password': {
+      id: '/api/user/password'
+      path: '/password'
+      fullPath: '/api/user/password'
+      preLoaderRoute: typeof ApiUserPasswordRouteImport
+      parentRoute: typeof ApiUserRoute
+    }
     '/api/organizations/removeUser': {
       id: '/api/organizations/removeUser'
       path: '/removeUser'
@@ -1201,6 +1292,13 @@ declare module '@tanstack/react-router' {
       path: '/send'
       fullPath: '/api/email-digest/send'
       preLoaderRoute: typeof ApiEmailDigestSendRouteImport
+      parentRoute: typeof ApiEmailDigestRoute
+    }
+    '/api/email-digest/scheduled-send': {
+      id: '/api/email-digest/scheduled-send'
+      path: '/scheduled-send'
+      fullPath: '/api/email-digest/scheduled-send'
+      preLoaderRoute: typeof ApiEmailDigestScheduledSendRouteImport
       parentRoute: typeof ApiEmailDigestRoute
     }
     '/api/api-keys/$id': {
@@ -1527,10 +1625,12 @@ const ApiApiKeysRouteWithChildren = ApiApiKeysRoute._addFileChildren(
 )
 
 interface ApiEmailDigestRouteChildren {
+  ApiEmailDigestScheduledSendRoute: typeof ApiEmailDigestScheduledSendRoute
   ApiEmailDigestSendRoute: typeof ApiEmailDigestSendRoute
 }
 
 const ApiEmailDigestRouteChildren: ApiEmailDigestRouteChildren = {
+  ApiEmailDigestScheduledSendRoute: ApiEmailDigestScheduledSendRoute,
   ApiEmailDigestSendRoute: ApiEmailDigestSendRoute,
 }
 
@@ -1868,6 +1968,19 @@ const ApiOrganizationsRouteChildren: ApiOrganizationsRouteChildren = {
 const ApiOrganizationsRouteWithChildren =
   ApiOrganizationsRoute._addFileChildren(ApiOrganizationsRouteChildren)
 
+interface ApiUserRouteChildren {
+  ApiUserPasswordRoute: typeof ApiUserPasswordRoute
+  ApiUserPreferencesRoute: typeof ApiUserPreferencesRoute
+}
+
+const ApiUserRouteChildren: ApiUserRouteChildren = {
+  ApiUserPasswordRoute: ApiUserPasswordRoute,
+  ApiUserPreferencesRoute: ApiUserPreferencesRoute,
+}
+
+const ApiUserRouteWithChildren =
+  ApiUserRoute._addFileChildren(ApiUserRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountsRoute: AccountsRoute,
@@ -1878,6 +1991,7 @@ const rootRouteChildren: RootRouteChildren = {
   InvestmentsRoute: InvestmentsRoute,
   MealsOutRoute: MealsOutRoute,
   PaymentsRoute: PaymentsRoute,
+  PreferencesRoute: PreferencesRoute,
   ReceiptsRoute: ReceiptsRoute,
   RegisterRoute: RegisterRoute,
   RetirementRoute: RetirementRoute,
@@ -1895,6 +2009,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiRegisterRoute: ApiRegisterRoute,
   ApiResetPasswordRoute: ApiResetPasswordRoute,
   ApiTickerPricesRoute: ApiTickerPricesRoute,
+  ApiUserRoute: ApiUserRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
