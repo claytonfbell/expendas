@@ -60,6 +60,7 @@ import { Route as ApiOrganizationsIdItemsItemIdRouteImport } from './app/api/org
 import { Route as ApiOrganizationsIdFixedIncomeAssetsFixedIncomeAssetIdRouteImport } from './app/api/organizations.$id.fixedIncomeAssets.$fixedIncomeAssetId'
 import { Route as ApiOrganizationsIdDatesDateRouteImport } from './app/api/organizations.$id.dates.$date'
 import { Route as ApiOrganizationsIdAccountsBalanceHistoryRouteImport } from './app/api/organizations.$id.accounts.balanceHistory'
+import { Route as ApiOrganizationsIdAccountsAutoUpdateBalancesRouteImport } from './app/api/organizations.$id.accounts.auto-update-balances'
 import { Route as ApiOrganizationsIdAccountsAccountIdRouteImport } from './app/api/organizations.$id.accounts.$accountId'
 import { Route as ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRouteImport } from './app/api/organizations.$id.taxRecords.$taxRecordId.open'
 import { Route as ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRouteImport } from './app/api/organizations.$id.taxRecords.$taxRecordId.download'
@@ -357,6 +358,12 @@ const ApiOrganizationsIdAccountsBalanceHistoryRoute =
     path: '/balanceHistory',
     getParentRoute: () => ApiOrganizationsIdAccountsRoute,
   } as any)
+const ApiOrganizationsIdAccountsAutoUpdateBalancesRoute =
+  ApiOrganizationsIdAccountsAutoUpdateBalancesRouteImport.update({
+    id: '/auto-update-balances',
+    path: '/auto-update-balances',
+    getParentRoute: () => ApiOrganizationsIdAccountsRoute,
+  } as any)
 const ApiOrganizationsIdAccountsAccountIdRoute =
   ApiOrganizationsIdAccountsAccountIdRouteImport.update({
     id: '/$accountId',
@@ -483,6 +490,7 @@ export interface FileRoutesByFullPath {
   '/api/organizations/$id/tasks': typeof ApiOrganizationsIdTasksRouteWithChildren
   '/api/organizations/$id/taxRecords': typeof ApiOrganizationsIdTaxRecordsRouteWithChildren
   '/api/organizations/$id/accounts/$accountId': typeof ApiOrganizationsIdAccountsAccountIdRouteWithChildren
+  '/api/organizations/$id/accounts/auto-update-balances': typeof ApiOrganizationsIdAccountsAutoUpdateBalancesRoute
   '/api/organizations/$id/accounts/balanceHistory': typeof ApiOrganizationsIdAccountsBalanceHistoryRoute
   '/api/organizations/$id/dates/$date': typeof ApiOrganizationsIdDatesDateRoute
   '/api/organizations/$id/fixedIncomeAssets/$fixedIncomeAssetId': typeof ApiOrganizationsIdFixedIncomeAssetsFixedIncomeAssetIdRoute
@@ -550,6 +558,7 @@ export interface FileRoutesByTo {
   '/api/organizations/$id/tasks': typeof ApiOrganizationsIdTasksRouteWithChildren
   '/api/organizations/$id/taxRecords': typeof ApiOrganizationsIdTaxRecordsRouteWithChildren
   '/api/organizations/$id/accounts/$accountId': typeof ApiOrganizationsIdAccountsAccountIdRouteWithChildren
+  '/api/organizations/$id/accounts/auto-update-balances': typeof ApiOrganizationsIdAccountsAutoUpdateBalancesRoute
   '/api/organizations/$id/accounts/balanceHistory': typeof ApiOrganizationsIdAccountsBalanceHistoryRoute
   '/api/organizations/$id/dates/$date': typeof ApiOrganizationsIdDatesDateRoute
   '/api/organizations/$id/fixedIncomeAssets/$fixedIncomeAssetId': typeof ApiOrganizationsIdFixedIncomeAssetsFixedIncomeAssetIdRoute
@@ -618,6 +627,7 @@ export interface FileRoutesById {
   '/api/organizations/$id/tasks': typeof ApiOrganizationsIdTasksRouteWithChildren
   '/api/organizations/$id/taxRecords': typeof ApiOrganizationsIdTaxRecordsRouteWithChildren
   '/api/organizations/$id/accounts/$accountId': typeof ApiOrganizationsIdAccountsAccountIdRouteWithChildren
+  '/api/organizations/$id/accounts/auto-update-balances': typeof ApiOrganizationsIdAccountsAutoUpdateBalancesRoute
   '/api/organizations/$id/accounts/balanceHistory': typeof ApiOrganizationsIdAccountsBalanceHistoryRoute
   '/api/organizations/$id/dates/$date': typeof ApiOrganizationsIdDatesDateRoute
   '/api/organizations/$id/fixedIncomeAssets/$fixedIncomeAssetId': typeof ApiOrganizationsIdFixedIncomeAssetsFixedIncomeAssetIdRoute
@@ -687,6 +697,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/tasks'
     | '/api/organizations/$id/taxRecords'
     | '/api/organizations/$id/accounts/$accountId'
+    | '/api/organizations/$id/accounts/auto-update-balances'
     | '/api/organizations/$id/accounts/balanceHistory'
     | '/api/organizations/$id/dates/$date'
     | '/api/organizations/$id/fixedIncomeAssets/$fixedIncomeAssetId'
@@ -754,6 +765,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/tasks'
     | '/api/organizations/$id/taxRecords'
     | '/api/organizations/$id/accounts/$accountId'
+    | '/api/organizations/$id/accounts/auto-update-balances'
     | '/api/organizations/$id/accounts/balanceHistory'
     | '/api/organizations/$id/dates/$date'
     | '/api/organizations/$id/fixedIncomeAssets/$fixedIncomeAssetId'
@@ -821,6 +833,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/tasks'
     | '/api/organizations/$id/taxRecords'
     | '/api/organizations/$id/accounts/$accountId'
+    | '/api/organizations/$id/accounts/auto-update-balances'
     | '/api/organizations/$id/accounts/balanceHistory'
     | '/api/organizations/$id/dates/$date'
     | '/api/organizations/$id/fixedIncomeAssets/$fixedIncomeAssetId'
@@ -1235,6 +1248,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiOrganizationsIdAccountsBalanceHistoryRouteImport
       parentRoute: typeof ApiOrganizationsIdAccountsRoute
     }
+    '/api/organizations/$id/accounts/auto-update-balances': {
+      id: '/api/organizations/$id/accounts/auto-update-balances'
+      path: '/auto-update-balances'
+      fullPath: '/api/organizations/$id/accounts/auto-update-balances'
+      preLoaderRoute: typeof ApiOrganizationsIdAccountsAutoUpdateBalancesRouteImport
+      parentRoute: typeof ApiOrganizationsIdAccountsRoute
+    }
     '/api/organizations/$id/accounts/$accountId': {
       id: '/api/organizations/$id/accounts/$accountId'
       path: '/$accountId'
@@ -1368,6 +1388,7 @@ const ApiOrganizationsIdAccountsAccountIdRouteWithChildren =
 
 interface ApiOrganizationsIdAccountsRouteChildren {
   ApiOrganizationsIdAccountsAccountIdRoute: typeof ApiOrganizationsIdAccountsAccountIdRouteWithChildren
+  ApiOrganizationsIdAccountsAutoUpdateBalancesRoute: typeof ApiOrganizationsIdAccountsAutoUpdateBalancesRoute
   ApiOrganizationsIdAccountsBalanceHistoryRoute: typeof ApiOrganizationsIdAccountsBalanceHistoryRoute
 }
 
@@ -1375,6 +1396,8 @@ const ApiOrganizationsIdAccountsRouteChildren: ApiOrganizationsIdAccountsRouteCh
   {
     ApiOrganizationsIdAccountsAccountIdRoute:
       ApiOrganizationsIdAccountsAccountIdRouteWithChildren,
+    ApiOrganizationsIdAccountsAutoUpdateBalancesRoute:
+      ApiOrganizationsIdAccountsAutoUpdateBalancesRoute,
     ApiOrganizationsIdAccountsBalanceHistoryRoute:
       ApiOrganizationsIdAccountsBalanceHistoryRoute,
   }

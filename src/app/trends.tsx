@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { Inside } from "../components/Inside"
 import { TrendsReports } from "../components/TrendsReports"
+import { AutoUpdateAccountBalances } from "../components/AutoUpdateAccountBalances"
 
 export const Route = createFileRoute("/trends")({
   ssr: false,
@@ -11,6 +12,7 @@ export const Route = createFileRoute("/trends")({
 function Trends() {
   return (
     <Inside title="Trends" breadcrumbs={[{ label: "Trends" }]}>
+      <AutoUpdateAccountBalances />
       <TrendsReports />
     </Inside>
   )
