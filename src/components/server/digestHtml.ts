@@ -121,18 +121,36 @@ export async function generateDigestHtml(
       }
       return { name: s.name, color: hexForColor(s.taskGroup.color), streak }
     })
-    .filter((s) => s.streak >= 2)
+    .filter((s) => s.streak >= 7)
 
   const giphyUrl =
     celebrations.length > 0
       ? await (async () => {
           try {
             const tags = [
-              "celebrate", "party", "lets+go", "congrats", "awesome",
-              "amazing", "fantastic", "great-job", "well-done", "you-rock",
-              "victory", "success", "winning", "woohoo", "yay",
-              "fireworks", "cheers", "accomplishment", "proud", "nailed-it",
-              "crush-it", "achievement", "hooray",
+              "celebrate",
+              "party",
+              "lets+go",
+              "congrats",
+              "awesome",
+              "amazing",
+              "fantastic",
+              "great-job",
+              "well-done",
+              "you-rock",
+              "victory",
+              "success",
+              "winning",
+              "woohoo",
+              "yay",
+              "fireworks",
+              "cheers",
+              "accomplishment",
+              "proud",
+              "nailed-it",
+              "crush-it",
+              "achievement",
+              "hooray",
             ]
             const tag = tags[Math.floor(Math.random() * tags.length)]
             const res = await fetch(
@@ -238,14 +256,18 @@ export async function generateDigestHtml(
       ? `
           <tr>
             <td style="padding: 8px 32px;">
-              ${giphyUrl ? `
+              ${
+                giphyUrl
+                  ? `
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="text-align: center; margin-bottom: 8px;">
                 <tr>
                   <td style="text-align: center;">
                     <img src="${giphyUrl}" alt="" style="display: inline-block; max-width: 100%; border-radius: 8px;" />
                   </td>
                 </tr>
-              </table>` : ""}
+              </table>`
+                  : ""
+              }
               ${celebrations
                 .map(
                   (c) => `
