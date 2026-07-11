@@ -1,10 +1,10 @@
-import dayjs from "../../components/dayjs"
 import { createFileRoute } from "@tanstack/react-router"
-import { TaskScheduleWithIncludes } from "./taskScheduleTypes"
+import dayjs from "../../components/dayjs"
 import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
 import { buildResponse } from "../../components/server/buildResponse"
 import prisma from "../../components/server/prisma"
 import validate from "../../components/server/validate"
+import { TaskScheduleWithIncludes } from "./taskScheduleTypes"
 
 dayjs.tz.setDefault("America/Los_Angeles")
 
@@ -12,107 +12,68 @@ export const Route = createFileRoute(
   "/api/organizations/$id/tasks/schedules/$taskScheduleId"
 )({
   server: {
-    handlers: {  
-    async GET({ request, params }) {
-      return buildResponse(request, async (session) => {
-        const organizationId = Number(params.id)
-        const taskScheduleId = Number(params.taskScheduleId)
-        const user = await requireOrganizationAuthentication(
-          session,
-          prisma,
-          organizationId
-        )
-  
-        const taskSchedule = await prisma.taskSchedule.findUnique({
-          where: {
-            id: taskScheduleId,
-            taskGroup: {
-              organizationId,
-              users: {
-                some: {
-                  userId: user.id,
+    handlers: {
+      async GET({ request, params }) {
+        return buildResponse(request, async (session) => {
+          const organizationId = Number(params.id)
+          const taskScheduleId = Number(params.taskScheduleId)
+          const user = await requireOrganizationAuthentication(
+            session,
+            prisma,
+            organizationId
+          )
+
+          const taskSchedule = await prisma.taskSchedule.findUnique({
+            where: {
+              id: taskScheduleId,
+              taskGroup: {
+                organizationId,
+                users: {
+                  some: {
+                    userId: user.id,
+                  },
                 },
               },
             },
-          },
+          })
+
+          if (!taskSchedule) {
+            throw new Error("Task schedule not found")
+          }
+
+          return taskSchedule
         })
-  
-        if (!taskSchedule) {
-          throw new Error("Task schedule not found")
-        }
-  
-        return taskSchedule
-      })
-    },
-    async PUT({ request, params }) {
-      return buildResponse(request, async (session) => {
-        const organizationId = Number(params.id)
-        const taskScheduleId = Number(params.taskScheduleId)
-        const user = await requireOrganizationAuthentication(
-          session,
-          prisma,
-          organizationId
-        )
-  
-        const taskSchedule = await prisma.taskSchedule.findUnique({
-          where: {
-            id: taskScheduleId,
-            taskGroup: {
-              organizationId,
-              users: {
-                some: {
-                  userId: user.id,
+      },
+      async PUT({ request, params }) {
+        return buildResponse(request, async (session) => {
+          const organizationId = Number(params.id)
+          const taskScheduleId = Number(params.taskScheduleId)
+          const user = await requireOrganizationAuthentication(
+            session,
+            prisma,
+            organizationId
+          )
+
+          const taskSchedule = await prisma.taskSchedule.findUnique({
+            where: {
+              id: taskScheduleId,
+              taskGroup: {
+                organizationId,
+                users: {
+                  some: {
+                    userId: user.id,
+                  },
                 },
               },
             },
-          },
-        })
-  
-        if (!taskSchedule) {
-          throw new Error("Task schedule not found")
-        }
-  
-        const requestBody: TaskScheduleWithIncludes = await request.json()
-        const {
-          name,
-          taskGroupId,
-          description,
-          date,
-          autoClose,
-          showStats,
-          sortOrder,
-          repeats,
-          repeatsUntilDate,
-          repeatsOnDaysOfWeek,
-          repeatsOnDaysOfMonth,
-          repeatsOnMonthsOfYear,
-          repeatsWeekly,
-          repeatsOnDates,
-        } = requestBody
-  
-        validate({ name }).notEmpty()
-  
-        const taskGroup = await prisma.taskGroup.findFirst({
-          where: {
-            id: taskGroupId,
-            organizationId,
-            users: {
-              some: {
-                userId: user.id,
-              },
-            },
-          },
-        })
-  
-        if (!taskGroup) {
-          throw new Error("Task group not found")
-        }
-  
-        const updatedTaskSchedule = await prisma.taskSchedule.update({
-          where: {
-            id: taskScheduleId,
-          },
-          data: {
+          })
+
+          if (!taskSchedule) {
+            throw new Error("Task schedule not found")
+          }
+
+          const requestBody: TaskScheduleWithIncludes = await request.json()
+          const {
             name,
             taskGroupId,
             description,
@@ -127,31 +88,13 @@ export const Route = createFileRoute(
             repeatsOnMonthsOfYear,
             repeatsWeekly,
             repeatsOnDates,
-          },
-          include: {
-            taskGroup: true,
-          },
-        })
-  
-        await scheduleTasksForSchedule(updatedTaskSchedule, 90)
-  
-        return updatedTaskSchedule
-      })
-    },
-    async DELETE({ request, params }) {
-      return buildResponse(request, async (session) => {
-        const organizationId = Number(params.id)
-        const taskScheduleId = Number(params.taskScheduleId)
-        const user = await requireOrganizationAuthentication(
-          session,
-          prisma,
-          organizationId
-        )
-  
-        const taskSchedule = await prisma.taskSchedule.findUnique({
-          where: {
-            id: taskScheduleId,
-            taskGroup: {
+          } = requestBody
+
+          validate({ name }).notEmpty()
+
+          const taskGroup = await prisma.taskGroup.findFirst({
+            where: {
+              id: taskGroupId,
               organizationId,
               users: {
                 some: {
@@ -159,23 +102,79 @@ export const Route = createFileRoute(
                 },
               },
             },
-          },
+          })
+
+          if (!taskGroup) {
+            throw new Error("Task group not found")
+          }
+
+          const updatedTaskSchedule = await prisma.taskSchedule.update({
+            where: {
+              id: taskScheduleId,
+            },
+            data: {
+              name,
+              taskGroupId,
+              description,
+              date,
+              autoClose,
+              showStats,
+              sortOrder,
+              repeats,
+              repeatsUntilDate,
+              repeatsOnDaysOfWeek,
+              repeatsOnDaysOfMonth,
+              repeatsOnMonthsOfYear,
+              repeatsWeekly,
+              repeatsOnDates,
+            },
+            include: {
+              taskGroup: true,
+            },
+          })
+
+          await scheduleTasksForSchedule(updatedTaskSchedule, 90)
+
+          return updatedTaskSchedule
         })
-  
-        if (!taskSchedule) {
-          throw new Error("Task schedule not found")
-        }
-  
-        await prisma.taskSchedule.delete({
-          where: {
-            id: taskScheduleId,
-          },
+      },
+      async DELETE({ request, params }) {
+        return buildResponse(request, async (session) => {
+          const organizationId = Number(params.id)
+          const taskScheduleId = Number(params.taskScheduleId)
+          const user = await requireOrganizationAuthentication(
+            session,
+            prisma,
+            organizationId
+          )
+
+          const taskSchedule = await prisma.taskSchedule.findUnique({
+            where: {
+              id: taskScheduleId,
+              taskGroup: {
+                organizationId,
+                users: {
+                  some: {
+                    userId: user.id,
+                  },
+                },
+              },
+            },
+          })
+
+          if (!taskSchedule) {
+            throw new Error("Task schedule not found")
+          }
+
+          await prisma.taskSchedule.delete({
+            where: {
+              id: taskScheduleId,
+            },
+          })
         })
-      })
+      },
     },
-  
-    }
-  }
+  },
 })
 
 // fallow-ignore-next-line complexity -- temporary migration debt: high cyclomatic + cognitive complexity in scheduler
@@ -184,7 +183,7 @@ export async function scheduleTasksForSchedule(
   daysAhead: number
 ) {
   let startDate = dayjs().startOf("day")
-  for (let i = 0; i <= daysAhead; i++) {
+  for (let i = -1; i <= daysAhead; i++) {
     const date = startDate.clone().add(i, "days")
 
     let repeatsOnThisDate = false
