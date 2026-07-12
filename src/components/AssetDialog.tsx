@@ -19,8 +19,9 @@ import {
 } from "@mui/material"
 import { Asset, AssetType } from "@prisma/client"
 import { useState } from "react"
-import { AmountInputTool } from "./AmountInputTool"
 import { AccountWithIncludes } from "./AccountWithIncludes"
+import { AmountInputTool } from "./AmountInputTool"
+import DisplayError from "./DisplayError"
 import { Title } from "./Title"
 import { useAddAsset } from "./api/hooks/useAddAsset"
 import { useDeleteAsset } from "./api/hooks/useDeleteAsset"
@@ -73,9 +74,22 @@ function AssetDialogContent({
 
   const { data: assets } = useFetchAssets(account.id)
 
-  const { mutateAsync: addAsset, isPending: isAdding } = useAddAsset()
-  const { mutateAsync: updateAsset, isPending: isUpdating } = useUpdateAsset()
-  const { mutateAsync: deleteAsset, isPending: isDeleting } = useDeleteAsset()
+  const {
+    mutateAsync: addAsset,
+    isPending: isAdding,
+    error: addError,
+  } = useAddAsset()
+  const {
+    mutateAsync: updateAsset,
+    isPending: isUpdating,
+    error: updateError,
+  } = useUpdateAsset()
+  const {
+    mutateAsync: deleteAsset,
+    isPending: isDeleting,
+    error: deleteError,
+  } = useDeleteAsset()
+  const error = addError || updateError || deleteError
 
   function handleStartAdd() {
     setEditAsset(undefined)
@@ -131,6 +145,7 @@ function AssetDialogContent({
       <Title label={`Assets - ${account.name}`} />
 
       <Stack spacing={2}>
+        <DisplayError error={error} />
         <Table size="small">
           <TableHead>
             <TableRow>
@@ -146,9 +161,7 @@ function AssetDialogContent({
             {assets.map((asset) => (
               <TableRow key={asset.id}>
                 <TableCell>
-                  <Typography>
-                    {getTickerDisplayName(asset.ticker)}
-                  </Typography>
+                  <Typography>{getTickerDisplayName(asset.ticker)}</Typography>
                 </TableCell>
                 <TableCell>{asset.assetType.replace("_", " ")}</TableCell>
                 <TableCell align="right">
