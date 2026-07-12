@@ -1,11 +1,7 @@
-import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import {
   Alert,
   alpha,
-  Box,
   Button,
-  Grid,
-  lighten,
   Stack,
   styled,
   TableBody,
@@ -20,21 +16,11 @@ import { AccountBucket } from "@prisma/client"
 import dayjs from "dayjs"
 import React, { useMemo, useState } from "react"
 import ReactMarkdown from "react-markdown"
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Tooltip as RechartTooltip,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-} from "recharts"
 import { AccountBucketChip } from "./AccountBucketChip"
 import { displayAccountBucket } from "./accountBuckets"
 import { investmentGroup } from "./AccountGroup"
 import { AccountWithIncludes } from "./AccountWithIncludes"
 import AnimatedCounter from "./AnimatedCounter"
-import { TickerChip } from "./TickerChip"
 import { useFetchAccounts } from "./api/hooks/useFetchAccounts"
 import { useFetchTickerPrices } from "./api/hooks/useFetchTickerPrices"
 import { useUpdateAsset } from "./api/hooks/useUpdateAsset"
@@ -48,7 +34,9 @@ import { ExpendasTable } from "./ExpendasTable"
 import { formatMoney, formatPercentage } from "./formatMoney"
 import { useGlobalState } from "./GlobalStateProvider"
 import { HorizontalRangeBar } from "./HorizontalRangeBar"
+import { InvestmentAssetBreakdown } from "./InvestmentAssetBreakdown"
 import { Percentage } from "./Percentage"
+import { TickerChip } from "./TickerChip"
 
 type Data = {
   name: AccountBucket
@@ -102,11 +90,12 @@ export function InvestmentPortfolio() {
   const fixed = accounts.reduce((a, b) => a + getFixedIncome(b), 0)
   const total = equity + fixed
 
+  const [selectedAccount, setSelectedAccount] = useState<AccountWithIncludes>()
+
   if (total === 0) {
     return null
   }
 
-  const [selectedAccount, setSelectedAccount] = useState<AccountWithIncludes>()
   const { mutateAsync: updateAsset } = useUpdateAsset()
 
   const allTickers = useMemo(() => {
@@ -177,31 +166,6 @@ export function InvestmentPortfolio() {
   const allRebalanceDates = useAllRebalanceDates()
   const nextRebalanceDate = allRebalanceDates[0]
 
-  //   const [targetEquityPercentage, setTargetEquityPercentage] = useState(
-  //     organization?.targetEquityPercentage
-  //       ? organization.targetEquityPercentage / 10_000
-  //       : 0.9
-  //   )
-  //   useEffect(() => {
-  //     if (organization) {
-  //       setTargetEquityPercentage(organization.targetEquityPercentage / 10_000)
-  //     }
-  //   }, [organization])
-
-  //   const { mutateAsync: updateOrganization } = useUpdateOrganization()
-  //   useDebounce(
-  //     () => {
-  //       if (organization) {
-  //         updateOrganization({
-  //           ...organization,
-  //           targetEquityPercentage: Math.round(targetEquityPercentage * 10_000),
-  //         })
-  //       }
-  //     },
-  //     500,
-  //     [targetEquityPercentage]
-  //   )
-
   // if the current equity percentage is off by more than 4% from the target, show a warning
   const {
     rebalanceMessage,
@@ -234,306 +198,257 @@ ${toReachMessage}`
 
   return (
     <>
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <ResponsiveContainer width={"100%"} height={160}>
-            <BarChart width={500} height={300} data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis hide />
-              <RechartTooltip
-                content={<CustomTooltip />}
-                isAnimationActive={false}
-                // label="name"
-                // formatter={(x: number) => formatMoney(x * 100)}
-              />
-              <Bar
-                dataKey="equity"
-                stackId="a"
-                fill={theme.palette.primary.main}
-                name="Equity"
-              />
-              <Bar
-                dataKey="fixed"
-                stackId="a"
-                fill={theme.palette.secondary.main}
-                name="Fixed Income"
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </Grid>
+      <Stack spacing={4}>
+        <InvestmentAssetBreakdown accounts={accounts} />
 
-        <Grid size={{ xs: 12, md: 6 }}>
-          <HorizontalRangeBar
-            low={marketTwoYearLowTotal ?? 0}
-            current={total}
-            high={marketHighTotal ?? 0}
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12 }}>
-          <Stack spacing={2}>
-            <ExpendasTable>
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ maxWidth }}>Account</TableCell>
-                  <TableCell sx={{ maxWidth }}>Retirement Bucket</TableCell>
-                  <TableCell sx={{ maxWidth }}>Investments</TableCell>
-                  <TableCell align="right">Equity</TableCell>
-                  <TableCell align="right">Fixed Income</TableCell>
-                  <TableCell align="right">Total</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {accounts
-                  .filter((x) => x.balance > 0)
-                  .map((account) => {
-                    const fixedInc = getFixedIncome(account)
-                    const equityVal = account.balance - fixedInc
-                    const tickerBalances: Record<string, number> = {}
-                    account.assets.forEach((a) => {
-                      tickerBalances[a.ticker] =
-                        (tickerBalances[a.ticker] || 0) + a.balance
-                    })
-                    const tickers = [
-                      ...new Set(account.assets.map((a) => a.ticker)),
-                    ].sort(
-                      (a, b) =>
-                        (tickerBalances[b] || 0) - (tickerBalances[a] || 0)
-                    )
-                    return (
-                      <TableRow key={account.id} hover>
-                        <TableCell>
-                          <Button
-                            variant="text"
-                            size="small"
-                            onClick={() => setSelectedAccount(account)}
-                          >
-                            {account.name}
-                          </Button>
-                        </TableCell>
-                        <TableCell>
-                          <AccountBucketChip bucket={account.accountBucket} />
-                        </TableCell>
-                        <TableCell>
-                          <Stack direction="row" spacing={0.5}>
-                            {tickers.map((ticker) => {
-                              const asset = account.assets.find(
-                                (a) => a.ticker === ticker
-                              )
-                              return (
-                                <TickerChip
-                                  key={ticker}
-                                  ticker={ticker}
-                                  balance={tickerBalances[ticker] || 0}
-                                  assetType={asset?.assetType || "Equity"}
-                                  prices={tickerPrices[ticker]}
-                                  onChange={(newBalance) => {
-                                    if (asset) {
-                                      updateAsset({
-                                        assetId: asset.id,
-                                        accountId: account.id,
-                                        ticker: asset.ticker,
-                                        assetType: asset.assetType,
-                                        currentBalance: newBalance,
-                                      })
-                                    }
-                                  }}
-                                />
-                              )
-                            })}
-                          </Stack>
-                        </TableCell>
-                        <TableCell align="right">
-                          <Currency value={equityVal} />
-                        </TableCell>
-                        <TableCell align="right">
-                          <Currency value={fixedInc} />
-                        </TableCell>
-                        <TableCell align="right">
-                          <Currency value={account.balance} />
-                        </TableCell>
-                      </TableRow>
-                    )
-                  })}
-                <TableRow>
-                  <TableCell colSpan={6}>&nbsp;</TableCell>
-                </TableRow>
-              </TableBody>
-              <TableHead>
-                <TableRow>
-                  <TableCell></TableCell>
-                  <TableCell sx={{ maxWidth }}>Retirement Bucket</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell align="right">Equity</TableCell>
-                  <TableCell align="right">Fixed Income</TableCell>
-                  <TableCell align="right">Total</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {data.map((row) => (
-                  <TableRow key={row.name} hover>
-                    <TableCell>&nbsp;</TableCell>
+        <ExpendasTable>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ maxWidth }}>Account</TableCell>
+              <TableCell sx={{ maxWidth }}>Retirement Bucket</TableCell>
+              <TableCell sx={{ maxWidth }}>Investments</TableCell>
+              <TableCell align="right">Equity</TableCell>
+              <TableCell align="right">Fixed Income</TableCell>
+              <TableCell align="right">Total</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {accounts
+              .filter((x) => x.balance > 0)
+              .map((account) => {
+                const fixedInc = getFixedIncome(account)
+                const equityVal = account.balance - fixedInc
+                const tickerBalances: Record<string, number> = {}
+                account.assets.forEach((a) => {
+                  tickerBalances[a.ticker] =
+                    (tickerBalances[a.ticker] || 0) + a.balance
+                })
+                const tickers = [
+                  ...new Set(account.assets.map((a) => a.ticker)),
+                ].sort(
+                  (a, b) => (tickerBalances[b] || 0) - (tickerBalances[a] || 0)
+                )
+                return (
+                  <TableRow key={account.id} hover>
                     <TableCell>
-                      <AccountBucketChip bucket={row.bucket} />
+                      <Button
+                        variant="text"
+                        size="small"
+                        onClick={() => setSelectedAccount(account)}
+                      >
+                        {account.name}
+                      </Button>
                     </TableCell>
-                    <TableCell></TableCell>
-                    <TableCell align="right">
-                      <Currency value={row.equity} />
+                    <TableCell>
+                      <AccountBucketChip bucket={account.accountBucket} />
+                    </TableCell>
+                    <TableCell>
+                      <Stack direction="row" spacing={0.5}>
+                        {tickers.map((ticker) => {
+                          const asset = account.assets.find(
+                            (a) => a.ticker === ticker
+                          )
+                          return (
+                            <TickerChip
+                              key={ticker}
+                              ticker={ticker}
+                              balance={tickerBalances[ticker] || 0}
+                              assetType={asset?.assetType || "Equity"}
+                              prices={tickerPrices[ticker]}
+                              onChange={(newBalance) => {
+                                if (asset) {
+                                  updateAsset({
+                                    assetId: asset.id,
+                                    accountId: account.id,
+                                    ticker: asset.ticker,
+                                    assetType: asset.assetType,
+                                    currentBalance: newBalance,
+                                  })
+                                }
+                              }}
+                            />
+                          )
+                        })}
+                      </Stack>
                     </TableCell>
                     <TableCell align="right">
-                      <Currency value={row.fixed} />
+                      <Currency value={equityVal} />
                     </TableCell>
                     <TableCell align="right">
-                      <Currency value={row.equity + row.fixed} />
+                      <Currency value={fixedInc} />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Currency value={account.balance} />
                     </TableCell>
                   </TableRow>
-                ))}
+                )
+              })}
+            <TableRow>
+              <TableCell colSpan={6}>&nbsp;</TableCell>
+            </TableRow>
+          </TableBody>
+          <TableHead>
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell sx={{ maxWidth }}>Retirement Bucket</TableCell>
+              <TableCell></TableCell>
+              <TableCell align="right">Equity</TableCell>
+              <TableCell align="right">Fixed Income</TableCell>
+              <TableCell align="right">Total</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((row) => (
+              <TableRow key={row.name} hover>
+                <TableCell>&nbsp;</TableCell>
+                <TableCell>
+                  <AccountBucketChip bucket={row.bucket} />
+                </TableCell>
+                <TableCell></TableCell>
+                <TableCell align="right">
+                  <Currency value={row.equity} />
+                </TableCell>
+                <TableCell align="right">
+                  <Currency value={row.fixed} />
+                </TableCell>
+                <TableCell align="right">
+                  <Currency value={row.equity + row.fixed} />
+                </TableCell>
+              </TableRow>
+            ))}
 
-                {/* total row */}
-                <TableRow hover>
-                  <TableCell colSpan={3}></TableCell>
-                  <TableCell align="right">
-                    <strong>
-                      <Currency value={equity} />
-                    </strong>
-                  </TableCell>
-                  <TableCell align="right">
-                    <strong>
-                      <Currency value={fixed} />
-                    </strong>
-                  </TableCell>
-                  <TableCell align="right">
-                    <strong>
-                      <Currency value={total} />
-                    </strong>
-                  </TableCell>
-                </TableRow>
+            {/* total row */}
+            <TableRow hover>
+              <TableCell colSpan={3}></TableCell>
+              <TableCell align="right">
+                <strong>
+                  <Currency value={equity} />
+                </strong>
+              </TableCell>
+              <TableCell align="right">
+                <strong>
+                  <Currency value={fixed} />
+                </strong>
+              </TableCell>
+              <TableCell align="right">
+                <strong>
+                  <Currency value={total} />
+                </strong>
+              </TableCell>
+            </TableRow>
 
-                <TableRow>
-                  <TableCell colSpan={6}>&nbsp;</TableCell>
-                </TableRow>
+            <TableRow>
+              <TableCell colSpan={6}>&nbsp;</TableCell>
+            </TableRow>
 
-                {/* percentage row */}
-                <TableRow hover>
-                  <TableCell></TableCell>
-                  <TableCell>Current Allocation</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell
-                    align="right"
-                    sx={{
-                      // color red if off by 4% or more of the target
-                      color: isOutsideTargetThreshold
-                        ? theme.palette.error.main
-                        : undefined,
-                    }}
-                  >
-                    <Percentage value={equity / total} />
-                  </TableCell>
-                  <TableCell
-                    align="right"
-                    sx={{
-                      // color red if off by 4% or more of the target
-                      color: isOutsideTargetThreshold
-                        ? theme.palette.error.main
-                        : undefined,
-                    }}
-                  >
-                    <Percentage value={fixed / total} />
-                  </TableCell>
-                  <TableCell align="right"></TableCell>
-                </TableRow>
-
-                {/* target allocation row  */}
-                <TableRow hover>
-                  <TableCell></TableCell>
-                  <TableCell>Target Allocation</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell align="right">
-                    <StyledSpan
-                      sx={{
-                        fontFamily: `'Roboto Mono', monospace`,
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      <Percentage value={targetEquityPercentage} />
-                      {/* <PercentInputTool
-                        enabled
-                        value={Math.round(targetEquityPercentage * 10_000)}
-                        onChange={(value) =>
-                          setTargetEquityPercentage(value / 10_000)
-                        }
-                      /> */}
-                    </StyledSpan>
-                  </TableCell>
-                  <TableCell align="right">
-                    <StyledSpan
-                      sx={{
-                        fontFamily: `'Roboto Mono', monospace`,
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      <Percentage value={1 - targetEquityPercentage} />
-                      {/* <PercentInputTool
-                        enabled
-                        value={Math.round(
-                          (1 - targetEquityPercentage) * 10_000
-                        )}
-                        onChange={(value) =>
-                          setTargetEquityPercentage(1 - value / 10_000)
-                        }
-                      /> */}
-                    </StyledSpan>
-                  </TableCell>
-                  <TableCell align="right"></TableCell>
-                </TableRow>
-
-                {/* target amounts */}
-                <TableRow hover>
-                  <TableCell></TableCell>
-                  <TableCell>Target Amounts</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell align="right">
-                    <Currency value={total * targetEquityPercentage} />
-                  </TableCell>
-                  <TableCell align="right">
-                    <Currency value={total * (1 - targetEquityPercentage)} />
-                  </TableCell>
-                  <TableCell align="right"></TableCell>
-                </TableRow>
-              </TableBody>
-            </ExpendasTable>
-          </Stack>
-        </Grid>
-        <Grid size={{ xs: 12 }}>
-          {/* suggesting to buy or sell to reach target allocation */}
-          <CustomAlert
-            severity={
-              isWithinOnePercentOfTarget
-                ? "success"
-                : isOutsideTargetThreshold
-                  ? "warning"
-                  : "info"
-            }
-            variant="outlined"
-            icon={isMobile ? false : undefined}
-          >
-            <Stack spacing={2}>
-              <Typography
-                component="div"
+            {/* percentage row */}
+            <TableRow hover>
+              <TableCell></TableCell>
+              <TableCell>Current Allocation</TableCell>
+              <TableCell></TableCell>
+              <TableCell
+                align="right"
                 sx={{
-                  "& p": {
-                    margin: 0,
-                  },
+                  // color red if off by 4% or more of the target
+                  color: isOutsideTargetThreshold
+                    ? theme.palette.error.main
+                    : undefined,
                 }}
               >
-                <ReactMarkdown>{rebalanceMessage}</ReactMarkdown>
-              </Typography>
-              <GlidePathRebalanceSchedule />
-            </Stack>
-          </CustomAlert>
-        </Grid>
-      </Grid>
+                <Percentage value={equity / total} />
+              </TableCell>
+              <TableCell
+                align="right"
+                sx={{
+                  // color red if off by 4% or more of the target
+                  color: isOutsideTargetThreshold
+                    ? theme.palette.error.main
+                    : undefined,
+                }}
+              >
+                <Percentage value={fixed / total} />
+              </TableCell>
+              <TableCell align="right"></TableCell>
+            </TableRow>
+
+            {/* target allocation row  */}
+            <TableRow hover>
+              <TableCell></TableCell>
+              <TableCell>Target Allocation</TableCell>
+              <TableCell></TableCell>
+              <TableCell align="right">
+                <StyledSpan
+                  sx={{
+                    fontFamily: `'Roboto Mono', monospace`,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  <Percentage value={targetEquityPercentage} />
+                </StyledSpan>
+              </TableCell>
+              <TableCell align="right">
+                <StyledSpan
+                  sx={{
+                    fontFamily: `'Roboto Mono', monospace`,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  <Percentage value={1 - targetEquityPercentage} />
+                </StyledSpan>
+              </TableCell>
+              <TableCell align="right"></TableCell>
+            </TableRow>
+
+            {/* target amounts */}
+            <TableRow hover>
+              <TableCell></TableCell>
+              <TableCell>Target Amounts</TableCell>
+              <TableCell></TableCell>
+              <TableCell align="right">
+                <Currency value={total * targetEquityPercentage} />
+              </TableCell>
+              <TableCell align="right">
+                <Currency value={total * (1 - targetEquityPercentage)} />
+              </TableCell>
+              <TableCell align="right"></TableCell>
+            </TableRow>
+          </TableBody>
+        </ExpendasTable>
+
+        <HorizontalRangeBar
+          low={marketTwoYearLowTotal ?? 0}
+          current={total}
+          high={marketHighTotal ?? 0}
+        />
+
+        {/* suggesting to buy or sell to reach target allocation */}
+        <CustomAlert
+          severity={
+            isWithinOnePercentOfTarget
+              ? "success"
+              : isOutsideTargetThreshold
+                ? "warning"
+                : "info"
+          }
+          variant="outlined"
+          icon={isMobile ? false : undefined}
+        >
+          <Stack spacing={2}>
+            <Typography
+              component="div"
+              sx={{
+                "& p": {
+                  margin: 0,
+                },
+              }}
+            >
+              <ReactMarkdown>{rebalanceMessage}</ReactMarkdown>
+            </Typography>
+            <GlidePathRebalanceSchedule />
+          </Stack>
+        </CustomAlert>
+      </Stack>
+
       <BottomStatusBar>
         <Stack
           direction="row"
@@ -570,6 +485,7 @@ ${toReachMessage}`
           </Stack>
         </Stack>
       </BottomStatusBar>
+
       <AssetDialog
         account={selectedAccount}
         onClose={() => setSelectedAccount(undefined)}
@@ -579,97 +495,6 @@ ${toReachMessage}`
 }
 
 const StyledSpan = styled("span")``
-
-interface CustomTooltipProps {
-  payload?: [TooltipPayload, TooltipPayload]
-  label?: any
-  active?: boolean
-}
-
-type TooltipPayload = {
-  color: string
-  dataKey: string
-  fill: string
-  formatter: unknown
-  name: string
-  payload: TooltipPayloadValues
-  type: unknown
-  unit: unknown
-  value: number
-}
-
-type TooltipPayloadValues = {
-  equity: number
-  fixed: number
-  name: string
-}
-
-function CustomTooltip({ payload, label, active }: CustomTooltipProps) {
-  return active && payload !== undefined ? (
-    <Box
-      sx={{
-        padding: 1,
-        color: "#ffffff",
-        borderRadius: 5,
-        backgroundColor: alpha("#000", 0.9),
-        boxShadow: `5px 11px 22px 1px rgba(0,0,0,0.43)`,
-      }}
-    >
-      <Grid
-        container
-        spacing={3}
-        sx={{
-          justifyContent: "space-between",
-        }}
-      >
-        <Grid>
-          <Typography>{label}</Typography>
-        </Grid>
-        <Grid>
-          <Typography>
-            <Currency value={payload[0].value + payload[1].value} />
-          </Typography>
-        </Grid>
-      </Grid>
-      <Grid
-        container
-        spacing={1}
-        sx={{
-          justifyContent: "space-between",
-        }}
-      >
-        <Grid>
-          <Typography style={{ color: lighten(payload[0].fill, 0.5) }}>
-            {payload[0].name}
-          </Typography>
-        </Grid>
-        <Grid>
-          <Typography style={{ color: lighten(payload[0].fill, 0.5) }}>
-            <Currency value={payload[0].value} />
-          </Typography>
-        </Grid>
-      </Grid>
-      <Grid
-        container
-        spacing={1}
-        sx={{
-          justifyContent: "space-between",
-        }}
-      >
-        <Grid>
-          <Typography style={{ color: lighten(payload[1].fill, 0.3) }}>
-            {payload[1].name}
-          </Typography>
-        </Grid>
-        <Grid>
-          <Typography style={{ color: lighten(payload[1].fill, 0.3) }}>
-            <Currency value={payload[1].value} />
-          </Typography>
-        </Grid>
-      </Grid>
-    </Box>
-  ) : null
-}
 
 const CustomAlert = styled(Alert)`
   background-color: ${(props) =>
