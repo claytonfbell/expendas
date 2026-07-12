@@ -259,7 +259,9 @@ export function MealsOut() {
         <ExpendasTable>
           <TableHead>
             <TableRow>
-              <TableCell>Date</TableCell>
+              <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>
+                Date
+              </TableCell>
               <TableCell>Merchant</TableCell>
               <TableCell>Amount</TableCell>
               <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>
@@ -274,26 +276,31 @@ export function MealsOut() {
           <TableBody>
             {mealsOut?.map((mealOut) => (
               <TableRow key={mealOut.id}>
-                <TableCell>
-                  {isMobile
-                    ? dayjs(mealOut.date).format("M/D/YYYY")
-                    : dayjs(mealOut.date).format("ddd ll")}
+                <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>
+                  {dayjs(mealOut.date).format("ddd ll")}
                 </TableCell>
                 <TableCell>
-                  <Stack>
+                  <Stack spacing={1}>
                     <Typography variant="body2">{mealOut.merchant}</Typography>
                     {isMobile && (
-                      <Chip
-                        label={displayReason(mealOut.reason)}
-                        size="small"
-                        sx={{
-                          color: getColorForMealReason(mealOut.reason),
-                          borderColor: getColorForMealReason(mealOut.reason),
-                          alignSelf: "flex-start",
-                          mt: 0.5,
-                        }}
-                        variant="outlined"
-                      />
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        sx={{ alignItems: "center" }}
+                      >
+                        <Stack>{dayjs(mealOut.date).format("M/D/YYYY")}</Stack>
+                        <Chip
+                          label={displayReason(mealOut.reason)}
+                          size="small"
+                          sx={{
+                            color: getColorForMealReason(mealOut.reason),
+                            borderColor: getColorForMealReason(mealOut.reason),
+                            alignSelf: "flex-start",
+                            mt: 0.5,
+                          }}
+                          variant="outlined"
+                        />
+                      </Stack>
                     )}
                   </Stack>
                 </TableCell>
