@@ -6,6 +6,7 @@ import { buildResponse } from "../../components/server/buildResponse"
 import prisma from "../../components/server/prisma"
 import validate from "../../components/server/validate"
 import { TaskScheduleWithIncludes } from "./organizations.$id.tasks.schedules"
+import { scheduleTasksForSchedule } from "./organizations.$id.tasks.schedules.$taskScheduleId"
 
 dayjs.tz.setDefault("America/Los_Angeles")
 
@@ -102,6 +103,18 @@ export const Route = createFileRoute("/api/organizations/$id/tasks")({
               },
             ],
           })
+
+          // get unique list of task schedules
+          const uniqueTaskSchedules = Array.from(
+            new Map(
+              tasks.map((task) => [task.taskSchedule.id, task.taskSchedule])
+            ).values()
+          )
+          // ensure tasks are scheduled for each task schedule
+          for (const taskSchedule of uniqueTaskSchedules) {
+            await scheduleTasksForSchedule(taskSchedule, 30)
+          }
+
           return tasks
         })
       },
