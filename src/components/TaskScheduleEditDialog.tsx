@@ -15,22 +15,30 @@ import {
   MultipleDatePicker,
   SelectBase,
 } from "material-ui-pack"
-import dayjs from "./dayjs"
 import { useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
 import type { TaskScheduleWithIncludes } from "../app/api/organizations.$id.tasks.schedules"
 import { useFetchTaskGroups } from "./api/hooks/useFetchTaskGroups"
+import { useFetchTaskSchedule } from "./api/hooks/useFetchTaskSchedule"
 import { useRemoveTaskSchedule } from "./api/hooks/useRemoveTaskSchedule"
 import { useUpdateTaskSchedule } from "./api/hooks/useUpdateTaskSchedule"
 import ConfirmDialog from "./ConfirmDialog"
+import dayjs from "./dayjs"
+import DisplayError from "./DisplayError"
 
 interface Props {
   taskSchedule: TaskScheduleWithIncludes | null
   onClose: () => void
 }
 
-export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
-  const { mutateAsync: updateTaskSchedule } = useUpdateTaskSchedule()
+export function TaskScheduleEditDialog({ taskSchedule: ts, onClose }: Props) {
+  const { data: taskSchedule = null } = useFetchTaskSchedule(ts?.id ?? null)
+
+  const {
+    mutateAsync: updateTaskSchedule,
+    error,
+    status,
+  } = useUpdateTaskSchedule()
   const { mutateAsync: removeTaskSchedule } = useRemoveTaskSchedule()
   const { data: taskGroups } = useFetchTaskGroups()
 
@@ -78,6 +86,7 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
                   marginTop: 1,
                 }}
               >
+                <DisplayError error={error} />
                 <SelectBase
                   size="small"
                   label="Group"
@@ -394,7 +403,11 @@ export function TaskScheduleEditDialog({ taskSchedule, onClose }: Props) {
                   <Button variant="outlined" onClick={onClose}>
                     Cancel
                   </Button>
-                  <Button variant="contained" type="submit">
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    disabled={status === "pending"}
+                  >
                     Save
                   </Button>
 

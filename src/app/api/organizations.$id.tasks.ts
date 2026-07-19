@@ -111,9 +111,11 @@ export const Route = createFileRoute("/api/organizations/$id/tasks")({
             ).values()
           )
           // ensure tasks are scheduled for each task schedule
-          for (const taskSchedule of uniqueTaskSchedules) {
-            await scheduleTasksForSchedule(taskSchedule, 30)
-          }
+          Promise.all(
+            uniqueTaskSchedules.map((taskSchedule) =>
+              scheduleTasksForSchedule(taskSchedule, 30)
+            )
+          )
 
           return tasks
         })

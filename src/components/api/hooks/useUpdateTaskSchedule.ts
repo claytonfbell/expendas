@@ -1,8 +1,8 @@
-import { QUERY_KEYS } from "./queryKeys"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import rest, { RestError } from "../rest"
-import { useGlobalState } from "../../GlobalStateContext"
 import type { TaskScheduleWithIncludes } from "../../../app/api/organizations.$id.tasks.schedules"
+import { useGlobalState } from "../../GlobalStateContext"
+import rest, { RestError } from "../rest"
+import { QUERY_KEYS } from "./queryKeys"
 
 export function useUpdateTaskSchedule() {
   const { organizationId } = useGlobalState()
@@ -18,6 +18,9 @@ export function useUpdateTaskSchedule() {
         params
       ),
     onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: [QUERY_KEYS.TASK_GROUPS, organizationId],
+      })
       queryClient.refetchQueries({
         queryKey: [QUERY_KEYS.TASK_SCHEDULES, organizationId],
       })

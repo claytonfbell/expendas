@@ -37,7 +37,10 @@ export function TaskItemGroup({ groupTasks }: TaskItemGroupProps) {
 
   useEffect(() => {
     const sortOrderKey = sortedTasks
-      .map((t) => `${t.taskSchedule.id}:${t.taskSchedule.sortOrder}`)
+      .map(
+        (t) =>
+          `${t.id}:${t.taskSchedule.id}:${t.taskSchedule.sortOrder}:${t.taskSchedule.name}:${t.completed}:${t.taskSchedule.taskGroupId}`
+      )
       .join(",")
     if (sortOrderKey !== prevSortOrderRef.current) {
       prevSortOrderRef.current = sortOrderKey

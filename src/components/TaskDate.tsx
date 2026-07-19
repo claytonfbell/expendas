@@ -55,7 +55,16 @@ export function TaskDate({ date, tasks }: Props) {
                 "|" +
                 g
                   .map(
-                    (t) => t.taskSchedule.id + ":" + t.taskSchedule.sortOrder
+                    (t) =>
+                      t.id +
+                      ":" +
+                      t.taskSchedule.id +
+                      ":" +
+                      t.taskSchedule.sortOrder +
+                      ":" +
+                      t.taskSchedule.name +
+                      ":" +
+                      t.completed
                   )
                   .join(","),
             ]
