@@ -1,5 +1,5 @@
-import dayjs from "../../components/dayjs"
 import { createFileRoute } from "@tanstack/react-router"
+import dayjs from "../../components/dayjs"
 import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
 import { buildResponse } from "../../components/server/buildResponse"
 import prisma from "../../components/server/prisma"
@@ -63,6 +63,11 @@ export const Route = createFileRoute("/api/organizations/$id/tasks/schedules")({
               sortOrder: "asc",
             },
           })
+
+          // ensure tasks are scheduled for each task schedule
+          for (const taskSchedule of taskSchedules) {
+            await scheduleTasksForSchedule(taskSchedule, 90)
+          }
 
           return taskSchedules
         })
