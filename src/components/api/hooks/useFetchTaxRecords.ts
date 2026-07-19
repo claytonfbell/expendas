@@ -8,8 +8,7 @@ export function useFetchTaxRecords() {
   const { organizationId } = useGlobalState()
   return useQuery<TaxRecordWithIncludes[], RestError>({
     queryKey: [QUERY_KEYS.TAX_RECORDS, organizationId],
-    queryFn: () =>
-      rest.get(`/organizations/${organizationId}/taxRecords`),
+    queryFn: () => rest.get(`/organizations/${organizationId}/taxRecords`),
     enabled: organizationId !== null,
   })
 }

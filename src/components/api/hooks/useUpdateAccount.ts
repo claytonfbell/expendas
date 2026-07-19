@@ -7,7 +7,11 @@ import { AccountWithIncludes } from "../../AccountWithIncludes"
 export function useUpdateAccount() {
   const queryClient = useQueryClient()
   return useMutation<AccountWithIncludes, RestError, AccountWithIncludes>({
-    mutationFn: (account: Account) => rest.put(`/organizations/${account.organizationId}/accounts/${account.id}`, account),
+    mutationFn: (account: Account) =>
+      rest.put(
+        `/organizations/${account.organizationId}/accounts/${account.id}`,
+        account
+      ),
     onMutate: (data) => {
       const predicate = [QUERY_KEYS.ACCOUNTS, data.organizationId]
       const prev = queryClient.getQueryData<Account[] | undefined>(predicate)
@@ -30,7 +34,10 @@ export function useUpdateAccount() {
     },
 
     onSuccess: (data) => {
-      queryClient.setQueryData([QUERY_KEYS.ACCOUNTS, data.organizationId, data.id], data)
+      queryClient.setQueryData(
+        [QUERY_KEYS.ACCOUNTS, data.organizationId, data.id],
+        data
+      )
       queryClient.refetchQueries({ queryKey: [QUERY_KEYS.ACCOUNTS] })
     },
   })

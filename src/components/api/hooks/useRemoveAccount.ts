@@ -6,7 +6,10 @@ import rest, { RestError } from "../rest"
 export function useRemoveAccount() {
   const queryClient = useQueryClient()
   return useMutation<void, RestError, Account>({
-    mutationFn: (account: Account) => rest.delete(`/organizations/${account.organizationId}/accounts/${account.id}`),
+    mutationFn: (account: Account) =>
+      rest.delete(
+        `/organizations/${account.organizationId}/accounts/${account.id}`
+      ),
     onSuccess: () => {
       queryClient.refetchQueries({ queryKey: [QUERY_KEYS.ACCOUNTS] })
     },

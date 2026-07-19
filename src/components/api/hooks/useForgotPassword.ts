@@ -9,6 +9,7 @@ export function useForgotPassword() {
     RestError,
     ForgotPasswordRequestData
   >({
-    mutationFn: (req: ForgotPasswordRequestData) => rest.post(`/forgotPassword`, req),
+    mutationFn: (req: ForgotPasswordRequestData) =>
+      rest.post(`/forgotPassword`, req),
   })
 }

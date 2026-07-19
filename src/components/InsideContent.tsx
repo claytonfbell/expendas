@@ -88,7 +88,6 @@ export function InsideContent(props: Props) {
                     alignItems: "center",
                   }}
                 >
-
                   <Stack
                     sx={{
                       display: { xs: "none", lg: "block" },

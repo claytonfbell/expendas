@@ -9,6 +9,7 @@ export function useResetPassword() {
     RestError,
     ResetPasswordRequestData
   >({
-    mutationFn: (req: ResetPasswordRequestData) => rest.post(`/resetPassword`, req),
+    mutationFn: (req: ResetPasswordRequestData) =>
+      rest.post(`/resetPassword`, req),
   })
 }

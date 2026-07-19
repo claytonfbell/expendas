@@ -14,7 +14,10 @@ export function sendEmail({ to, subject, text }: SendEmailArgs) {
   const html = wrapWithTemplate(marked(text))
 
   const msg = {
-    to: process.env.NODE_ENV !== "production" ? (process.env.DEV_OVERRIDE_EMAIL || "claytonfbell@gmail.com") : to,
+    to:
+      process.env.NODE_ENV !== "production"
+        ? process.env.DEV_OVERRIDE_EMAIL || "claytonfbell@gmail.com"
+        : to,
     from: "noreply@expendas.com",
     subject,
     text,

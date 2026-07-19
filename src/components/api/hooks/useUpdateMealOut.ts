@@ -7,11 +7,7 @@ import type { MealsOut } from "@prisma/client"
 export function useUpdateMealOut() {
   const { organizationId } = useGlobalState()
   const queryClient = useQueryClient()
-  return useMutation<
-    void,
-    RestError,
-    MealsOut
-  >({
+  return useMutation<void, RestError, MealsOut>({
     mutationFn: (params) =>
       rest.put(
         `/organizations/${organizationId}/mealsOut/${params.id}`,

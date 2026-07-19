@@ -30,7 +30,14 @@ export const Route = createFileRoute("/api/user/preferences")({
         return buildResponse(request, async (session) => {
           const user = await requireAuthentication(session, prisma)
           const body = await request.json()
-          const { firstName, lastName, receiveDigestEmails, digestEmailTimes, digestEmailDays, timeZone } = body
+          const {
+            firstName,
+            lastName,
+            receiveDigestEmails,
+            digestEmailTimes,
+            digestEmailDays,
+            timeZone,
+          } = body
 
           if (firstName !== undefined) {
             validate({ firstName }).notNull().min(1)

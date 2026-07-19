@@ -13,46 +13,52 @@ async function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
   return Buffer.concat(chunks)
 }
 
-export const Route = createFileRoute("/api/organizations/$id/receipts/$receiptId/open")({
+export const Route = createFileRoute(
+  "/api/organizations/$id/receipts/$receiptId/open"
+)({
   server: {
     handlers: {
-  GET: async ({ request, params }) => {
-    return buildResponse(request, async (session) => {
-      const organizationId = Number(params.id)
-      const receiptId = Number(params.receiptId)
-      await requireOrganizationAuthentication(session, prisma, organizationId)
-      const receipt = await prisma.receipt.findUnique({
-        where: {
-          id: receiptId,
-        },
-        include: {
-          account: true,
-          organizationCloudFile: {
-            include: {
-              cloudFile: true,
+      GET: async ({ request, params }) => {
+        return buildResponse(request, async (session) => {
+          const organizationId = Number(params.id)
+          const receiptId = Number(params.receiptId)
+          await requireOrganizationAuthentication(
+            session,
+            prisma,
+            organizationId
+          )
+          const receipt = await prisma.receipt.findUnique({
+            where: {
+              id: receiptId,
             },
-          },
-        },
-      })
+            include: {
+              account: true,
+              organizationCloudFile: {
+                include: {
+                  cloudFile: true,
+                },
+              },
+            },
+          })
 
-      if (!receipt) {
-        throw new BadRequestException("Receipt not found.")
-      }
+          if (!receipt) {
+            throw new BadRequestException("Receipt not found.")
+          }
 
-      const stream = await getCloudFileStream(
-        receipt.organizationCloudFile.cloudFile
-      )
-      const buffer = await streamToBuffer(stream)
+          const stream = await getCloudFileStream(
+            receipt.organizationCloudFile.cloudFile
+          )
+          const buffer = await streamToBuffer(stream)
 
-      return new Response(buffer, {
-        headers: {
-          "Content-Type": receipt.organizationCloudFile.cloudFile.contentType,
-          "Content-Disposition": `inline; filename="${receipt.organizationCloudFile.name}"`,
-        },
-      })
-    })
+          return new Response(buffer, {
+            headers: {
+              "Content-Type":
+                receipt.organizationCloudFile.cloudFile.contentType,
+              "Content-Disposition": `inline; filename="${receipt.organizationCloudFile.name}"`,
+            },
+          })
+        })
+      },
+    },
   },
-
-    }
-  }
 })

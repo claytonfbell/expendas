@@ -164,10 +164,7 @@ export function RetirementPlanSocialSecurity({ retirementPlan }: Props) {
                     display: { xs: "none", sm: "table-cell" },
                   }}
                 >
-                  {dayjs().diff(
-                    dayjs(`${user.dateOfBirth} 00:00:00`),
-                    "years"
-                  )}
+                  {dayjs().diff(dayjs(`${user.dateOfBirth} 00:00:00`), "years")}
                 </TableCell>
                 <TableCell>
                   <SelectBase

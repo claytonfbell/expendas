@@ -2,7 +2,10 @@ import { QUERY_KEYS } from "./queryKeys"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import rest, { RestError } from "../rest"
 import { useGlobalState } from "../../GlobalStateContext"
-import type { ReceiptCreateRequest, ReceiptWithIncludes } from "../../../app/api/organizations.$id.receipts"
+import type {
+  ReceiptCreateRequest,
+  ReceiptWithIncludes,
+} from "../../../app/api/organizations.$id.receipts"
 
 export function useAddReceipt() {
   const { organizationId } = useGlobalState()

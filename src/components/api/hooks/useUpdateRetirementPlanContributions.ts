@@ -28,7 +28,11 @@ export function useUpdateRetirementPlanContributions() {
         ],
       })
       queryClient.refetchQueries({
-        queryKey: [QUERY_KEYS.RETIREMENT_PLAN_REPORT, organizationId, retirementPlanId],
+        queryKey: [
+          QUERY_KEYS.RETIREMENT_PLAN_REPORT,
+          organizationId,
+          retirementPlanId,
+        ],
       })
     },
   })

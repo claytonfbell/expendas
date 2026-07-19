@@ -10,11 +10,7 @@ import type {
 export function useAddTaxRecord() {
   const { organizationId } = useGlobalState()
   const queryClient = useQueryClient()
-  return useMutation<
-    TaxRecordWithIncludes,
-    RestError,
-    TaxRecordCreateRequest
-  >({
+  return useMutation<TaxRecordWithIncludes, RestError, TaxRecordCreateRequest>({
     mutationFn: (params) =>
       rest.post(`/organizations/${organizationId}/taxRecords`, params),
     onSuccess: () => {

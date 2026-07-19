@@ -10,7 +10,10 @@ export function useUpdatePayment() {
   const queryClient = useQueryClient()
   return useMutation<Payment, RestError, Payment>({
     mutationFn: (params) =>
-      rest.put(`/organizations/${organizationId || 0}/payments/${params.id}`, params),
+      rest.put(
+        `/organizations/${organizationId || 0}/payments/${params.id}`,
+        params
+      ),
     onMutate: (data) => {
       const predicate = [QUERY_KEYS.PAYMENTS, organizationId]
       const prev = queryClient.getQueryData<Payment[] | undefined>(predicate)
@@ -33,7 +36,10 @@ export function useUpdatePayment() {
     },
 
     onSuccess: (data) => {
-      queryClient.setQueryData([QUERY_KEYS.PAYMENTS, organizationId, data.id], data)
+      queryClient.setQueryData(
+        [QUERY_KEYS.PAYMENTS, organizationId, data.id],
+        data
+      )
       queryClient.refetchQueries({ queryKey: [QUERY_KEYS.PAYMENTS] })
       queryClient.refetchQueries({ queryKey: [QUERY_KEYS.ITEMS] })
     },

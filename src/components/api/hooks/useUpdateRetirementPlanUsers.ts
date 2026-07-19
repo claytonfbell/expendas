@@ -21,10 +21,18 @@ export function useUpdateRetirementPlanUsers() {
       ),
     onSuccess: (_, { retirementPlanId }) => {
       queryClient.refetchQueries({
-        queryKey: [QUERY_KEYS.RETIREMENT_PLAN_USERS, organizationId, retirementPlanId],
+        queryKey: [
+          QUERY_KEYS.RETIREMENT_PLAN_USERS,
+          organizationId,
+          retirementPlanId,
+        ],
       })
       queryClient.refetchQueries({
-        queryKey: [QUERY_KEYS.RETIREMENT_PLAN_REPORT, organizationId, retirementPlanId],
+        queryKey: [
+          QUERY_KEYS.RETIREMENT_PLAN_REPORT,
+          organizationId,
+          retirementPlanId,
+        ],
       })
     },
   })

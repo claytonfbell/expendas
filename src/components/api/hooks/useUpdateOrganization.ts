@@ -10,13 +10,17 @@ export function useUpdateOrganization() {
     RestError,
     OrganizationWithIncludes
   >({
-    mutationFn: (organization: OrganizationWithIncludes) => rest.put(`/organizations/${organization.id}`, organization),
+    mutationFn: (organization: OrganizationWithIncludes) =>
+      rest.put(`/organizations/${organization.id}`, organization),
     onSuccess: (data) => {
       const organizations = queryClient.getQueryData<
         OrganizationWithIncludes[]
       >([QUERY_KEYS.ORGANIZATIONS])
       if (organizations !== undefined) {
-        queryClient.setQueryData([QUERY_KEYS.ORGANIZATIONS], [...organizations, data])
+        queryClient.setQueryData(
+          [QUERY_KEYS.ORGANIZATIONS],
+          [...organizations, data]
+        )
       }
       queryClient.setQueryData([QUERY_KEYS.ORGANIZATIONS, data.id], data)
       queryClient.refetchQueries({ queryKey: [QUERY_KEYS.ORGANIZATIONS] })

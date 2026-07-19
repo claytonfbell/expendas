@@ -8,7 +8,6 @@ export function useFetchMealsOut() {
   const { organizationId } = useGlobalState()
   return useSuspenseQuery<MealsOut[], RestError>({
     queryKey: [QUERY_KEYS.MEALS_OUT, organizationId],
-    queryFn: () =>
-      rest.get(`/organizations/${organizationId}/mealsOut`),
+    queryFn: () => rest.get(`/organizations/${organizationId}/mealsOut`),
   })
 }

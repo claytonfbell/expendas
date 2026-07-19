@@ -15,7 +15,6 @@ export function useFetchTaskStats() {
   const { organizationId } = useGlobalState()
   return useSuspenseQuery<TaskStat[], RestError>({
     queryKey: [QUERY_KEYS.TASKS, organizationId, "stats"],
-    queryFn: () =>
-      rest.get(`/organizations/${organizationId}/tasks/stats`),
+    queryFn: () => rest.get(`/organizations/${organizationId}/tasks/stats`),
   })
 }

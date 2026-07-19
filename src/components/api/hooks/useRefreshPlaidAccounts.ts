@@ -10,7 +10,9 @@ export function useRefreshPlaidAccounts() {
     mutationFn: () =>
       rest.post(`/organizations/${organizationId}/plaid/accounts`),
     onSuccess: () => {
-      queryClient.refetchQueries({ queryKey: [QUERY_KEYS.ACCOUNTS, organizationId] })
+      queryClient.refetchQueries({
+        queryKey: [QUERY_KEYS.ACCOUNTS, organizationId],
+      })
     },
   })
 }

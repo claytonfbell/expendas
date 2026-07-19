@@ -20,7 +20,10 @@ export const Route = createFileRoute("/api/email-digest-preview")({
             return new Response("No organization found", { status: 404 })
           }
 
-          const html = await generateDigestHtml(user.id, membership.organizationId)
+          const html = await generateDigestHtml(
+            user.id,
+            membership.organizationId
+          )
 
           return new Response(html, {
             headers: { "Content-Type": "text/html; charset=utf-8" },

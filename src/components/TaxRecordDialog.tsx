@@ -15,10 +15,7 @@ import { useUpdateTaxRecord } from "./api/hooks/useUpdateTaxRecord"
 import { useGlobalState } from "./GlobalStateProvider"
 import ConfirmDialog from "./ConfirmDialog"
 import DisplayError from "./DisplayError"
-import {
-  displayTaxRecordType,
-  taxRecordTypes,
-} from "./taxRecordTypes"
+import { displayTaxRecordType, taxRecordTypes } from "./taxRecordTypes"
 
 interface Props {
   taxRecord: TaxRecordWithIncludes | null
@@ -26,13 +23,8 @@ interface Props {
   onComplete?: (taxRecord: TaxRecordWithIncludes) => void
 }
 
-export function TaxRecordDialog({
-  taxRecord,
-  onClose,
-  onComplete,
-}: Props) {
-  const [state, setState] =
-    useState<TaxRecordWithIncludes | null>(taxRecord)
+export function TaxRecordDialog({ taxRecord, onClose, onComplete }: Props) {
+  const [state, setState] = useState<TaxRecordWithIncludes | null>(taxRecord)
   useEffect(() => {
     setState(taxRecord)
   }, [taxRecord])
@@ -101,9 +93,7 @@ export function TaxRecordDialog({
                 size="small"
                 label="Tax Year"
                 value={state?.taxYear ?? ""}
-                onChange={(e) =>
-                  handleUpdate({ taxYear: e.target.value })
-                }
+                onChange={(e) => handleUpdate({ taxYear: e.target.value })}
               />
               <TextField
                 size="small"
@@ -111,9 +101,7 @@ export function TaxRecordDialog({
                 value={state?.notes ?? ""}
                 multiline
                 minRows={3}
-                onChange={(e) =>
-                  handleUpdate({ notes: e.target.value })
-                }
+                onChange={(e) => handleUpdate({ notes: e.target.value })}
               />
               <SelectBase
                 allowNull

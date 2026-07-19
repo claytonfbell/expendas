@@ -25,9 +25,7 @@ export async function updateAccountBalanceHistory(organizationId: number) {
   )
 
   const allTickers = [
-    ...new Set(
-      accounts.flatMap((a) => a.assets.map((asset) => asset.ticker))
-    ),
+    ...new Set(accounts.flatMap((a) => a.assets.map((asset) => asset.ticker))),
   ]
 
   const tickerHighs = new Map<string, number>()
@@ -56,7 +54,9 @@ export async function updateAccountBalanceHistory(organizationId: number) {
       marketHigh = account.assets.reduce((sum, asset) => {
         const highPrice = tickerHighs.get(asset.ticker)
         if (highPrice && asset.tickerPrice > 0) {
-          return sum + Math.round((asset.balance / asset.tickerPrice) * highPrice)
+          return (
+            sum + Math.round((asset.balance / asset.tickerPrice) * highPrice)
+          )
         }
         return sum + asset.balance
       }, 0)
@@ -64,7 +64,9 @@ export async function updateAccountBalanceHistory(organizationId: number) {
       marketLow = account.assets.reduce((sum, asset) => {
         const lowPrice = tickerLows.get(asset.ticker)
         if (lowPrice && asset.tickerPrice > 0) {
-          return sum + Math.round((asset.balance / asset.tickerPrice) * lowPrice)
+          return (
+            sum + Math.round((asset.balance / asset.tickerPrice) * lowPrice)
+          )
         }
         return sum + asset.balance
       }, 0)

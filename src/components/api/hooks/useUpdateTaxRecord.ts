@@ -7,11 +7,7 @@ import type { TaxRecordWithIncludes } from "../../../app/api/organizations.$id.t
 export function useUpdateTaxRecord() {
   const { organizationId } = useGlobalState()
   const queryClient = useQueryClient()
-  return useMutation<
-    TaxRecordWithIncludes,
-    RestError,
-    TaxRecordWithIncludes
-  >({
+  return useMutation<TaxRecordWithIncludes, RestError, TaxRecordWithIncludes>({
     mutationFn: (params) =>
       rest.put(
         `/organizations/${organizationId}/taxRecords/${params.id}`,

@@ -10,7 +10,10 @@ export function useUpdateItem() {
 
   return useMutation<Item, RestError, Item>({
     mutationFn: (params) =>
-      rest.put(`/organizations/${organizationId || 0}/items/${params.id}`, params),
+      rest.put(
+        `/organizations/${organizationId || 0}/items/${params.id}`,
+        params
+      ),
     onMutate: (data) => {
       const predicate = [QUERY_KEYS.ITEMS, organizationId, data.date]
       const prev = queryClient.getQueryData<Item[] | undefined>(predicate)
@@ -32,7 +35,10 @@ export function useUpdateItem() {
     },
 
     onSuccess: (data) => {
-      queryClient.setQueryData([QUERY_KEYS.ITEMS, organizationId, data.id], data)
+      queryClient.setQueryData(
+        [QUERY_KEYS.ITEMS, organizationId, data.id],
+        data
+      )
       queryClient.refetchQueries({ queryKey: [QUERY_KEYS.ITEMS] })
     },
   })

@@ -1,10 +1,5 @@
 import TaskAltIcon from "@mui/icons-material/TaskAlt"
-import {
-  alpha,
-  Box,
-  Paper,
-  Stack,
-} from "@mui/material"
+import { alpha, Box, Paper, Stack } from "@mui/material"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { DragDropProvider } from "@dnd-kit/react"
 import { useSortable, isSortable } from "@dnd-kit/react/sortable"
@@ -58,9 +53,11 @@ export function TaskDate({ date, tasks }: Props) {
                 ":" +
                 g[0].taskSchedule.taskGroup.sortOrder +
                 "|" +
-                g.map(
-                  (t) => t.taskSchedule.id + ":" + t.taskSchedule.sortOrder
-                ).join(","),
+                g
+                  .map(
+                    (t) => t.taskSchedule.id + ":" + t.taskSchedule.sortOrder
+                  )
+                  .join(","),
             ]
           : []
       )

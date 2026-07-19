@@ -1,11 +1,4 @@
-import {
-  alpha,
-  Box,
-  Fade,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material"
+import { alpha, Box, Fade, Stack, TextField, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { DragDropProvider } from "@dnd-kit/react"
 import { useSortable, isSortable } from "@dnd-kit/react/sortable"
@@ -109,19 +102,14 @@ export function TaskItemGroup({ groupTasks }: TaskItemGroupProps) {
                 task={task}
                 index={index}
                 group={taskGroupId}
-                onClickSettings={() =>
-                  setEditTaskSchedule(task.taskSchedule)
-                }
+                onClickSettings={() => setEditTaskSchedule(task.taskSchedule)}
               />
             ))}
           </Stack>
         </DragDropProvider>
         <Fade in={showQuickAdd}>
           <Stack>
-            <QuickAddTaskSchedule
-              taskGroupId={taskGroupId}
-              date={date}
-            />
+            <QuickAddTaskSchedule taskGroupId={taskGroupId} date={date} />
           </Stack>
         </Fade>
       </Stack>

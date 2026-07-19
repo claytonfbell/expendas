@@ -12,7 +12,10 @@ export function useAddPayment() {
     mutationFn: (params) =>
       rest.post(`/organizations/${organizationId || 0}/payments`, params),
     onSuccess: (data) => {
-      queryClient.setQueryData([QUERY_KEYS.PAYMENTS, organizationId, data.id], data)
+      queryClient.setQueryData(
+        [QUERY_KEYS.PAYMENTS, organizationId, data.id],
+        data
+      )
       queryClient.refetchQueries({ queryKey: [QUERY_KEYS.PAYMENTS] })
       queryClient.refetchQueries({ queryKey: [QUERY_KEYS.ITEMS] })
     },

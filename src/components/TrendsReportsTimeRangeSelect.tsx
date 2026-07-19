@@ -1,14 +1,7 @@
 import { ButtonBase, Stack, useMediaQuery, useTheme } from "@mui/material"
 
 export type ReportRange =
-  | "1W"
-  | "1M"
-  | "3M"
-  | "6M"
-  | "YTD"
-  | "1Y"
-  | "2Y"
-  | "ALL"
+  "1W" | "1M" | "3M" | "6M" | "YTD" | "1Y" | "2Y" | "ALL"
 
 const ranges: ReportRange[] = ["1M", "3M", "6M", "YTD", "1Y", "2Y", "ALL"]
 

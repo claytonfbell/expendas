@@ -12,7 +12,8 @@ export function useRemoveUser() {
     RestError,
     RemoveUserRequestData
   >({
-    mutationFn: (req: RemoveUserRequestData) => rest.post(`/organizations/removeUser`, req),
+    mutationFn: (req: RemoveUserRequestData) =>
+      rest.post(`/organizations/removeUser`, req),
     onMutate: (data) => {
       const predicate = [QUERY_KEYS.ORGANIZATIONS, data.organizationId]
       const prevOrg = queryClient.getQueryData<

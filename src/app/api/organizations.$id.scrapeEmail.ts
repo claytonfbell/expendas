@@ -5,28 +5,25 @@ import { buildResponse } from "../../components/server/buildResponse"
 import prisma from "../../components/server/prisma"
 import { createFileRoute } from "@tanstack/react-router"
 
-export const Route = createFileRoute(
-  "/api/organizations/$id/scrapeEmail"
-)({
+export const Route = createFileRoute("/api/organizations/$id/scrapeEmail")({
   server: {
-    handlers: {  
-    POST: async ({ request, params }) => {
-      return buildResponse(request, async (session) => {
-        const organizationId = Number(params.id)
-        const user = await requireOrganizationAuthentication(
-          session,
-          prisma,
-          organizationId
-        )
-        if (user.id !== Number(process.env.SUPER_ADMIN_USER_ID)) {
-          throw new Error("You are not authorized to perform this action.")
-        }
-        return scrapeEmailsFromFidelityAndUpdateBalances()
-      })
+    handlers: {
+      POST: async ({ request, params }) => {
+        return buildResponse(request, async (session) => {
+          const organizationId = Number(params.id)
+          const user = await requireOrganizationAuthentication(
+            session,
+            prisma,
+            organizationId
+          )
+          if (user.id !== Number(process.env.SUPER_ADMIN_USER_ID)) {
+            throw new Error("You are not authorized to perform this action.")
+          }
+          return scrapeEmailsFromFidelityAndUpdateBalances()
+        })
+      },
     },
-  
-    }
-  }
+  },
 })
 
 type AccountScrapeMap = {

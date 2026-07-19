@@ -8,9 +8,7 @@ export function useRemoveTaxRecord() {
   const queryClient = useQueryClient()
   return useMutation<void, RestError, number>({
     mutationFn: (taxRecordId) =>
-      rest.delete(
-        `/organizations/${organizationId}/taxRecords/${taxRecordId}`
-      ),
+      rest.delete(`/organizations/${organizationId}/taxRecords/${taxRecordId}`),
     onSuccess: () => {
       queryClient.refetchQueries({
         queryKey: [QUERY_KEYS.TAX_RECORDS, organizationId],

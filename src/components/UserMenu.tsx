@@ -108,7 +108,9 @@ export function UserMenu() {
           </MenuItem>
         ))}
 
-        <MenuItem onClick={menuClick(() => router.navigate({ to: "/preferences" }))}>
+        <MenuItem
+          onClick={menuClick(() => router.navigate({ to: "/preferences" }))}
+        >
           <ListItemIcon>
             <PersonIcon />
           </ListItemIcon>

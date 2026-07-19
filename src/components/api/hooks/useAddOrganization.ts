@@ -11,7 +11,8 @@ export function useAddOrganization() {
     RestError,
     AddOrganizationRequestData
   >({
-    mutationFn: (req: AddOrganizationRequestData) => rest.post(`/organizations`, req),
+    mutationFn: (req: AddOrganizationRequestData) =>
+      rest.post(`/organizations`, req),
     onSuccess: (data) => {
       queryClient.setQueryData([QUERY_KEYS.ORGANIZATIONS, data.id], data)
       queryClient.refetchQueries({ queryKey: [QUERY_KEYS.ORGANIZATIONS] })

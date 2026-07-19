@@ -10,7 +10,9 @@ export function useRemovePayment() {
   const queryClient = useQueryClient()
   return useMutation<void, RestError, Payment>({
     mutationFn: (params) =>
-      rest.delete(`/organizations/${organizationId || 0}/payments/${params.id}`),
+      rest.delete(
+        `/organizations/${organizationId || 0}/payments/${params.id}`
+      ),
     onSuccess: () => {
       queryClient.refetchQueries({ queryKey: [QUERY_KEYS.PAYMENTS] })
     },

@@ -19,10 +19,7 @@ import type {
 import { useAddTaxRecord } from "./api/hooks/useAddTaxRecord"
 import { useGlobalState } from "./GlobalStateProvider"
 import DisplayError from "./DisplayError"
-import {
-  displayTaxRecordType,
-  taxRecordTypes,
-} from "./taxRecordTypes"
+import { displayTaxRecordType, taxRecordTypes } from "./taxRecordTypes"
 import { SelectFile } from "./SelectFile"
 
 const defaultState: TaxRecordCreateRequest = {
@@ -41,8 +38,7 @@ interface Props {
 
 export function TaxRecordCreateDialog({ onComplete }: Props) {
   const [open, setOpen] = useState(false)
-  const [state, setState] =
-    useState<TaxRecordCreateRequest>(defaultState)
+  const [state, setState] = useState<TaxRecordCreateRequest>(defaultState)
 
   const { organization } = useGlobalState()
   const orgUsers = organization?.users ?? []
@@ -106,9 +102,7 @@ export function TaxRecordCreateDialog({ onComplete }: Props) {
                 size="small"
                 label="Tax Year"
                 value={state.taxYear}
-                onChange={(e) =>
-                  handleUpdate({ taxYear: e.target.value })
-                }
+                onChange={(e) => handleUpdate({ taxYear: e.target.value })}
               />
               <TextField
                 size="small"
@@ -116,9 +110,7 @@ export function TaxRecordCreateDialog({ onComplete }: Props) {
                 value={state.notes}
                 multiline
                 minRows={3}
-                onChange={(e) =>
-                  handleUpdate({ notes: e.target.value })
-                }
+                onChange={(e) => handleUpdate({ notes: e.target.value })}
               />
               <SelectBase
                 allowNull

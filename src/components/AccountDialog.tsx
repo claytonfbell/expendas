@@ -1,9 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material"
+import { Dialog, DialogContent, useMediaQuery, useTheme } from "@mui/material"
 import { Account } from "@prisma/client"
 import { Form } from "material-ui-pack"
 import { useEffect, useState } from "react"

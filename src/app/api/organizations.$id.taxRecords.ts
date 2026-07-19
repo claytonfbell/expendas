@@ -10,9 +10,7 @@ import { buildResponse } from "../../components/server/buildResponse"
 import { putCloudFile } from "../../components/server/cloudFile"
 import prisma from "../../components/server/prisma"
 
-export const Route = createFileRoute(
-  "/api/organizations/$id/taxRecords"
-)({
+export const Route = createFileRoute("/api/organizations/$id/taxRecords")({
   server: {
     handlers: {
       GET: async ({ request, params }) => {
@@ -72,30 +70,27 @@ export const Route = createFileRoute(
             throw new Error("Failed to upload file")
           }
 
-          const existing =
-            await prisma.organizationCloudFile.findFirst({
-              where: {
+          const existing = await prisma.organizationCloudFile.findFirst({
+            where: {
+              organizationId,
+              cloudFileId: cloudFile.id,
+              useCase: "TaxRecord",
+            },
+          })
+
+          let organizationCloudFile: OrganizationCloudFile | null = existing
+          if (!existing) {
+            organizationCloudFile = await prisma.organizationCloudFile.create({
+              data: {
+                name: cloudFile.originalName,
                 organizationId,
                 cloudFileId: cloudFile.id,
                 useCase: "TaxRecord",
               },
+              include: {
+                cloudFile: true,
+              },
             })
-
-          let organizationCloudFile: OrganizationCloudFile | null =
-            existing
-          if (!existing) {
-            organizationCloudFile =
-              await prisma.organizationCloudFile.create({
-                data: {
-                  name: cloudFile.originalName,
-                  organizationId,
-                  cloudFileId: cloudFile.id,
-                  useCase: "TaxRecord",
-                },
-                include: {
-                  cloudFile: true,
-                },
-              })
           }
 
           if (!organizationCloudFile) {

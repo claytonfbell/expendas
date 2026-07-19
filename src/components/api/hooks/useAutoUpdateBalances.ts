@@ -9,9 +9,13 @@ export function useAutoUpdateBalances() {
   return useQuery<void, RestError>({
     queryKey: ["autoUpdateBalances"],
     queryFn: () =>
-      rest.post(`/organizations/${organizationId}/accounts/auto-update-balances`),
+      rest.post(
+        `/organizations/${organizationId}/accounts/auto-update-balances`
+      ),
     onSuccess: () => {
-      queryClient.refetchQueries({ queryKey: [QUERY_KEYS.ACCOUNTS, organizationId] })
+      queryClient.refetchQueries({
+        queryKey: [QUERY_KEYS.ACCOUNTS, organizationId],
+      })
     },
     staleTime: 0,
   })

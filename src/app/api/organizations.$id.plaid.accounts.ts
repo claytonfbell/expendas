@@ -8,53 +8,50 @@ import {
 } from "../../components/server/getPlaidClient"
 import prisma from "../../components/server/prisma"
 
-export const Route = createFileRoute(
-  "/api/organizations/$id/plaid/accounts"
-)({
+export const Route = createFileRoute("/api/organizations/$id/plaid/accounts")({
   server: {
-    handlers: {  
-    POST: async ({ request, params }) => {
-      return buildResponse(request, async (session) => {
-        console.log("Processing plaid accounts")
-        const organizationId = Number(params.id)
-  
-        const user = await requireOrganizationAuthentication(
-          session,
-          prisma,
-          organizationId
-        )
-  
-        const old = Date.now() - 1000 * 60 * 60 * 6
-        const plaidCredentials = await prisma.plaidCredential.findMany({
-          where: {
-            plaidEnvironment: PLAID_ENVIRONMENT,
-            organizationId,
-            OR: [
-              {
-                lastUpdated: null,
-              },
-              {
-                lastUpdated: {
-                  lt: new Date(old),
+    handlers: {
+      POST: async ({ request, params }) => {
+        return buildResponse(request, async (session) => {
+          console.log("Processing plaid accounts")
+          const organizationId = Number(params.id)
+
+          const user = await requireOrganizationAuthentication(
+            session,
+            prisma,
+            organizationId
+          )
+
+          const old = Date.now() - 1000 * 60 * 60 * 6
+          const plaidCredentials = await prisma.plaidCredential.findMany({
+            where: {
+              plaidEnvironment: PLAID_ENVIRONMENT,
+              organizationId,
+              OR: [
+                {
+                  lastUpdated: null,
                 },
-              },
-            ],
-          },
-          include: {
-            accounts: true,
-          },
+                {
+                  lastUpdated: {
+                    lt: new Date(old),
+                  },
+                },
+              ],
+            },
+            include: {
+              accounts: true,
+            },
+          })
+
+          for (const plaidCredential of plaidCredentials) {
+            await fetchAccounts(plaidCredential)
+          }
+
+          return { success: true }
         })
-  
-        for (const plaidCredential of plaidCredentials) {
-          await fetchAccounts(plaidCredential)
-        }
-  
-        return { success: true }
-      })
+      },
     },
-  
-    }
-  }
+  },
 })
 
 const dollarsToCents = (dollars: number) => Math.round(dollars * 100)

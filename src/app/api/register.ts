@@ -11,71 +11,74 @@ import { createFileRoute } from "@tanstack/react-router"
 export const Route = createFileRoute("/api/register")({
   server: {
     handlers: {
-  POST: async ({ request }) => {
-    return buildResponse(request, async (session) => {
-      let {
-        firstName,
-        lastName,
-        email = "",
-        password,
-        organization,
-      }: RegisterRequestData = await request.json()
+      POST: async ({ request }) => {
+        return buildResponse(request, async (session) => {
+          let {
+            firstName,
+            lastName,
+            email = "",
+            password,
+            organization,
+          }: RegisterRequestData = await request.json()
 
-      email = email.toLowerCase()
+          email = email.toLowerCase()
 
-      validate({ firstName }).notEmpty()
-      validate({ lastName }).notEmpty()
-      validate({ organization }).notEmpty()
-      validate({ email }).email()
-      validate({ password }).strongPassword()
+          validate({ firstName }).notEmpty()
+          validate({ lastName }).notEmpty()
+          validate({ organization }).notEmpty()
+          validate({ email }).email()
+          validate({ password }).strongPassword()
 
-      const users = await prisma.user.findMany({
-        where: {
-          email: {
-            equals: email,
-          },
-        },
-      })
-      if (users.length > 0) {
-        throw new BadRequestException("Email is already in use.")
-      }
+          const users = await prisma.user.findMany({
+            where: {
+              email: {
+                equals: email,
+              },
+            },
+          })
+          if (users.length > 0) {
+            throw new BadRequestException("Email is already in use.")
+          }
 
-      const organizations = await prisma.organization.findMany({
-        where: {
-          name: {
-            equals: organization,
-          },
-        },
-      })
-      if (organizations.length > 0) {
-        throw new BadRequestException("Organization name is already in use.")
-      }
+          const organizations = await prisma.organization.findMany({
+            where: {
+              name: {
+                equals: organization,
+              },
+            },
+          })
+          if (organizations.length > 0) {
+            throw new BadRequestException(
+              "Organization name is already in use."
+            )
+          }
 
-      const org = await prisma.organization.create({
-        data: { name: organization },
-      })
-      const user = await prisma.user.create({
-        data: {
-          firstName,
-          lastName,
-          email,
-          passwordHash: SHA3(password).toString(),
-        },
-      })
-      await prisma.user.update({
-        where: { id: user.id },
-        data: {
-          organizations: { create: { organizationId: org.id, isAdmin: true } },
-        },
-      })
+          const org = await prisma.organization.create({
+            data: { name: organization },
+          })
+          const user = await prisma.user.create({
+            data: {
+              firstName,
+              lastName,
+              email,
+              passwordHash: SHA3(password).toString(),
+            },
+          })
+          await prisma.user.update({
+            where: { id: user.id },
+            data: {
+              organizations: {
+                create: { organizationId: org.id, isAdmin: true },
+              },
+            },
+          })
 
-      session.user = user
+          session.user = user
 
-      const data: LoginResponseData = { user, isSuperAdmin: false }
-      return data
-    })
+          const data: LoginResponseData = { user, isSuperAdmin: false }
+          return data
+        })
+      },
+    },
   },
-
-    }
-  }
 })

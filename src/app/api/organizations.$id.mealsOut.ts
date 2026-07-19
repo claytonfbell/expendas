@@ -5,9 +5,7 @@ import { buildResponse } from "../../components/server/buildResponse"
 import prisma from "../../components/server/prisma"
 import validate from "../../components/server/validate"
 
-export const Route = createFileRoute(
-  "/api/organizations/$id/mealsOut"
-)({
+export const Route = createFileRoute("/api/organizations/$id/mealsOut")({
   server: {
     handlers: {
       GET: async ({ request, params }) => {

@@ -9,6 +9,7 @@ export function useFetchItems(date: string | null) {
 
   return useSuspenseQuery<ItemWithIncludes[], RestError>({
     queryKey: [QUERY_KEYS.ITEMS, organizationId, date],
-    queryFn: () => rest.get(`/organizations/${organizationId || 0}/dates/${date || ""}`),
+    queryFn: () =>
+      rest.get(`/organizations/${organizationId || 0}/dates/${date || ""}`),
   })
 }

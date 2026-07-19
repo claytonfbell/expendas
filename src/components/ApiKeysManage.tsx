@@ -47,7 +47,11 @@ export function ApiKeysManage() {
   return (
     <Stack spacing={3}>
       <Box>
-        <Button variant="contained" startIcon={<VpnKeyIcon />} onClick={handleCreate}>
+        <Button
+          variant="contained"
+          startIcon={<VpnKeyIcon />}
+          onClick={handleCreate}
+        >
           Create New API Key
         </Button>
       </Box>
@@ -116,10 +120,14 @@ export function ApiKeysManage() {
             ) : (
               keys.map((k) => (
                 <TableRow key={k.id}>
-                  <TableCell sx={{ fontFamily: "monospace", fontSize: "0.875rem" }}>
+                  <TableCell
+                    sx={{ fontFamily: "monospace", fontSize: "0.875rem" }}
+                  >
                     {maskKey(k.key)}
                   </TableCell>
-                  <TableCell>{dayjs(k.createdAt).format("MMM D, YYYY")}</TableCell>
+                  <TableCell>
+                    {dayjs(k.createdAt).format("MMM D, YYYY")}
+                  </TableCell>
                   <TableCell align="right">
                     <Button
                       variant="outlined"

@@ -26,50 +26,49 @@ export const organizationInclude = {
 export const Route = createFileRoute("/api/organizations")({
   server: {
     handlers: {
-  GET: async ({ request }) => {
-    return buildResponse(request, async (session) => {
-      const user = await requireAuthentication(session, prisma)
-      const organizations = await prisma.organization.findMany({
-        where: {
-          users: {
-            some: {
-              userId: user.id,
+      GET: async ({ request }) => {
+        return buildResponse(request, async (session) => {
+          const user = await requireAuthentication(session, prisma)
+          const organizations = await prisma.organization.findMany({
+            where: {
+              users: {
+                some: {
+                  userId: user.id,
+                },
+              },
             },
-          },
-        },
-        include: organizationInclude,
-      })
+            include: organizationInclude,
+          })
 
-      return organizations
-    })
+          return organizations
+        })
+      },
+      POST: async ({ request }) => {
+        return buildResponse(request, async (session) => {
+          const user = await requireAuthentication(session, prisma)
+          const { name }: AddOrganizationRequestData = await request.json()
+          validate({ name }).notEmpty()
+
+          const exists = await prisma.organization.findFirst({
+            where: { name: { equals: name } },
+          })
+          if (exists !== null) {
+            throw new BadRequestException("Organization name is already used.")
+          }
+
+          const organization = await prisma.organization.create({
+            data: {
+              name,
+              users: {
+                create: [{ userId: user.id, isAdmin: true }],
+              },
+            },
+            include: organizationInclude,
+          })
+
+          return organization
+        })
+      },
+    },
   },
-  POST: async ({ request }) => {
-    return buildResponse(request, async (session) => {
-      const user = await requireAuthentication(session, prisma)
-      const { name }: AddOrganizationRequestData = await request.json()
-      validate({ name }).notEmpty()
-
-      const exists = await prisma.organization.findFirst({
-        where: { name: { equals: name } },
-      })
-      if (exists !== null) {
-        throw new BadRequestException("Organization name is already used.")
-      }
-
-      const organization = await prisma.organization.create({
-        data: {
-          name,
-          users: {
-            create: [{ userId: user.id, isAdmin: true }],
-          },
-        },
-        include: organizationInclude,
-      })
-
-      return organization
-    })
-  },
-
-    }
-  }
 })

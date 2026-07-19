@@ -6,7 +6,6 @@ import type { TickerPriceResponse } from "../../../app/api/tickerPrices"
 export function useFetchTickerPrices(tickers: string[]) {
   return useSuspenseQuery<TickerPriceResponse, RestError>({
     queryKey: [QUERY_KEYS.TICKER_PRICES, ...tickers.sort()],
-    queryFn: () =>
-      rest.get(`/tickerPrices`, { tickers: tickers.join(",") }),
+    queryFn: () => rest.get(`/tickerPrices`, { tickers: tickers.join(",") }),
   })
 }

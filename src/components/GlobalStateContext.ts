@@ -8,7 +8,9 @@ export type GlobalStateContextType = {
   organizations: OrganizationWithIncludes[] | undefined
 }
 
-const GlobalStateContext = React.createContext<GlobalStateContextType | undefined>(undefined)
+const GlobalStateContext = React.createContext<
+  GlobalStateContextType | undefined
+>(undefined)
 
 export function useGlobalState() {
   const context = React.useContext(GlobalStateContext)

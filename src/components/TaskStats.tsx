@@ -18,7 +18,10 @@ export function TaskStats() {
         <StatBox
           key={`${stat.groupName}-${stat.name}`}
           title={stat.name}
-          titleColor={getHexColorForTaskGroupColor(stat.color, theme.palette.mode)}
+          titleColor={getHexColorForTaskGroupColor(
+            stat.color,
+            theme.palette.mode
+          )}
           value={stat.completedCount}
           subtitle="Past 30 Days"
         />

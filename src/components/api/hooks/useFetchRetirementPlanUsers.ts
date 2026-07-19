@@ -12,7 +12,11 @@ export function useFetchRetirementPlanUsers(retirementPlanId: number | null) {
     })[],
     RestError
   >({
-    queryKey: [QUERY_KEYS.RETIREMENT_PLAN_USERS, organizationId, retirementPlanId],
+    queryKey: [
+      QUERY_KEYS.RETIREMENT_PLAN_USERS,
+      organizationId,
+      retirementPlanId,
+    ],
     queryFn: () =>
       rest.get(
         `/organizations/${organizationId}/retirementPlans/${retirementPlanId}/users`

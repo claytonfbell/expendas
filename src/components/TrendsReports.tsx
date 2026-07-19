@@ -136,10 +136,7 @@ export function TrendsReports() {
                 alignItems: "center",
                 position: "absolute",
                 right: 0,
-                color:
-                  savingsChange >= 0
-                    ? "success.main"
-                    : "error.main",
+                color: savingsChange >= 0 ? "success.main" : "error.main",
               }}
             >
               {savingsChange >= 0 ? (

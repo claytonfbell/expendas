@@ -7,7 +7,11 @@ import type { RetirementPlanReportResponse } from "../../../app/api/organization
 export function useFetchRetirementPlanReport(retirementPlanId: number) {
   const { organizationId } = useGlobalState()
   return useSuspenseQuery<RetirementPlanReportResponse, RestError>({
-    queryKey: [QUERY_KEYS.RETIREMENT_PLAN_REPORT, organizationId, retirementPlanId],
+    queryKey: [
+      QUERY_KEYS.RETIREMENT_PLAN_REPORT,
+      organizationId,
+      retirementPlanId,
+    ],
     queryFn: () =>
       rest.get(
         `/organizations/${organizationId}/retirementPlans/${retirementPlanId}/report`

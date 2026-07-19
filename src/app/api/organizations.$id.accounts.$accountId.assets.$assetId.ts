@@ -29,8 +29,7 @@ export const Route = createFileRoute(
             throw new Error("Asset not found")
           }
 
-          const { ticker, assetType, currentBalance } =
-            await request.json()
+          const { ticker, assetType, currentBalance } = await request.json()
 
           const latestPrice = await getLatestTickerPrice(ticker)
 

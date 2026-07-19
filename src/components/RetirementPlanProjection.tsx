@@ -151,10 +151,7 @@ export function RetirementPlanProjection({ retirementPlan }: Props) {
                 <TableBody>
                   {report.projectionRows.map((row) => {
                     const startDate = dayjs(`${row.date} 00:00:00`)
-                    const endDate = dayjs(`${row.date} 00:00:00`).add(
-                      1,
-                      "year"
-                    )
+                    const endDate = dayjs(`${row.date} 00:00:00`).add(1, "year")
                     const hilighted = fiDate.isBetween(
                       startDate,
                       endDate,

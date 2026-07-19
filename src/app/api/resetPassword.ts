@@ -12,44 +12,43 @@ import { createFileRoute } from "@tanstack/react-router"
 export const Route = createFileRoute("/api/resetPassword")({
   server: {
     handlers: {
-  POST: async ({ request }) => {
-    return buildResponse(request, async () => {
-      let { password = "", authCode = "" }: ResetPasswordRequestData =
-        await request.json()
+      POST: async ({ request }) => {
+        return buildResponse(request, async () => {
+          let { password = "", authCode = "" }: ResetPasswordRequestData =
+            await request.json()
 
-      validate({ password }).strongPassword()
+          validate({ password }).strongPassword()
 
-      let user = await prisma.user.findFirst({
-        where: {
-          authCode: { equals: authCode },
-        },
-      })
-      if (user === null) {
-        throw new BadRequestException("Reset code is not valid.")
-      }
-      if (
-        user.authCodeExpiresAt === null ||
-        user.authCodeExpiresAt < dayjs().toDate()
-      ) {
-        throw new BadRequestException("Reset code expired.")
-      }
+          let user = await prisma.user.findFirst({
+            where: {
+              authCode: { equals: authCode },
+            },
+          })
+          if (user === null) {
+            throw new BadRequestException("Reset code is not valid.")
+          }
+          if (
+            user.authCodeExpiresAt === null ||
+            user.authCodeExpiresAt < dayjs().toDate()
+          ) {
+            throw new BadRequestException("Reset code expired.")
+          }
 
-      user = await prisma.user.update({
-        where: { id: user.id },
-        data: {
-          authCode: null,
-          authCodeExpiresAt: null,
-          passwordHash: SHA3(password).toString(),
-        },
-      })
+          user = await prisma.user.update({
+            where: { id: user.id },
+            data: {
+              authCode: null,
+              authCodeExpiresAt: null,
+              passwordHash: SHA3(password).toString(),
+            },
+          })
 
-      const response: ResetPasswordResponseData = {
-        message: "Your new password has been saved.",
-      }
-      return response
-    })
+          const response: ResetPasswordResponseData = {
+            message: "Your new password has been saved.",
+          }
+          return response
+        })
+      },
+    },
   },
-
-    }
-  }
 })

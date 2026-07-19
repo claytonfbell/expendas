@@ -63,14 +63,24 @@ const TIMEZONES = Intl.supportedValuesOf("timeZone")
 
 export function Preferences() {
   const { data: preferences, isPending: isFetching } = useFetchPreferences()
-  const { mutateAsync: updatePreferences, isPending: isUpdating, error: updateError } = useUpdatePreferences()
-  const { mutateAsync: changePassword, isPending: isChangingPassword, error: changePasswordError } = useChangePassword()
+  const {
+    mutateAsync: updatePreferences,
+    isPending: isUpdating,
+    error: updateError,
+  } = useUpdatePreferences()
+  const {
+    mutateAsync: changePassword,
+    isPending: isChangingPassword,
+    error: changePasswordError,
+  } = useChangePassword()
 
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [receiveDigestEmails, setReceiveDigestEmails] = useState(true)
   const [digestEmailTimes, setDigestEmailTimes] = useState<number[]>([6, 18])
-  const [digestEmailDays, setDigestEmailDays] = useState<number[]>([0, 1, 2, 3, 4, 5, 6])
+  const [digestEmailDays, setDigestEmailDays] = useState<number[]>([
+    0, 1, 2, 3, 4, 5, 6,
+  ])
   const [timeZone, setTimeZone] = useState("America/Los_Angeles")
 
   const [currentPassword, setCurrentPassword] = useState("")
@@ -194,7 +204,8 @@ export function Preferences() {
             </Button>
             {changePasswordError ? (
               <Typography color="error" variant="caption" sx={{ ml: 2 }}>
-                {(changePasswordError as any)?.message || "Failed to change password"}
+                {(changePasswordError as any)?.message ||
+                  "Failed to change password"}
               </Typography>
             ) : null}
             {passwordSuccess ? (
@@ -226,7 +237,9 @@ export function Preferences() {
                 <Select
                   multiple
                   value={digestEmailTimes}
-                  onChange={(e) => setDigestEmailTimes(e.target.value as number[])}
+                  onChange={(e) =>
+                    setDigestEmailTimes(e.target.value as number[])
+                  }
                   renderValue={(selected) =>
                     selected
                       .sort((a, b) => a - b)
@@ -236,7 +249,9 @@ export function Preferences() {
                 >
                   {HOURS.map((hour) => (
                     <MenuItem key={hour.value} value={hour.value}>
-                      <Checkbox checked={digestEmailTimes.indexOf(hour.value) > -1} />
+                      <Checkbox
+                        checked={digestEmailTimes.indexOf(hour.value) > -1}
+                      />
                       <ListItemText primary={hour.label} />
                     </MenuItem>
                   ))}
@@ -248,7 +263,9 @@ export function Preferences() {
                 <Select
                   multiple
                   value={digestEmailDays}
-                  onChange={(e) => setDigestEmailDays(e.target.value as number[])}
+                  onChange={(e) =>
+                    setDigestEmailDays(e.target.value as number[])
+                  }
                   renderValue={(selected) =>
                     selected
                       .sort((a, b) => a - b)
@@ -258,7 +275,9 @@ export function Preferences() {
                 >
                   {DAYS.map((day) => (
                     <MenuItem key={day.value} value={day.value}>
-                      <Checkbox checked={digestEmailDays.indexOf(day.value) > -1} />
+                      <Checkbox
+                        checked={digestEmailDays.indexOf(day.value) > -1}
+                      />
                       <ListItemText primary={day.label} />
                     </MenuItem>
                   ))}

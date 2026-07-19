@@ -9,7 +9,11 @@ export function useFetchRetirementPlanContributions(
 ) {
   const { organizationId } = useGlobalState()
   return useSuspenseQuery<RetirementPlanContribution[], RestError>({
-    queryKey: [QUERY_KEYS.RETIREMENT_PLAN_CONTRIBUTIONS, organizationId, retirementPlanId],
+    queryKey: [
+      QUERY_KEYS.RETIREMENT_PLAN_CONTRIBUTIONS,
+      organizationId,
+      retirementPlanId,
+    ],
     queryFn: () =>
       rest.get(
         `/organizations/${organizationId}/retirementPlans/${retirementPlanId}/contributions`

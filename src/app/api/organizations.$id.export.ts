@@ -15,13 +15,8 @@ function arrayToCsv(rows: Record<string, unknown>[]): string {
       .map((h) => {
         const val = row[h]
         if (val === null || val === undefined) return ""
-        const str =
-          typeof val === "object" ? JSON.stringify(val) : String(val)
-        if (
-          str.includes(",") ||
-          str.includes('"') ||
-          str.includes("\n")
-        ) {
+        const str = typeof val === "object" ? JSON.stringify(val) : String(val)
+        if (str.includes(",") || str.includes('"') || str.includes("\n")) {
           return `"${str.replace(/"/g, '""')}"`
         }
         return str
@@ -193,16 +188,25 @@ export const Route = createFileRoute("/api/organizations/$id/export")({
           archive.on("data", (chunk: Buffer) => chunks.push(chunk))
 
           const csvTables: Record<string, Record<string, unknown>[]> = {
-            organization: organization ? [organization as Record<string, unknown>] : [],
+            organization: organization
+              ? [organization as Record<string, unknown>]
+              : [],
             users_on_organizations: usersOnOrg as Record<string, unknown>[],
             accounts: accounts as Record<string, unknown>[],
             payments: payments as Record<string, unknown>[],
             items: items as Record<string, unknown>[],
             carry_overs: carryOvers as Record<string, unknown>[],
-            account_balance_history: balanceHistory as Record<string, unknown>[],
+            account_balance_history: balanceHistory as Record<
+              string,
+              unknown
+            >[],
             retirement_plans: retirementPlans as Record<string, unknown>[],
-            retirement_plan_users: retirementPlanUsers as Record<string, unknown>[],
-            retirement_plan_contributions: retirementPlanContributions as Record<string, unknown>[],
+            retirement_plan_users: retirementPlanUsers as Record<
+              string,
+              unknown
+            >[],
+            retirement_plan_contributions:
+              retirementPlanContributions as Record<string, unknown>[],
             fixed_income_assets: fixedIncomeAssets as Record<string, unknown>[],
             task_groups: taskGroups as Record<string, unknown>[],
             task_group_users: taskGroupUsers as Record<string, unknown>[],
