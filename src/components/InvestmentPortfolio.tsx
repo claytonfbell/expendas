@@ -167,6 +167,19 @@ export function InvestmentPortfolio() {
   const nextRebalanceDate = allRebalanceDates[0]
 
   // if the current equity percentage is off by more than 4% from the target, show a warning
+  const smallCapBalance = useMemo(() => {
+    return accounts.reduce(
+      (sum, account) =>
+        sum +
+        account.assets
+          .filter((a) => a.ticker === "VB" && a.assetType === "Equity")
+          .reduce((s, a) => s + a.balance, 0),
+      0
+    )
+  }, [accounts])
+
+  const targetSmallCap = total * targetEquityPercentage * 0.1
+
   const {
     rebalanceMessage,
     isOutsideTargetThreshold,
@@ -177,17 +190,8 @@ export function InvestmentPortfolio() {
     const isWithinOnePercentOfTarget = offTargetBy <= 0.01
     const targetPortfolio: string = `${Math.round(targetEquityPercentage * 100)}/${Math.round((1 - targetEquityPercentage) * 100)}`
 
-    const smallCapBalance = accounts.reduce(
-      (sum, account) =>
-        sum +
-        account.assets
-          .filter((a) => a.ticker === "VB" && a.assetType === "Equity")
-          .reduce((s, a) => s + a.balance, 0),
-      0
-    )
     const largeCapBalance = equity - smallCapBalance
     const targetEquity = total * targetEquityPercentage
-    const targetSmallCap = targetEquity * 0.1
     const targetLargeCap = targetEquity * 0.9
     const largeCapRebalanceAmount = targetLargeCap - largeCapBalance
     const smallCapRebalanceAmount = targetSmallCap - smallCapBalance
@@ -212,7 +216,7 @@ ${capMessage}`
       isOutsideTargetThreshold,
       isWithinOnePercentOfTarget,
     }
-  }, [equity, total, targetEquityPercentage, accounts, nextRebalanceDate])
+  }, [equity, total, targetEquityPercentage, smallCapBalance, targetSmallCap, nextRebalanceDate])
 
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
 
@@ -431,6 +435,35 @@ ${capMessage}`
                 <Currency value={total * (1 - targetEquityPercentage)} />
               </TableCell>
               <TableCell align="right"></TableCell>
+            </TableRow>
+
+            {/* empty row */}
+            <TableRow>
+              <TableCell colSpan={6}>&nbsp;</TableCell>
+            </TableRow>
+
+            {/* current small cap */}
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell>Current Small Cap</TableCell>
+              <TableCell></TableCell>
+              <TableCell align="right"></TableCell>
+              <TableCell align="right"></TableCell>
+              <TableCell align="right">
+                <Currency value={smallCapBalance} />
+              </TableCell>
+            </TableRow>
+
+            {/* target small cap */}
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell>Target Small Cap</TableCell>
+              <TableCell></TableCell>
+              <TableCell align="right"></TableCell>
+              <TableCell align="right"></TableCell>
+              <TableCell align="right">
+                <Currency value={targetSmallCap} />
+              </TableCell>
             </TableRow>
           </TableBody>
         </ExpendasTable>
