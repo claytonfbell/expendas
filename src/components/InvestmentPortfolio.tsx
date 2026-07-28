@@ -179,14 +179,6 @@ export function InvestmentPortfolio() {
     const targetPortfolio: string = `${Math.round(targetEquityPercentage * 100)}/${Math.round((1 - targetEquityPercentage) * 100)}`
     const toReachMessage = `To reach your target allocation of **${targetPortfolio}**, you will ${rebalanceEquityAmount > 0 ? "buy" : "sell"} **${formatMoney(Math.abs(rebalanceEquityAmount), true)}** of stocks at the next rebalance date (${nextRebalanceDate.format("l")}).`
 
-    const largeCapBalance = accounts.reduce(
-      (sum, account) =>
-        sum +
-        account.assets
-          .filter((a) => a.ticker === "VOO" && a.assetType === "Equity")
-          .reduce((s, a) => s + a.balance, 0),
-      0
-    )
     const smallCapBalance = accounts.reduce(
       (sum, account) =>
         sum +
@@ -195,7 +187,6 @@ export function InvestmentPortfolio() {
           .reduce((s, a) => s + a.balance, 0),
       0
     )
-    const largeCapTarget = equity * 0.9
     const smallCapTarget = equity * 0.1
     const smallCapRebalanceAmount = smallCapTarget - smallCapBalance
     const largeSmallCapMessage = `To reach your target allocation of **90/10** Large Cap / Small Cap, you must ${smallCapRebalanceAmount > 0 ? "buy" : "sell"} **${formatMoney(Math.abs(smallCapRebalanceAmount), true)}** of Small Cap.`
