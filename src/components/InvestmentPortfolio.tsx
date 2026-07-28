@@ -195,7 +195,7 @@ export function InvestmentPortfolio() {
     const largeCapAction = largeCapRebalanceAmount > 0 ? "buy" : "sell"
     const smallCapAction = smallCapRebalanceAmount > 0 ? "buy" : "sell"
 
-    const capMessage = `To reach your target allocation of **${targetPortfolio}** with 10% Small Cap, you will ${largeCapAction} **${formatMoney(Math.abs(largeCapRebalanceAmount), true)}** of Large Cap and ${smallCapAction} **${formatMoney(Math.abs(smallCapRebalanceAmount), true)}** of Small Cap at the next rebalance date (${nextRebalanceDate.format("l")}).`
+    const capMessage = `To reach your target allocation of **${targetPortfolio}** stocks/bonds with 10% of the equity in Small Cap, you will ${largeCapAction} **${formatMoney(Math.abs(largeCapRebalanceAmount), true)}** of Large Cap and ${smallCapAction} **${formatMoney(Math.abs(smallCapRebalanceAmount), true)}** of Small Cap at the next rebalance date (${nextRebalanceDate.format("l")}).`
 
     const rebalanceMessage: string = isWithinOnePercentOfTarget
       ? `Your portfolio is only **${formatPercentage(offTargetBy, false)}** off your target allocation. You can skip rebalancing on the next rebalance date (${nextRebalanceDate.format("l")}) if you want.
