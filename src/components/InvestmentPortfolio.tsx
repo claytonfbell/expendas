@@ -175,9 +175,7 @@ export function InvestmentPortfolio() {
     const offTargetBy = Math.abs(equity / total - targetEquityPercentage)
     const isOutsideTargetThreshold = offTargetBy > 0.04
     const isWithinOnePercentOfTarget = offTargetBy <= 0.01
-    const rebalanceEquityAmount = total * targetEquityPercentage - equity
     const targetPortfolio: string = `${Math.round(targetEquityPercentage * 100)}/${Math.round((1 - targetEquityPercentage) * 100)}`
-    const toReachMessage = `To reach your target allocation of **${targetPortfolio}**, you will ${rebalanceEquityAmount > 0 ? "buy" : "sell"} **${formatMoney(Math.abs(rebalanceEquityAmount), true)}** of stocks at the next rebalance date (${nextRebalanceDate.format("l")}).`
 
     const smallCapBalance = accounts.reduce(
       (sum, account) =>
@@ -187,26 +185,27 @@ export function InvestmentPortfolio() {
           .reduce((s, a) => s + a.balance, 0),
       0
     )
-    const smallCapTarget = equity * 0.1
-    const smallCapRebalanceAmount = smallCapTarget - smallCapBalance
-    const largeSmallCapMessage = `To reach your target allocation of **90/10** Large Cap / Small Cap, you must ${smallCapRebalanceAmount > 0 ? "buy" : "sell"} **${formatMoney(Math.abs(smallCapRebalanceAmount), true)}** of Small Cap.`
+    const largeCapBalance = equity - smallCapBalance
+    const targetEquity = total * targetEquityPercentage
+    const targetSmallCap = targetEquity * 0.1
+    const targetLargeCap = targetEquity * 0.9
+    const largeCapRebalanceAmount = targetLargeCap - largeCapBalance
+    const smallCapRebalanceAmount = targetSmallCap - smallCapBalance
+
+    const largeCapAction = largeCapRebalanceAmount > 0 ? "buy" : "sell"
+    const smallCapAction = smallCapRebalanceAmount > 0 ? "buy" : "sell"
+
+    const capMessage = `To reach your target allocation of **${targetPortfolio}** with 10% Small Cap, you will ${largeCapAction} **${formatMoney(Math.abs(largeCapRebalanceAmount), true)}** of Large Cap and ${smallCapAction} **${formatMoney(Math.abs(smallCapRebalanceAmount), true)}** of Small Cap at the next rebalance date (${nextRebalanceDate.format("l")}).`
 
     const rebalanceMessage: string = isWithinOnePercentOfTarget
       ? `Your portfolio is only **${formatPercentage(offTargetBy, false)}** off your target allocation. You can skip rebalancing on the next rebalance date (${nextRebalanceDate.format("l")}) if you want.
 
-${toReachMessage}
-
-
-${largeSmallCapMessage}`
+${capMessage}`
       : !isOutsideTargetThreshold
-        ? `${toReachMessage}
+        ? capMessage
+        : `Your portfolio is outside of your target allocation by **${formatPercentage(offTargetBy, false)}**. Consider ${largeCapAction} **${formatMoney(Math.abs(largeCapRebalanceAmount), true)}** of Large Cap and ${smallCapAction} **${formatMoney(Math.abs(smallCapRebalanceAmount), true)}** of Small Cap to get back to your target allocation of **${targetPortfolio}**.
 
-
-${largeSmallCapMessage}`
-        : `Your portfolio is outside of your target allocation by **${formatPercentage(offTargetBy, false)}**. Consider ${rebalanceEquityAmount > 0 ? "buying" : "selling"} **${formatMoney(Math.abs(rebalanceEquityAmount), true)}** of stocks to get back to your target allocation of **${targetPortfolio}**.
-
-
-${largeSmallCapMessage}`
+${capMessage}`
 
     return {
       rebalanceMessage,
