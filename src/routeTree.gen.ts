@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './app/__root'
 import { Route as TrendsRouteImport } from './app/trends'
+import { Route as Test2RouteImport } from './app/test2'
 import { Route as TaxesRouteImport } from './app/taxes'
 import { Route as TasksRouteImport } from './app/tasks'
 import { Route as SetPasswordRouteImport } from './app/setPassword'
@@ -92,6 +93,11 @@ import { Route as ApiOrganizationsIdAccountsAccountIdAssetsAssetIdRouteImport } 
 const TrendsRoute = TrendsRouteImport.update({
   id: '/trends',
   path: '/trends',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Test2Route = Test2RouteImport.update({
+  id: '/test2',
+  path: '/test2',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TaxesRoute = TaxesRouteImport.update({
@@ -550,6 +556,7 @@ export interface FileRoutesByFullPath {
   '/setPassword': typeof SetPasswordRoute
   '/tasks': typeof TasksRoute
   '/taxes': typeof TaxesRoute
+  '/test2': typeof Test2Route
   '/trends': typeof TrendsRoute
   '/api/api-keys': typeof ApiApiKeysRouteWithChildren
   '/api/email-digest': typeof ApiEmailDigestRouteWithChildren
@@ -631,6 +638,7 @@ export interface FileRoutesByTo {
   '/setPassword': typeof SetPasswordRoute
   '/tasks': typeof TasksRoute
   '/taxes': typeof TaxesRoute
+  '/test2': typeof Test2Route
   '/trends': typeof TrendsRoute
   '/api/api-keys': typeof ApiApiKeysRouteWithChildren
   '/api/email-digest': typeof ApiEmailDigestRouteWithChildren
@@ -713,6 +721,7 @@ export interface FileRoutesById {
   '/setPassword': typeof SetPasswordRoute
   '/tasks': typeof TasksRoute
   '/taxes': typeof TaxesRoute
+  '/test2': typeof Test2Route
   '/trends': typeof TrendsRoute
   '/api/api-keys': typeof ApiApiKeysRouteWithChildren
   '/api/email-digest': typeof ApiEmailDigestRouteWithChildren
@@ -796,6 +805,7 @@ export interface FileRouteTypes {
     | '/setPassword'
     | '/tasks'
     | '/taxes'
+    | '/test2'
     | '/trends'
     | '/api/api-keys'
     | '/api/email-digest'
@@ -877,6 +887,7 @@ export interface FileRouteTypes {
     | '/setPassword'
     | '/tasks'
     | '/taxes'
+    | '/test2'
     | '/trends'
     | '/api/api-keys'
     | '/api/email-digest'
@@ -958,6 +969,7 @@ export interface FileRouteTypes {
     | '/setPassword'
     | '/tasks'
     | '/taxes'
+    | '/test2'
     | '/trends'
     | '/api/api-keys'
     | '/api/email-digest'
@@ -1040,6 +1052,7 @@ export interface RootRouteChildren {
   SetPasswordRoute: typeof SetPasswordRoute
   TasksRoute: typeof TasksRoute
   TaxesRoute: typeof TaxesRoute
+  Test2Route: typeof Test2Route
   TrendsRoute: typeof TrendsRoute
   ApiApiKeysRoute: typeof ApiApiKeysRouteWithChildren
   ApiEmailDigestRoute: typeof ApiEmailDigestRouteWithChildren
@@ -1061,6 +1074,13 @@ declare module '@tanstack/react-router' {
       path: '/trends'
       fullPath: '/trends'
       preLoaderRoute: typeof TrendsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/test2': {
+      id: '/test2'
+      path: '/test2'
+      fullPath: '/test2'
+      preLoaderRoute: typeof Test2RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/taxes': {
@@ -1998,6 +2018,7 @@ const rootRouteChildren: RootRouteChildren = {
   SetPasswordRoute: SetPasswordRoute,
   TasksRoute: TasksRoute,
   TaxesRoute: TaxesRoute,
+  Test2Route: Test2Route,
   TrendsRoute: TrendsRoute,
   ApiApiKeysRoute: ApiApiKeysRouteWithChildren,
   ApiEmailDigestRoute: ApiEmailDigestRouteWithChildren,

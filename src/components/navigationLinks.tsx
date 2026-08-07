@@ -1,4 +1,5 @@
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance"
+import CodeIcon from "@mui/icons-material/Code"
 import AccountTreeIcon from "@mui/icons-material/AccountTree"
 import AddTaskIcon from "@mui/icons-material/AddTask"
 import AddTaskOutlinedIcon from "@mui/icons-material/AddTaskOutlined"
@@ -114,6 +115,13 @@ export const navigationLinks: NavigationLink[] = [
     href: "/api-keys",
     ActiveIcon: VpnKeyIcon,
     Icon: VpnKeyIcon,
+    navs: [],
+  },
+  {
+    label: "Test 2.0",
+    href: "/test2",
+    ActiveIcon: CodeIcon,
+    Icon: CodeIcon,
     navs: [],
   },
 ]
