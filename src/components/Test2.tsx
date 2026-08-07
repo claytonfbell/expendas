@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 
 const EMBED_SCRIPT_ID = "it-9ad1f"
 const EMBED_SCRIPT_SRC =
-  "https://dev-secure.interactiveticketing.com/2.0/0a2f15/api/v60/embed.js?cn=it-9ad1f"
+  "https://dev-secure.interactiveticketing.com/2.0/0a2f15/api/v60-dev/embed.js?cn=it-9ad1f"
 
 export function Test2() {
   const [loaded, setLoaded] = useState(false)
