@@ -33,7 +33,6 @@ import { Currency } from "./Currency"
 import { ExpendasTable } from "./ExpendasTable"
 import { formatMoney, formatPercentage } from "./formatMoney"
 import { useGlobalState } from "./GlobalStateProvider"
-import { HorizontalRangeBar } from "./HorizontalRangeBar"
 import { InvestmentAssetBreakdown } from "./InvestmentAssetBreakdown"
 import { Percentage } from "./Percentage"
 import { TickerChip } from "./TickerChip"
@@ -107,55 +106,6 @@ export function InvestmentPortfolio() {
   }, [accounts])
 
   const { data: tickerPrices } = useFetchTickerPrices(allTickers)
-  const marketHighEquity = React.useMemo(() => {
-    return accounts.reduce((sum, account) => {
-      return (
-        sum +
-        account.assets
-          .filter((a) => a.assetType === "Equity")
-          .reduce((assetSum, asset) => {
-            const prices = tickerPrices[asset.ticker]
-            if (!prices || prices.currentPrice === 0)
-              return assetSum + asset.balance
-            return (
-              assetSum +
-              Math.round(
-                (asset.balance / prices.currentPrice) * prices.allTimeHigh
-              )
-            )
-          }, 0)
-      )
-    }, 0)
-  }, [accounts, tickerPrices])
-
-  const marketHighTotal = React.useMemo(() => {
-    return marketHighEquity + fixed
-  }, [marketHighEquity, fixed])
-
-  const marketTwoYearLowEquity = React.useMemo(() => {
-    return accounts.reduce((sum, account) => {
-      return (
-        sum +
-        account.assets
-          .filter((a) => a.assetType === "Equity")
-          .reduce((assetSum, asset) => {
-            const prices = tickerPrices[asset.ticker]
-            if (!prices || prices.currentPrice === 0)
-              return assetSum + asset.balance
-            return (
-              assetSum +
-              Math.round(
-                (asset.balance / prices.currentPrice) * prices.twoYearLow
-              )
-            )
-          }, 0)
-      )
-    }, 0)
-  }, [accounts, tickerPrices])
-
-  const marketTwoYearLowTotal = React.useMemo(() => {
-    return marketTwoYearLowEquity + fixed
-  }, [marketTwoYearLowEquity, fixed])
 
   const maxWidth = 250
 
@@ -229,8 +179,10 @@ ${capMessage}`
           <TableHead>
             <TableRow>
               <TableCell sx={{ maxWidth }}>Account</TableCell>
-              <TableCell sx={{ maxWidth }}>Retirement Bucket</TableCell>
-              <TableCell sx={{ maxWidth }}>Investments</TableCell>
+              {!isMobile && (
+                <TableCell sx={{ maxWidth }}>Retirement Bucket</TableCell>
+              )}
+              {!isMobile && <TableCell sx={{ maxWidth }}>Investments</TableCell>}
               <TableCell align="right">Equity</TableCell>
               <TableCell align="right">Fixed Income</TableCell>
               <TableCell align="right">Total</TableCell>
@@ -255,46 +207,63 @@ ${capMessage}`
                 return (
                   <TableRow key={account.id} hover>
                     <TableCell>
-                      <Button
-                        variant="text"
-                        size="small"
-                        onClick={() => setSelectedAccount(account)}
-                      >
-                        {account.name}
-                      </Button>
+                      {isMobile ? (
+                        <Stack direction="column" spacing={0.5} sx={{ alignItems: "flex-start" }}>
+                          <Button
+                            variant="text"
+                            size="small"
+                            onClick={() => setSelectedAccount(account)}
+                          >
+                            {account.name}
+                          </Button>
+                          <AccountBucketChip bucket={account.accountBucket} />
+                        </Stack>
+                      ) : (
+                        <Button
+                          variant="text"
+                          size="small"
+                          onClick={() => setSelectedAccount(account)}
+                        >
+                          {account.name}
+                        </Button>
+                      )}
                     </TableCell>
-                    <TableCell>
-                      <AccountBucketChip bucket={account.accountBucket} />
-                    </TableCell>
-                    <TableCell>
-                      <Stack direction="row" spacing={0.5}>
-                        {tickers.map((ticker) => {
-                          const asset = account.assets.find(
-                            (a) => a.ticker === ticker
-                          )
-                          return (
-                            <TickerChip
-                              key={ticker}
-                              ticker={ticker}
-                              balance={tickerBalances[ticker] || 0}
-                              assetType={asset?.assetType || "Equity"}
-                              prices={tickerPrices[ticker]}
-                              onChange={(newBalance) => {
-                                if (asset) {
-                                  updateAsset({
-                                    assetId: asset.id,
-                                    accountId: account.id,
-                                    ticker: asset.ticker,
-                                    assetType: asset.assetType,
-                                    currentBalance: newBalance,
-                                  })
-                                }
-                              }}
-                            />
-                          )
-                        })}
-                      </Stack>
-                    </TableCell>
+                    {!isMobile && (
+                      <TableCell>
+                        <AccountBucketChip bucket={account.accountBucket} />
+                      </TableCell>
+                    )}
+                    {!isMobile && (
+                      <TableCell>
+                        <Stack direction="row" spacing={0.5}>
+                          {tickers.map((ticker) => {
+                            const asset = account.assets.find(
+                              (a) => a.ticker === ticker
+                            )
+                            return (
+                              <TickerChip
+                                key={ticker}
+                                ticker={ticker}
+                                balance={tickerBalances[ticker] || 0}
+                                assetType={asset?.assetType || "Equity"}
+                                prices={tickerPrices[ticker]}
+                                onChange={(newBalance) => {
+                                  if (asset) {
+                                    updateAsset({
+                                      assetId: asset.id,
+                                      accountId: account.id,
+                                      ticker: asset.ticker,
+                                      assetType: asset.assetType,
+                                      currentBalance: newBalance,
+                                    })
+                                  }
+                                }}
+                              />
+                            )
+                          })}
+                        </Stack>
+                      </TableCell>
+                    )}
                     <TableCell align="right">
                       <Currency value={equityVal} />
                     </TableCell>
@@ -308,14 +277,14 @@ ${capMessage}`
                 )
               })}
             <TableRow>
-              <TableCell colSpan={6}>&nbsp;</TableCell>
+              <TableCell colSpan={isMobile ? 4 : 6}>&nbsp;</TableCell>
             </TableRow>
           </TableBody>
           <TableHead>
             <TableRow>
-              <TableCell></TableCell>
+              {!isMobile && <TableCell></TableCell>}
               <TableCell sx={{ maxWidth }}>Retirement Bucket</TableCell>
-              <TableCell></TableCell>
+              {!isMobile && <TableCell></TableCell>}
               <TableCell align="right">Equity</TableCell>
               <TableCell align="right">Fixed Income</TableCell>
               <TableCell align="right">Total</TableCell>
@@ -324,11 +293,11 @@ ${capMessage}`
           <TableBody>
             {data.map((row) => (
               <TableRow key={row.name} hover>
-                <TableCell>&nbsp;</TableCell>
+                {!isMobile && <TableCell>&nbsp;</TableCell>}
                 <TableCell>
                   <AccountBucketChip bucket={row.bucket} />
                 </TableCell>
-                <TableCell></TableCell>
+                {!isMobile && <TableCell></TableCell>}
                 <TableCell align="right">
                   <Currency value={row.equity} />
                 </TableCell>
@@ -343,7 +312,7 @@ ${capMessage}`
 
             {/* total row */}
             <TableRow hover>
-              <TableCell colSpan={3}></TableCell>
+              <TableCell colSpan={isMobile ? 1 : 3}></TableCell>
               <TableCell align="right">
                 <strong>
                   <Currency value={equity} />
@@ -362,14 +331,14 @@ ${capMessage}`
             </TableRow>
 
             <TableRow>
-              <TableCell colSpan={6}>&nbsp;</TableCell>
+              <TableCell colSpan={isMobile ? 4 : 6}>&nbsp;</TableCell>
             </TableRow>
 
             {/* percentage row */}
             <TableRow hover>
-              <TableCell></TableCell>
+              {!isMobile && <TableCell></TableCell>}
               <TableCell>Current Allocation</TableCell>
-              <TableCell></TableCell>
+              {!isMobile && <TableCell></TableCell>}
               <TableCell
                 align="right"
                 sx={{
@@ -397,9 +366,9 @@ ${capMessage}`
 
             {/* target allocation row  */}
             <TableRow hover>
-              <TableCell></TableCell>
+              {!isMobile && <TableCell></TableCell>}
               <TableCell>Target Allocation</TableCell>
-              <TableCell></TableCell>
+              {!isMobile && <TableCell></TableCell>}
               <TableCell align="right">
                 <StyledSpan
                   sx={{
@@ -425,9 +394,9 @@ ${capMessage}`
 
             {/* target amounts */}
             <TableRow hover>
-              <TableCell></TableCell>
+              {!isMobile && <TableCell></TableCell>}
               <TableCell>Target Amounts</TableCell>
-              <TableCell></TableCell>
+              {!isMobile && <TableCell></TableCell>}
               <TableCell align="right">
                 <Currency value={total * targetEquityPercentage} />
               </TableCell>
@@ -439,14 +408,14 @@ ${capMessage}`
 
             {/* empty row */}
             <TableRow>
-              <TableCell colSpan={6}>&nbsp;</TableCell>
+              <TableCell colSpan={isMobile ? 4 : 6}>&nbsp;</TableCell>
             </TableRow>
 
             {/* current small cap */}
             <TableRow>
-              <TableCell></TableCell>
+              {!isMobile && <TableCell></TableCell>}
               <TableCell>Current Small Cap</TableCell>
-              <TableCell></TableCell>
+              {!isMobile && <TableCell></TableCell>}
               <TableCell align="right"></TableCell>
               <TableCell align="right"></TableCell>
               <TableCell align="right">
@@ -456,9 +425,9 @@ ${capMessage}`
 
             {/* target small cap */}
             <TableRow>
-              <TableCell></TableCell>
+              {!isMobile && <TableCell></TableCell>}
               <TableCell>Target Small Cap</TableCell>
-              <TableCell></TableCell>
+              {!isMobile && <TableCell></TableCell>}
               <TableCell align="right"></TableCell>
               <TableCell align="right"></TableCell>
               <TableCell align="right">
@@ -467,12 +436,6 @@ ${capMessage}`
             </TableRow>
           </TableBody>
         </ExpendasTable>
-
-        <HorizontalRangeBar
-          low={marketTwoYearLowTotal ?? 0}
-          current={total}
-          high={marketHighTotal ?? 0}
-        />
 
         {/* suggesting to buy or sell to reach target allocation */}
         <CustomAlert

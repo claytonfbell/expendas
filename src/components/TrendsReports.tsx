@@ -15,6 +15,7 @@ import AnimatedCounter from "./AnimatedCounter"
 import { useFetchAccountsWithBalanceHistory } from "./api/hooks/useFetchAccountsWithBalanceHistory"
 import { BottomStatusBar } from "./BottomStatusBar"
 import { useGlobalState } from "./GlobalStateProvider"
+import { HorizontalRangeBar } from "./HorizontalRangeBar"
 import {
   ReportRange,
   TrendsReportsTimeRangeSelect,
@@ -252,6 +253,13 @@ export function TrendsReports() {
             />
           </LineChart>
         </Stack>
+        {latestDataPoint && (
+          <HorizontalRangeBar
+            low={(latestDataPoint.marketLow ?? 0) * 100}
+            current={latestDataPoint.balance * 100}
+            high={(latestDataPoint.marketHigh ?? 0) * 100}
+          />
+        )}
       </Stack>
       {latestDataPoint && (
         <BottomStatusBar>

@@ -16,10 +16,10 @@ export function TrendsReportsTimeRangeSelect({ value, onChange }: Props) {
   return (
     <Stack direction="row">
       {ranges
-        // discard 1W and 2Y on mobile
+        // discard 1W, 2Y, and 3M on mobile
         .filter((range) => {
           if (isMobile) {
-            return range !== "1W" && range !== "2Y"
+            return range !== "1W" && range !== "2Y" && range !== "3M"
           }
           return true
         })

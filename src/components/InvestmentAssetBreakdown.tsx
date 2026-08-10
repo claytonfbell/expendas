@@ -1,7 +1,20 @@
-import { MenuItem, Select, Stack, Typography, useTheme } from "@mui/material"
+import {
+  Box,
+  IconButton,
+  MenuItem,
+  Select,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material"
+import PieChartIcon from "@mui/icons-material/PieChart"
+import DashboardIcon from "@mui/icons-material/Dashboard"
 import { AccountBucket } from "@prisma/client"
 import { useMemo, useState } from "react"
 import {
+  Cell,
+  Pie,
+  PieChart,
   Tooltip as RechartTooltip,
   ResponsiveContainer,
   Treemap,
@@ -19,6 +32,7 @@ export function InvestmentAssetBreakdown({ accounts }: Props) {
   const [groupBy, setGroupBy] = useState<"assetType" | "accountType">(
     "assetType"
   )
+  const [chartType, setChartType] = useState<"treemap" | "pie">("pie")
   const theme = useTheme()
 
   const treemapData = useMemo(() => {
@@ -101,6 +115,36 @@ export function InvestmentAssetBreakdown({ accounts }: Props) {
     return children
   }, [accounts, groupBy])
 
+  const pieData = useMemo(() => {
+    const flat: { name: string; value: number; group: string }[] = []
+    treemapData.forEach((group) => {
+      const children = (group as any).children as {
+        name: string
+        size: number
+        group: string
+      }[]
+      children.forEach((child) => {
+        flat.push({
+          name: child.name,
+          value: child.size,
+          group: child.group,
+        })
+      })
+    })
+    return flat.sort((a, b) => b.value - a.value)
+  }, [treemapData])
+
+  const getGroupColor = (group: string) =>
+    group === "Equity"
+      ? theme.palette.primary.main
+      : group === "Fixed Income"
+        ? theme.palette.secondary.main
+        : group === "Traditional"
+          ? theme.palette.warning.main
+          : group === "Roth_And_HSA"
+            ? theme.palette.success.main
+            : theme.palette.primary.main
+
   return (
     <Stack spacing={2}>
       <Stack
@@ -112,34 +156,86 @@ export function InvestmentAssetBreakdown({ accounts }: Props) {
         }}
       >
         <Typography variant="h6">Asset Breakdown</Typography>
-        <Select
-          value={groupBy}
-          onChange={(e) =>
-            setGroupBy(e.target.value as "assetType" | "accountType")
-          }
-          size="small"
-          sx={{ minWidth: 160 }}
+        <Stack
+          direction="row"
+          sx={{
+            alignItems: "center",
+            gap: 1,
+          }}
         >
-          <MenuItem value="assetType">Asset Type</MenuItem>
-          <MenuItem value="accountType">Account Type</MenuItem>
-        </Select>
+          <Box sx={{ border: 1, borderColor: "divider", borderRadius: 1 }}>
+            <IconButton
+              size="small"
+              aria-label="Pie chart view"
+              onClick={() => setChartType("pie")}
+              color={chartType === "pie" ? "primary" : "default"}
+            >
+              <PieChartIcon fontSize="small" />
+            </IconButton>
+            <IconButton
+              size="small"
+              aria-label="Treemap view"
+              onClick={() => setChartType("treemap")}
+              color={chartType === "treemap" ? "primary" : "default"}
+            >
+              <DashboardIcon fontSize="small" />
+            </IconButton>
+          </Box>
+          <Select
+            value={groupBy}
+            onChange={(e) =>
+              setGroupBy(e.target.value as "assetType" | "accountType")
+            }
+            size="small"
+            sx={{ minWidth: 160 }}
+          >
+            <MenuItem value="assetType">Asset Type</MenuItem>
+            <MenuItem value="accountType">Account Type</MenuItem>
+          </Select>
+        </Stack>
       </Stack>
       <ResponsiveContainer width="100%" height={320}>
-        <Treemap
-          data={treemapData}
-          dataKey="size"
-          nameKey="name"
-          aspectRatio={4 / 3}
-          stroke={theme.palette.divider}
-          fill={theme.palette.background.paper}
-          isAnimationActive={false}
-          content={<TreemapCustomContent />}
-        >
-          <RechartTooltip
-            formatter={(value: number) => formatMoney(value, true)}
+        {chartType === "pie" ? (
+          <PieChart>
+            <Pie
+              data={pieData}
+              dataKey="value"
+              nameKey="name"
+              innerRadius={60}
+              outerRadius={120}
+              paddingAngle={1}
+              isAnimationActive={false}
+            >
+              {pieData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={getGroupColor(entry.group)}
+                  stroke={theme.palette.divider}
+                />
+              ))}
+            </Pie>
+            <RechartTooltip
+              formatter={(value: number) => formatMoney(value, true)}
+              isAnimationActive={false}
+            />
+          </PieChart>
+        ) : (
+          <Treemap
+            data={treemapData}
+            dataKey="size"
+            nameKey="name"
+            aspectRatio={4 / 3}
+            stroke={theme.palette.divider}
+            fill={theme.palette.background.paper}
             isAnimationActive={false}
-          />
-        </Treemap>
+            content={<TreemapCustomContent />}
+          >
+            <RechartTooltip
+              formatter={(value: number) => formatMoney(value, true)}
+              isAnimationActive={false}
+            />
+          </Treemap>
+        )}
       </ResponsiveContainer>
     </Stack>
   )
