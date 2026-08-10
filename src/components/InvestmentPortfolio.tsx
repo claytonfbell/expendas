@@ -14,7 +14,7 @@ import {
 } from "@mui/material"
 import { AccountBucket } from "@prisma/client"
 import dayjs from "dayjs"
-import React, { useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import ReactMarkdown from "react-markdown"
 import { AccountBucketChip } from "./AccountBucketChip"
 import { displayAccountBucket } from "./accountBuckets"
@@ -166,7 +166,14 @@ ${capMessage}`
       isOutsideTargetThreshold,
       isWithinOnePercentOfTarget,
     }
-  }, [equity, total, targetEquityPercentage, smallCapBalance, targetSmallCap, nextRebalanceDate])
+  }, [
+    equity,
+    total,
+    targetEquityPercentage,
+    smallCapBalance,
+    targetSmallCap,
+    nextRebalanceDate,
+  ])
 
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
 
@@ -182,7 +189,9 @@ ${capMessage}`
               {!isMobile && (
                 <TableCell sx={{ maxWidth }}>Retirement Bucket</TableCell>
               )}
-              {!isMobile && <TableCell sx={{ maxWidth }}>Investments</TableCell>}
+              {!isMobile && (
+                <TableCell sx={{ maxWidth }}>Investments</TableCell>
+              )}
               <TableCell align="right">Equity</TableCell>
               <TableCell align="right">Fixed Income</TableCell>
               <TableCell align="right">Total</TableCell>
@@ -207,26 +216,13 @@ ${capMessage}`
                 return (
                   <TableRow key={account.id} hover>
                     <TableCell>
-                      {isMobile ? (
-                        <Stack direction="column" spacing={0.5} sx={{ alignItems: "flex-start" }}>
-                          <Button
-                            variant="text"
-                            size="small"
-                            onClick={() => setSelectedAccount(account)}
-                          >
-                            {account.name}
-                          </Button>
-                          <AccountBucketChip bucket={account.accountBucket} />
-                        </Stack>
-                      ) : (
-                        <Button
-                          variant="text"
-                          size="small"
-                          onClick={() => setSelectedAccount(account)}
-                        >
-                          {account.name}
-                        </Button>
-                      )}
+                      <Button
+                        variant="text"
+                        size="small"
+                        onClick={() => setSelectedAccount(account)}
+                      >
+                        {account.name}
+                      </Button>
                     </TableCell>
                     {!isMobile && (
                       <TableCell>
