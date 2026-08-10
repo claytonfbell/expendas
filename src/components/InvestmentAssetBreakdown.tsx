@@ -5,6 +5,7 @@ import {
   Select,
   Stack,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material"
 import PieChartIcon from "@mui/icons-material/PieChart"
@@ -34,6 +35,7 @@ export function InvestmentAssetBreakdown({ accounts }: Props) {
   )
   const [chartType, setChartType] = useState<"treemap" | "pie">("pie")
   const theme = useTheme()
+  const isXs = useMediaQuery(theme.breakpoints.down("sm"))
 
   const treemapData = useMemo(() => {
     if (groupBy === "accountType") {
@@ -155,7 +157,7 @@ export function InvestmentAssetBreakdown({ accounts }: Props) {
           mb: 1,
         }}
       >
-        <Typography variant="h6">Asset Breakdown</Typography>
+        <Typography variant="h6">{isXs ? "Breakdown" : "Asset Breakdown"}</Typography>
         <Stack
           direction="row"
           sx={{
