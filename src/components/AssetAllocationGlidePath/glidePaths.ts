@@ -9,7 +9,7 @@ interface GlidePath {
 }
 
 const glidePath: GlidePath = {
-  targetEquityPercentage: 0.9,
+  targetEquityPercentage: 0.8,
   targetEquityPercentageAtRetirement: 0.7,
   glideMonthsPriorToRetirement: 12 * 4,
   glideMonthsAfterRetirement: 12 * 10,
