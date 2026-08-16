@@ -129,6 +129,11 @@ ${actionMessage}`
             "& p": {
               margin: 0,
             },
+            "& ul": {
+              margin: 0,
+              paddingLeft: 0,
+              listStyleType: "none",
+            },
           }}
         >
           <ReactMarkdown>{rebalanceMessage}</ReactMarkdown>
