@@ -124,6 +124,7 @@ export function RebalanceBox({
           sx={{
             "& p": {
               margin: 0,
+              marginBottom: 1,
             },
             "& ul": {
               margin: 0,
