@@ -165,7 +165,7 @@ export function InvestmentPortfolio() {
     const bondFundRebalanceAmount = targetBondFund - bondFundBalance
     const bondFundAction = bondFundRebalanceAmount > 0 ? "buy" : "sell"
 
-    const capMessage = `To reach your target allocation of **${targetPortfolio}** stocks/bonds, at the next rebalance date (${nextRebalanceDate.format("l")}):
+    const capMessage = `
 - ${largeCapAction} **${formatMoney(Math.abs(largeCapRebalanceAmount), true)}** of Large Cap (90% of equity)
 - ${smallCapAction} **${formatMoney(Math.abs(smallCapRebalanceAmount), true)}** of Small Cap (10% of equity)
 - ${bondFundAction} **${formatMoney(Math.abs(bondFundRebalanceAmount), true)}** of Bond Fund FBND (50% of fixed income)`
@@ -173,7 +173,7 @@ export function InvestmentPortfolio() {
     let rebalanceMessage: string
 
     if (isWithinOnePercentOfTarget) {
-      rebalanceMessage = `Your portfolio is only **${formatPercentage(offTargetBy, false)}** off your target allocation. You can skip rebalancing on the next rebalance date (${nextRebalanceDate.format("l")}) if you want.
+      rebalanceMessage = `Your portfolio is only **${formatPercentage(offTargetBy, false)}** off your target allocation **${targetPortfolio}** stocks/bonds. You can skip rebalancing on the next rebalance date (${nextRebalanceDate.format("l")}) if you want.
 
 ${capMessage}`
     } else if (!isOutsideTargetThreshold) {
