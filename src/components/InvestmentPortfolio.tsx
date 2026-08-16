@@ -1,6 +1,4 @@
 import {
-  Alert,
-  alpha,
   Button,
   Stack,
   styled,
@@ -15,7 +13,6 @@ import {
 import { AccountBucket } from "@prisma/client"
 import dayjs from "dayjs"
 import { useMemo, useState } from "react"
-import ReactMarkdown from "react-markdown"
 import { AccountBucketChip } from "./AccountBucketChip"
 import { displayAccountBucket } from "./accountBuckets"
 import { investmentGroup } from "./AccountGroup"
@@ -24,17 +21,16 @@ import AnimatedCounter from "./AnimatedCounter"
 import { useFetchAccounts } from "./api/hooks/useFetchAccounts"
 import { useFetchTickerPrices } from "./api/hooks/useFetchTickerPrices"
 import { useUpdateAsset } from "./api/hooks/useUpdateAsset"
-import { GlidePathRebalanceSchedule } from "./AssetAllocationGlidePath/GlidePathRebalanceSchedule"
 import { getTargetEquityPercentageWithGlidePaths } from "./AssetAllocationGlidePath/glidePaths"
 import { useAllRebalanceDates } from "./AssetAllocationGlidePath/useAllRebalanceDates"
 import { AssetDialog } from "./AssetDialog"
 import { BottomStatusBar } from "./BottomStatusBar"
 import { Currency } from "./Currency"
 import { ExpendasTable } from "./ExpendasTable"
-import { formatMoney, formatPercentage } from "./formatMoney"
 import { useGlobalState } from "./GlobalStateProvider"
 import { InvestmentAssetBreakdown } from "./InvestmentAssetBreakdown"
 import { Percentage } from "./Percentage"
+import { RebalanceAction, RebalanceBox } from "./RebalanceBox"
 import { TickerChip } from "./TickerChip"
 
 type Data = {
@@ -143,51 +139,49 @@ export function InvestmentPortfolio() {
   const largeCapBalance = equity - smallCapBalance
   const targetSmallCap = total * targetEquityPercentage * 0.1
   const targetLargeCap = total * targetEquityPercentage * 0.9
+  const targetFixed = total * (1 - targetEquityPercentage)
 
   const {
-    rebalanceMessage,
+    rebalanceActions,
     isOutsideTargetThreshold,
     isWithinOnePercentOfTarget,
+    offTargetBy,
+    targetPortfolio,
   } = useMemo(() => {
     const offTargetBy = Math.abs(equity / total - targetEquityPercentage)
     const isOutsideTargetThreshold = offTargetBy > 0.04
     const isWithinOnePercentOfTarget = offTargetBy <= 0.01
     const targetPortfolio: string = `${Math.round(targetEquityPercentage * 100)}/${Math.round((1 - targetEquityPercentage) * 100)}`
 
-    const targetEquity = total * targetEquityPercentage
     const largeCapRebalanceAmount = targetLargeCap - largeCapBalance
     const smallCapRebalanceAmount = targetSmallCap - smallCapBalance
-
-    const largeCapAction = largeCapRebalanceAmount > 0 ? "buy" : "sell"
-    const smallCapAction = smallCapRebalanceAmount > 0 ? "buy" : "sell"
-
-    const targetBondFund = fixed * 0.5
+    const targetBondFund = targetFixed * 0.5
     const bondFundRebalanceAmount = targetBondFund - bondFundBalance
-    const bondFundAction = bondFundRebalanceAmount > 0 ? "buy" : "sell"
 
-    const capMessage = `
-- ${largeCapAction} **${formatMoney(Math.abs(largeCapRebalanceAmount), true)}** of Large Cap (90% of equity)
-- ${smallCapAction} **${formatMoney(Math.abs(smallCapRebalanceAmount), true)}** of Small Cap (10% of equity)
-- ${bondFundAction} **${formatMoney(Math.abs(bondFundRebalanceAmount), true)}** of Bond Fund FBND (50% of fixed income)`
-
-    let rebalanceMessage: string
-
-    if (isWithinOnePercentOfTarget) {
-      rebalanceMessage = `Your portfolio is only **${formatPercentage(offTargetBy, false)}** off your target allocation **${targetPortfolio}** stocks/bonds. You can skip rebalancing on the next rebalance date (${nextRebalanceDate.format("l")}) if you want.
-
-${capMessage}`
-    } else if (!isOutsideTargetThreshold) {
-      rebalanceMessage = capMessage
-    } else {
-      rebalanceMessage = `Your portfolio is outside of your target allocation by **${formatPercentage(offTargetBy, false)}**. Consider rebalancing today.
-
-${capMessage}`
-    }
+    const rebalanceActions: RebalanceAction[] = [
+      {
+        label: "Large Cap",
+        subtitle: "90% of equity",
+        amount: largeCapRebalanceAmount,
+      },
+      {
+        label: "Small Cap",
+        subtitle: "10% of equity",
+        amount: smallCapRebalanceAmount,
+      },
+      {
+        label: "Bond Fund FBND",
+        subtitle: "50% of fixed income",
+        amount: bondFundRebalanceAmount,
+      },
+    ]
 
     return {
-      rebalanceMessage,
+      rebalanceActions,
       isOutsideTargetThreshold,
       isWithinOnePercentOfTarget,
+      offTargetBy,
+      targetPortfolio,
     }
   }, [
     equity,
@@ -195,8 +189,7 @@ ${capMessage}`
     targetEquityPercentage,
     smallCapBalance,
     targetSmallCap,
-    nextRebalanceDate,
-    fixed,
+    targetFixed,
     bondFundBalance,
     largeCapBalance,
     targetLargeCap,
@@ -581,7 +574,7 @@ ${capMessage}`
                 <Percentage value={0.5} />
               </TableCell>
               <TableCell align="right">
-                <Currency roundNearestDollar={isMobile} value={fixed * 0.5} />
+                <Currency roundNearestDollar={isMobile} value={targetFixed * 0.5} />
               </TableCell>
             </TableRow>
 
@@ -609,38 +602,21 @@ ${capMessage}`
                 <Percentage value={0.5} />
               </TableCell>
               <TableCell align="right">
-                <Currency roundNearestDollar={isMobile} value={fixed * 0.5} />
+                <Currency roundNearestDollar={isMobile} value={targetFixed * 0.5} />
               </TableCell>
             </TableRow>
           </TableBody>
         </ExpendasTable>
 
         {/* suggesting to buy or sell to reach target allocation */}
-        <CustomAlert
-          severity={
-            isWithinOnePercentOfTarget
-              ? "success"
-              : isOutsideTargetThreshold
-                ? "warning"
-                : "info"
-          }
-          variant="outlined"
-          icon={isMobile ? false : undefined}
-        >
-          <Stack spacing={2}>
-            <Typography
-              component="div"
-              sx={{
-                "& p": {
-                  margin: 0,
-                },
-              }}
-            >
-              <ReactMarkdown>{rebalanceMessage}</ReactMarkdown>
-            </Typography>
-            <GlidePathRebalanceSchedule />
-          </Stack>
-        </CustomAlert>
+        <RebalanceBox
+          actions={rebalanceActions}
+          isWithinOnePercentOfTarget={isWithinOnePercentOfTarget}
+          isOutsideTargetThreshold={isOutsideTargetThreshold}
+          offTargetBy={offTargetBy}
+          targetPortfolio={targetPortfolio}
+          nextRebalanceDate={nextRebalanceDate}
+        />
       </Stack>
 
       <BottomStatusBar>
@@ -689,8 +665,3 @@ ${capMessage}`
 }
 
 const StyledSpan = styled("span")``
-
-const CustomAlert = styled(Alert)`
-  background-color: ${(props) =>
-    alpha(props.theme.palette[props.severity ?? "info"].light, 0.1)};
-`
