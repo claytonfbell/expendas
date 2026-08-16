@@ -99,15 +99,11 @@ export function RebalanceBox({
   let rebalanceMessage: string
 
   if (isWithinOnePercentOfTarget) {
-    rebalanceMessage = `Your portfolio is only **${formatPercentage(offTargetBy, false)}** off your target allocation **${targetPortfolio}** stocks/bonds. You can skip rebalancing on the next rebalance date (${nextRebalanceDate.format("l")}) if you want.
-
-${actionMessage}`
+    rebalanceMessage = `Your portfolio is only **${formatPercentage(offTargetBy, false)}** off your target allocation **${targetPortfolio}** stocks/bonds. You can skip rebalancing on the next rebalance date (${nextRebalanceDate.format("l")}) if you want.\n\n${actionMessage}`
   } else if (!isOutsideTargetThreshold) {
     rebalanceMessage = actionMessage
   } else {
-    rebalanceMessage = `Your portfolio is outside of your target allocation by **${formatPercentage(offTargetBy, false)}**. Consider rebalancing today.
-
-${actionMessage}`
+    rebalanceMessage = `Your portfolio is outside of your target allocation by **${formatPercentage(offTargetBy, false)}**. Consider rebalancing today.\n\n${actionMessage}`
   }
 
   return (
