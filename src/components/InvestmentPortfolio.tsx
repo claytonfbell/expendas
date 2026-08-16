@@ -170,7 +170,7 @@ export function InvestmentPortfolio() {
         amount: smallCapRebalanceAmount,
       },
       {
-        label: "Bond Fund FBND",
+        label: "Bond Fund",
         subtitle: "50% of fixed income",
         amount: bondFundRebalanceAmount,
       },
