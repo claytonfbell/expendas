@@ -94,10 +94,7 @@ export function InvestmentPortfolio() {
       (sum, account) =>
         sum +
         account.assets
-          .filter(
-            (a) =>
-              a.ticker === "FBND" && a.assetType === "Fixed_Income"
-          )
+          .filter((a) => a.ticker === "FBND" && a.assetType === "Fixed_Income")
           .reduce((s, a) => s + a.balance, 0),
       0
     )
@@ -168,19 +165,24 @@ export function InvestmentPortfolio() {
     const bondFundRebalanceAmount = targetBondFund - bondFundBalance
     const bondFundAction = bondFundRebalanceAmount > 0 ? "buy" : "sell"
 
-    const capMessage = `To reach your target allocation of **${targetPortfolio}** stocks/bonds with 10% of the equity in Small Cap, you will ${largeCapAction} **${formatMoney(Math.abs(largeCapRebalanceAmount), true)}** of Large Cap and ${smallCapAction} **${formatMoney(Math.abs(smallCapRebalanceAmount), true)}** of Small Cap at the next rebalance date (${nextRebalanceDate.format("l")}).
+    const capMessage = `To reach your target allocation of **${targetPortfolio}** stocks/bonds, at the next rebalance date (${nextRebalanceDate.format("l")}):
+- ${largeCapAction} **${formatMoney(Math.abs(largeCapRebalanceAmount), true)}** of Large Cap (90% of equity)
+- ${smallCapAction} **${formatMoney(Math.abs(smallCapRebalanceAmount), true)}** of Small Cap (10% of equity)
+- ${bondFundAction} **${formatMoney(Math.abs(bondFundRebalanceAmount), true)}** of Bond Fund FBND (50% of fixed income)`
 
-Within fixed income, ${bondFundAction} **${formatMoney(Math.abs(bondFundRebalanceAmount), true)}** of Bond Fund (FBND) to reach a 50/50 bond-fund/cash split.`
+    let rebalanceMessage: string
 
-    const rebalanceMessage: string = isWithinOnePercentOfTarget
-      ? `Your portfolio is only **${formatPercentage(offTargetBy, false)}** off your target allocation. You can skip rebalancing on the next rebalance date (${nextRebalanceDate.format("l")}) if you want.
-
-${capMessage}`
-      : !isOutsideTargetThreshold
-        ? capMessage
-        : `Your portfolio is outside of your target allocation by **${formatPercentage(offTargetBy, false)}**. Consider ${largeCapAction} **${formatMoney(Math.abs(largeCapRebalanceAmount), true)}** of Large Cap and ${smallCapAction} **${formatMoney(Math.abs(smallCapRebalanceAmount), true)}** of Small Cap to get back to your target allocation of **${targetPortfolio}**. Within fixed income, ${bondFundAction} **${formatMoney(Math.abs(bondFundRebalanceAmount), true)}** of Bond Fund (FBND) to reach a 50/50 bond-fund/cash split.
+    if (isWithinOnePercentOfTarget) {
+      rebalanceMessage = `Your portfolio is only **${formatPercentage(offTargetBy, false)}** off your target allocation. You can skip rebalancing on the next rebalance date (${nextRebalanceDate.format("l")}) if you want.
 
 ${capMessage}`
+    } else if (!isOutsideTargetThreshold) {
+      rebalanceMessage = capMessage
+    } else {
+      rebalanceMessage = `Your portfolio is outside of your target allocation by **${formatPercentage(offTargetBy, false)}**. Consider rebalancing today.
+
+${capMessage}`
+    }
 
     return {
       rebalanceMessage,
@@ -357,9 +359,7 @@ ${capMessage}`
 
             <TableRow>
               {!isMobile && <TableCell></TableCell>}
-              <TableCell sx={{ fontWeight: "bold" }}>
-                Stocks / Bonds
-              </TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Stocks / Bonds</TableCell>
               {!isMobile && <TableCell colSpan={isMobile ? 3 : 4}></TableCell>}
             </TableRow>
 
@@ -524,9 +524,7 @@ ${capMessage}`
               {!isMobile && <TableCell></TableCell>}
               <TableCell align="right"></TableCell>
               <TableCell align="right">
-                <Percentage
-                  value={fixed > 0 ? bondFundBalance / fixed : 0}
-                />
+                <Percentage value={fixed > 0 ? bondFundBalance / fixed : 0} />
               </TableCell>
               <TableCell align="right">
                 <Currency value={bondFundBalance} />
