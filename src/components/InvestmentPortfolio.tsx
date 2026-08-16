@@ -258,7 +258,12 @@ ${capMessage}`
                     )}
                     {!isMobile && (
                       <TableCell>
-                        <Stack direction="row" spacing={0.5}>
+                        <Stack
+                          direction="row"
+                          spacing={0.5}
+                          sx={{ flexWrap: "wrap" }}
+                          useFlexGap
+                        >
                           {tickers.map((ticker) => {
                             const asset = account.assets.find(
                               (a) => a.ticker === ticker
@@ -288,13 +293,22 @@ ${capMessage}`
                       </TableCell>
                     )}
                     <TableCell align="right">
-                      <Currency value={equityVal} />
+                      <Currency
+                        roundNearestDollar={isMobile}
+                        value={equityVal}
+                      />
                     </TableCell>
                     <TableCell align="right">
-                      <Currency value={fixedInc} />
+                      <Currency
+                        roundNearestDollar={isMobile}
+                        value={fixedInc}
+                      />
                     </TableCell>
                     <TableCell align="right">
-                      <Currency value={account.balance} />
+                      <Currency
+                        roundNearestDollar={isMobile}
+                        value={account.balance}
+                      />
                     </TableCell>
                   </TableRow>
                 )
@@ -322,13 +336,16 @@ ${capMessage}`
                 </TableCell>
                 {!isMobile && <TableCell></TableCell>}
                 <TableCell align="right">
-                  <Currency value={row.equity} />
+                  <Currency roundNearestDollar={isMobile} value={row.equity} />
                 </TableCell>
                 <TableCell align="right">
-                  <Currency value={row.fixed} />
+                  <Currency roundNearestDollar={isMobile} value={row.fixed} />
                 </TableCell>
                 <TableCell align="right">
-                  <Currency value={row.equity + row.fixed} />
+                  <Currency
+                    roundNearestDollar={isMobile}
+                    value={row.equity + row.fixed}
+                  />
                 </TableCell>
               </TableRow>
             ))}
@@ -338,17 +355,17 @@ ${capMessage}`
               <TableCell colSpan={isMobile ? 1 : 3}></TableCell>
               <TableCell align="right">
                 <strong>
-                  <Currency value={equity} />
+                  <Currency roundNearestDollar={isMobile} value={equity} />
                 </strong>
               </TableCell>
               <TableCell align="right">
                 <strong>
-                  <Currency value={fixed} />
+                  <Currency roundNearestDollar={isMobile} value={fixed} />
                 </strong>
               </TableCell>
               <TableCell align="right">
                 <strong>
-                  <Currency value={total} />
+                  <Currency roundNearestDollar={isMobile} value={total} />
                 </strong>
               </TableCell>
             </TableRow>
@@ -427,10 +444,16 @@ ${capMessage}`
               <TableCell>Target Amounts</TableCell>
               {!isMobile && <TableCell></TableCell>}
               <TableCell align="right">
-                <Currency value={total * targetEquityPercentage} />
+                <Currency
+                  roundNearestDollar={isMobile}
+                  value={total * targetEquityPercentage}
+                />
               </TableCell>
               <TableCell align="right">
-                <Currency value={total * (1 - targetEquityPercentage)} />
+                <Currency
+                  roundNearestDollar={isMobile}
+                  value={total * (1 - targetEquityPercentage)}
+                />
               </TableCell>
               <TableCell align="right"></TableCell>
             </TableRow>
@@ -442,9 +465,7 @@ ${capMessage}`
 
             <TableRow>
               {!isMobile && <TableCell></TableCell>}
-              <TableCell sx={{ fontWeight: "bold" }}>
-                Large Cap / Small Cap
-              </TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Large/Small Cap</TableCell>
               {!isMobile && <TableCell colSpan={isMobile ? 3 : 4}></TableCell>}
             </TableRow>
 
@@ -458,7 +479,10 @@ ${capMessage}`
                 <Percentage value={equity > 0 ? largeCapBalance / equity : 0} />
               </TableCell>
               <TableCell align="right">
-                <Currency value={largeCapBalance} />
+                <Currency
+                  roundNearestDollar={isMobile}
+                  value={largeCapBalance}
+                />
               </TableCell>
             </TableRow>
 
@@ -472,7 +496,10 @@ ${capMessage}`
                 <Percentage value={0.9} />
               </TableCell>
               <TableCell align="right">
-                <Currency value={targetLargeCap} />
+                <Currency
+                  roundNearestDollar={isMobile}
+                  value={targetLargeCap}
+                />
               </TableCell>
             </TableRow>
 
@@ -486,7 +513,10 @@ ${capMessage}`
                 <Percentage value={equity > 0 ? smallCapBalance / equity : 0} />
               </TableCell>
               <TableCell align="right">
-                <Currency value={smallCapBalance} />
+                <Currency
+                  roundNearestDollar={isMobile}
+                  value={smallCapBalance}
+                />
               </TableCell>
             </TableRow>
 
@@ -500,7 +530,10 @@ ${capMessage}`
                 <Percentage value={0.1} />
               </TableCell>
               <TableCell align="right">
-                <Currency value={targetSmallCap} />
+                <Currency
+                  roundNearestDollar={isMobile}
+                  value={targetSmallCap}
+                />
               </TableCell>
             </TableRow>
 
@@ -527,7 +560,10 @@ ${capMessage}`
                 <Percentage value={fixed > 0 ? bondFundBalance / fixed : 0} />
               </TableCell>
               <TableCell align="right">
-                <Currency value={bondFundBalance} />
+                <Currency
+                  roundNearestDollar={isMobile}
+                  value={bondFundBalance}
+                />
               </TableCell>
             </TableRow>
 
@@ -541,7 +577,7 @@ ${capMessage}`
                 <Percentage value={0.5} />
               </TableCell>
               <TableCell align="right">
-                <Currency value={fixed * 0.5} />
+                <Currency roundNearestDollar={isMobile} value={fixed * 0.5} />
               </TableCell>
             </TableRow>
 
@@ -555,7 +591,7 @@ ${capMessage}`
                 <Percentage value={fixed > 0 ? cashBalance / fixed : 0} />
               </TableCell>
               <TableCell align="right">
-                <Currency value={cashBalance} />
+                <Currency roundNearestDollar={isMobile} value={cashBalance} />
               </TableCell>
             </TableRow>
 
@@ -569,7 +605,7 @@ ${capMessage}`
                 <Percentage value={0.5} />
               </TableCell>
               <TableCell align="right">
-                <Currency value={fixed * 0.5} />
+                <Currency roundNearestDollar={isMobile} value={fixed * 0.5} />
               </TableCell>
             </TableRow>
           </TableBody>

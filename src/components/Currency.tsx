@@ -14,6 +14,7 @@ interface Props {
   red?: boolean
   green?: boolean
   arrow?: boolean
+  roundNearestDollar?: boolean
 }
 export function Currency(props: Props) {
   const RED = "#c82333"
@@ -51,7 +52,7 @@ export function Currency(props: Props) {
       {props.animate ? (
         <AnimatedCounter value={props.value} />
       ) : (
-        formatMoney(props.value)
+        formatMoney(props.value, props.roundNearestDollar)
       )}
     </StyledSpan>
   )
