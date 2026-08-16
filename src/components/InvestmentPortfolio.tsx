@@ -89,6 +89,21 @@ export function InvestmentPortfolio() {
   const fixed = accounts.reduce((a, b) => a + getFixedIncome(b), 0)
   const total = equity + fixed
 
+  const bondFundBalance = useMemo(() => {
+    return accounts.reduce(
+      (sum, account) =>
+        sum +
+        account.assets
+          .filter(
+            (a) =>
+              a.ticker === "FBND" && a.assetType === "Fixed_Income"
+          )
+          .reduce((s, a) => s + a.balance, 0),
+      0
+    )
+  }, [accounts])
+  const cashBalance = fixed - bondFundBalance
+
   const [selectedAccount, setSelectedAccount] = useState<AccountWithIncludes>()
 
   if (total === 0) {
@@ -128,7 +143,9 @@ export function InvestmentPortfolio() {
     )
   }, [accounts])
 
+  const largeCapBalance = equity - smallCapBalance
   const targetSmallCap = total * targetEquityPercentage * 0.1
+  const targetLargeCap = total * targetEquityPercentage * 0.9
 
   const {
     rebalanceMessage,
@@ -140,16 +157,20 @@ export function InvestmentPortfolio() {
     const isWithinOnePercentOfTarget = offTargetBy <= 0.01
     const targetPortfolio: string = `${Math.round(targetEquityPercentage * 100)}/${Math.round((1 - targetEquityPercentage) * 100)}`
 
-    const largeCapBalance = equity - smallCapBalance
     const targetEquity = total * targetEquityPercentage
-    const targetLargeCap = targetEquity * 0.9
     const largeCapRebalanceAmount = targetLargeCap - largeCapBalance
     const smallCapRebalanceAmount = targetSmallCap - smallCapBalance
 
     const largeCapAction = largeCapRebalanceAmount > 0 ? "buy" : "sell"
     const smallCapAction = smallCapRebalanceAmount > 0 ? "buy" : "sell"
 
-    const capMessage = `To reach your target allocation of **${targetPortfolio}** stocks/bonds with 10% of the equity in Small Cap, you will ${largeCapAction} **${formatMoney(Math.abs(largeCapRebalanceAmount), true)}** of Large Cap and ${smallCapAction} **${formatMoney(Math.abs(smallCapRebalanceAmount), true)}** of Small Cap at the next rebalance date (${nextRebalanceDate.format("l")}).`
+    const targetBondFund = fixed * 0.5
+    const bondFundRebalanceAmount = targetBondFund - bondFundBalance
+    const bondFundAction = bondFundRebalanceAmount > 0 ? "buy" : "sell"
+
+    const capMessage = `To reach your target allocation of **${targetPortfolio}** stocks/bonds with 10% of the equity in Small Cap, you will ${largeCapAction} **${formatMoney(Math.abs(largeCapRebalanceAmount), true)}** of Large Cap and ${smallCapAction} **${formatMoney(Math.abs(smallCapRebalanceAmount), true)}** of Small Cap at the next rebalance date (${nextRebalanceDate.format("l")}).
+
+Within fixed income, ${bondFundAction} **${formatMoney(Math.abs(bondFundRebalanceAmount), true)}** of Bond Fund (FBND) to reach a 50/50 bond-fund/cash split.`
 
     const rebalanceMessage: string = isWithinOnePercentOfTarget
       ? `Your portfolio is only **${formatPercentage(offTargetBy, false)}** off your target allocation. You can skip rebalancing on the next rebalance date (${nextRebalanceDate.format("l")}) if you want.
@@ -157,7 +178,7 @@ export function InvestmentPortfolio() {
 ${capMessage}`
       : !isOutsideTargetThreshold
         ? capMessage
-        : `Your portfolio is outside of your target allocation by **${formatPercentage(offTargetBy, false)}**. Consider ${largeCapAction} **${formatMoney(Math.abs(largeCapRebalanceAmount), true)}** of Large Cap and ${smallCapAction} **${formatMoney(Math.abs(smallCapRebalanceAmount), true)}** of Small Cap to get back to your target allocation of **${targetPortfolio}**.
+        : `Your portfolio is outside of your target allocation by **${formatPercentage(offTargetBy, false)}**. Consider ${largeCapAction} **${formatMoney(Math.abs(largeCapRebalanceAmount), true)}** of Large Cap and ${smallCapAction} **${formatMoney(Math.abs(smallCapRebalanceAmount), true)}** of Small Cap to get back to your target allocation of **${targetPortfolio}**. Within fixed income, ${bondFundAction} **${formatMoney(Math.abs(bondFundRebalanceAmount), true)}** of Bond Fund (FBND) to reach a 50/50 bond-fund/cash split.
 
 ${capMessage}`
 
@@ -173,6 +194,10 @@ ${capMessage}`
     smallCapBalance,
     targetSmallCap,
     nextRebalanceDate,
+    fixed,
+    bondFundBalance,
+    largeCapBalance,
+    targetLargeCap,
   ])
 
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
@@ -330,6 +355,14 @@ ${capMessage}`
               <TableCell colSpan={isMobile ? 4 : 6}>&nbsp;</TableCell>
             </TableRow>
 
+            <TableRow>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell sx={{ fontWeight: "bold" }}>
+                Stocks / Bonds
+              </TableCell>
+              {!isMobile && <TableCell colSpan={isMobile ? 3 : 4}></TableCell>}
+            </TableRow>
+
             {/* percentage row */}
             <TableRow hover>
               {!isMobile && <TableCell></TableCell>}
@@ -407,13 +440,51 @@ ${capMessage}`
               <TableCell colSpan={isMobile ? 4 : 6}>&nbsp;</TableCell>
             </TableRow>
 
+            <TableRow>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell sx={{ fontWeight: "bold" }}>
+                Large Cap / Small Cap
+              </TableCell>
+              {!isMobile && <TableCell colSpan={isMobile ? 3 : 4}></TableCell>}
+            </TableRow>
+
+            {/* current large cap */}
+            <TableRow>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell>Current Large Cap</TableCell>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell align="right"></TableCell>
+              <TableCell align="right">
+                <Percentage value={equity > 0 ? largeCapBalance / equity : 0} />
+              </TableCell>
+              <TableCell align="right">
+                <Currency value={largeCapBalance} />
+              </TableCell>
+            </TableRow>
+
+            {/* target large cap */}
+            <TableRow>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell>Target Large Cap</TableCell>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell align="right"></TableCell>
+              <TableCell align="right">
+                <Percentage value={0.9} />
+              </TableCell>
+              <TableCell align="right">
+                <Currency value={targetLargeCap} />
+              </TableCell>
+            </TableRow>
+
             {/* current small cap */}
             <TableRow>
               {!isMobile && <TableCell></TableCell>}
               <TableCell>Current Small Cap</TableCell>
               {!isMobile && <TableCell></TableCell>}
               <TableCell align="right"></TableCell>
-              <TableCell align="right"></TableCell>
+              <TableCell align="right">
+                <Percentage value={equity > 0 ? smallCapBalance / equity : 0} />
+              </TableCell>
               <TableCell align="right">
                 <Currency value={smallCapBalance} />
               </TableCell>
@@ -425,9 +496,82 @@ ${capMessage}`
               <TableCell>Target Small Cap</TableCell>
               {!isMobile && <TableCell></TableCell>}
               <TableCell align="right"></TableCell>
-              <TableCell align="right"></TableCell>
+              <TableCell align="right">
+                <Percentage value={0.1} />
+              </TableCell>
               <TableCell align="right">
                 <Currency value={targetSmallCap} />
+              </TableCell>
+            </TableRow>
+
+            {/* empty row */}
+            <TableRow>
+              <TableCell colSpan={isMobile ? 4 : 6}>&nbsp;</TableCell>
+            </TableRow>
+
+            <TableRow>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell sx={{ fontWeight: "bold" }}>
+                Bond Fund / Cash
+              </TableCell>
+              {!isMobile && <TableCell colSpan={isMobile ? 3 : 4}></TableCell>}
+            </TableRow>
+
+            {/* current bond fund */}
+            <TableRow>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell>Current Bond Fund</TableCell>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell align="right"></TableCell>
+              <TableCell align="right">
+                <Percentage
+                  value={fixed > 0 ? bondFundBalance / fixed : 0}
+                />
+              </TableCell>
+              <TableCell align="right">
+                <Currency value={bondFundBalance} />
+              </TableCell>
+            </TableRow>
+
+            {/* target bond fund */}
+            <TableRow>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell>Target Bond Fund</TableCell>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell align="right"></TableCell>
+              <TableCell align="right">
+                <Percentage value={0.5} />
+              </TableCell>
+              <TableCell align="right">
+                <Currency value={fixed * 0.5} />
+              </TableCell>
+            </TableRow>
+
+            {/* current cash */}
+            <TableRow>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell>Current Cash</TableCell>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell align="right"></TableCell>
+              <TableCell align="right">
+                <Percentage value={fixed > 0 ? cashBalance / fixed : 0} />
+              </TableCell>
+              <TableCell align="right">
+                <Currency value={cashBalance} />
+              </TableCell>
+            </TableRow>
+
+            {/* target cash */}
+            <TableRow>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell>Target Cash</TableCell>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell align="right"></TableCell>
+              <TableCell align="right">
+                <Percentage value={0.5} />
+              </TableCell>
+              <TableCell align="right">
+                <Currency value={fixed * 0.5} />
               </TableCell>
             </TableRow>
           </TableBody>
