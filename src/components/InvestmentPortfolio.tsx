@@ -202,7 +202,7 @@ ${capMessage}`
     targetLargeCap,
   ])
 
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
 
   return (
     <>
@@ -219,8 +219,8 @@ ${capMessage}`
               {!isMobile && (
                 <TableCell sx={{ maxWidth }}>Investments</TableCell>
               )}
-              <TableCell align="right">Equity</TableCell>
-              <TableCell align="right">Fixed Income</TableCell>
+              <TableCell align="right">Stocks</TableCell>
+              <TableCell align="right">Cash/Bonds</TableCell>
               <TableCell align="right">Total</TableCell>
             </TableRow>
           </TableHead>
@@ -322,8 +322,8 @@ ${capMessage}`
               {!isMobile && <TableCell></TableCell>}
               <TableCell sx={{ maxWidth }}>Retirement Bucket</TableCell>
               {!isMobile && <TableCell></TableCell>}
-              <TableCell align="right">Equity</TableCell>
-              <TableCell align="right">Fixed Income</TableCell>
+              <TableCell align="right">Stocks</TableCell>
+              <TableCell align="right">Cash/Bonds</TableCell>
               <TableCell align="right">Total</TableCell>
             </TableRow>
           </TableHead>
@@ -376,7 +376,9 @@ ${capMessage}`
 
             <TableRow>
               {!isMobile && <TableCell></TableCell>}
-              <TableCell sx={{ fontWeight: "bold" }}>Stocks / Bonds</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }} colSpan={isMobile ? 4 : 1}>
+                Stocks / Bonds
+              </TableCell>
               {!isMobile && <TableCell colSpan={isMobile ? 3 : 4}></TableCell>}
             </TableRow>
 
@@ -465,7 +467,9 @@ ${capMessage}`
 
             <TableRow>
               {!isMobile && <TableCell></TableCell>}
-              <TableCell sx={{ fontWeight: "bold" }}>Large/Small Cap</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }} colSpan={isMobile ? 4 : 1}>
+                Large/Small Cap
+              </TableCell>
               {!isMobile && <TableCell colSpan={isMobile ? 3 : 4}></TableCell>}
             </TableRow>
 
@@ -544,7 +548,7 @@ ${capMessage}`
 
             <TableRow>
               {!isMobile && <TableCell></TableCell>}
-              <TableCell sx={{ fontWeight: "bold" }}>
+              <TableCell sx={{ fontWeight: "bold" }} colSpan={isMobile ? 4 : 1}>
                 Bond Fund / Cash
               </TableCell>
               {!isMobile && <TableCell colSpan={isMobile ? 3 : 4}></TableCell>}
