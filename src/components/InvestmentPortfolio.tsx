@@ -95,7 +95,17 @@ export function InvestmentPortfolio() {
       0
     )
   }, [accounts])
-  const cashBalance = fixed - bondFundBalance
+  const vtipBalance = useMemo(() => {
+    return accounts.reduce(
+      (sum, account) =>
+        sum +
+        account.assets
+          .filter((a) => a.ticker === "VTIP" && a.assetType === "Fixed_Income")
+          .reduce((s, a) => s + a.balance, 0),
+      0
+    )
+  }, [accounts])
+  const cashBalance = fixed - bondFundBalance - vtipBalance
 
   const [selectedAccount, setSelectedAccount] = useState<AccountWithIncludes>()
 
@@ -155,8 +165,10 @@ export function InvestmentPortfolio() {
 
     const largeCapRebalanceAmount = targetLargeCap - largeCapBalance
     const smallCapRebalanceAmount = targetSmallCap - smallCapBalance
-    const targetBondFund = targetFixed * 0.5
+    const targetBondFund = targetFixed * 0.25
     const bondFundRebalanceAmount = targetBondFund - bondFundBalance
+    const targetVTIP = targetFixed * 0.25
+    const vtipRebalanceAmount = targetVTIP - vtipBalance
 
     const rebalanceActions: RebalanceAction[] = [
       {
@@ -171,8 +183,13 @@ export function InvestmentPortfolio() {
       },
       {
         label: "Bond Fund",
-        subtitle: "50% of fixed income",
+        subtitle: "25% of fixed income",
         amount: bondFundRebalanceAmount,
+      },
+      {
+        label: "TIPS Fund",
+        subtitle: "25% of fixed income",
+        amount: vtipRebalanceAmount,
       },
     ]
 
@@ -191,6 +208,7 @@ export function InvestmentPortfolio() {
     targetSmallCap,
     targetFixed,
     bondFundBalance,
+    vtipBalance,
     largeCapBalance,
     targetLargeCap,
   ])
@@ -542,7 +560,7 @@ export function InvestmentPortfolio() {
             <TableRow>
               {!isMobile && <TableCell></TableCell>}
               <TableCell sx={{ fontWeight: "bold" }} colSpan={isMobile ? 4 : 1}>
-                Bond Fund / Cash
+                Bond Funds / Cash
               </TableCell>
               {!isMobile && <TableCell colSpan={isMobile ? 3 : 4}></TableCell>}
             </TableRow>
@@ -571,10 +589,41 @@ export function InvestmentPortfolio() {
               {!isMobile && <TableCell></TableCell>}
               <TableCell align="right"></TableCell>
               <TableCell align="right">
-                <Percentage value={0.5} />
+                <Percentage value={0.25} />
               </TableCell>
               <TableCell align="right">
-                <Currency roundNearestDollar={isMobile} value={targetFixed * 0.5} />
+                <Currency roundNearestDollar={isMobile} value={targetFixed * 0.25} />
+              </TableCell>
+            </TableRow>
+
+            {/* current VTIP */}
+            <TableRow>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell>Current TIPS Fund</TableCell>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell align="right"></TableCell>
+              <TableCell align="right">
+                <Percentage value={fixed > 0 ? vtipBalance / fixed : 0} />
+              </TableCell>
+              <TableCell align="right">
+                <Currency
+                  roundNearestDollar={isMobile}
+                  value={vtipBalance}
+                />
+              </TableCell>
+            </TableRow>
+
+            {/* target VTIP */}
+            <TableRow>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell>Target TIPS Fund</TableCell>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell align="right"></TableCell>
+              <TableCell align="right">
+                <Percentage value={0.25} />
+              </TableCell>
+              <TableCell align="right">
+                <Currency roundNearestDollar={isMobile} value={targetFixed * 0.25} />
               </TableCell>
             </TableRow>
 
