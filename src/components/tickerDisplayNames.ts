@@ -1,6 +1,6 @@
 export const tickerDisplayNames: Record<string, string> = {
   VOO: "S&P 500",
-  FBND: "Bond Index",
+  FBND: "Total Bond",
   VTIP: "TIPS Fund",
   VB: "Small Cap Index",
   VTI: "Total Market Index",
