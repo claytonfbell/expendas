@@ -62,7 +62,7 @@ function buildExchangeMessage(actions: RebalanceAction[]): string {
       source.remaining -= exchangeAmount
     }
     if (destRemaining > 0) {
-      lines.push(`- buy **${formatMoney(destRemaining, true)}** of ${dest.label}`)
+      lines.push(`- exchange **${formatMoney(destRemaining, true)}** from Cash to ${dest.label}`)
     }
   }
 
