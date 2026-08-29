@@ -1,13 +1,13 @@
-import { Asset, AssetType } from "@prisma/client"
+import { Asset } from "@prisma/client"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useGlobalState } from "../../GlobalStateContext"
 import rest, { RestError } from "../rest"
 import { QUERY_KEYS } from "./queryKeys"
+import { AssetWithTicker } from "../../AccountWithIncludes"
 
 interface AddAssetInput {
   accountId: number
-  ticker: string
-  assetType: AssetType
+  assetTickerId: number
   currentBalance: number
 }
 
@@ -15,7 +15,7 @@ export function useAddAsset() {
   const queryClient = useQueryClient()
   const { organizationId } = useGlobalState()
 
-  return useMutation<Asset, RestError, AddAssetInput>({
+  return useMutation<AssetWithTicker, RestError, AddAssetInput>({
     mutationFn: (input) =>
       rest.post(
         `/organizations/${organizationId || 0}/accounts/${input.accountId}/assets`,

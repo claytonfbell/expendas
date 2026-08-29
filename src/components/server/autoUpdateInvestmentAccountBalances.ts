@@ -10,7 +10,7 @@ export async function autoUpdateInvestmentAccountBalances() {
       accountType: "Investment",
     },
     include: {
-      assets: true,
+      assets: { include: { assetTicker: true } },
     },
   })
 
@@ -24,7 +24,7 @@ export async function autoUpdateInvestmentAccountBalances() {
 
   const allTickers = [
     ...new Set(
-      accountsWithAssets.flatMap((a) => a.assets.map((asset) => asset.ticker))
+      accountsWithAssets.flatMap((a) => a.assets.map((asset) => asset.assetTicker.ticker))
     ),
   ]
 
@@ -40,7 +40,7 @@ export async function autoUpdateInvestmentAccountBalances() {
     let needsUpdate = false
 
     for (const asset of account.assets) {
-      const newPrice = latestPrices.get(asset.ticker)
+      const newPrice = latestPrices.get(asset.assetTicker.ticker)
       if (newPrice && asset.tickerPrice !== newPrice) {
         const newBalance = Math.round(
           (asset.balance / asset.tickerPrice) * newPrice

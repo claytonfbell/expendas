@@ -42,7 +42,7 @@ type Data = {
 
 function getFixedIncome(account: AccountWithIncludes): number {
   return account.assets
-    .filter((a) => a.assetType === "Fixed_Income")
+    .filter((a) => a.assetTicker.assetType === "Fixed_Income")
     .reduce((sum, a) => sum + a.balance, 0)
 }
 
@@ -90,7 +90,11 @@ export function InvestmentPortfolio() {
       (sum, account) =>
         sum +
         account.assets
-          .filter((a) => a.ticker === "FBND" && a.assetType === "Fixed_Income")
+          .filter(
+            (a) =>
+              a.assetTicker.ticker === "FBND" &&
+              a.assetTicker.assetType === "Fixed_Income"
+          )
           .reduce((s, a) => s + a.balance, 0),
       0
     )
@@ -100,12 +104,47 @@ export function InvestmentPortfolio() {
       (sum, account) =>
         sum +
         account.assets
-          .filter((a) => a.ticker === "VTIP" && a.assetType === "Fixed_Income")
+          .filter(
+            (a) =>
+              a.assetTicker.ticker === "VTIP" &&
+              a.assetTicker.assetType === "Fixed_Income"
+          )
           .reduce((s, a) => s + a.balance, 0),
       0
     )
   }, [accounts])
   const cashBalance = fixed - bondFundBalance - vtipBalance
+
+  const { interestAmount, dividendsAmount, totalDividendInterest } =
+    useMemo(() => {
+      const interest = accounts.reduce(
+        (sum, account) =>
+          sum +
+          account.assets
+            .filter((a) => a.assetTicker.assetType === "Fixed_Income")
+            .reduce(
+              (s, a) => s + (a.balance * a.assetTicker.dividendApr) / 10000,
+              0
+            ),
+        0
+      )
+      const dividends = accounts.reduce(
+        (sum, account) =>
+          sum +
+          account.assets
+            .filter((a) => a.assetTicker.assetType === "Equity")
+            .reduce(
+              (s, a) => s + (a.balance * a.assetTicker.dividendApr) / 10000,
+              0
+            ),
+        0
+      )
+      return {
+        interestAmount: interest,
+        dividendsAmount: dividends,
+        totalDividendInterest: interest + dividends,
+      }
+    }, [accounts])
 
   const [selectedAccount, setSelectedAccount] = useState<AccountWithIncludes>()
 
@@ -118,7 +157,7 @@ export function InvestmentPortfolio() {
   const allTickers = useMemo(() => {
     return [
       ...new Set(
-        accounts.flatMap((a) => a.assets.map((asset) => asset.ticker))
+        accounts.flatMap((a) => a.assets.map((asset) => asset.assetTicker.ticker))
       ),
     ]
   }, [accounts])
@@ -140,7 +179,10 @@ export function InvestmentPortfolio() {
       (sum, account) =>
         sum +
         account.assets
-          .filter((a) => a.ticker === "VB" && a.assetType === "Equity")
+          .filter(
+            (a) =>
+              a.assetTicker.ticker === "VB" && a.assetTicker.assetType === "Equity"
+          )
           .reduce((s, a) => s + a.balance, 0),
       0
     )
@@ -243,11 +285,11 @@ export function InvestmentPortfolio() {
                 const equityVal = account.balance - fixedInc
                 const tickerBalances: Record<string, number> = {}
                 account.assets.forEach((a) => {
-                  tickerBalances[a.ticker] =
-                    (tickerBalances[a.ticker] || 0) + a.balance
+                  tickerBalances[a.assetTicker.ticker] =
+                    (tickerBalances[a.assetTicker.ticker] || 0) + a.balance
                 })
                 const tickers = [
-                  ...new Set(account.assets.map((a) => a.ticker)),
+                  ...new Set(account.assets.map((a) => a.assetTicker.ticker)),
                 ].sort(
                   (a, b) => (tickerBalances[b] || 0) - (tickerBalances[a] || 0)
                 )
@@ -277,22 +319,22 @@ export function InvestmentPortfolio() {
                         >
                           {tickers.map((ticker) => {
                             const asset = account.assets.find(
-                              (a) => a.ticker === ticker
+                              (a) => a.assetTicker.ticker === ticker
                             )
                             return (
                               <TickerChip
                                 key={ticker}
                                 ticker={ticker}
+                                tickerDisplayName={asset?.assetTicker.tickerDisplayName || ticker}
                                 balance={tickerBalances[ticker] || 0}
-                                assetType={asset?.assetType || "Equity"}
+                                assetType={asset?.assetTicker.assetType || "Equity"}
                                 prices={tickerPrices[ticker]}
                                 onChange={(newBalance) => {
                                   if (asset) {
                                     updateAsset({
                                       assetId: asset.id,
                                       accountId: account.id,
-                                      ticker: asset.ticker,
-                                      assetType: asset.assetType,
+                                      assetTickerId: asset.assetTickerId,
                                       currentBalance: newBalance,
                                     })
                                   }
@@ -652,6 +694,79 @@ export function InvestmentPortfolio() {
               </TableCell>
               <TableCell align="right">
                 <Currency roundNearestDollar={isMobile} value={targetFixed * 0.5} />
+              </TableCell>
+            </TableRow>
+
+            {/* empty row */}
+            <TableRow>
+              <TableCell colSpan={isMobile ? 4 : 6}>&nbsp;</TableCell>
+            </TableRow>
+
+            <TableRow>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell sx={{ fontWeight: "bold" }} colSpan={isMobile ? 4 : 1}>
+                Dividends / Interest
+              </TableCell>
+              {!isMobile && <TableCell colSpan={isMobile ? 3 : 4}></TableCell>}
+            </TableRow>
+
+            {/* interest */}
+            <TableRow>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell>Interest</TableCell>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell align="right"></TableCell>
+              <TableCell align="right">
+                <Percentage
+                  value={fixed > 0 ? interestAmount / fixed : 0}
+                  decimals={2}
+                />
+              </TableCell>
+              <TableCell align="right">
+                <Currency
+                  roundNearestDollar={isMobile}
+                  value={interestAmount}
+                />
+              </TableCell>
+            </TableRow>
+
+            {/* dividends */}
+            <TableRow>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell>Dividends</TableCell>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell align="right"></TableCell>
+              <TableCell align="right">
+                <Percentage
+                  value={equity > 0 ? dividendsAmount / equity : 0}
+                  decimals={2}
+                />
+              </TableCell>
+              <TableCell align="right">
+                <Currency
+                  roundNearestDollar={isMobile}
+                  value={dividendsAmount}
+                />
+              </TableCell>
+            </TableRow>
+
+            {/* total dividends / interest */}
+            <TableRow>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell sx={{ fontWeight: "bold" }}>Total</TableCell>
+              {!isMobile && <TableCell></TableCell>}
+              <TableCell align="right"></TableCell>
+              <TableCell align="right">
+                <Percentage
+                  value={total > 0 ? totalDividendInterest / total : 0}
+                  decimals={2}
+                />
+              </TableCell>
+              <TableCell align="right">
+                <Currency
+                  roundNearestDollar={isMobile}
+                  value={totalDividendInterest}
+                />
               </TableCell>
             </TableRow>
           </TableBody>

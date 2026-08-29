@@ -23,6 +23,7 @@ export const Route = createFileRoute(
           const assets = await prisma.asset.findMany({
             where: { accountId },
             orderBy: { id: "asc" },
+            include: { assetTicker: true },
           })
           return assets
         })
@@ -37,23 +38,30 @@ export const Route = createFileRoute(
             organizationId
           )
 
-          const { ticker, assetType, currentBalance } = await request.json()
+          const { assetTickerId, currentBalance } = await request.json()
 
-          await populateMissingTickerPrices(ticker)
+          const assetTicker = await prisma.assetTicker.findUnique({
+            where: { id: assetTickerId },
+          })
+          if (!assetTicker) {
+            throw new Error(`Asset ticker not found for id ${assetTickerId}`)
+          }
 
-          const latestPrice = await getLatestTickerPrice(ticker)
+          await populateMissingTickerPrices(assetTicker.ticker)
+
+          const latestPrice = await getLatestTickerPrice(assetTicker.ticker)
           if (!latestPrice) {
-            throw new Error(`No price found for ticker ${ticker}`)
+            throw new Error(`No price found for ticker ${assetTicker.ticker}`)
           }
 
           const asset = await prisma.asset.create({
             data: {
               accountId,
-              ticker,
+              assetTickerId,
               tickerPrice: latestPrice.price,
               balance: currentBalance,
-              assetType,
             },
+            include: { assetTicker: true },
           })
 
           await recalculateAccountBalance(accountId)

@@ -1,9 +1,12 @@
+import { isLookupTicker } from "./tickerLookup"
 import { Ticker } from "./tickerTypes"
+
+const FIXED_PRICE = 100
 
 export async function scrapeCurrentTickerPrice(
   ticker: Ticker
 ): Promise<number | null> {
-  if (ticker === "CASH") return 100
+  if (!(await isLookupTicker(ticker))) return FIXED_PRICE
   try {
     // from cnbc (yahoo and fideliety use javascript for anti-scraping)
     const url = `https://www.cnbc.com/quotes/${ticker}`

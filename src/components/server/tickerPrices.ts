@@ -5,21 +5,22 @@ import {
   Ticker,
 } from "./populateMissingTickerPrices"
 import prisma from "./prisma"
+import { isLookupTicker } from "./tickerLookup"
 
-const CASH_PRICE = 100
+const FIXED_PRICE = 100
 
-function cashTickerPrice(): TickerPrice {
+function fixedTickerPrice(ticker: Ticker): TickerPrice {
   return {
     id: 0,
-    ticker: "CASH",
-    price: CASH_PRICE,
+    ticker,
+    price: FIXED_PRICE,
     date: dayjs().tz("America/Los_Angeles").format("YYYY-MM-DD"),
     closed: true,
   }
 }
 
 export async function getLatestTickerPrice(ticker: Ticker) {
-  if (ticker === "CASH") return cashTickerPrice()
+  if (!(await isLookupTicker(ticker))) return fixedTickerPrice(ticker)
   await populateMissingTickerPrices(ticker)
   let latestTickerPrice: TickerPrice | null = null
   latestTickerPrice = await prisma.tickerPrice.findFirst({
@@ -37,7 +38,7 @@ export async function getLatestTickerPrice(ticker: Ticker) {
 }
 
 export async function getTwoYearLowTickerPrice(ticker: Ticker) {
-  if (ticker === "CASH") return cashTickerPrice()
+  if (!(await isLookupTicker(ticker))) return fixedTickerPrice(ticker)
   const twoYearsAgo = dayjs().subtract(2, "years").format("YYYY-MM-DD")
   const twoYearLow = await prisma.tickerPrice.findFirst({
     where: {
@@ -57,7 +58,7 @@ export async function getTwoYearLowTickerPrice(ticker: Ticker) {
 }
 
 export async function getAllTimeHighTickerPrice(ticker: Ticker) {
-  if (ticker === "CASH") return cashTickerPrice()
+  if (!(await isLookupTicker(ticker))) return fixedTickerPrice(ticker)
   const allTimeHigh = await prisma.tickerPrice.findFirst({
     where: {
       ticker: ticker,

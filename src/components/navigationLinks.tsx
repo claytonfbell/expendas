@@ -28,6 +28,7 @@ export type NavigationLink = {
   ActiveIcon: React.ElementType
   Icon: React.ElementType
   navs: ("top-desktop" | "bottom-mobile")[]
+  requiredEmail?: string
 }
 
 export const navigationLinks: NavigationLink[] = [
@@ -116,6 +117,14 @@ export const navigationLinks: NavigationLink[] = [
     ActiveIcon: VpnKeyIcon,
     Icon: VpnKeyIcon,
     navs: [],
+  },
+  {
+    label: "Asset Tickers",
+    href: "/asset-tickers",
+    ActiveIcon: ShowChartIcon,
+    Icon: ShowChartIcon,
+    navs: [],
+    requiredEmail: "claytonfbell@gmail.com",
   },
   {
     label: "Test 2.0",

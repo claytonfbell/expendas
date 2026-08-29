@@ -23,6 +23,7 @@ import { Route as MealsOutRouteImport } from './app/mealsOut'
 import { Route as InvestmentsRouteImport } from './app/investments'
 import { Route as ForgotPasswordRouteImport } from './app/forgotPassword'
 import { Route as FixedIncomeRouteImport } from './app/fixedIncome'
+import { Route as AssetTickersRouteImport } from './app/asset-tickers'
 import { Route as ApiKeysRouteImport } from './app/api-keys'
 import { Route as ApiDocsRouteImport } from './app/api-docs'
 import { Route as AccountsRouteImport } from './app/accounts'
@@ -37,6 +38,7 @@ import { Route as ApiLoginRouteImport } from './app/api/login'
 import { Route as ApiForgotPasswordRouteImport } from './app/api/forgotPassword'
 import { Route as ApiEmailDigestPreviewRouteImport } from './app/api/email-digest-preview'
 import { Route as ApiEmailDigestRouteImport } from './app/api/email-digest'
+import { Route as ApiAssetTickersRouteImport } from './app/api/asset-tickers'
 import { Route as ApiApiKeysRouteImport } from './app/api/api-keys'
 import { Route as ApiUserPreferencesRouteImport } from './app/api/user.preferences'
 import { Route as ApiUserPasswordRouteImport } from './app/api/user.password'
@@ -45,6 +47,7 @@ import { Route as ApiOrganizationsAddUserRouteImport } from './app/api/organizat
 import { Route as ApiOrganizationsIdRouteImport } from './app/api/organizations.$id'
 import { Route as ApiEmailDigestSendRouteImport } from './app/api/email-digest.send'
 import { Route as ApiEmailDigestScheduledSendRouteImport } from './app/api/email-digest.scheduled-send'
+import { Route as ApiAssetTickersAssetTickerIdRouteImport } from './app/api/asset-tickers.$assetTickerId'
 import { Route as ApiApiKeysIdRouteImport } from './app/api/api-keys.$id'
 import { Route as ApiOrganizationsIdTaxRecordsRouteImport } from './app/api/organizations.$id.taxRecords'
 import { Route as ApiOrganizationsIdTasksRouteImport } from './app/api/organizations.$id.tasks'
@@ -160,6 +163,11 @@ const FixedIncomeRoute = FixedIncomeRouteImport.update({
   path: '/fixedIncome',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AssetTickersRoute = AssetTickersRouteImport.update({
+  id: '/asset-tickers',
+  path: '/asset-tickers',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiKeysRoute = ApiKeysRouteImport.update({
   id: '/api-keys',
   path: '/api-keys',
@@ -230,6 +238,11 @@ const ApiEmailDigestRoute = ApiEmailDigestRouteImport.update({
   path: '/api/email-digest',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAssetTickersRoute = ApiAssetTickersRouteImport.update({
+  id: '/api/asset-tickers',
+  path: '/api/asset-tickers',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiApiKeysRoute = ApiApiKeysRouteImport.update({
   id: '/api/api-keys',
   path: '/api/api-keys',
@@ -271,6 +284,12 @@ const ApiEmailDigestScheduledSendRoute =
     id: '/scheduled-send',
     path: '/scheduled-send',
     getParentRoute: () => ApiEmailDigestRoute,
+  } as any)
+const ApiAssetTickersAssetTickerIdRoute =
+  ApiAssetTickersAssetTickerIdRouteImport.update({
+    id: '/$assetTickerId',
+    path: '/$assetTickerId',
+    getParentRoute: () => ApiAssetTickersRoute,
   } as any)
 const ApiApiKeysIdRoute = ApiApiKeysIdRouteImport.update({
   id: '/$id',
@@ -544,6 +563,7 @@ export interface FileRoutesByFullPath {
   '/accounts': typeof AccountsRoute
   '/api-docs': typeof ApiDocsRoute
   '/api-keys': typeof ApiKeysRoute
+  '/asset-tickers': typeof AssetTickersRoute
   '/fixedIncome': typeof FixedIncomeRoute
   '/forgotPassword': typeof ForgotPasswordRoute
   '/investments': typeof InvestmentsRoute
@@ -559,6 +579,7 @@ export interface FileRoutesByFullPath {
   '/test2': typeof Test2Route
   '/trends': typeof TrendsRoute
   '/api/api-keys': typeof ApiApiKeysRouteWithChildren
+  '/api/asset-tickers': typeof ApiAssetTickersRouteWithChildren
   '/api/email-digest': typeof ApiEmailDigestRouteWithChildren
   '/api/email-digest-preview': typeof ApiEmailDigestPreviewRoute
   '/api/forgotPassword': typeof ApiForgotPasswordRoute
@@ -570,6 +591,7 @@ export interface FileRoutesByFullPath {
   '/api/tickerPrices': typeof ApiTickerPricesRoute
   '/api/user': typeof ApiUserRouteWithChildren
   '/api/api-keys/$id': typeof ApiApiKeysIdRoute
+  '/api/asset-tickers/$assetTickerId': typeof ApiAssetTickersAssetTickerIdRoute
   '/api/email-digest/scheduled-send': typeof ApiEmailDigestScheduledSendRoute
   '/api/email-digest/send': typeof ApiEmailDigestSendRoute
   '/api/organizations/$id': typeof ApiOrganizationsIdRouteWithChildren
@@ -626,6 +648,7 @@ export interface FileRoutesByTo {
   '/accounts': typeof AccountsRoute
   '/api-docs': typeof ApiDocsRoute
   '/api-keys': typeof ApiKeysRoute
+  '/asset-tickers': typeof AssetTickersRoute
   '/fixedIncome': typeof FixedIncomeRoute
   '/forgotPassword': typeof ForgotPasswordRoute
   '/investments': typeof InvestmentsRoute
@@ -641,6 +664,7 @@ export interface FileRoutesByTo {
   '/test2': typeof Test2Route
   '/trends': typeof TrendsRoute
   '/api/api-keys': typeof ApiApiKeysRouteWithChildren
+  '/api/asset-tickers': typeof ApiAssetTickersRouteWithChildren
   '/api/email-digest': typeof ApiEmailDigestRouteWithChildren
   '/api/email-digest-preview': typeof ApiEmailDigestPreviewRoute
   '/api/forgotPassword': typeof ApiForgotPasswordRoute
@@ -652,6 +676,7 @@ export interface FileRoutesByTo {
   '/api/tickerPrices': typeof ApiTickerPricesRoute
   '/api/user': typeof ApiUserRouteWithChildren
   '/api/api-keys/$id': typeof ApiApiKeysIdRoute
+  '/api/asset-tickers/$assetTickerId': typeof ApiAssetTickersAssetTickerIdRoute
   '/api/email-digest/scheduled-send': typeof ApiEmailDigestScheduledSendRoute
   '/api/email-digest/send': typeof ApiEmailDigestSendRoute
   '/api/organizations/$id': typeof ApiOrganizationsIdRouteWithChildren
@@ -709,6 +734,7 @@ export interface FileRoutesById {
   '/accounts': typeof AccountsRoute
   '/api-docs': typeof ApiDocsRoute
   '/api-keys': typeof ApiKeysRoute
+  '/asset-tickers': typeof AssetTickersRoute
   '/fixedIncome': typeof FixedIncomeRoute
   '/forgotPassword': typeof ForgotPasswordRoute
   '/investments': typeof InvestmentsRoute
@@ -724,6 +750,7 @@ export interface FileRoutesById {
   '/test2': typeof Test2Route
   '/trends': typeof TrendsRoute
   '/api/api-keys': typeof ApiApiKeysRouteWithChildren
+  '/api/asset-tickers': typeof ApiAssetTickersRouteWithChildren
   '/api/email-digest': typeof ApiEmailDigestRouteWithChildren
   '/api/email-digest-preview': typeof ApiEmailDigestPreviewRoute
   '/api/forgotPassword': typeof ApiForgotPasswordRoute
@@ -735,6 +762,7 @@ export interface FileRoutesById {
   '/api/tickerPrices': typeof ApiTickerPricesRoute
   '/api/user': typeof ApiUserRouteWithChildren
   '/api/api-keys/$id': typeof ApiApiKeysIdRoute
+  '/api/asset-tickers/$assetTickerId': typeof ApiAssetTickersAssetTickerIdRoute
   '/api/email-digest/scheduled-send': typeof ApiEmailDigestScheduledSendRoute
   '/api/email-digest/send': typeof ApiEmailDigestSendRoute
   '/api/organizations/$id': typeof ApiOrganizationsIdRouteWithChildren
@@ -793,6 +821,7 @@ export interface FileRouteTypes {
     | '/accounts'
     | '/api-docs'
     | '/api-keys'
+    | '/asset-tickers'
     | '/fixedIncome'
     | '/forgotPassword'
     | '/investments'
@@ -808,6 +837,7 @@ export interface FileRouteTypes {
     | '/test2'
     | '/trends'
     | '/api/api-keys'
+    | '/api/asset-tickers'
     | '/api/email-digest'
     | '/api/email-digest-preview'
     | '/api/forgotPassword'
@@ -819,6 +849,7 @@ export interface FileRouteTypes {
     | '/api/tickerPrices'
     | '/api/user'
     | '/api/api-keys/$id'
+    | '/api/asset-tickers/$assetTickerId'
     | '/api/email-digest/scheduled-send'
     | '/api/email-digest/send'
     | '/api/organizations/$id'
@@ -875,6 +906,7 @@ export interface FileRouteTypes {
     | '/accounts'
     | '/api-docs'
     | '/api-keys'
+    | '/asset-tickers'
     | '/fixedIncome'
     | '/forgotPassword'
     | '/investments'
@@ -890,6 +922,7 @@ export interface FileRouteTypes {
     | '/test2'
     | '/trends'
     | '/api/api-keys'
+    | '/api/asset-tickers'
     | '/api/email-digest'
     | '/api/email-digest-preview'
     | '/api/forgotPassword'
@@ -901,6 +934,7 @@ export interface FileRouteTypes {
     | '/api/tickerPrices'
     | '/api/user'
     | '/api/api-keys/$id'
+    | '/api/asset-tickers/$assetTickerId'
     | '/api/email-digest/scheduled-send'
     | '/api/email-digest/send'
     | '/api/organizations/$id'
@@ -957,6 +991,7 @@ export interface FileRouteTypes {
     | '/accounts'
     | '/api-docs'
     | '/api-keys'
+    | '/asset-tickers'
     | '/fixedIncome'
     | '/forgotPassword'
     | '/investments'
@@ -972,6 +1007,7 @@ export interface FileRouteTypes {
     | '/test2'
     | '/trends'
     | '/api/api-keys'
+    | '/api/asset-tickers'
     | '/api/email-digest'
     | '/api/email-digest-preview'
     | '/api/forgotPassword'
@@ -983,6 +1019,7 @@ export interface FileRouteTypes {
     | '/api/tickerPrices'
     | '/api/user'
     | '/api/api-keys/$id'
+    | '/api/asset-tickers/$assetTickerId'
     | '/api/email-digest/scheduled-send'
     | '/api/email-digest/send'
     | '/api/organizations/$id'
@@ -1040,6 +1077,7 @@ export interface RootRouteChildren {
   AccountsRoute: typeof AccountsRoute
   ApiDocsRoute: typeof ApiDocsRoute
   ApiKeysRoute: typeof ApiKeysRoute
+  AssetTickersRoute: typeof AssetTickersRoute
   FixedIncomeRoute: typeof FixedIncomeRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   InvestmentsRoute: typeof InvestmentsRoute
@@ -1055,6 +1093,7 @@ export interface RootRouteChildren {
   Test2Route: typeof Test2Route
   TrendsRoute: typeof TrendsRoute
   ApiApiKeysRoute: typeof ApiApiKeysRouteWithChildren
+  ApiAssetTickersRoute: typeof ApiAssetTickersRouteWithChildren
   ApiEmailDigestRoute: typeof ApiEmailDigestRouteWithChildren
   ApiEmailDigestPreviewRoute: typeof ApiEmailDigestPreviewRoute
   ApiForgotPasswordRoute: typeof ApiForgotPasswordRoute
@@ -1167,6 +1206,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FixedIncomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/asset-tickers': {
+      id: '/asset-tickers'
+      path: '/asset-tickers'
+      fullPath: '/asset-tickers'
+      preLoaderRoute: typeof AssetTickersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api-keys': {
       id: '/api-keys'
       path: '/api-keys'
@@ -1265,6 +1311,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiEmailDigestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/asset-tickers': {
+      id: '/api/asset-tickers'
+      path: '/api/asset-tickers'
+      fullPath: '/api/asset-tickers'
+      preLoaderRoute: typeof ApiAssetTickersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/api-keys': {
       id: '/api/api-keys'
       path: '/api/api-keys'
@@ -1320,6 +1373,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/email-digest/scheduled-send'
       preLoaderRoute: typeof ApiEmailDigestScheduledSendRouteImport
       parentRoute: typeof ApiEmailDigestRoute
+    }
+    '/api/asset-tickers/$assetTickerId': {
+      id: '/api/asset-tickers/$assetTickerId'
+      path: '/$assetTickerId'
+      fullPath: '/api/asset-tickers/$assetTickerId'
+      preLoaderRoute: typeof ApiAssetTickersAssetTickerIdRouteImport
+      parentRoute: typeof ApiAssetTickersRoute
     }
     '/api/api-keys/$id': {
       id: '/api/api-keys/$id'
@@ -1642,6 +1702,18 @@ const ApiApiKeysRouteChildren: ApiApiKeysRouteChildren = {
 
 const ApiApiKeysRouteWithChildren = ApiApiKeysRoute._addFileChildren(
   ApiApiKeysRouteChildren,
+)
+
+interface ApiAssetTickersRouteChildren {
+  ApiAssetTickersAssetTickerIdRoute: typeof ApiAssetTickersAssetTickerIdRoute
+}
+
+const ApiAssetTickersRouteChildren: ApiAssetTickersRouteChildren = {
+  ApiAssetTickersAssetTickerIdRoute: ApiAssetTickersAssetTickerIdRoute,
+}
+
+const ApiAssetTickersRouteWithChildren = ApiAssetTickersRoute._addFileChildren(
+  ApiAssetTickersRouteChildren,
 )
 
 interface ApiEmailDigestRouteChildren {
@@ -2006,6 +2078,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountsRoute: AccountsRoute,
   ApiDocsRoute: ApiDocsRoute,
   ApiKeysRoute: ApiKeysRoute,
+  AssetTickersRoute: AssetTickersRoute,
   FixedIncomeRoute: FixedIncomeRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   InvestmentsRoute: InvestmentsRoute,
@@ -2021,6 +2094,7 @@ const rootRouteChildren: RootRouteChildren = {
   Test2Route: Test2Route,
   TrendsRoute: TrendsRoute,
   ApiApiKeysRoute: ApiApiKeysRouteWithChildren,
+  ApiAssetTickersRoute: ApiAssetTickersRouteWithChildren,
   ApiEmailDigestRoute: ApiEmailDigestRouteWithChildren,
   ApiEmailDigestPreviewRoute: ApiEmailDigestPreviewRoute,
   ApiForgotPasswordRoute: ApiForgotPasswordRoute,

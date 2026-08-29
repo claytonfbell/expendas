@@ -23,7 +23,6 @@ import {
 import { displayAccountBucket } from "./accountBuckets"
 import { AccountWithIncludes } from "./AccountWithIncludes"
 import { formatMoney } from "./formatMoney"
-import { getTickerDisplayName } from "./tickerDisplayNames"
 
 type Props = {
   accounts: AccountWithIncludes[]
@@ -41,7 +40,7 @@ export function InvestmentAssetBreakdown({ accounts }: Props) {
     if (groupBy === "accountType") {
       const bucketAssets: Record<
         string,
-        { name: string; size: number; group: string }[]
+        { name: string; displayName: string; size: number; group: string }[]
       > = {}
 
       accounts.forEach((account) => {
@@ -51,13 +50,15 @@ export function InvestmentAssetBreakdown({ accounts }: Props) {
         }
         account.assets.forEach((asset) => {
           const existing = bucketAssets[bucket].find(
-            (a) => a.name === asset.ticker
+            (a) => a.name === asset.assetTicker.ticker
           )
           if (existing) {
             existing.size += asset.balance
+            existing.displayName = asset.assetTicker.tickerDisplayName
           } else {
             bucketAssets[bucket].push({
-              name: asset.ticker,
+              name: asset.assetTicker.ticker,
+              displayName: asset.assetTicker.tickerDisplayName,
               size: asset.balance,
               group: bucket,
             })
@@ -76,27 +77,32 @@ export function InvestmentAssetBreakdown({ accounts }: Props) {
         }))
     }
 
-    const equityAssets: Record<string, number> = {}
-    const fixedIncomeAssets: Record<string, number> = {}
+    const equityAssets: Record<string, { balance: number; displayName: string }> = {}
+    const fixedIncomeAssets: Record<string, { balance: number; displayName: string }> = {}
 
     accounts.forEach((account) => {
       account.assets.forEach((asset) => {
         const target =
-          asset.assetType === "Equity" ? equityAssets : fixedIncomeAssets
-        target[asset.ticker] = (target[asset.ticker] || 0) + asset.balance
+          asset.assetTicker.assetType === "Equity" ? equityAssets : fixedIncomeAssets
+        const ticker = asset.assetTicker.ticker
+        if (!target[ticker]) {
+          target[ticker] = { balance: 0, displayName: asset.assetTicker.tickerDisplayName }
+        }
+        target[ticker].balance += asset.balance
       })
     })
 
     const children: {
       name: string
-      children: { name: string; size: number }[]
+      children: { name: string; size: number; displayName: string }[]
     }[] = []
 
     const eqChildren = Object.entries(equityAssets)
-      .sort((a, b) => b[1] - a[1])
-      .map(([ticker, balance]) => ({
+      .sort((a, b) => b[1].balance - a[1].balance)
+      .map(([ticker, data]) => ({
         name: ticker,
-        size: balance,
+        size: data.balance,
+        displayName: data.displayName,
         group: "Equity",
       }))
     if (eqChildren.length > 0) {
@@ -104,10 +110,11 @@ export function InvestmentAssetBreakdown({ accounts }: Props) {
     }
 
     const fiChildren = Object.entries(fixedIncomeAssets)
-      .sort((a, b) => b[1] - a[1])
-      .map(([ticker, balance]) => ({
+      .sort((a, b) => b[1].balance - a[1].balance)
+      .map(([ticker, data]) => ({
         name: ticker,
-        size: balance,
+        size: data.balance,
+        displayName: data.displayName,
         group: "Fixed Income",
       }))
     if (fiChildren.length > 0) {
@@ -245,7 +252,7 @@ export function InvestmentAssetBreakdown({ accounts }: Props) {
 
 function TreemapCustomContent(props: any) {
   const theme = useTheme()
-  const { depth, x, y, width, height, name } = props
+  const { depth, x, y, width, height, name, displayName } = props
 
   if (!width || !height) return null
 
@@ -283,7 +290,7 @@ function TreemapCustomContent(props: any) {
             fontSize={11}
             fontWeight={600}
           >
-            {getTickerDisplayName(name)}
+            {displayName || name}
           </text>
         )}
       </g>

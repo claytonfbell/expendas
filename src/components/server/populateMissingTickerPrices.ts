@@ -2,11 +2,12 @@ import dayjs from "../dayjs"
 import prisma from "./prisma"
 import { RateLimit } from "./RateLimit"
 import { scrapeCurrentTickerPrice } from "./scrapeCurrentTickerPrice"
+import { isLookupTicker } from "./tickerLookup"
 import { Ticker } from "./tickerTypes"
 export type { Ticker } from "./tickerTypes"
 
 export async function populateMissingTickerPrices(ticker: Ticker) {
-  if (ticker === "CASH") return
+  if (!(await isLookupTicker(ticker))) return
   // try and find up to five missing dates in row that need to be fetched from the massive.com API and populated in the database
   // go back as far as 90 days in the past, but stop once we find 5 missing dates in a row (to avoid too many requests to the massive.com API)
   const fiveMissingDates: string[] = []

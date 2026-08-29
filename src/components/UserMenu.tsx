@@ -14,6 +14,7 @@ import { useDarkMode } from "material-ui-pack"
 import React, { useState } from "react"
 import { AddOrganizationDialog } from "./AddOrganizationDialog"
 import { useLogout } from "./api/hooks/useLogout"
+import { useCheckLogin } from "./api/hooks/useCheckLogin"
 import { useGlobalState } from "./GlobalStateProvider"
 import { navigationLinks } from "./navigationLinks"
 import { OrganizationDialog } from "./OrganizationDialog"
@@ -36,6 +37,8 @@ export function UserMenu() {
   const { organizations, organization, organizationId, setOrganizationId } =
     useGlobalState()
 
+  const { data: login } = useCheckLogin()
+
   const [openSettings, setOpenSettings] = useState(false)
   const [openAddOrg, setOpenAddOrg] = useState(false)
 
@@ -47,11 +50,16 @@ export function UserMenu() {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down("md"))
 
-  const userMenuLinks = navigationLinks.filter((link) =>
-    isMobile
-      ? !link.navs.includes("bottom-mobile")
-      : !link.navs.includes("top-desktop")
-  )
+  const userMenuLinks = navigationLinks
+    .filter((link) =>
+      isMobile
+        ? !link.navs.includes("bottom-mobile")
+        : !link.navs.includes("top-desktop")
+    )
+    .filter(
+      (link) =>
+        !link.requiredEmail || login?.user.email === link.requiredEmail
+    )
 
   return (
     <>

@@ -24,7 +24,7 @@ export const Route = createFileRoute("/api/organizations/$id/accounts")({
             include: {
               carryOver: true,
               plaidCredential: { select: { lastUpdated: true } },
-              assets: true,
+              assets: { include: { assetTicker: true } },
             },
             orderBy: { name: "asc" },
           })

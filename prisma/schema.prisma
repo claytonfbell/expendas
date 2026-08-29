@@ -157,14 +157,26 @@ model AccountBalanceHistory {
     @@unique([accountId, date], map: "AccountBalanceHistory.accountId_date_unique")
 }
 
+model AssetTicker {
+    id                Int       @id @default(autoincrement())
+    ticker            String    @db.VarChar(255)
+    assetType         AssetType
+    dividendApr       Int
+    tickerDisplayName String    @db.VarChar(255)
+    lookup            Boolean   @default(true)
+    assets            Asset[]
+
+    @@unique([ticker])
+}
+
 model Asset {
-    id           Int       @id @default(autoincrement())
-    accountId    Int
-    ticker       String    @db.VarChar(255)
-    tickerPrice  Int
-    balance      Int
-    assetType    AssetType
-    account      Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+    id            Int         @id @default(autoincrement())
+    accountId     Int
+    assetTickerId Int
+    tickerPrice   Int
+    balance       Int
+    account       Account      @relation(fields: [accountId], references: [id], onDelete: Cascade)
+    assetTicker   AssetTicker  @relation(fields: [assetTickerId], references: [id])
 }
 
 model RetirementPlan {

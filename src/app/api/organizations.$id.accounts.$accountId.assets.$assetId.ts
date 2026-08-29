@@ -1,4 +1,4 @@
-import { Asset, AssetType } from "@prisma/client"
+import { Asset } from "@prisma/client"
 import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
 import { buildResponse } from "../../components/server/buildResponse"
 import prisma from "../../components/server/prisma"
@@ -24,23 +24,31 @@ export const Route = createFileRoute(
 
           const asset = await prisma.asset.findUnique({
             where: { id: assetId },
+            include: { assetTicker: true },
           })
           if (asset === null) {
             throw new Error("Asset not found")
           }
 
-          const { ticker, assetType, currentBalance } = await request.json()
+          const { assetTickerId, currentBalance } = await request.json()
 
-          const latestPrice = await getLatestTickerPrice(ticker)
+          const assetTicker = await prisma.assetTicker.findUnique({
+            where: { id: assetTickerId },
+          })
+          if (!assetTicker) {
+            throw new Error(`Asset ticker not found for id ${assetTickerId}`)
+          }
+
+          const latestPrice = await getLatestTickerPrice(assetTicker.ticker)
 
           const updated = await prisma.asset.update({
             where: { id: assetId },
             data: {
-              ticker,
+              assetTickerId,
               tickerPrice: latestPrice ? latestPrice.price : asset.tickerPrice,
               balance: currentBalance,
-              assetType,
             },
+            include: { assetTicker: true },
           })
 
           await recalculateAccountBalance(accountId)

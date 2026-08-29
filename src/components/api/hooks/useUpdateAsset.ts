@@ -1,14 +1,13 @@
-import { Asset } from "@prisma/client"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useGlobalState } from "../../GlobalStateContext"
 import rest, { RestError } from "../rest"
 import { QUERY_KEYS } from "./queryKeys"
+import { AssetWithTicker } from "../../AccountWithIncludes"
 
 interface UpdateAssetInput {
   assetId: number
   accountId: number
-  ticker: string
-  assetType: string
+  assetTickerId: number
   currentBalance: number
 }
 
@@ -16,7 +15,7 @@ export function useUpdateAsset() {
   const queryClient = useQueryClient()
   const { organizationId } = useGlobalState()
 
-  return useMutation<Asset, RestError, UpdateAssetInput>({
+  return useMutation<AssetWithTicker, RestError, UpdateAssetInput>({
     mutationFn: (input) =>
       rest.put(
         `/organizations/${organizationId || 0}/accounts/${input.accountId}/assets/${input.assetId}`,

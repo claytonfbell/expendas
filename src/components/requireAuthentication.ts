@@ -40,6 +40,18 @@ export async function requireAdminAuthentication(
   return user
 }
 
+export async function requireEmailAuthentication(
+  session: SessionData,
+  prisma: PrismaClient,
+  allowedEmail: string
+) {
+  const user = await requireAuthentication(session, prisma)
+  if (user.email !== allowedEmail) {
+    throw new ForbiddenException()
+  }
+  return user
+}
+
 export async function requireOrganizationAuthentication(
   session: SessionData,
   prisma: PrismaClient,

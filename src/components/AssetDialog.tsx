@@ -17,20 +17,17 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material"
-import { Asset, AssetType } from "@prisma/client"
+import { AssetTicker } from "@prisma/client"
 import { useState } from "react"
-import { AccountWithIncludes } from "./AccountWithIncludes"
+import { AccountWithIncludes, AssetWithTicker } from "./AccountWithIncludes"
 import { AmountInputTool } from "./AmountInputTool"
 import DisplayError from "./DisplayError"
 import { Title } from "./Title"
 import { useAddAsset } from "./api/hooks/useAddAsset"
 import { useDeleteAsset } from "./api/hooks/useDeleteAsset"
 import { useFetchAssets } from "./api/hooks/useFetchAssets"
+import { useFetchAssetTickers } from "./api/hooks/useFetchAssetTickers"
 import { useUpdateAsset } from "./api/hooks/useUpdateAsset"
-import { getTickerDisplayName, tickerDisplayNames } from "./tickerDisplayNames"
-
-const ASSET_TYPE_OPTIONS: AssetType[] = ["Equity", "Fixed_Income"]
-const TICKER_OPTIONS = Object.keys(tickerDisplayNames)
 
 interface Props {
   account: AccountWithIncludes | undefined
@@ -67,12 +64,12 @@ function AssetDialogContent({
   onClose: () => void
 }) {
   const [showForm, setShowForm] = useState(false)
-  const [editAsset, setEditAsset] = useState<Asset | undefined>()
-  const [ticker, setTicker] = useState("")
-  const [assetType, setAssetType] = useState<AssetType>("Equity")
+  const [editAsset, setEditAsset] = useState<AssetWithTicker | undefined>()
+  const [assetTickerId, setAssetTickerId] = useState<number | null>(null)
   const [currentBalance, setCurrentBalance] = useState("")
 
   const { data: assets } = useFetchAssets(account.id)
+  const { data: assetTickers } = useFetchAssetTickers()
 
   const {
     mutateAsync: addAsset,
@@ -93,16 +90,14 @@ function AssetDialogContent({
 
   function handleStartAdd() {
     setEditAsset(undefined)
-    setTicker("")
-    setAssetType("Equity")
+    setAssetTickerId(null)
     setCurrentBalance("")
     setShowForm(true)
   }
 
-  function handleStartEdit(asset: Asset) {
+  function handleStartEdit(asset: AssetWithTicker) {
     setEditAsset(asset)
-    setTicker(asset.ticker)
-    setAssetType(asset.assetType)
+    setAssetTickerId(asset.assetTickerId)
     setCurrentBalance((asset.balance / 100).toFixed(2))
     setShowForm(true)
   }
@@ -110,20 +105,19 @@ function AssetDialogContent({
   async function handleSubmit() {
     const balanceInPennies = Math.round(parseFloat(currentBalance) * 100)
     if (isNaN(balanceInPennies) || balanceInPennies <= 0) return
+    if (assetTickerId === null) return
 
     if (editAsset) {
       await updateAsset({
         assetId: editAsset.id,
         accountId: account.id,
-        ticker,
-        assetType,
+        assetTickerId,
         currentBalance: balanceInPennies,
       })
     } else {
       await addAsset({
         accountId: account.id,
-        ticker,
-        assetType,
+        assetTickerId,
         currentBalance: balanceInPennies,
       })
     }
@@ -131,7 +125,7 @@ function AssetDialogContent({
     setEditAsset(undefined)
   }
 
-  async function handleDelete(asset: Asset) {
+  async function handleDelete(asset: AssetWithTicker) {
     await deleteAsset({
       assetId: asset.id,
       accountId: account.id,
@@ -139,6 +133,7 @@ function AssetDialogContent({
   }
 
   const busy = isAdding || isUpdating || isDeleting
+  const selectedTicker = assetTickers.find((t) => t.id === assetTickerId) || null
 
   return (
     <>
@@ -161,9 +156,9 @@ function AssetDialogContent({
             {assets.map((asset) => (
               <TableRow key={asset.id}>
                 <TableCell>
-                  <Typography>{getTickerDisplayName(asset.ticker)}</Typography>
+                  <Typography>{asset.assetTicker.tickerDisplayName}</Typography>
                 </TableCell>
-                <TableCell>{asset.assetType.replace("_", " ")}</TableCell>
+                <TableCell>{asset.assetTicker.assetType.replace("_", " ")}</TableCell>
                 <TableCell align="right">
                   <AmountInputTool
                     enabled
@@ -172,8 +167,7 @@ function AssetDialogContent({
                       updateAsset({
                         assetId: asset.id,
                         accountId: account.id,
-                        ticker: asset.ticker,
-                        assetType: asset.assetType,
+                        assetTickerId: asset.assetTickerId,
                         currentBalance: newBalance,
                       })
                     }
@@ -216,35 +210,20 @@ function AssetDialogContent({
         ) : (
           <Stack spacing={2}>
             <Autocomplete
-              freeSolo
-              options={TICKER_OPTIONS}
-              value={ticker}
-              onChange={(_, value) => setTicker((value ?? "").toUpperCase())}
-              onInputChange={(_, value) => setTicker(value.toUpperCase())}
+              options={assetTickers}
+              getOptionLabel={(option: AssetTicker) =>
+                `${option.ticker} (${option.tickerDisplayName})`
+              }
+              value={selectedTicker}
+              onChange={(_, value) =>
+                setAssetTickerId(value ? value.id : null)
+              }
               renderInput={(params) => (
                 <TextField {...params} label="Ticker" size="small" />
               )}
               disabled={busy}
               fullWidth
             />
-            <TextField
-              label="Asset Type"
-              value={assetType}
-              onChange={(e) => setAssetType(e.target.value as AssetType)}
-              select
-              size="small"
-              fullWidth
-              disabled={busy}
-              slotProps={{
-                select: { native: true },
-              }}
-            >
-              {ASSET_TYPE_OPTIONS.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt.replace("_", " ")}
-                </option>
-              ))}
-            </TextField>
             <TextField
               label="Current Balance ($)"
               value={currentBalance}
@@ -262,7 +241,7 @@ function AssetDialogContent({
               <Button
                 variant="contained"
                 onClick={handleSubmit}
-                disabled={busy || ticker.length === 0 || currentBalance === ""}
+                disabled={busy || assetTickerId === null || currentBalance === ""}
               >
                 {editAsset ? "Update Asset" : "Add Asset"}
               </Button>

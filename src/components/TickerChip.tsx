@@ -4,7 +4,6 @@ import { useState } from "react"
 import type { TickerPriceData } from "../app/api/tickerPrices"
 import { AmountInput } from "./AmountInput"
 import { formatMoney } from "./formatMoney"
-import { getTickerDisplayName } from "./tickerDisplayNames"
 
 function formatAbbreviated(pennies: number): string {
   const dollars = Math.round(pennies / 100)
@@ -20,6 +19,7 @@ function formatAbbreviated(pennies: number): string {
 
 interface Props {
   ticker: string
+  tickerDisplayName: string
   balance: number
   assetType: string
   prices: TickerPriceData | undefined
@@ -28,6 +28,7 @@ interface Props {
 
 export function TickerChip({
   ticker,
+  tickerDisplayName,
   balance,
   assetType,
   prices,
@@ -102,7 +103,7 @@ export function TickerChip({
               ? "secondary"
               : "default"
         }
-        label={`${formatAbbreviated(balance)} ${getTickerDisplayName(ticker)}`}
+        label={`${formatAbbreviated(balance)} ${tickerDisplayName}`}
         size="small"
         variant="outlined"
         onClick={() => setEditing(true)}

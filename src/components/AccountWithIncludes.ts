@@ -1,9 +1,11 @@
-import { Account, Asset, CarryOver } from "@prisma/client"
+import { Account, Asset, AssetTicker, CarryOver } from "@prisma/client"
+
+export type AssetWithTicker = Asset & { assetTicker: AssetTicker }
 
 export type AccountWithIncludes = Account & {
   carryOver: CarryOver[]
   plaidCredential: { lastUpdated: string }
-  assets: Asset[]
+  assets: AssetWithTicker[]
 }
 
 export type AccountWithBalanceHistory = Account & {
