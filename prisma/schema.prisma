@@ -304,7 +304,7 @@ model OrganizationCloudFile {
     name            String  @db.VarChar(255) // name given by user when uploading, doesn't have to be unique
     useCase         OrganizationCloudFileUseCase
     receipts        Receipt[]
-    taxRecords      TaxRecord[]
+    taxRecordFiles   TaxRecordFile[]
     @@unique([cloudFileId, useCase, organizationId], map: "OrganizationCloudFile.cloudFileId_useCase_organizationId_unique")
 }
 
@@ -324,13 +324,21 @@ model Receipt {
 
 model TaxRecord {
     id                      Int     @id @default(autoincrement())
-    organizationCloudFileId Int
-    organizationCloudFile   OrganizationCloudFile @relation(fields: [organizationCloudFileId], references: [id], onDelete: Cascade)
     userId                  Int
     user                    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     taxYear                 String  @db.VarChar(4)
     notes                   String? @db.VarChar(255)
-    taxRecordType           TaxRecordType
+    taxRecordFiles          TaxRecordFile[]
+}
+
+model TaxRecordFile {
+    id                      Int                  @id @default(autoincrement())
+    taxRecordId             Int
+    taxRecord               TaxRecord            @relation(fields: [taxRecordId], references: [id], onDelete: Cascade)
+    organizationCloudFileId Int
+    organizationCloudFile   OrganizationCloudFile @relation(fields: [organizationCloudFileId], references: [id], onDelete: Cascade)
+
+    @@unique([taxRecordId, organizationCloudFileId], map: "TaxRecordFile.taxRecordId_organizationCloudFileId_unique")
 }
 
 model MealsOut {
@@ -359,16 +367,6 @@ enum OrganizationCloudFileUseCase {
 enum ReceiptType {
     HSA_Eligible
     Charity
-    Other
-}
-
-enum TaxRecordType {
-    Federal
-    Federal_State
-    State
-    Local
-    Property
-    Estimated
     Other
 }
 

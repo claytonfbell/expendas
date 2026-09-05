@@ -1,16 +1,19 @@
+import { createRequire } from "node:module"
+import { createFileRoute } from "@tanstack/react-router"
 import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
 import { BadRequestException } from "../../components/server/HttpException"
 import { buildResponse } from "../../components/server/buildResponse"
 import { getCloudFileStream } from "../../components/server/cloudFile"
 import prisma from "../../components/server/prisma"
-import { createFileRoute } from "@tanstack/react-router"
 
-async function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
-  const chunks: Buffer[] = []
-  for await (const chunk of stream) {
-    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
-  }
-  return Buffer.concat(chunks)
+const { ZipArchive } = createRequire(import.meta.url)("archiver")
+
+function sanitizeName(...parts: (string | null | undefined)[]): string {
+  return parts
+    .filter(Boolean)
+    .map((p) => p!.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""))
+    .filter(Boolean)
+    .join("-")
 }
 
 export const Route = createFileRoute(
@@ -32,9 +35,14 @@ export const Route = createFileRoute(
               id: taxRecordId,
             },
             include: {
-              organizationCloudFile: {
+              user: true,
+              taxRecordFiles: {
                 include: {
-                  cloudFile: true,
+                  organizationCloudFile: {
+                    include: {
+                      cloudFile: true,
+                    },
+                  },
                 },
               },
             },
@@ -44,16 +52,45 @@ export const Route = createFileRoute(
             throw new BadRequestException("Tax record not found.")
           }
 
-          const stream = await getCloudFileStream(
-            taxRecord.organizationCloudFile.cloudFile
-          )
-          const buffer = await streamToBuffer(stream)
+          const archive = new ZipArchive({ zlib: { level: 9 } })
+          const chunks: Buffer[] = []
+          archive.on("data", (chunk: Buffer) => chunks.push(chunk))
 
-          return new Response(buffer, {
+          const zipName = sanitizeName(
+            taxRecord.taxYear,
+            taxRecord.user.firstName,
+            taxRecord.user.lastName
+          )
+
+          for (const taxRecordFile of taxRecord.taxRecordFiles) {
+            const { organizationCloudFile } = taxRecordFile
+            try {
+              const stream = await getCloudFileStream(
+                organizationCloudFile.cloudFile
+              )
+              const fileChunks: Buffer[] = []
+              for await (const chunk of stream) {
+                fileChunks.push(
+                  Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)
+                )
+              }
+              archive.append(Buffer.concat(fileChunks), {
+                name: `${zipName}/${organizationCloudFile.name}`,
+              })
+            } catch {
+              archive.append("File not available", {
+                name: `${zipName}/${organizationCloudFile.name}.error.txt`,
+              })
+            }
+          }
+
+          await archive.finalize()
+          const zipBuffer = Buffer.concat(chunks)
+
+          return new Response(zipBuffer, {
             headers: {
-              "Content-Type":
-                taxRecord.organizationCloudFile.cloudFile.contentType,
-              "Content-Disposition": `attachment; filename="${taxRecord.organizationCloudFile.name}"`,
+              "Content-Type": "application/zip",
+              "Content-Disposition": `attachment; filename="${zipName}.zip"`,
             },
           })
         })

@@ -1,4 +1,5 @@
 import AddIcon from "@mui/icons-material/Add"
+import CloseIcon from "@mui/icons-material/Close"
 import {
   Button,
   Chip,
@@ -9,27 +10,23 @@ import {
   Stack,
   TextField,
 } from "@mui/material"
-import { TaxRecordType } from "@prisma/client"
 import { SelectBase } from "material-ui-pack"
 import { useState } from "react"
 import type {
+  FileUpload,
   TaxRecordCreateRequest,
   TaxRecordWithIncludes,
 } from "../app/api/organizations.$id.taxRecords"
 import { useAddTaxRecord } from "./api/hooks/useAddTaxRecord"
 import { useGlobalState } from "./GlobalStateProvider"
 import DisplayError from "./DisplayError"
-import { displayTaxRecordType, taxRecordTypes } from "./taxRecordTypes"
 import { SelectFile } from "./SelectFile"
 
 const defaultState: TaxRecordCreateRequest = {
-  fileName: null,
-  fileContentType: null,
-  fileBase64: null,
   taxYear: "",
-  taxRecordType: "Federal",
   userId: null,
   notes: null,
+  files: [],
 }
 
 interface Props {
@@ -45,6 +42,17 @@ export function TaxRecordCreateDialog({ onComplete }: Props) {
 
   function handleUpdate(data: Partial<TaxRecordCreateRequest>) {
     setState((prev) => ({ ...prev, ...data }))
+  }
+
+  function addFile(file: FileUpload) {
+    setState((prev) => ({ ...prev, files: [...prev.files, file] }))
+  }
+
+  function removeFile(index: number) {
+    setState((prev) => ({
+      ...prev,
+      files: prev.files.filter((_, i) => i !== index),
+    }))
   }
 
   const { mutateAsync: addTaxRecord, error } = useAddTaxRecord()
@@ -81,23 +89,6 @@ export function TaxRecordCreateDialog({ onComplete }: Props) {
               }}
             >
               <DisplayError error={error} />
-              <SelectBase
-                allowNull
-                label="Type"
-                value={state.taxRecordType}
-                size="small"
-                onChange={(taxRecordType) =>
-                  handleUpdate({
-                    taxRecordType: taxRecordType as TaxRecordType,
-                  })
-                }
-                options={taxRecordTypes.map((type) => {
-                  return {
-                    label: displayTaxRecordType(type),
-                    value: type,
-                  }
-                })}
-              />
               <TextField
                 size="small"
                 label="Tax Year"
@@ -107,7 +98,7 @@ export function TaxRecordCreateDialog({ onComplete }: Props) {
               <TextField
                 size="small"
                 label="Notes"
-                value={state.notes}
+                value={state.notes ?? ""}
                 multiline
                 minRows={3}
                 onChange={(e) => handleUpdate({ notes: e.target.value })}
@@ -125,37 +116,33 @@ export function TaxRecordCreateDialog({ onComplete }: Props) {
                   value: user.id,
                 }))}
               />
-              {state.fileBase64 ? (
-                <Stack
-                  sx={{
-                    alignItems: "start",
-                  }}
-                >
-                  <Chip
-                    color="primary"
-                    label={state.fileName}
-                    variant="outlined"
-                    onDelete={() => {
-                      handleUpdate({
-                        fileBase64: null,
-                        fileName: null,
-                        fileContentType: null,
-                      })
-                    }}
-                  />
+
+              {state.files.length > 0 && (
+                <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", gap: 1 }}>
+                  {state.files.map((file, index) => (
+                    <Chip
+                      key={index}
+                      color="primary"
+                      label={file.fileName}
+                      variant="outlined"
+                      onDelete={() => removeFile(index)}
+                      deleteIcon={<CloseIcon />}
+                    />
+                  ))}
                 </Stack>
-              ) : (
-                <SelectFile
-                  label="Select a file"
-                  onSelect={(fileInfo) =>
-                    handleUpdate({
-                      fileBase64: fileInfo.base64,
-                      fileContentType: fileInfo.type,
-                      fileName: fileInfo.name,
-                    })
-                  }
-                />
               )}
+
+              <SelectFile
+                label="Add a file"
+                onSelect={(fileInfo) =>
+                  addFile({
+                    fileBase64: fileInfo.base64,
+                    fileContentType: fileInfo.type,
+                    fileName: fileInfo.name,
+                  })
+                }
+              />
+
               <Stack
                 direction="row"
                 spacing={2}
@@ -166,7 +153,11 @@ export function TaxRecordCreateDialog({ onComplete }: Props) {
                 <Button variant="outlined" onClick={() => setOpen(false)}>
                   Cancel
                 </Button>
-                <Button variant="contained" type="submit">
+                <Button
+                  variant="contained"
+                  type="submit"
+                  disabled={state.files.length === 0}
+                >
                   Save
                 </Button>
               </Stack>

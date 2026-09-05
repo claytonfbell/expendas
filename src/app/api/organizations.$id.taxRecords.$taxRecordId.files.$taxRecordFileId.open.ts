@@ -1,9 +1,9 @@
+import { createFileRoute } from "@tanstack/react-router"
 import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
 import { BadRequestException } from "../../components/server/HttpException"
 import { buildResponse } from "../../components/server/buildResponse"
 import { getCloudFileStream } from "../../components/server/cloudFile"
 import prisma from "../../components/server/prisma"
-import { createFileRoute } from "@tanstack/react-router"
 
 async function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
   const chunks: Buffer[] = []
@@ -14,23 +14,22 @@ async function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
 }
 
 export const Route = createFileRoute(
-  "/api/organizations/$id/taxRecords/$taxRecordId/open"
+  "/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId/open"
 )({
   server: {
     handlers: {
       GET: async ({ request, params }) => {
         return buildResponse(request, async (session) => {
           const organizationId = Number(params.id)
-          const taxRecordId = Number(params.taxRecordId)
+          const taxRecordFileId = Number(params.taxRecordFileId)
           await requireOrganizationAuthentication(
             session,
             prisma,
             organizationId
           )
-          const taxRecord = await prisma.taxRecord.findUnique({
-            where: {
-              id: taxRecordId,
-            },
+
+          const taxRecordFile = await prisma.taxRecordFile.findUnique({
+            where: { id: taxRecordFileId },
             include: {
               organizationCloudFile: {
                 include: {
@@ -40,20 +39,20 @@ export const Route = createFileRoute(
             },
           })
 
-          if (!taxRecord) {
-            throw new BadRequestException("Tax record not found.")
+          if (!taxRecordFile) {
+            throw new BadRequestException("Tax record file not found.")
           }
 
           const stream = await getCloudFileStream(
-            taxRecord.organizationCloudFile.cloudFile
+            taxRecordFile.organizationCloudFile.cloudFile
           )
           const buffer = await streamToBuffer(stream)
 
           return new Response(buffer, {
             headers: {
               "Content-Type":
-                taxRecord.organizationCloudFile.cloudFile.contentType,
-              "Content-Disposition": `inline; filename="${taxRecord.organizationCloudFile.name}"`,
+                taxRecordFile.organizationCloudFile.cloudFile.contentType,
+              "Content-Disposition": `inline; filename="${taxRecordFile.organizationCloudFile.name}"`,
             },
           })
         })

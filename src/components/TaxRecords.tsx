@@ -1,7 +1,7 @@
 import DownloadIcon from "@mui/icons-material/Download"
 import EditIcon from "@mui/icons-material/Edit"
-import OpenInNewIcon from "@mui/icons-material/OpenInNew"
 import {
+  Button,
   IconButton,
   Link,
   Stack,
@@ -11,7 +11,6 @@ import {
   TableRow,
   Typography,
 } from "@mui/material"
-import prettyBytes from "pretty-bytes"
 import { useState } from "react"
 import type { TaxRecordWithIncludes } from "../app/api/organizations.$id.taxRecords"
 import { useFetchTaxRecords } from "./api/hooks/useFetchTaxRecords"
@@ -21,7 +20,6 @@ import { ExpendasTable } from "./ExpendasTable"
 import { useGlobalState } from "./GlobalStateContext"
 import { TaxRecordCreateDialog } from "./TaxRecordCreateDialog"
 import { TaxRecordDialog } from "./TaxRecordDialog"
-import { displayTaxRecordType } from "./taxRecordTypes"
 
 export function TaxRecords() {
   const { data: taxRecords } = useFetchTaxRecords()
@@ -42,31 +40,41 @@ export function TaxRecords() {
         <ExpendasTable>
           <TableHead>
             <TableRow>
-              <TableCell>Type</TableCell>
               <TableCell>Tax Year</TableCell>
               <TableCell>User</TableCell>
-              <TableCell>File</TableCell>
+              <TableCell>Files</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {taxRecords?.map((taxRecord) => (
               <TableRow key={taxRecord.id}>
-                <TableCell>
-                  {displayTaxRecordType(taxRecord.taxRecordType)}
-                </TableCell>
                 <TableCell>{taxRecord.taxYear}</TableCell>
                 <TableCell>
                   {taxRecord.user.firstName} {taxRecord.user.lastName}
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2">
-                    {taxRecord.organizationCloudFile.name} (
-                    {prettyBytes(
-                      taxRecord.organizationCloudFile.cloudFile.size
-                    )}
-                    )
-                  </Typography>
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    sx={{
+                      flexWrap: "wrap",
+                      gap: 1,
+                    }}
+                  >
+                    {taxRecord.taxRecordFiles.map((taxRecordFile) => (
+                      <Button
+                        key={taxRecordFile.id}
+                        size="small"
+                        variant="outlined"
+                        component={Link}
+                        href={`${rest.baseURL}/organizations/${organizationId}/taxRecords/${taxRecord.id}/files/${taxRecordFile.id}/open`}
+                        target="_blank"
+                      >
+                        {taxRecordFile.organizationCloudFile.name}
+                      </Button>
+                    ))}
+                  </Stack>
                 </TableCell>
                 <TableCell align="right">
                   <Stack
@@ -75,14 +83,6 @@ export function TaxRecords() {
                       justifyContent: "flex-end",
                     }}
                   >
-                    <IconButton
-                      size="small"
-                      component={Link}
-                      href={`${rest.baseURL}/organizations/${organizationId}/taxRecords/${taxRecord.id}/open`}
-                      target="_blank"
-                    >
-                      <OpenInNewIcon />
-                    </IconButton>
                     <IconButton
                       size="small"
                       component={Link}

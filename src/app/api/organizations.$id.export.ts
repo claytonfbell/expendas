@@ -174,7 +174,11 @@ export const Route = createFileRoute("/api/organizations/$id/export")({
             }),
             prisma.taxRecord.findMany({
               where: {
-                organizationCloudFileId: { in: orgCloudFileIds },
+                taxRecordFiles: {
+                  some: {
+                    organizationCloudFileId: { in: orgCloudFileIds },
+                  },
+                },
               },
             }),
             prisma.mealsOut.findMany({

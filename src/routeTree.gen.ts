@@ -79,7 +79,7 @@ import { Route as ApiOrganizationsIdDatesDateRouteImport } from './app/api/organ
 import { Route as ApiOrganizationsIdAccountsBalanceHistoryRouteImport } from './app/api/organizations.$id.accounts.balanceHistory'
 import { Route as ApiOrganizationsIdAccountsAutoUpdateBalancesRouteImport } from './app/api/organizations.$id.accounts.auto-update-balances'
 import { Route as ApiOrganizationsIdAccountsAccountIdRouteImport } from './app/api/organizations.$id.accounts.$accountId'
-import { Route as ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRouteImport } from './app/api/organizations.$id.taxRecords.$taxRecordId.open'
+import { Route as ApiOrganizationsIdTaxRecordsTaxRecordIdFilesRouteImport } from './app/api/organizations.$id.taxRecords.$taxRecordId.files'
 import { Route as ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRouteImport } from './app/api/organizations.$id.taxRecords.$taxRecordId.download'
 import { Route as ApiOrganizationsIdTasksSchedulesReorderRouteImport } from './app/api/organizations.$id.tasks.schedules.reorder'
 import { Route as ApiOrganizationsIdTasksSchedulesTaskScheduleIdRouteImport } from './app/api/organizations.$id.tasks.schedules.$taskScheduleId'
@@ -91,7 +91,10 @@ import { Route as ApiOrganizationsIdRetirementPlansRetirementPlanIdContributions
 import { Route as ApiOrganizationsIdReceiptsReceiptIdOpenRouteImport } from './app/api/organizations.$id.receipts.$receiptId.open'
 import { Route as ApiOrganizationsIdReceiptsReceiptIdDownloadRouteImport } from './app/api/organizations.$id.receipts.$receiptId.download'
 import { Route as ApiOrganizationsIdAccountsAccountIdAssetsRouteImport } from './app/api/organizations.$id.accounts.$accountId.assets'
+import { Route as ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRouteImport } from './app/api/organizations.$id.taxRecords.$taxRecordId.files.$taxRecordFileId'
 import { Route as ApiOrganizationsIdAccountsAccountIdAssetsAssetIdRouteImport } from './app/api/organizations.$id.accounts.$accountId.assets.$assetId'
+import { Route as ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdOpenRouteImport } from './app/api/organizations.$id.taxRecords.$taxRecordId.files.$taxRecordFileId.open'
+import { Route as ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdDownloadRouteImport } from './app/api/organizations.$id.taxRecords.$taxRecordId.files.$taxRecordFileId.download'
 
 const TrendsRoute = TrendsRouteImport.update({
   id: '/trends',
@@ -474,10 +477,10 @@ const ApiOrganizationsIdAccountsAccountIdRoute =
     path: '/$accountId',
     getParentRoute: () => ApiOrganizationsIdAccountsRoute,
   } as any)
-const ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRoute =
-  ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRouteImport.update({
-    id: '/open',
-    path: '/open',
+const ApiOrganizationsIdTaxRecordsTaxRecordIdFilesRoute =
+  ApiOrganizationsIdTaxRecordsTaxRecordIdFilesRouteImport.update({
+    id: '/files',
+    path: '/files',
     getParentRoute: () => ApiOrganizationsIdTaxRecordsTaxRecordIdRoute,
   } as any)
 const ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute =
@@ -551,12 +554,38 @@ const ApiOrganizationsIdAccountsAccountIdAssetsRoute =
     path: '/assets',
     getParentRoute: () => ApiOrganizationsIdAccountsAccountIdRoute,
   } as any)
+const ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRoute =
+  ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRouteImport.update(
+    {
+      id: '/$taxRecordFileId',
+      path: '/$taxRecordFileId',
+      getParentRoute: () => ApiOrganizationsIdTaxRecordsTaxRecordIdFilesRoute,
+    } as any,
+  )
 const ApiOrganizationsIdAccountsAccountIdAssetsAssetIdRoute =
   ApiOrganizationsIdAccountsAccountIdAssetsAssetIdRouteImport.update({
     id: '/$assetId',
     path: '/$assetId',
     getParentRoute: () => ApiOrganizationsIdAccountsAccountIdAssetsRoute,
   } as any)
+const ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdOpenRoute =
+  ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdOpenRouteImport.update(
+    {
+      id: '/open',
+      path: '/open',
+      getParentRoute: () =>
+        ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRoute,
+    } as any,
+  )
+const ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdDownloadRoute =
+  ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdDownloadRouteImport.update(
+    {
+      id: '/download',
+      path: '/download',
+      getParentRoute: () =>
+        ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRoute,
+    } as any,
+  )
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -640,8 +669,11 @@ export interface FileRoutesByFullPath {
   '/api/organizations/$id/tasks/schedules/$taskScheduleId': typeof ApiOrganizationsIdTasksSchedulesTaskScheduleIdRoute
   '/api/organizations/$id/tasks/schedules/reorder': typeof ApiOrganizationsIdTasksSchedulesReorderRoute
   '/api/organizations/$id/taxRecords/$taxRecordId/download': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute
-  '/api/organizations/$id/taxRecords/$taxRecordId/open': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRoute
+  '/api/organizations/$id/taxRecords/$taxRecordId/files': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesRouteWithChildren
   '/api/organizations/$id/accounts/$accountId/assets/$assetId': typeof ApiOrganizationsIdAccountsAccountIdAssetsAssetIdRoute
+  '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRouteWithChildren
+  '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId/download': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdDownloadRoute
+  '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId/open': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdOpenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -725,8 +757,11 @@ export interface FileRoutesByTo {
   '/api/organizations/$id/tasks/schedules/$taskScheduleId': typeof ApiOrganizationsIdTasksSchedulesTaskScheduleIdRoute
   '/api/organizations/$id/tasks/schedules/reorder': typeof ApiOrganizationsIdTasksSchedulesReorderRoute
   '/api/organizations/$id/taxRecords/$taxRecordId/download': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute
-  '/api/organizations/$id/taxRecords/$taxRecordId/open': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRoute
+  '/api/organizations/$id/taxRecords/$taxRecordId/files': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesRouteWithChildren
   '/api/organizations/$id/accounts/$accountId/assets/$assetId': typeof ApiOrganizationsIdAccountsAccountIdAssetsAssetIdRoute
+  '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRouteWithChildren
+  '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId/download': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdDownloadRoute
+  '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId/open': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdOpenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -811,8 +846,11 @@ export interface FileRoutesById {
   '/api/organizations/$id/tasks/schedules/$taskScheduleId': typeof ApiOrganizationsIdTasksSchedulesTaskScheduleIdRoute
   '/api/organizations/$id/tasks/schedules/reorder': typeof ApiOrganizationsIdTasksSchedulesReorderRoute
   '/api/organizations/$id/taxRecords/$taxRecordId/download': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute
-  '/api/organizations/$id/taxRecords/$taxRecordId/open': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRoute
+  '/api/organizations/$id/taxRecords/$taxRecordId/files': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesRouteWithChildren
   '/api/organizations/$id/accounts/$accountId/assets/$assetId': typeof ApiOrganizationsIdAccountsAccountIdAssetsAssetIdRoute
+  '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRouteWithChildren
+  '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId/download': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdDownloadRoute
+  '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId/open': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdOpenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -898,8 +936,11 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/tasks/schedules/$taskScheduleId'
     | '/api/organizations/$id/tasks/schedules/reorder'
     | '/api/organizations/$id/taxRecords/$taxRecordId/download'
-    | '/api/organizations/$id/taxRecords/$taxRecordId/open'
+    | '/api/organizations/$id/taxRecords/$taxRecordId/files'
     | '/api/organizations/$id/accounts/$accountId/assets/$assetId'
+    | '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId'
+    | '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId/download'
+    | '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId/open'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -983,8 +1024,11 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/tasks/schedules/$taskScheduleId'
     | '/api/organizations/$id/tasks/schedules/reorder'
     | '/api/organizations/$id/taxRecords/$taxRecordId/download'
-    | '/api/organizations/$id/taxRecords/$taxRecordId/open'
+    | '/api/organizations/$id/taxRecords/$taxRecordId/files'
     | '/api/organizations/$id/accounts/$accountId/assets/$assetId'
+    | '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId'
+    | '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId/download'
+    | '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId/open'
   id:
     | '__root__'
     | '/'
@@ -1068,8 +1112,11 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/tasks/schedules/$taskScheduleId'
     | '/api/organizations/$id/tasks/schedules/reorder'
     | '/api/organizations/$id/taxRecords/$taxRecordId/download'
-    | '/api/organizations/$id/taxRecords/$taxRecordId/open'
+    | '/api/organizations/$id/taxRecords/$taxRecordId/files'
     | '/api/organizations/$id/accounts/$accountId/assets/$assetId'
+    | '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId'
+    | '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId/download'
+    | '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId/open'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1598,11 +1645,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiOrganizationsIdAccountsAccountIdRouteImport
       parentRoute: typeof ApiOrganizationsIdAccountsRoute
     }
-    '/api/organizations/$id/taxRecords/$taxRecordId/open': {
-      id: '/api/organizations/$id/taxRecords/$taxRecordId/open'
-      path: '/open'
-      fullPath: '/api/organizations/$id/taxRecords/$taxRecordId/open'
-      preLoaderRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRouteImport
+    '/api/organizations/$id/taxRecords/$taxRecordId/files': {
+      id: '/api/organizations/$id/taxRecords/$taxRecordId/files'
+      path: '/files'
+      fullPath: '/api/organizations/$id/taxRecords/$taxRecordId/files'
+      preLoaderRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesRouteImport
       parentRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdRoute
     }
     '/api/organizations/$id/taxRecords/$taxRecordId/download': {
@@ -1682,12 +1729,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiOrganizationsIdAccountsAccountIdAssetsRouteImport
       parentRoute: typeof ApiOrganizationsIdAccountsAccountIdRoute
     }
+    '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId': {
+      id: '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId'
+      path: '/$taxRecordFileId'
+      fullPath: '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId'
+      preLoaderRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRouteImport
+      parentRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesRoute
+    }
     '/api/organizations/$id/accounts/$accountId/assets/$assetId': {
       id: '/api/organizations/$id/accounts/$accountId/assets/$assetId'
       path: '/$assetId'
       fullPath: '/api/organizations/$id/accounts/$accountId/assets/$assetId'
       preLoaderRoute: typeof ApiOrganizationsIdAccountsAccountIdAssetsAssetIdRouteImport
       parentRoute: typeof ApiOrganizationsIdAccountsAccountIdAssetsRoute
+    }
+    '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId/open': {
+      id: '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId/open'
+      path: '/open'
+      fullPath: '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId/open'
+      preLoaderRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdOpenRouteImport
+      parentRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRoute
+    }
+    '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId/download': {
+      id: '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId/download'
+      path: '/download'
+      fullPath: '/api/organizations/$id/taxRecords/$taxRecordId/files/$taxRecordFileId/download'
+      preLoaderRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdDownloadRouteImport
+      parentRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRoute
     }
   }
 }
@@ -1967,17 +2035,50 @@ const ApiOrganizationsIdTasksRouteWithChildren =
     ApiOrganizationsIdTasksRouteChildren,
   )
 
+interface ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRouteChildren {
+  ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdDownloadRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdDownloadRoute
+  ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdOpenRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdOpenRoute
+}
+
+const ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRouteChildren: ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRouteChildren =
+  {
+    ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdDownloadRoute:
+      ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdDownloadRoute,
+    ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdOpenRoute:
+      ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdOpenRoute,
+  }
+
+const ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRouteWithChildren =
+  ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRoute._addFileChildren(
+    ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRouteChildren,
+  )
+
+interface ApiOrganizationsIdTaxRecordsTaxRecordIdFilesRouteChildren {
+  ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRouteWithChildren
+}
+
+const ApiOrganizationsIdTaxRecordsTaxRecordIdFilesRouteChildren: ApiOrganizationsIdTaxRecordsTaxRecordIdFilesRouteChildren =
+  {
+    ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRoute:
+      ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRouteWithChildren,
+  }
+
+const ApiOrganizationsIdTaxRecordsTaxRecordIdFilesRouteWithChildren =
+  ApiOrganizationsIdTaxRecordsTaxRecordIdFilesRoute._addFileChildren(
+    ApiOrganizationsIdTaxRecordsTaxRecordIdFilesRouteChildren,
+  )
+
 interface ApiOrganizationsIdTaxRecordsTaxRecordIdRouteChildren {
   ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute
-  ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRoute
+  ApiOrganizationsIdTaxRecordsTaxRecordIdFilesRoute: typeof ApiOrganizationsIdTaxRecordsTaxRecordIdFilesRouteWithChildren
 }
 
 const ApiOrganizationsIdTaxRecordsTaxRecordIdRouteChildren: ApiOrganizationsIdTaxRecordsTaxRecordIdRouteChildren =
   {
     ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute:
       ApiOrganizationsIdTaxRecordsTaxRecordIdDownloadRoute,
-    ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRoute:
-      ApiOrganizationsIdTaxRecordsTaxRecordIdOpenRoute,
+    ApiOrganizationsIdTaxRecordsTaxRecordIdFilesRoute:
+      ApiOrganizationsIdTaxRecordsTaxRecordIdFilesRouteWithChildren,
   }
 
 const ApiOrganizationsIdTaxRecordsTaxRecordIdRouteWithChildren =

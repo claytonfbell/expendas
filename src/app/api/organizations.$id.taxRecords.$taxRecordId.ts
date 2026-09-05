@@ -1,4 +1,3 @@
-import { TaxRecord } from "@prisma/client"
 import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
 import { BadRequestException } from "../../components/server/HttpException"
 import { buildResponse } from "../../components/server/buildResponse"
@@ -22,15 +21,16 @@ export const Route = createFileRoute(
           const taxRecord = await prisma.taxRecord.findUnique({
             where: {
               id: taxRecordId,
-              organizationCloudFile: {
-                organizationId,
-              },
             },
             include: {
               user: true,
-              organizationCloudFile: {
+              taxRecordFiles: {
                 include: {
-                  cloudFile: true,
+                  organizationCloudFile: {
+                    include: {
+                      cloudFile: true,
+                    },
+                  },
                 },
               },
             },
@@ -53,25 +53,29 @@ export const Route = createFileRoute(
             organizationId
           )
 
-          const requestBody: TaxRecord = await request.json()
+          const requestBody = await request.json()
 
-          await prisma.taxRecord.update({
+          const taxRecord = await prisma.taxRecord.update({
             data: {
               taxYear: requestBody.taxYear,
               userId: requestBody.userId,
-              taxRecordType: requestBody.taxRecordType,
               notes: requestBody.notes,
             },
             where: { id: taxRecordId },
             include: {
               user: true,
-              organizationCloudFile: {
+              taxRecordFiles: {
                 include: {
-                  cloudFile: true,
+                  organizationCloudFile: {
+                    include: {
+                      cloudFile: true,
+                    },
+                  },
                 },
               },
             },
           })
+          return taxRecord
         })
       },
       DELETE: async ({ request, params }) => {

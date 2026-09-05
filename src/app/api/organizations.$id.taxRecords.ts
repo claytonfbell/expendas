@@ -2,6 +2,7 @@ import {
   CloudFile,
   OrganizationCloudFile,
   TaxRecord,
+  TaxRecordFile,
   User,
 } from "@prisma/client"
 import { createFileRoute } from "@tanstack/react-router"
@@ -24,15 +25,23 @@ export const Route = createFileRoute("/api/organizations/$id/taxRecords")({
           const taxRecords: TaxRecordWithIncludes[] =
             await prisma.taxRecord.findMany({
               where: {
-                organizationCloudFile: {
-                  organizationId,
+                taxRecordFiles: {
+                  some: {
+                    organizationCloudFile: {
+                      organizationId,
+                    },
+                  },
                 },
               },
               include: {
                 user: true,
-                organizationCloudFile: {
+                taxRecordFiles: {
                   include: {
-                    cloudFile: true,
+                    organizationCloudFile: {
+                      include: {
+                        cloudFile: true,
+                      },
+                    },
                   },
                 },
               },
@@ -49,75 +58,87 @@ export const Route = createFileRoute("/api/organizations/$id/taxRecords")({
             organizationId
           )
           const body = await request.json()
-          const {
-            fileName,
-            fileContentType,
-            fileBase64,
-            ...data
-          }: TaxRecordCreateRequest = body
+          const { files, ...data }: TaxRecordCreateRequest = body
 
-          if (!fileName || !fileContentType || !fileBase64) {
-            throw new Error("File data is required")
-          }
-
-          const cloudFile = await putCloudFile({
-            fileName,
-            fileContentType,
-            fileBase64,
-          })
-
-          if (!cloudFile) {
-            throw new Error("Failed to upload file")
-          }
-
-          const existing = await prisma.organizationCloudFile.findFirst({
-            where: {
-              organizationId,
-              cloudFileId: cloudFile.id,
-              useCase: "TaxRecord",
-            },
-          })
-
-          let organizationCloudFile: OrganizationCloudFile | null = existing
-          if (!existing) {
-            organizationCloudFile = await prisma.organizationCloudFile.create({
-              data: {
-                name: cloudFile.originalName,
-                organizationId,
-                cloudFileId: cloudFile.id,
-                useCase: "TaxRecord",
-              },
-              include: {
-                cloudFile: true,
-              },
-            })
-          }
-
-          if (!organizationCloudFile) {
-            throw new Error("Failed to associate file with organization")
+          if (!files || files.length === 0) {
+            throw new Error("At least one file is required")
           }
 
           if (!data.userId) {
             throw new Error("User ID is required")
           }
 
+          // Upload all files and create/find OrganizationCloudFile records
+          const organizationCloudFileIds: number[] = []
+          for (const file of files) {
+            if (!file.fileName || !file.fileContentType || !file.fileBase64) {
+              throw new Error("File data is required for all files")
+            }
+
+            const cloudFile = await putCloudFile({
+              fileName: file.fileName,
+              fileContentType: file.fileContentType,
+              fileBase64: file.fileBase64,
+            })
+
+            if (!cloudFile) {
+              throw new Error("Failed to upload file")
+            }
+
+            const existing = await prisma.organizationCloudFile.findFirst({
+              where: {
+                organizationId,
+                cloudFileId: cloudFile.id,
+                useCase: "TaxRecord",
+              },
+            })
+
+            let organizationCloudFile: OrganizationCloudFile | null = existing
+            if (!existing) {
+              organizationCloudFile = await prisma.organizationCloudFile.create({
+                data: {
+                  name: cloudFile.originalName,
+                  organizationId,
+                  cloudFileId: cloudFile.id,
+                  useCase: "TaxRecord",
+                },
+                include: {
+                  cloudFile: true,
+                },
+              })
+            }
+
+            if (!organizationCloudFile) {
+              throw new Error("Failed to associate file with organization")
+            }
+
+            organizationCloudFileIds.push(organizationCloudFile.id)
+          }
+
           const taxRecord = await prisma.taxRecord.create({
             data: {
               taxYear: data.taxYear,
               notes: data.notes,
-              taxRecordType: data.taxRecordType,
-              organizationCloudFile: {
-                connect: { id: organizationCloudFile.id },
-              },
               user: {
                 connect: { id: data.userId },
+              },
+              taxRecordFiles: {
+                create: organizationCloudFileIds.map(
+                  (organizationCloudFileId) => ({
+                    organizationCloudFileId,
+                  })
+                ),
               },
             },
             include: {
               user: true,
-              organizationCloudFile: {
+              taxRecordFiles: {
                 include: {
-                  cloudFile: true,
+                  organizationCloudFile: {
+                    include: {
+                      cloudFile: true,
+                    },
+                  },
                 },
               },
             },
@@ -129,19 +150,25 @@ export const Route = createFileRoute("/api/organizations/$id/taxRecords")({
   },
 })
 
+export interface FileUpload {
+  fileName: string
+  fileContentType: string
+  fileBase64: string
+}
+
 export type TaxRecordCreateRequest = Omit<
   TaxRecord,
-  "id" | "organizationCloudFileId" | "userId"
+  "id" | "userId" | "taxRecordFiles"
 > & {
-  fileName: string | null
-  fileContentType: string | null
-  fileBase64: string | null
   userId: number | null
+  files: FileUpload[]
 }
 
 export type TaxRecordWithIncludes = TaxRecord & {
   user: User
-  organizationCloudFile: OrganizationCloudFile & {
-    cloudFile: CloudFile
-  }
+  taxRecordFiles: (TaxRecordFile & {
+    organizationCloudFile: OrganizationCloudFile & {
+      cloudFile: CloudFile
+    }
+  })[]
 }
