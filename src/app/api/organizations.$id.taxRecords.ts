@@ -33,6 +33,11 @@ export const Route = createFileRoute("/api/organizations/$id/taxRecords")({
                   },
                 },
               },
+              orderBy: [
+                { taxYear: "desc" },
+                { user: { lastName: "asc" } },
+                { user: { firstName: "asc" } },
+              ],
               include: {
                 user: true,
                 taxRecordFiles: {
