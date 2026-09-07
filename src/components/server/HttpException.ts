@@ -36,8 +36,8 @@ export class UnauthorizedException extends HttpException {
 }
 
 export class ForbiddenException extends HttpException {
-  constructor() {
-    super(HttpStatus.Forbidden, "Forbidden")
+  constructor(message: string = "Forbidden") {
+    super(HttpStatus.Forbidden, message)
   }
 }
 

@@ -25,6 +25,7 @@ import { Route as InvestmentsRouteImport } from './app/investments'
 import { Route as ForgotPasswordRouteImport } from './app/forgotPassword'
 import { Route as FixedIncomeRouteImport } from './app/fixedIncome'
 import { Route as DataBackupRouteImport } from './app/data-backup'
+import { Route as CloudFilesRouteImport } from './app/cloud-files'
 import { Route as AssetTickersRouteImport } from './app/asset-tickers'
 import { Route as ApiKeysRouteImport } from './app/api-keys'
 import { Route as ApiDocsRouteImport } from './app/api-docs'
@@ -49,6 +50,7 @@ import { Route as ApiOrganizationsAddUserRouteImport } from './app/api/organizat
 import { Route as ApiOrganizationsIdRouteImport } from './app/api/organizations.$id'
 import { Route as ApiEmailDigestSendRouteImport } from './app/api/email-digest.send'
 import { Route as ApiEmailDigestScheduledSendRouteImport } from './app/api/email-digest.scheduled-send'
+import { Route as ApiCloudFilesPruneS3RouteImport } from './app/api/cloud-files.prune-s3'
 import { Route as ApiAssetTickersAssetTickerIdRouteImport } from './app/api/asset-tickers.$assetTickerId'
 import { Route as ApiApiKeysIdRouteImport } from './app/api/api-keys.$id'
 import { Route as ApiOrganizationsIdTaxRecordsRouteImport } from './app/api/organizations.$id.taxRecords'
@@ -187,6 +189,11 @@ const DataBackupRoute = DataBackupRouteImport.update({
   path: '/data-backup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CloudFilesRoute = CloudFilesRouteImport.update({
+  id: '/cloud-files',
+  path: '/cloud-files',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AssetTickersRoute = AssetTickersRouteImport.update({
   id: '/asset-tickers',
   path: '/asset-tickers',
@@ -309,6 +316,11 @@ const ApiEmailDigestScheduledSendRoute =
     path: '/scheduled-send',
     getParentRoute: () => ApiEmailDigestRoute,
   } as any)
+const ApiCloudFilesPruneS3Route = ApiCloudFilesPruneS3RouteImport.update({
+  id: '/api/cloud-files/prune-s3',
+  path: '/api/cloud-files/prune-s3',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAssetTickersAssetTickerIdRoute =
   ApiAssetTickersAssetTickerIdRouteImport.update({
     id: '/$assetTickerId',
@@ -678,6 +690,7 @@ export interface FileRoutesByFullPath {
   '/api-docs': typeof ApiDocsRoute
   '/api-keys': typeof ApiKeysRoute
   '/asset-tickers': typeof AssetTickersRoute
+  '/cloud-files': typeof CloudFilesRoute
   '/data-backup': typeof DataBackupRoute
   '/fixedIncome': typeof FixedIncomeRoute
   '/forgotPassword': typeof ForgotPasswordRoute
@@ -708,6 +721,7 @@ export interface FileRoutesByFullPath {
   '/api/user': typeof ApiUserRouteWithChildren
   '/api/api-keys/$id': typeof ApiApiKeysIdRoute
   '/api/asset-tickers/$assetTickerId': typeof ApiAssetTickersAssetTickerIdRoute
+  '/api/cloud-files/prune-s3': typeof ApiCloudFilesPruneS3Route
   '/api/email-digest/scheduled-send': typeof ApiEmailDigestScheduledSendRoute
   '/api/email-digest/send': typeof ApiEmailDigestSendRoute
   '/api/organizations/$id': typeof ApiOrganizationsIdRouteWithChildren
@@ -777,6 +791,7 @@ export interface FileRoutesByTo {
   '/api-docs': typeof ApiDocsRoute
   '/api-keys': typeof ApiKeysRoute
   '/asset-tickers': typeof AssetTickersRoute
+  '/cloud-files': typeof CloudFilesRoute
   '/data-backup': typeof DataBackupRoute
   '/fixedIncome': typeof FixedIncomeRoute
   '/forgotPassword': typeof ForgotPasswordRoute
@@ -807,6 +822,7 @@ export interface FileRoutesByTo {
   '/api/user': typeof ApiUserRouteWithChildren
   '/api/api-keys/$id': typeof ApiApiKeysIdRoute
   '/api/asset-tickers/$assetTickerId': typeof ApiAssetTickersAssetTickerIdRoute
+  '/api/cloud-files/prune-s3': typeof ApiCloudFilesPruneS3Route
   '/api/email-digest/scheduled-send': typeof ApiEmailDigestScheduledSendRoute
   '/api/email-digest/send': typeof ApiEmailDigestSendRoute
   '/api/organizations/$id': typeof ApiOrganizationsIdRouteWithChildren
@@ -877,6 +893,7 @@ export interface FileRoutesById {
   '/api-docs': typeof ApiDocsRoute
   '/api-keys': typeof ApiKeysRoute
   '/asset-tickers': typeof AssetTickersRoute
+  '/cloud-files': typeof CloudFilesRoute
   '/data-backup': typeof DataBackupRoute
   '/fixedIncome': typeof FixedIncomeRoute
   '/forgotPassword': typeof ForgotPasswordRoute
@@ -907,6 +924,7 @@ export interface FileRoutesById {
   '/api/user': typeof ApiUserRouteWithChildren
   '/api/api-keys/$id': typeof ApiApiKeysIdRoute
   '/api/asset-tickers/$assetTickerId': typeof ApiAssetTickersAssetTickerIdRoute
+  '/api/cloud-files/prune-s3': typeof ApiCloudFilesPruneS3Route
   '/api/email-digest/scheduled-send': typeof ApiEmailDigestScheduledSendRoute
   '/api/email-digest/send': typeof ApiEmailDigestSendRoute
   '/api/organizations/$id': typeof ApiOrganizationsIdRouteWithChildren
@@ -978,6 +996,7 @@ export interface FileRouteTypes {
     | '/api-docs'
     | '/api-keys'
     | '/asset-tickers'
+    | '/cloud-files'
     | '/data-backup'
     | '/fixedIncome'
     | '/forgotPassword'
@@ -1008,6 +1027,7 @@ export interface FileRouteTypes {
     | '/api/user'
     | '/api/api-keys/$id'
     | '/api/asset-tickers/$assetTickerId'
+    | '/api/cloud-files/prune-s3'
     | '/api/email-digest/scheduled-send'
     | '/api/email-digest/send'
     | '/api/organizations/$id'
@@ -1077,6 +1097,7 @@ export interface FileRouteTypes {
     | '/api-docs'
     | '/api-keys'
     | '/asset-tickers'
+    | '/cloud-files'
     | '/data-backup'
     | '/fixedIncome'
     | '/forgotPassword'
@@ -1107,6 +1128,7 @@ export interface FileRouteTypes {
     | '/api/user'
     | '/api/api-keys/$id'
     | '/api/asset-tickers/$assetTickerId'
+    | '/api/cloud-files/prune-s3'
     | '/api/email-digest/scheduled-send'
     | '/api/email-digest/send'
     | '/api/organizations/$id'
@@ -1176,6 +1198,7 @@ export interface FileRouteTypes {
     | '/api-docs'
     | '/api-keys'
     | '/asset-tickers'
+    | '/cloud-files'
     | '/data-backup'
     | '/fixedIncome'
     | '/forgotPassword'
@@ -1206,6 +1229,7 @@ export interface FileRouteTypes {
     | '/api/user'
     | '/api/api-keys/$id'
     | '/api/asset-tickers/$assetTickerId'
+    | '/api/cloud-files/prune-s3'
     | '/api/email-digest/scheduled-send'
     | '/api/email-digest/send'
     | '/api/organizations/$id'
@@ -1276,6 +1300,7 @@ export interface RootRouteChildren {
   ApiDocsRoute: typeof ApiDocsRoute
   ApiKeysRoute: typeof ApiKeysRoute
   AssetTickersRoute: typeof AssetTickersRoute
+  CloudFilesRoute: typeof CloudFilesRoute
   DataBackupRoute: typeof DataBackupRoute
   FixedIncomeRoute: typeof FixedIncomeRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
@@ -1304,6 +1329,7 @@ export interface RootRouteChildren {
   ApiResetPasswordRoute: typeof ApiResetPasswordRoute
   ApiTickerPricesRoute: typeof ApiTickerPricesRoute
   ApiUserRoute: typeof ApiUserRouteWithChildren
+  ApiCloudFilesPruneS3Route: typeof ApiCloudFilesPruneS3Route
 }
 
 declare module '@tanstack/react-router' {
@@ -1418,6 +1444,13 @@ declare module '@tanstack/react-router' {
       path: '/data-backup'
       fullPath: '/data-backup'
       preLoaderRoute: typeof DataBackupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cloud-files': {
+      id: '/cloud-files'
+      path: '/cloud-files'
+      fullPath: '/cloud-files'
+      preLoaderRoute: typeof CloudFilesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/asset-tickers': {
@@ -1587,6 +1620,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/email-digest/scheduled-send'
       preLoaderRoute: typeof ApiEmailDigestScheduledSendRouteImport
       parentRoute: typeof ApiEmailDigestRoute
+    }
+    '/api/cloud-files/prune-s3': {
+      id: '/api/cloud-files/prune-s3'
+      path: '/api/cloud-files/prune-s3'
+      fullPath: '/api/cloud-files/prune-s3'
+      preLoaderRoute: typeof ApiCloudFilesPruneS3RouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/asset-tickers/$assetTickerId': {
       id: '/api/asset-tickers/$assetTickerId'
@@ -2508,6 +2548,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiDocsRoute: ApiDocsRoute,
   ApiKeysRoute: ApiKeysRoute,
   AssetTickersRoute: AssetTickersRoute,
+  CloudFilesRoute: CloudFilesRoute,
   DataBackupRoute: DataBackupRoute,
   FixedIncomeRoute: FixedIncomeRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
@@ -2536,6 +2577,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiResetPasswordRoute: ApiResetPasswordRoute,
   ApiTickerPricesRoute: ApiTickerPricesRoute,
   ApiUserRoute: ApiUserRouteWithChildren,
+  ApiCloudFilesPruneS3Route: ApiCloudFilesPruneS3Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,6 +1,8 @@
 import {
   DeleteObjectCommand,
+  DeleteObjectsCommand,
   GetObjectCommand,
+  ListObjectsV2Command,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3"
@@ -168,4 +170,88 @@ export async function deleteCloudFileFromS3(cloudFile: CloudFile) {
     where: { id: cloudFile.id },
     data: { deleted: true },
   })
+}
+
+export type PrunedFile = {
+  key: string
+  originalName: string | null
+  size: number
+  reason: "orphaned" | "marked-deleted"
+}
+
+export type PruneS3Result = {
+  totalScanned: number
+  deletedCount: number
+  keptCount: number
+  deletedFiles: PrunedFile[]
+}
+
+export async function pruneS3Storage(): Promise<PruneS3Result> {
+  const cloudFiles = await prisma.cloudFile.findMany({
+    select: { md5: true, deleted: true, originalName: true },
+  })
+  const cloudFileMap = new Map(
+    cloudFiles.map((cf) => [
+      cf.md5,
+      { deleted: cf.deleted, originalName: cf.originalName },
+    ])
+  )
+
+  const deletedFiles: PrunedFile[] = []
+  const keysToDelete: string[] = []
+  let totalScanned = 0
+  let keptCount = 0
+
+  let continuationToken: string | undefined
+  do {
+    const response: any = await s3.send(
+      new ListObjectsV2Command({
+        Bucket: bucketName,
+        ContinuationToken: continuationToken,
+      })
+    )
+
+    const contents: Array<{ Key?: string; Size?: number }> =
+      response.Contents || []
+    for (const obj of contents) {
+      const key = obj.Key
+      if (!key) continue
+      totalScanned++
+
+      const row = cloudFileMap.get(key)
+      if (row && !row.deleted) {
+        keptCount++
+        continue
+      }
+
+      keysToDelete.push(key)
+      deletedFiles.push({
+        key,
+        originalName: row ? row.originalName : null,
+        size: obj.Size ?? 0,
+        reason: row ? "marked-deleted" : "orphaned",
+      })
+    }
+
+    continuationToken = response.IsTruncated
+      ? response.NextContinuationToken
+      : undefined
+  } while (continuationToken)
+
+  for (let i = 0; i < keysToDelete.length; i += 1000) {
+    const batch = keysToDelete.slice(i, i + 1000)
+    await s3.send(
+      new DeleteObjectsCommand({
+        Bucket: bucketName,
+        Delete: { Objects: batch.map((key) => ({ Key: key })) },
+      })
+    )
+  }
+
+  return {
+    totalScanned,
+    deletedCount: deletedFiles.length,
+    keptCount,
+    deletedFiles,
+  }
 }
