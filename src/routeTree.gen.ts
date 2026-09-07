@@ -81,6 +81,7 @@ import { Route as ApiOrganizationsIdItemsItemIdRouteImport } from './app/api/org
 import { Route as ApiOrganizationsIdInsurancePoliciesInsurancePolicyIdRouteImport } from './app/api/organizations.$id.insurancePolicies.$insurancePolicyId'
 import { Route as ApiOrganizationsIdFixedIncomeAssetsFixedIncomeAssetIdRouteImport } from './app/api/organizations.$id.fixedIncomeAssets.$fixedIncomeAssetId'
 import { Route as ApiOrganizationsIdDatesDateRouteImport } from './app/api/organizations.$id.dates.$date'
+import { Route as ApiOrganizationsIdBackupsBackupIdRouteImport } from './app/api/organizations.$id.backups.$backupId'
 import { Route as ApiOrganizationsIdAccountsBalanceHistoryRouteImport } from './app/api/organizations.$id.accounts.balanceHistory'
 import { Route as ApiOrganizationsIdAccountsAutoUpdateBalancesRouteImport } from './app/api/organizations.$id.accounts.auto-update-balances'
 import { Route as ApiOrganizationsIdAccountsAccountIdRouteImport } from './app/api/organizations.$id.accounts.$accountId'
@@ -497,6 +498,12 @@ const ApiOrganizationsIdDatesDateRoute =
     path: '/$date',
     getParentRoute: () => ApiOrganizationsIdDatesRoute,
   } as any)
+const ApiOrganizationsIdBackupsBackupIdRoute =
+  ApiOrganizationsIdBackupsBackupIdRouteImport.update({
+    id: '/$backupId',
+    path: '/$backupId',
+    getParentRoute: () => ApiOrganizationsIdBackupsRoute,
+  } as any)
 const ApiOrganizationsIdAccountsBalanceHistoryRoute =
   ApiOrganizationsIdAccountsBalanceHistoryRouteImport.update({
     id: '/balanceHistory',
@@ -595,9 +602,9 @@ const ApiOrganizationsIdInsurancePoliciesInsurancePolicyIdFilesRoute =
   } as any)
 const ApiOrganizationsIdBackupsBackupIdDownloadRoute =
   ApiOrganizationsIdBackupsBackupIdDownloadRouteImport.update({
-    id: '/$backupId/download',
-    path: '/$backupId/download',
-    getParentRoute: () => ApiOrganizationsIdBackupsRoute,
+    id: '/download',
+    path: '/download',
+    getParentRoute: () => ApiOrganizationsIdBackupsBackupIdRoute,
   } as any)
 const ApiOrganizationsIdAccountsAccountIdAssetsRoute =
   ApiOrganizationsIdAccountsAccountIdAssetsRouteImport.update({
@@ -724,6 +731,7 @@ export interface FileRoutesByFullPath {
   '/api/organizations/$id/accounts/$accountId': typeof ApiOrganizationsIdAccountsAccountIdRouteWithChildren
   '/api/organizations/$id/accounts/auto-update-balances': typeof ApiOrganizationsIdAccountsAutoUpdateBalancesRoute
   '/api/organizations/$id/accounts/balanceHistory': typeof ApiOrganizationsIdAccountsBalanceHistoryRoute
+  '/api/organizations/$id/backups/$backupId': typeof ApiOrganizationsIdBackupsBackupIdRouteWithChildren
   '/api/organizations/$id/dates/$date': typeof ApiOrganizationsIdDatesDateRoute
   '/api/organizations/$id/fixedIncomeAssets/$fixedIncomeAssetId': typeof ApiOrganizationsIdFixedIncomeAssetsFixedIncomeAssetIdRoute
   '/api/organizations/$id/insurancePolicies/$insurancePolicyId': typeof ApiOrganizationsIdInsurancePoliciesInsurancePolicyIdRouteWithChildren
@@ -822,6 +830,7 @@ export interface FileRoutesByTo {
   '/api/organizations/$id/accounts/$accountId': typeof ApiOrganizationsIdAccountsAccountIdRouteWithChildren
   '/api/organizations/$id/accounts/auto-update-balances': typeof ApiOrganizationsIdAccountsAutoUpdateBalancesRoute
   '/api/organizations/$id/accounts/balanceHistory': typeof ApiOrganizationsIdAccountsBalanceHistoryRoute
+  '/api/organizations/$id/backups/$backupId': typeof ApiOrganizationsIdBackupsBackupIdRouteWithChildren
   '/api/organizations/$id/dates/$date': typeof ApiOrganizationsIdDatesDateRoute
   '/api/organizations/$id/fixedIncomeAssets/$fixedIncomeAssetId': typeof ApiOrganizationsIdFixedIncomeAssetsFixedIncomeAssetIdRoute
   '/api/organizations/$id/insurancePolicies/$insurancePolicyId': typeof ApiOrganizationsIdInsurancePoliciesInsurancePolicyIdRouteWithChildren
@@ -921,6 +930,7 @@ export interface FileRoutesById {
   '/api/organizations/$id/accounts/$accountId': typeof ApiOrganizationsIdAccountsAccountIdRouteWithChildren
   '/api/organizations/$id/accounts/auto-update-balances': typeof ApiOrganizationsIdAccountsAutoUpdateBalancesRoute
   '/api/organizations/$id/accounts/balanceHistory': typeof ApiOrganizationsIdAccountsBalanceHistoryRoute
+  '/api/organizations/$id/backups/$backupId': typeof ApiOrganizationsIdBackupsBackupIdRouteWithChildren
   '/api/organizations/$id/dates/$date': typeof ApiOrganizationsIdDatesDateRoute
   '/api/organizations/$id/fixedIncomeAssets/$fixedIncomeAssetId': typeof ApiOrganizationsIdFixedIncomeAssetsFixedIncomeAssetIdRoute
   '/api/organizations/$id/insurancePolicies/$insurancePolicyId': typeof ApiOrganizationsIdInsurancePoliciesInsurancePolicyIdRouteWithChildren
@@ -1021,6 +1031,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/accounts/$accountId'
     | '/api/organizations/$id/accounts/auto-update-balances'
     | '/api/organizations/$id/accounts/balanceHistory'
+    | '/api/organizations/$id/backups/$backupId'
     | '/api/organizations/$id/dates/$date'
     | '/api/organizations/$id/fixedIncomeAssets/$fixedIncomeAssetId'
     | '/api/organizations/$id/insurancePolicies/$insurancePolicyId'
@@ -1119,6 +1130,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/accounts/$accountId'
     | '/api/organizations/$id/accounts/auto-update-balances'
     | '/api/organizations/$id/accounts/balanceHistory'
+    | '/api/organizations/$id/backups/$backupId'
     | '/api/organizations/$id/dates/$date'
     | '/api/organizations/$id/fixedIncomeAssets/$fixedIncomeAssetId'
     | '/api/organizations/$id/insurancePolicies/$insurancePolicyId'
@@ -1217,6 +1229,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/accounts/$accountId'
     | '/api/organizations/$id/accounts/auto-update-balances'
     | '/api/organizations/$id/accounts/balanceHistory'
+    | '/api/organizations/$id/backups/$backupId'
     | '/api/organizations/$id/dates/$date'
     | '/api/organizations/$id/fixedIncomeAssets/$fixedIncomeAssetId'
     | '/api/organizations/$id/insurancePolicies/$insurancePolicyId'
@@ -1799,6 +1812,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiOrganizationsIdDatesDateRouteImport
       parentRoute: typeof ApiOrganizationsIdDatesRoute
     }
+    '/api/organizations/$id/backups/$backupId': {
+      id: '/api/organizations/$id/backups/$backupId'
+      path: '/$backupId'
+      fullPath: '/api/organizations/$id/backups/$backupId'
+      preLoaderRoute: typeof ApiOrganizationsIdBackupsBackupIdRouteImport
+      parentRoute: typeof ApiOrganizationsIdBackupsRoute
+    }
     '/api/organizations/$id/accounts/balanceHistory': {
       id: '/api/organizations/$id/accounts/balanceHistory'
       path: '/balanceHistory'
@@ -1906,10 +1926,10 @@ declare module '@tanstack/react-router' {
     }
     '/api/organizations/$id/backups/$backupId/download': {
       id: '/api/organizations/$id/backups/$backupId/download'
-      path: '/$backupId/download'
+      path: '/download'
       fullPath: '/api/organizations/$id/backups/$backupId/download'
       preLoaderRoute: typeof ApiOrganizationsIdBackupsBackupIdDownloadRouteImport
-      parentRoute: typeof ApiOrganizationsIdBackupsRoute
+      parentRoute: typeof ApiOrganizationsIdBackupsBackupIdRoute
     }
     '/api/organizations/$id/accounts/$accountId/assets': {
       id: '/api/organizations/$id/accounts/$accountId/assets'
@@ -2059,14 +2079,29 @@ const ApiOrganizationsIdAccountsRouteWithChildren =
     ApiOrganizationsIdAccountsRouteChildren,
   )
 
-interface ApiOrganizationsIdBackupsRouteChildren {
+interface ApiOrganizationsIdBackupsBackupIdRouteChildren {
   ApiOrganizationsIdBackupsBackupIdDownloadRoute: typeof ApiOrganizationsIdBackupsBackupIdDownloadRoute
+}
+
+const ApiOrganizationsIdBackupsBackupIdRouteChildren: ApiOrganizationsIdBackupsBackupIdRouteChildren =
+  {
+    ApiOrganizationsIdBackupsBackupIdDownloadRoute:
+      ApiOrganizationsIdBackupsBackupIdDownloadRoute,
+  }
+
+const ApiOrganizationsIdBackupsBackupIdRouteWithChildren =
+  ApiOrganizationsIdBackupsBackupIdRoute._addFileChildren(
+    ApiOrganizationsIdBackupsBackupIdRouteChildren,
+  )
+
+interface ApiOrganizationsIdBackupsRouteChildren {
+  ApiOrganizationsIdBackupsBackupIdRoute: typeof ApiOrganizationsIdBackupsBackupIdRouteWithChildren
 }
 
 const ApiOrganizationsIdBackupsRouteChildren: ApiOrganizationsIdBackupsRouteChildren =
   {
-    ApiOrganizationsIdBackupsBackupIdDownloadRoute:
-      ApiOrganizationsIdBackupsBackupIdDownloadRoute,
+    ApiOrganizationsIdBackupsBackupIdRoute:
+      ApiOrganizationsIdBackupsBackupIdRouteWithChildren,
   }
 
 const ApiOrganizationsIdBackupsRouteWithChildren =

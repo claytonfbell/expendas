@@ -1,4 +1,5 @@
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload"
+import DeleteIcon from "@mui/icons-material/Delete"
 import DownloadIcon from "@mui/icons-material/Download"
 import {
   Alert,
@@ -16,11 +17,13 @@ import {
   Typography,
 } from "@mui/material"
 import dayjs from "dayjs"
+import { useState } from "react"
 import { useGlobalState } from "./GlobalStateContext"
 import { useCreateBackup } from "./api/hooks/useCreateBackup"
+import { useDeleteBackup } from "./api/hooks/useDeleteBackup"
 import { useFetchBackups } from "./api/hooks/useFetchBackups"
 import rest from "./api/rest"
-import type { BackupWithIncludes } from "../app/api/organizations.$id.backups"
+import ConfirmDialog from "./ConfirmDialog"
 
 function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
@@ -43,9 +46,19 @@ export function DataBackupManage() {
   const { organizationId } = useGlobalState()
   const { data: backups } = useFetchBackups()
   const { mutateAsync: createBackup, isPending } = useCreateBackup()
+  const { mutateAsync: deleteBackup } = useDeleteBackup()
+
+  const [deleteId, setDeleteId] = useState<number | null>(null)
 
   const handleCreate = async () => {
     await createBackup()
+  }
+
+  const handleDelete = async () => {
+    if (deleteId !== null) {
+      await deleteBackup(deleteId)
+      setDeleteId(null)
+    }
   }
 
   return (
@@ -103,23 +116,43 @@ export function DataBackupManage() {
                       {userDisplayName(backup.createdBy)}
                     </TableCell>
                     <TableCell align="right">
-                      {deleted ? (
-                        <Chip
-                          label="Deleted"
-                          color="default"
-                          size="small"
-                        />
-                      ) : (
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          startIcon={<DownloadIcon />}
-                          component="a"
-                          href={`${rest.baseURL}/organizations/${organizationId}/backups/${backup.id}/download`}
-                        >
-                          Download
-                        </Button>
-                      )}
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        sx={{
+                          justifyContent: "flex-end",
+                          alignItems: "center",
+                        }}
+                      >
+                        {deleted ? (
+                          <Chip
+                            label="Deleted"
+                            color="default"
+                            size="small"
+                          />
+                        ) : (
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            startIcon={<DownloadIcon />}
+                            component="a"
+                            href={`${rest.baseURL}/organizations/${organizationId}/backups/${backup.id}/download`}
+                          >
+                            Download
+                          </Button>
+                        )}
+                        {!deleted && (
+                          <Button
+                            variant="outlined"
+                            color="error"
+                            size="small"
+                            startIcon={<DeleteIcon />}
+                            onClick={() => setDeleteId(backup.id)}
+                          >
+                            Delete
+                          </Button>
+                        )}
+                      </Stack>
                     </TableCell>
                   </TableRow>
                 )
@@ -128,6 +161,15 @@ export function DataBackupManage() {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <ConfirmDialog
+        open={deleteId !== null}
+        message="Delete Backup?"
+        details="This will permanently delete the backup file from storage. The backup record will remain in the list marked as deleted."
+        yesLabel="Delete"
+        onClose={() => setDeleteId(null)}
+        onAccept={handleDelete}
+      />
     </Stack>
   )
 }
