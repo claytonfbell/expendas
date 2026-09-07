@@ -17,6 +17,7 @@ model Organization {
     targetEquityPercentage Int                 @default(9000) // 90%
     cloudFiles      OrganizationCloudFile[]
     mealsOut        MealsOut[]
+    insurancePolicies InsurancePolicy[]
 }
 
 model User {
@@ -42,6 +43,7 @@ model User {
     completedTasks          Task[] @relation(name: "completedTasks")
     taxRecords              TaxRecord[]
     apiKeys                 ApiKey[]
+    insurancePolicies       InsurancePolicy[]
 
     @@index([authCode], map: "User.authCode_index")
 }
@@ -305,6 +307,7 @@ model OrganizationCloudFile {
     useCase         OrganizationCloudFileUseCase
     receipts        Receipt[]
     taxRecordFiles   TaxRecordFile[]
+    insurancePolicyFiles InsurancePolicyFile[]
     @@unique([cloudFileId, useCase, organizationId], map: "OrganizationCloudFile.cloudFileId_useCase_organizationId_unique")
 }
 
@@ -341,6 +344,33 @@ model TaxRecordFile {
     @@unique([taxRecordId, organizationCloudFileId], map: "TaxRecordFile.taxRecordId_organizationCloudFileId_unique")
 }
 
+model InsurancePolicy {
+    id              Int      @id @default(autoincrement())
+    organizationId  Int
+    organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    userId          Int
+    user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    company         String   @db.VarChar(255)
+    policyNumber    String   @db.VarChar(255)
+    type            String   @db.VarChar(255)
+    termYears       Int?
+    termEnd         String?
+    amount          Int
+    premium         Int?
+    notes           String?  @db.VarChar(255)
+    insurancePolicyFiles InsurancePolicyFile[]
+}
+
+model InsurancePolicyFile {
+    id                      Int                  @id @default(autoincrement())
+    insurancePolicyId       Int
+    insurancePolicy         InsurancePolicy       @relation(fields: [insurancePolicyId], references: [id], onDelete: Cascade)
+    organizationCloudFileId Int
+    organizationCloudFile   OrganizationCloudFile @relation(fields: [organizationCloudFileId], references: [id], onDelete: Cascade)
+
+    @@unique([insurancePolicyId, organizationCloudFileId], map: "InsPolicyFile.policyId_orgFileId_unique")
+}
+
 model MealsOut {
     id              Int              @id @default(autoincrement())
     organizationId  Int
@@ -362,6 +392,7 @@ enum RetirementPlanType {
 enum OrganizationCloudFileUseCase {
     Receipt
     TaxRecord
+    InsurancePolicy
 }
 
 enum ReceiptType {

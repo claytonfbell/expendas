@@ -1,5 +1,6 @@
 import { createRequire } from "node:module"
 import { createFileRoute } from "@tanstack/react-router"
+import { ReceiptType } from "@prisma/client"
 import { requireOrganizationAuthentication } from "../../components/requireAuthentication"
 import { buildResponse } from "../../components/server/buildResponse"
 import { getCloudFileStream } from "../../components/server/cloudFile"
@@ -24,6 +25,59 @@ function arrayToCsv(rows: Record<string, unknown>[]): string {
       .join(",")
   )
   return [headers.join(","), ...csvRows].join("\n")
+}
+
+function sanitizeName(...parts: (string | null | undefined)[]): string {
+  return parts
+    .filter(Boolean)
+    .map((p) =>
+      p!.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")
+    )
+    .filter(Boolean)
+    .join("-")
+}
+
+function userName(user: { firstName: string | null; lastName: string | null; email: string }): string {
+  const name = sanitizeName(user.firstName, user.lastName)
+  if (name) return name
+  return sanitizeName(user.email) || "unknown"
+}
+
+function receiptTypeFolder(type: ReceiptType): string {
+  switch (type) {
+    case "HSA_Eligible":
+      return "hsa-eligible"
+    case "Charity":
+      return "charity"
+    case "Other":
+      return "other"
+    default:
+      return sanitizeName(type)
+  }
+}
+
+function extractYear(date?: string | null, datePaid?: string | null): string {
+  if (date && date.length >= 4) return date.slice(0, 4)
+  if (datePaid && datePaid.length >= 4) return datePaid.slice(0, 4)
+  return "unknown"
+}
+
+function uniquePath(usedPaths: Set<string>, basePath: string): string {
+  if (!usedPaths.has(basePath)) {
+    usedPaths.add(basePath)
+    return basePath
+  }
+  const dotIdx = basePath.lastIndexOf(".")
+  const stem = dotIdx > 0 ? basePath.slice(0, dotIdx) : basePath
+  const ext = dotIdx > 0 ? basePath.slice(dotIdx) : ""
+  let i = 1
+  let candidate: string
+  do {
+    candidate = `${stem}-${i}${ext}`
+    i++
+  } while (usedPaths.has(candidate))
+  usedPaths.add(candidate)
+  return candidate
 }
 
 export const Route = createFileRoute("/api/organizations/$id/export")({
@@ -101,6 +155,7 @@ export const Route = createFileRoute("/api/organizations/$id/export")({
             receipts,
             taxRecords,
             mealsOut,
+            insurancePolicies,
           ] = await Promise.all([
             prisma.organization.findUnique({ where: { id: organizationId } }),
             prisma.usersOnOrganizations.findMany({
@@ -171,6 +226,11 @@ export const Route = createFileRoute("/api/organizations/$id/export")({
               where: {
                 organizationCloudFileId: { in: orgCloudFileIds },
               },
+              include: {
+                organizationCloudFile: {
+                  include: { cloudFile: true },
+                },
+              },
             }),
             prisma.taxRecord.findMany({
               where: {
@@ -180,9 +240,32 @@ export const Route = createFileRoute("/api/organizations/$id/export")({
                   },
                 },
               },
+              include: {
+                user: true,
+                taxRecordFiles: {
+                  include: {
+                    organizationCloudFile: {
+                      include: { cloudFile: true },
+                    },
+                  },
+                },
+              },
             }),
             prisma.mealsOut.findMany({
               where: { organizationId },
+            }),
+            prisma.insurancePolicy.findMany({
+              where: { organizationId },
+              include: {
+                user: true,
+                insurancePolicyFiles: {
+                  include: {
+                    organizationCloudFile: {
+                      include: { cloudFile: true },
+                    },
+                  },
+                },
+              },
             }),
           ])
 
@@ -221,16 +304,122 @@ export const Route = createFileRoute("/api/organizations/$id/export")({
               cloudFile: undefined,
             })) as Record<string, unknown>[],
             cloud_files: cloudFiles as Record<string, unknown>[],
-            receipts: receipts as Record<string, unknown>[],
-            tax_records: taxRecords as Record<string, unknown>[],
+            receipts: receipts.map((r) => ({
+              ...r,
+              organizationCloudFile: undefined,
+            })) as Record<string, unknown>[],
+            tax_records: taxRecords.map((t) => ({
+              ...t,
+              user: undefined,
+              taxRecordFiles: undefined,
+            })) as Record<string, unknown>[],
             meals_out: mealsOut as Record<string, unknown>[],
+            insurance_policies: insurancePolicies.map((p) => ({
+              ...p,
+              user: undefined,
+              insurancePolicyFiles: undefined,
+            })) as Record<string, unknown>[],
           }
 
           for (const [name, rows] of Object.entries(csvTables)) {
             archive.append(arrayToCsv(rows), { name: `${name}.csv` })
           }
 
+          const placedOrgCloudFileIds = new Set<number>()
+          const usedPaths = new Set<string>()
+
+          for (const taxRecord of taxRecords) {
+            const userFolder = userName(taxRecord.user)
+            for (const taxRecordFile of taxRecord.taxRecordFiles) {
+              const { organizationCloudFile } = taxRecordFile
+              placedOrgCloudFileIds.add(organizationCloudFile.id)
+              const dir = `tax-records/${taxRecord.taxYear}/${userFolder}`
+              const filePath = uniquePath(
+                usedPaths,
+                `${dir}/${organizationCloudFile.name}`
+              )
+              try {
+                const stream = await getCloudFileStream(
+                  organizationCloudFile.cloudFile
+                )
+                const fileChunks: Buffer[] = []
+                for await (const chunk of stream) {
+                  fileChunks.push(
+                    Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)
+                  )
+                }
+                archive.append(Buffer.concat(fileChunks), { name: filePath })
+              } catch {
+                archive.append("File not available", {
+                  name: `${filePath}.error.txt`,
+                })
+              }
+            }
+          }
+
+          for (const receipt of receipts) {
+            const { organizationCloudFile } = receipt
+            placedOrgCloudFileIds.add(organizationCloudFile.id)
+            const year = extractYear(receipt.date, receipt.datePaid)
+            const typeFolder = receiptTypeFolder(receipt.receiptType)
+            const dir = `receipts/${typeFolder}/${year}`
+            const filePath = uniquePath(
+              usedPaths,
+              `${dir}/${organizationCloudFile.name}`
+            )
+            try {
+              const stream = await getCloudFileStream(
+                organizationCloudFile.cloudFile
+              )
+              const fileChunks: Buffer[] = []
+              for await (const chunk of stream) {
+                fileChunks.push(
+                  Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)
+                )
+              }
+              archive.append(Buffer.concat(fileChunks), { name: filePath })
+            } catch {
+              archive.append("File not available", {
+                name: `${filePath}.error.txt`,
+              })
+            }
+          }
+
+          for (const policy of insurancePolicies) {
+            const companyFolder = sanitizeName(policy.company) || "unknown-company"
+            for (const policyFile of policy.insurancePolicyFiles) {
+              const { organizationCloudFile } = policyFile
+              placedOrgCloudFileIds.add(organizationCloudFile.id)
+              const dir = `insurance-policies/${companyFolder}`
+              const filePath = uniquePath(
+                usedPaths,
+                `${dir}/${organizationCloudFile.name}`
+              )
+              try {
+                const stream = await getCloudFileStream(
+                  organizationCloudFile.cloudFile
+                )
+                const fileChunks: Buffer[] = []
+                for await (const chunk of stream) {
+                  fileChunks.push(
+                    Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)
+                  )
+                }
+                archive.append(Buffer.concat(fileChunks), { name: filePath })
+              } catch {
+                archive.append("File not available", {
+                  name: `${filePath}.error.txt`,
+                })
+              }
+            }
+          }
+
           for (const orgCloudFile of orgCloudFiles) {
+            if (placedOrgCloudFileIds.has(orgCloudFile.id)) continue
+            const filePath = uniquePath(
+              usedPaths,
+              `files/${orgCloudFile.name}`
+            )
             try {
               const stream = await getCloudFileStream(orgCloudFile.cloudFile)
               const fileChunks: Buffer[] = []
@@ -239,12 +428,10 @@ export const Route = createFileRoute("/api/organizations/$id/export")({
                   Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)
                 )
               }
-              archive.append(Buffer.concat(fileChunks), {
-                name: `files/${orgCloudFile.name}`,
-              })
+              archive.append(Buffer.concat(fileChunks), { name: filePath })
             } catch {
               archive.append("File not available", {
-                name: `files/${orgCloudFile.name}.error.txt`,
+                name: `${filePath}.error.txt`,
               })
             }
           }

@@ -15,6 +15,7 @@ import RestaurantIcon from "@mui/icons-material/Restaurant"
 import RestaurantOutlinedIcon from "@mui/icons-material/RestaurantOutlined"
 import SavingsIcon from "@mui/icons-material/Savings"
 import SavingsOutlinedIcon from "@mui/icons-material/SavingsOutlined"
+import ShieldIcon from "@mui/icons-material/Shield"
 import ShowChartIcon from "@mui/icons-material/ShowChart"
 import ShowChartOutlinedIcon from "@mui/icons-material/ShowChartOutlined"
 import VpnKeyIcon from "@mui/icons-material/VpnKey"
@@ -109,6 +110,13 @@ export const navigationLinks: NavigationLink[] = [
     href: "/taxes",
     ActiveIcon: AccountTreeIcon,
     Icon: AccountTreeIcon,
+    navs: [],
+  },
+  {
+    label: "Life Insurance",
+    href: "/lifeInsurance",
+    ActiveIcon: ShieldIcon,
+    Icon: ShieldIcon,
     navs: [],
   },
   {
