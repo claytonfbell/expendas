@@ -1,10 +1,8 @@
-import DownloadIcon from "@mui/icons-material/Download"
 import {
   Button,
   Dialog,
   DialogContent,
   Grid,
-  Link,
   useMediaQuery,
   useTheme,
 } from "@mui/material"
@@ -19,7 +17,6 @@ import ConfirmDialog from "./ConfirmDialog"
 import DisplayError from "./DisplayError"
 import { Title } from "./Title"
 import { UserManage } from "./UserManage"
-import rest from "./api/rest"
 
 interface Props {
   organizationId: number
@@ -148,16 +145,6 @@ export function OrganizationDialog(props: Props) {
               </Grid>
             </Grid>
 
-            <br />
-            <Button
-              fullWidth
-              variant="outlined"
-              startIcon={<DownloadIcon />}
-              component={Link}
-              href={`${rest.baseURL}/organizations/${props.organizationId}/export`}
-            >
-              Download All Data (ZIP)
-            </Button>
             <br />
             <br />
           </>

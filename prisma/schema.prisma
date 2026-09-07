@@ -18,6 +18,7 @@ model Organization {
     cloudFiles      OrganizationCloudFile[]
     mealsOut        MealsOut[]
     insurancePolicies InsurancePolicy[]
+    dataBackups     DataBackup[]
 }
 
 model User {
@@ -44,6 +45,7 @@ model User {
     taxRecords              TaxRecord[]
     apiKeys                 ApiKey[]
     insurancePolicies       InsurancePolicy[]
+    dataBackups             DataBackup[]
 
     @@index([authCode], map: "User.authCode_index")
 }
@@ -294,7 +296,20 @@ model CloudFile {
     originalName    String  @db.VarChar(255)
     contentType     String  @db.VarChar(255)
     size            Int
+    deleted         Boolean @default(false)
     organizationCloudFiles OrganizationCloudFile[]
+    dataBackups     DataBackup[]
+}
+
+model DataBackup {
+    id              Int       @id @default(autoincrement())
+    organizationId  Int
+    organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    cloudFileId     Int
+    cloudFile       CloudFile    @relation(fields: [cloudFileId], references: [id])
+    createdByUserId Int
+    createdBy       User         @relation(fields: [createdByUserId], references: [id])
+    createdAt       DateTime    @default(now())
 }
 
 model OrganizationCloudFile {

@@ -24,6 +24,7 @@ import { Route as LifeInsuranceRouteImport } from './app/lifeInsurance'
 import { Route as InvestmentsRouteImport } from './app/investments'
 import { Route as ForgotPasswordRouteImport } from './app/forgotPassword'
 import { Route as FixedIncomeRouteImport } from './app/fixedIncome'
+import { Route as DataBackupRouteImport } from './app/data-backup'
 import { Route as AssetTickersRouteImport } from './app/asset-tickers'
 import { Route as ApiKeysRouteImport } from './app/api-keys'
 import { Route as ApiDocsRouteImport } from './app/api-docs'
@@ -61,6 +62,7 @@ import { Route as ApiOrganizationsIdInsurancePoliciesRouteImport } from './app/a
 import { Route as ApiOrganizationsIdFixedIncomeAssetsRouteImport } from './app/api/organizations.$id.fixedIncomeAssets'
 import { Route as ApiOrganizationsIdExportRouteImport } from './app/api/organizations.$id.export'
 import { Route as ApiOrganizationsIdDatesRouteImport } from './app/api/organizations.$id.dates'
+import { Route as ApiOrganizationsIdBackupsRouteImport } from './app/api/organizations.$id.backups'
 import { Route as ApiOrganizationsIdAccountsRouteImport } from './app/api/organizations.$id.accounts'
 import { Route as ApiOrganizationsIdUsersUserIdRouteImport } from './app/api/organizations.$id.users.$userId'
 import { Route as ApiOrganizationsIdTaxRecordsTaxRecordIdRouteImport } from './app/api/organizations.$id.taxRecords.$taxRecordId'
@@ -94,6 +96,7 @@ import { Route as ApiOrganizationsIdRetirementPlansRetirementPlanIdContributions
 import { Route as ApiOrganizationsIdReceiptsReceiptIdOpenRouteImport } from './app/api/organizations.$id.receipts.$receiptId.open'
 import { Route as ApiOrganizationsIdReceiptsReceiptIdDownloadRouteImport } from './app/api/organizations.$id.receipts.$receiptId.download'
 import { Route as ApiOrganizationsIdInsurancePoliciesInsurancePolicyIdFilesRouteImport } from './app/api/organizations.$id.insurancePolicies.$insurancePolicyId.files'
+import { Route as ApiOrganizationsIdBackupsBackupIdDownloadRouteImport } from './app/api/organizations.$id.backups.$backupId.download'
 import { Route as ApiOrganizationsIdAccountsAccountIdAssetsRouteImport } from './app/api/organizations.$id.accounts.$accountId.assets'
 import { Route as ApiOrganizationsIdTaxRecordsTaxRecordIdFilesTaxRecordFileIdRouteImport } from './app/api/organizations.$id.taxRecords.$taxRecordId.files.$taxRecordFileId'
 import { Route as ApiOrganizationsIdInsurancePoliciesInsurancePolicyIdFilesInsurancePolicyFileIdRouteImport } from './app/api/organizations.$id.insurancePolicies.$insurancePolicyId.files.$insurancePolicyFileId'
@@ -176,6 +179,11 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
 const FixedIncomeRoute = FixedIncomeRouteImport.update({
   id: '/fixedIncome',
   path: '/fixedIncome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DataBackupRoute = DataBackupRouteImport.update({
+  id: '/data-backup',
+  path: '/data-backup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AssetTickersRoute = AssetTickersRouteImport.update({
@@ -375,6 +383,12 @@ const ApiOrganizationsIdDatesRoute = ApiOrganizationsIdDatesRouteImport.update({
   path: '/dates',
   getParentRoute: () => ApiOrganizationsIdRoute,
 } as any)
+const ApiOrganizationsIdBackupsRoute =
+  ApiOrganizationsIdBackupsRouteImport.update({
+    id: '/backups',
+    path: '/backups',
+    getParentRoute: () => ApiOrganizationsIdRoute,
+  } as any)
 const ApiOrganizationsIdAccountsRoute =
   ApiOrganizationsIdAccountsRouteImport.update({
     id: '/accounts',
@@ -579,6 +593,12 @@ const ApiOrganizationsIdInsurancePoliciesInsurancePolicyIdFilesRoute =
     getParentRoute: () =>
       ApiOrganizationsIdInsurancePoliciesInsurancePolicyIdRoute,
   } as any)
+const ApiOrganizationsIdBackupsBackupIdDownloadRoute =
+  ApiOrganizationsIdBackupsBackupIdDownloadRouteImport.update({
+    id: '/$backupId/download',
+    path: '/$backupId/download',
+    getParentRoute: () => ApiOrganizationsIdBackupsRoute,
+  } as any)
 const ApiOrganizationsIdAccountsAccountIdAssetsRoute =
   ApiOrganizationsIdAccountsAccountIdAssetsRouteImport.update({
     id: '/assets',
@@ -651,6 +671,7 @@ export interface FileRoutesByFullPath {
   '/api-docs': typeof ApiDocsRoute
   '/api-keys': typeof ApiKeysRoute
   '/asset-tickers': typeof AssetTickersRoute
+  '/data-backup': typeof DataBackupRoute
   '/fixedIncome': typeof FixedIncomeRoute
   '/forgotPassword': typeof ForgotPasswordRoute
   '/investments': typeof InvestmentsRoute
@@ -688,6 +709,7 @@ export interface FileRoutesByFullPath {
   '/api/user/password': typeof ApiUserPasswordRoute
   '/api/user/preferences': typeof ApiUserPreferencesRoute
   '/api/organizations/$id/accounts': typeof ApiOrganizationsIdAccountsRouteWithChildren
+  '/api/organizations/$id/backups': typeof ApiOrganizationsIdBackupsRouteWithChildren
   '/api/organizations/$id/dates': typeof ApiOrganizationsIdDatesRouteWithChildren
   '/api/organizations/$id/export': typeof ApiOrganizationsIdExportRoute
   '/api/organizations/$id/fixedIncomeAssets': typeof ApiOrganizationsIdFixedIncomeAssetsRouteWithChildren
@@ -720,6 +742,7 @@ export interface FileRoutesByFullPath {
   '/api/organizations/$id/taxRecords/$taxRecordId': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdRouteWithChildren
   '/api/organizations/$id/users/$userId': typeof ApiOrganizationsIdUsersUserIdRoute
   '/api/organizations/$id/accounts/$accountId/assets': typeof ApiOrganizationsIdAccountsAccountIdAssetsRouteWithChildren
+  '/api/organizations/$id/backups/$backupId/download': typeof ApiOrganizationsIdBackupsBackupIdDownloadRoute
   '/api/organizations/$id/insurancePolicies/$insurancePolicyId/files': typeof ApiOrganizationsIdInsurancePoliciesInsurancePolicyIdFilesRouteWithChildren
   '/api/organizations/$id/receipts/$receiptId/download': typeof ApiOrganizationsIdReceiptsReceiptIdDownloadRoute
   '/api/organizations/$id/receipts/$receiptId/open': typeof ApiOrganizationsIdReceiptsReceiptIdOpenRoute
@@ -746,6 +769,7 @@ export interface FileRoutesByTo {
   '/api-docs': typeof ApiDocsRoute
   '/api-keys': typeof ApiKeysRoute
   '/asset-tickers': typeof AssetTickersRoute
+  '/data-backup': typeof DataBackupRoute
   '/fixedIncome': typeof FixedIncomeRoute
   '/forgotPassword': typeof ForgotPasswordRoute
   '/investments': typeof InvestmentsRoute
@@ -783,6 +807,7 @@ export interface FileRoutesByTo {
   '/api/user/password': typeof ApiUserPasswordRoute
   '/api/user/preferences': typeof ApiUserPreferencesRoute
   '/api/organizations/$id/accounts': typeof ApiOrganizationsIdAccountsRouteWithChildren
+  '/api/organizations/$id/backups': typeof ApiOrganizationsIdBackupsRouteWithChildren
   '/api/organizations/$id/dates': typeof ApiOrganizationsIdDatesRouteWithChildren
   '/api/organizations/$id/export': typeof ApiOrganizationsIdExportRoute
   '/api/organizations/$id/fixedIncomeAssets': typeof ApiOrganizationsIdFixedIncomeAssetsRouteWithChildren
@@ -815,6 +840,7 @@ export interface FileRoutesByTo {
   '/api/organizations/$id/taxRecords/$taxRecordId': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdRouteWithChildren
   '/api/organizations/$id/users/$userId': typeof ApiOrganizationsIdUsersUserIdRoute
   '/api/organizations/$id/accounts/$accountId/assets': typeof ApiOrganizationsIdAccountsAccountIdAssetsRouteWithChildren
+  '/api/organizations/$id/backups/$backupId/download': typeof ApiOrganizationsIdBackupsBackupIdDownloadRoute
   '/api/organizations/$id/insurancePolicies/$insurancePolicyId/files': typeof ApiOrganizationsIdInsurancePoliciesInsurancePolicyIdFilesRouteWithChildren
   '/api/organizations/$id/receipts/$receiptId/download': typeof ApiOrganizationsIdReceiptsReceiptIdDownloadRoute
   '/api/organizations/$id/receipts/$receiptId/open': typeof ApiOrganizationsIdReceiptsReceiptIdOpenRoute
@@ -842,6 +868,7 @@ export interface FileRoutesById {
   '/api-docs': typeof ApiDocsRoute
   '/api-keys': typeof ApiKeysRoute
   '/asset-tickers': typeof AssetTickersRoute
+  '/data-backup': typeof DataBackupRoute
   '/fixedIncome': typeof FixedIncomeRoute
   '/forgotPassword': typeof ForgotPasswordRoute
   '/investments': typeof InvestmentsRoute
@@ -879,6 +906,7 @@ export interface FileRoutesById {
   '/api/user/password': typeof ApiUserPasswordRoute
   '/api/user/preferences': typeof ApiUserPreferencesRoute
   '/api/organizations/$id/accounts': typeof ApiOrganizationsIdAccountsRouteWithChildren
+  '/api/organizations/$id/backups': typeof ApiOrganizationsIdBackupsRouteWithChildren
   '/api/organizations/$id/dates': typeof ApiOrganizationsIdDatesRouteWithChildren
   '/api/organizations/$id/export': typeof ApiOrganizationsIdExportRoute
   '/api/organizations/$id/fixedIncomeAssets': typeof ApiOrganizationsIdFixedIncomeAssetsRouteWithChildren
@@ -911,6 +939,7 @@ export interface FileRoutesById {
   '/api/organizations/$id/taxRecords/$taxRecordId': typeof ApiOrganizationsIdTaxRecordsTaxRecordIdRouteWithChildren
   '/api/organizations/$id/users/$userId': typeof ApiOrganizationsIdUsersUserIdRoute
   '/api/organizations/$id/accounts/$accountId/assets': typeof ApiOrganizationsIdAccountsAccountIdAssetsRouteWithChildren
+  '/api/organizations/$id/backups/$backupId/download': typeof ApiOrganizationsIdBackupsBackupIdDownloadRoute
   '/api/organizations/$id/insurancePolicies/$insurancePolicyId/files': typeof ApiOrganizationsIdInsurancePoliciesInsurancePolicyIdFilesRouteWithChildren
   '/api/organizations/$id/receipts/$receiptId/download': typeof ApiOrganizationsIdReceiptsReceiptIdDownloadRoute
   '/api/organizations/$id/receipts/$receiptId/open': typeof ApiOrganizationsIdReceiptsReceiptIdOpenRoute
@@ -939,6 +968,7 @@ export interface FileRouteTypes {
     | '/api-docs'
     | '/api-keys'
     | '/asset-tickers'
+    | '/data-backup'
     | '/fixedIncome'
     | '/forgotPassword'
     | '/investments'
@@ -976,6 +1006,7 @@ export interface FileRouteTypes {
     | '/api/user/password'
     | '/api/user/preferences'
     | '/api/organizations/$id/accounts'
+    | '/api/organizations/$id/backups'
     | '/api/organizations/$id/dates'
     | '/api/organizations/$id/export'
     | '/api/organizations/$id/fixedIncomeAssets'
@@ -1008,6 +1039,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/taxRecords/$taxRecordId'
     | '/api/organizations/$id/users/$userId'
     | '/api/organizations/$id/accounts/$accountId/assets'
+    | '/api/organizations/$id/backups/$backupId/download'
     | '/api/organizations/$id/insurancePolicies/$insurancePolicyId/files'
     | '/api/organizations/$id/receipts/$receiptId/download'
     | '/api/organizations/$id/receipts/$receiptId/open'
@@ -1034,6 +1066,7 @@ export interface FileRouteTypes {
     | '/api-docs'
     | '/api-keys'
     | '/asset-tickers'
+    | '/data-backup'
     | '/fixedIncome'
     | '/forgotPassword'
     | '/investments'
@@ -1071,6 +1104,7 @@ export interface FileRouteTypes {
     | '/api/user/password'
     | '/api/user/preferences'
     | '/api/organizations/$id/accounts'
+    | '/api/organizations/$id/backups'
     | '/api/organizations/$id/dates'
     | '/api/organizations/$id/export'
     | '/api/organizations/$id/fixedIncomeAssets'
@@ -1103,6 +1137,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/taxRecords/$taxRecordId'
     | '/api/organizations/$id/users/$userId'
     | '/api/organizations/$id/accounts/$accountId/assets'
+    | '/api/organizations/$id/backups/$backupId/download'
     | '/api/organizations/$id/insurancePolicies/$insurancePolicyId/files'
     | '/api/organizations/$id/receipts/$receiptId/download'
     | '/api/organizations/$id/receipts/$receiptId/open'
@@ -1129,6 +1164,7 @@ export interface FileRouteTypes {
     | '/api-docs'
     | '/api-keys'
     | '/asset-tickers'
+    | '/data-backup'
     | '/fixedIncome'
     | '/forgotPassword'
     | '/investments'
@@ -1166,6 +1202,7 @@ export interface FileRouteTypes {
     | '/api/user/password'
     | '/api/user/preferences'
     | '/api/organizations/$id/accounts'
+    | '/api/organizations/$id/backups'
     | '/api/organizations/$id/dates'
     | '/api/organizations/$id/export'
     | '/api/organizations/$id/fixedIncomeAssets'
@@ -1198,6 +1235,7 @@ export interface FileRouteTypes {
     | '/api/organizations/$id/taxRecords/$taxRecordId'
     | '/api/organizations/$id/users/$userId'
     | '/api/organizations/$id/accounts/$accountId/assets'
+    | '/api/organizations/$id/backups/$backupId/download'
     | '/api/organizations/$id/insurancePolicies/$insurancePolicyId/files'
     | '/api/organizations/$id/receipts/$receiptId/download'
     | '/api/organizations/$id/receipts/$receiptId/open'
@@ -1225,6 +1263,7 @@ export interface RootRouteChildren {
   ApiDocsRoute: typeof ApiDocsRoute
   ApiKeysRoute: typeof ApiKeysRoute
   AssetTickersRoute: typeof AssetTickersRoute
+  DataBackupRoute: typeof DataBackupRoute
   FixedIncomeRoute: typeof FixedIncomeRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   InvestmentsRoute: typeof InvestmentsRoute
@@ -1359,6 +1398,13 @@ declare module '@tanstack/react-router' {
       path: '/fixedIncome'
       fullPath: '/fixedIncome'
       preLoaderRoute: typeof FixedIncomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/data-backup': {
+      id: '/data-backup'
+      path: '/data-backup'
+      fullPath: '/data-backup'
+      preLoaderRoute: typeof DataBackupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/asset-tickers': {
@@ -1620,6 +1666,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiOrganizationsIdDatesRouteImport
       parentRoute: typeof ApiOrganizationsIdRoute
     }
+    '/api/organizations/$id/backups': {
+      id: '/api/organizations/$id/backups'
+      path: '/backups'
+      fullPath: '/api/organizations/$id/backups'
+      preLoaderRoute: typeof ApiOrganizationsIdBackupsRouteImport
+      parentRoute: typeof ApiOrganizationsIdRoute
+    }
     '/api/organizations/$id/accounts': {
       id: '/api/organizations/$id/accounts'
       path: '/accounts'
@@ -1851,6 +1904,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiOrganizationsIdInsurancePoliciesInsurancePolicyIdFilesRouteImport
       parentRoute: typeof ApiOrganizationsIdInsurancePoliciesInsurancePolicyIdRoute
     }
+    '/api/organizations/$id/backups/$backupId/download': {
+      id: '/api/organizations/$id/backups/$backupId/download'
+      path: '/$backupId/download'
+      fullPath: '/api/organizations/$id/backups/$backupId/download'
+      preLoaderRoute: typeof ApiOrganizationsIdBackupsBackupIdDownloadRouteImport
+      parentRoute: typeof ApiOrganizationsIdBackupsRoute
+    }
     '/api/organizations/$id/accounts/$accountId/assets': {
       id: '/api/organizations/$id/accounts/$accountId/assets'
       path: '/assets'
@@ -1997,6 +2057,21 @@ const ApiOrganizationsIdAccountsRouteChildren: ApiOrganizationsIdAccountsRouteCh
 const ApiOrganizationsIdAccountsRouteWithChildren =
   ApiOrganizationsIdAccountsRoute._addFileChildren(
     ApiOrganizationsIdAccountsRouteChildren,
+  )
+
+interface ApiOrganizationsIdBackupsRouteChildren {
+  ApiOrganizationsIdBackupsBackupIdDownloadRoute: typeof ApiOrganizationsIdBackupsBackupIdDownloadRoute
+}
+
+const ApiOrganizationsIdBackupsRouteChildren: ApiOrganizationsIdBackupsRouteChildren =
+  {
+    ApiOrganizationsIdBackupsBackupIdDownloadRoute:
+      ApiOrganizationsIdBackupsBackupIdDownloadRoute,
+  }
+
+const ApiOrganizationsIdBackupsRouteWithChildren =
+  ApiOrganizationsIdBackupsRoute._addFileChildren(
+    ApiOrganizationsIdBackupsRouteChildren,
   )
 
 interface ApiOrganizationsIdDatesRouteChildren {
@@ -2316,6 +2391,7 @@ const ApiOrganizationsIdTaxRecordsRouteWithChildren =
 
 interface ApiOrganizationsIdRouteChildren {
   ApiOrganizationsIdAccountsRoute: typeof ApiOrganizationsIdAccountsRouteWithChildren
+  ApiOrganizationsIdBackupsRoute: typeof ApiOrganizationsIdBackupsRouteWithChildren
   ApiOrganizationsIdDatesRoute: typeof ApiOrganizationsIdDatesRouteWithChildren
   ApiOrganizationsIdExportRoute: typeof ApiOrganizationsIdExportRoute
   ApiOrganizationsIdFixedIncomeAssetsRoute: typeof ApiOrganizationsIdFixedIncomeAssetsRouteWithChildren
@@ -2336,6 +2412,7 @@ interface ApiOrganizationsIdRouteChildren {
 
 const ApiOrganizationsIdRouteChildren: ApiOrganizationsIdRouteChildren = {
   ApiOrganizationsIdAccountsRoute: ApiOrganizationsIdAccountsRouteWithChildren,
+  ApiOrganizationsIdBackupsRoute: ApiOrganizationsIdBackupsRouteWithChildren,
   ApiOrganizationsIdDatesRoute: ApiOrganizationsIdDatesRouteWithChildren,
   ApiOrganizationsIdExportRoute: ApiOrganizationsIdExportRoute,
   ApiOrganizationsIdFixedIncomeAssetsRoute:
@@ -2396,6 +2473,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiDocsRoute: ApiDocsRoute,
   ApiKeysRoute: ApiKeysRoute,
   AssetTickersRoute: AssetTickersRoute,
+  DataBackupRoute: DataBackupRoute,
   FixedIncomeRoute: FixedIncomeRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   InvestmentsRoute: InvestmentsRoute,

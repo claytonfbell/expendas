@@ -23,4 +23,5 @@ export const QUERY_KEYS = {
   API_KEYS: "apiKeys",
   USER_PREFERENCES: "userPreferences",
   INSURANCE_POLICIES: "insurancePolicies",
+  BACKUPS: "backups",
 } as const

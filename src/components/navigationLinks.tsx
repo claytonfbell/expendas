@@ -1,5 +1,7 @@
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance"
 import CodeIcon from "@mui/icons-material/Code"
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload"
+import CloudDownloadOutlinedIcon from "@mui/icons-material/CloudDownloadOutlined"
 import AccountTreeIcon from "@mui/icons-material/AccountTree"
 import AddTaskIcon from "@mui/icons-material/AddTask"
 import AddTaskOutlinedIcon from "@mui/icons-material/AddTaskOutlined"
@@ -124,6 +126,13 @@ export const navigationLinks: NavigationLink[] = [
     href: "/api-keys",
     ActiveIcon: VpnKeyIcon,
     Icon: VpnKeyIcon,
+    navs: [],
+  },
+  {
+    label: "Data Backup",
+    href: "/data-backup",
+    ActiveIcon: CloudDownloadIcon,
+    Icon: CloudDownloadOutlinedIcon,
     navs: [],
   },
   {

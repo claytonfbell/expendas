@@ -1,4 +1,5 @@
 import {
+  DeleteObjectCommand,
   GetObjectCommand,
   PutObjectCommand,
   S3Client,
@@ -54,7 +55,6 @@ export async function putCloudFile({
 
   // persist the file into local temp folder for caching
   saveToTempFile(md5Hash, buffer)
-  1
   // save file metadata to database
   const cloudFile = await prisma.cloudFile.create({
     data: {
@@ -108,4 +108,64 @@ export async function getCloudFileStream(cloudFile: CloudFile) {
   saveToTempFile(cloudFile.md5, fileBuffer)
 
   return fs.createReadStream(filePath)
+}
+
+type PutBufferParams = {
+  fileName: string
+  fileContentType: string
+  buffer: Buffer
+}
+
+export async function putCloudFileBuffer({
+  fileName,
+  fileContentType,
+  buffer,
+}: PutBufferParams) {
+  const md5Hash = crypto.createHash("md5").update(buffer).digest("hex")
+
+  const exists = await prisma.cloudFile.findUnique({
+    where: { md5: md5Hash },
+  })
+  if (exists) {
+    return exists
+  }
+
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: bucketName,
+      Key: md5Hash,
+      Body: buffer,
+    })
+  )
+
+  saveToTempFile(md5Hash, buffer)
+
+  const cloudFile = await prisma.cloudFile.create({
+    data: {
+      md5: md5Hash,
+      originalName: fileName,
+      contentType: fileContentType,
+      size: buffer.length,
+    },
+  })
+
+  if (!cloudFile) {
+    throw new Error("Failed to save file metadata to database")
+  }
+
+  return cloudFile
+}
+
+export async function deleteCloudFileFromS3(cloudFile: CloudFile) {
+  await s3.send(
+    new DeleteObjectCommand({
+      Bucket: bucketName,
+      Key: cloudFile.md5,
+    })
+  )
+
+  await prisma.cloudFile.update({
+    where: { id: cloudFile.id },
+    data: { deleted: true },
+  })
 }
