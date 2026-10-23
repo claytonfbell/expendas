@@ -17,7 +17,7 @@ No `test`, `lint`, or `typecheck` scripts exist. Use `npx tsc --noEmit` to typec
 - `.env` is **required** (loaded via `dotenv/config` in `src/components/server/prisma.ts`). `.env.example` is the template. `.env` is gitignored but exists locally with live production secrets — never commit it.
 - `.env.example` is incomplete and has a casing bug: code reads `PLAID_CLIENT_ID` but the template says `PLAID_CLIENT_id`. It also omits vars the code reads: `S3_ENDPOINT` / `AWS_REGION` / `AWS_BUCKET_NAME` (cloud files & backups), `GIPHY_API_KEY` (email digest), `MASSIVE_API_KEY` (ticker price backfill).
 - In non-production, all outgoing email is redirected to `DEV_OVERRIDE_EMAIL` (`src/components/server/sendEmail.ts`).
-- Node **v24** (`.nvmrc`: `v24.1.0`); `.npmrc`: `legacy-peer-deps=true`
+- Node **v24.22.1** (`.nvmrc`); `.npmrc`: `legacy-peer-deps=true`
 
 ## Tech Stack
 
