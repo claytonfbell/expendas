@@ -3,10 +3,11 @@
 ## Commands
 
 ```bash
-npm run dev        # Start dev server (port 3000)
+npm run dev        # Dev server (port 3000, Vite + TanStack Start)
 npm run build      # Production build → .output/ (Nitro)
-npm run start      # Serve production build from .output/
+npm run start      # Serve production build (node .output/server/index.mjs)
 npm run release    # Bump version + changelog (standard-version)
+npm run prettier   # Format all .ts/.tsx
 ```
 
 No `test`, `lint`, or `typecheck` scripts exist. Use `npx tsc --noEmit` to typecheck.
@@ -14,8 +15,9 @@ No `test`, `lint`, or `typecheck` scripts exist. Use `npx tsc --noEmit` to typec
 ## Environment
 
 - `.env` is **required** (loaded via `dotenv/config` in `src/components/server/prisma.ts`). `.env.example` is the template. `.env` is gitignored but exists locally with live production secrets — never commit it.
-- Node **v24** (`.nvmrc`: `v24.1.0`)
-- `.npmrc`: `legacy-peer-deps=true`
+- `.env.example` is incomplete and has a casing bug: code reads `PLAID_CLIENT_ID` but the template says `PLAID_CLIENT_id`. It also omits vars the code reads: `S3_ENDPOINT` / `AWS_REGION` / `AWS_BUCKET_NAME` (cloud files & backups), `GIPHY_API_KEY` (email digest), `MASSIVE_API_KEY` (ticker price backfill).
+- In non-production, all outgoing email is redirected to `DEV_OVERRIDE_EMAIL` (`src/components/server/sendEmail.ts`).
+- Node **v24** (`.nvmrc`: `v24.1.0`); `.npmrc`: `legacy-peer-deps=true`
 
 ## Tech Stack
 
@@ -26,32 +28,35 @@ No `test`, `lint`, or `typecheck` scripts exist. Use `npx tsc --noEmit` to typec
 | Router       | TanStack Router — `src/routeTree.gen.ts` is **auto-generated**, never edit it |
 | DB           | PostgreSQL via **Prisma 7.8**, using `@prisma/adapter-pg` (not default query engine) |
 | Auth         | iron-session (cookie-based), `SECRET_COOKIE_PASSWORD` env var |
-| UI           | MUI v9 + Emotion + `material-ui-pack` (dark mode)            |
-| Charts       | Recharts v3                                                  |
-| DnD          | @dnd-kit/react v0.5                                          |
-| Email        | SendGrid                                                     |
-| Integrations | Plaid, Fidelity IMAP scrape, Backblaze B2 (S3-compatible)    |
+| UI           | MUI v9 + Emotion + `material-ui-pack` (`DarkModeProvider` in root layout) |
+| Data fetch   | TanStack Query (`useSuspenseQuery`) + custom `Rest` client   |
+| Integrations | Plaid, Fidelity IMAP scrape, S3-compatible object storage (`S3_ENDPOINT`) |
 
 ## Architecture
 
-- **Routes**: `src/app/` — TanStack Start file-based routes. Both page routes and API routes live here (e.g., `src/app/api/organizations.$id.ts`). Root layout is `src/app/__root.tsx`.
-- **API client**: Custom `Rest` class at `src/components/api/rest.ts`. Base URL set to `/api` in root layout. All API hooks in `src/components/api/hooks/` use this client.
-- **Server utils**: `src/components/server/` — Prisma client singleton, session management, validation, email, Plaid, IMAP scraping, etc. These are imported by API route handlers.
-- **DB migrations**: `npx prisma migrate deploy` runs in production/staging via shell scripts. Prisma is generated (`npx prisma generate`) during Docker build.
+- **Routes**: `src/app/` — page routes at top level, root layout `src/app/__root.tsx`.
+- **API routes** live in `src/app/api/` as TanStack Start server handlers: `export const Route = createFileRoute("/api/organizations/$id")({ server: { handlers: { GET: ... } } })` (`$` prefix = URL param). Follow the established pattern:
+  - Wrap handler logic in `buildResponse(request, async (session) => ...)` (handles session + error mapping).
+  - Auth via `requireAuthentication` / `requireAdminAuthentication` (`src/components/requireAuthentication.ts`); authorization checks against org membership.
+  - Throw `HttpException` subclasses (`NotFoundException`, `ForbiddenException`, `BadRequestException` from `src/components/server/HttpException.ts`) — don't return raw error responses.
+- **API client**: `Rest` singleton at `src/components/api/rest.ts`, base URL set to `/api` in `__root.tsx`. All hooks in `src/components/api/hooks/` wrap it with React Query; shared keys in `hooks/queryKeys.ts`. Naming: `useFetch*`, `useAdd*`, `useUpdate*`, `useRemove*`, `useReorder*`.
+- **Server utils**: `src/components/server/` — Prisma client singleton, session, validation, email, Plaid client, IMAP scraping, S3 cloud files. Imported by API route handlers.
+- **DB**: schema `prisma/schema.prisma`, migrations `prisma/migrations/`. `npx prisma generate` runs during Docker build.
 
 ## Deployment
 
-- Manual Docker-based, no CI/CD. `deploy.sh`: `git pull` → `docker build` → stop/rm old container → `docker run`.
-- Production server runs on `10.7.7.12:3000` behind nginx reverse proxy with certbot SSL.
-- Run migrations separately: `./run-production-migrations.sh` or `./run-staging-migrations.sh`.
+- Manual Docker-based, no CI/CD. `deploy.sh`: `git pull` → `docker build` → stop/rm old container → `docker run` → prune. Production runs on `10.7.7.12:3000` behind nginx + certbot.
+- The Dockerfile **copies `.env` into the image** (`.dockerignore` only excludes `node_modules/` and `.next/`), so `docker build` requires a local `.env`.
+- Migrations run separately: `./run-staging-migrations.sh` (tracked) or `./run-production-migrations.sh` (**gitignored** — contains prod credentials, exists only on local machines).
+- `copy-staging-db.sh` / `copy-backup-db.sh` refresh the staging/backup DBs from the production DB over SSH (host alias `expendas`, uses `PGPASSWORD` from `.env`).
 
 ## Feature Specs
 
-`prompt-instructions/*.md` contains specifications for API keys, assets, meals-out, user preferences, and tasks (drag-and-drop reordering). Reference these when working on those features.
+`prompt-instructions/*.md` — specs for API keys, assets, meals-out, user preferences, and tasks (drag-and-drop reordering). Reference these when working on those features.
 
 ## Conventions
 
-- Prettier: no semicolons, double quotes, trailing commas ES5, LF line endings
-- ESLint config is minimal (only disables `no-explicit-any`)
+- Prettier: no semicolons, double quotes, trailing commas ES5, LF line endings (also `npm run prettier`)
+- ESLint is minimal — its only rule disables `@typescript-eslint/no-explicit-any`
+- Fallow (`npx fallow`) for dead-code/duplicate/complexity checks; config in `.fallowrc.json` (route `Route` exports and hook-family duplicates are intentionally ignored)
 - VSCode: format on save, organize imports on save
-- Fallow (`npx fallow`) for dead code and duplicate detection; config in `.fallowrc.json`
